@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html class="light" lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -75,10 +76,18 @@
                         "xl": "3rem",
                         "full": "9999px"
                     },
-                    "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "label": ["Space Grotesk"]
+                    "fontSize": {
+                        "xs": ["0.65rem", { "lineHeight": "1rem" }],
+                        "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+                        "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+                        "lg": ["1rem", { "lineHeight": "1.5rem" }],
+                        "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+                        "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+                        "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+                        "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+                        "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+                        "6xl": ["3rem", { "lineHeight": "1" }],
+                        "7xl": ["3.75rem", { "lineHeight": "1" }]
                     }
                 },
             },
@@ -90,10 +99,19 @@
         }
 
         .technical-grid {
-            background-image:
-                linear-gradient(to right, rgba(194, 198, 211, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(194, 198, 211, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
             background-size: 24px 24px;
+            opacity: 0.05;
+        }
+
+        .anodized-gradient {
+            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+        }
+
+        .site-gradient-bg {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
         .glass-morphic {
@@ -101,160 +119,150 @@
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
         }
-
-        .anodized-gradient {
-            background: linear-gradient(135deg, #003d76 0%, #06549d 100%);
-        }
     </style>
 </head>
 
 <body
-    class="bg-background font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed overflow-hidden h-screen flex flex-col">
-    <!-- Background Layer -->
-    <div class="fixed inset-0 z-0">
-        <img class="w-full h-full object-cover opacity-30 grayscale brightness-110"
-            data-alt="high-tech industrial facility with gleaming steel machinery and large glass windows under bright natural daylight"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs6xcI1_UeoiBjr0r0kOZTCpJ947Ctu7bcEMbZRej1MXoyt3br0OrJMEtE0MeX0h9VDUoR8AXrtsp_EiAP-q9HcHq5FwMjCkNW_u8VK3DfG80xkXaBlGB6EMZJIEBOCiHZbVpQFSwbFdaMb4OwcqoPf2imKwP5HN6wWRuxBNvw2j1oV2XCl2rh6AzdySB-n4Y3zpQybJqeNYkVv5KLTBoOGZaSfaMyf9MT9TRK-0KP34NnAUDUdgZvkS9h6ke55HFPQlpoE-jJo0TU" />
-        <div class="absolute inset-0 technical-grid"></div>
-        <div class="absolute inset-0 bg-gradient-to-tr from-surface via-surface/80 to-transparent"></div>
-    </div>
-    <!-- Header (Shared Component: TopNavBar) -->
-    <header
-        class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full shadow-2xl shadow-slate-900/5">
-        <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary"
-                data-icon="precision_manufacturing">precision_manufacturing</span>
-            <div class="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 font-headline uppercase">
-                PRECISION TERMINAL</div>
-        </div>
-        <!-- Top Navigation Shell -->
-        <script src="./components/header.js" data-root="./"></script>
-    </header>
-    <!-- Main Content Area -->
-    <main
-        class="relative z-10 flex-1 flex flex-col md:flex-row items-center justify-center p-8 gap-12 pt-24 pb-20 overflow-hidden">
-        <!-- Left Side: Login Card -->
-        <div
-            class="w-full max-w-[480px] glass-morphic border border-white/40 shadow-2xl rounded-[1.5rem] p-10 md:mr-12">
-            <div class="mb-8">
-                <span class="font-label text-[10px] uppercase tracking-widest text-primary mb-2 block">System
-                    Interface</span>
-                <h1 class="font-headline text-3xl font-bold text-on-surface tracking-tight mb-2">Client Terminal Access
+    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg min-h-screen flex flex-col">
+    <!-- Top Navigation Shell -->
+    <script src="./components/header.js" data-root="./"></script>
+    <script src="./components/effects.js"></script>
+    <main class="relative flex-1 flex flex-col items-center justify-center pt-20">
+        <!-- Technical Grid Overlay Background -->
+        <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+
+        <!-- Login Container -->
+        <div class="relative z-10 w-full max-w-4xl px-6 py-12 grid md:grid-cols-2 gap-12 items-center">
+            <!-- Left Side: Branding/Status -->
+            <div class="hidden md:block">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 bg-primary/10 rounded-full mb-6">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span class="text-[10px] font-headline font-bold uppercase tracking-widest text-primary">Secure
+                        Gateway Alpha-01</span>
+                </div>
+                <h1
+                    class="text-4xl md:text-5xl font-headline font-bold text-on-surface tracking-tighter leading-tight mb-8">
+                    Precision <br /><span class="text-primary italic">Terminal</span> Access.
                 </h1>
-                <p class="text-on-surface-variant text-sm leading-relaxed max-w-sm">
-                    Secure portal for machinery maintenance and procurement oversight. Authorized engineering personnel
-                    only.
-                </p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-primary">security</span>
+                        <span class="text-xs uppercase tracking-widest font-label">AES-256 Encrypted</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-primary">hub</span>
+                        <span class="text-xs uppercase tracking-widest font-label">Localized Auth Protocol</span>
+                    </div>
+                </div>
             </div>
-            <form class="space-y-6">
-                <div class="space-y-2">
-                    <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant px-1"
-                        for="org-id">Organization ID</label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline"
-                            data-icon="corporate_fare">corporate_fare</span>
+
+            <!-- Right Side: Login Card -->
+            <div class="glass-morphic border border-white/40 shadow-2xl rounded-lg p-8 md:p-10">
+                <div class="mb-8">
+                    <h2 class="font-headline text-2xl font-bold text-on-surface tracking-tight mb-2">Authenticate</h2>
+                    <p class="text-on-surface-variant text-xs font-light leading-relaxed">
+                        Access your engineering dashboard, project logs, and maintenance schedules.
+                    </p>
+                </div>
+                <form class="space-y-6">
+                    <div class="space-y-2">
+                        <label
+                            class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant px-1">Terminal
+                            ID</label>
                         <input
-                            class="w-full bg-surface-container-low border-none rounded-sm py-4 pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
-                            id="org-id" placeholder="WIL-ENG-XXXX" type="text" />
+                            class="w-full bg-surface-container-low border border-outline-variant/10 rounded-sm py-3 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                            placeholder="ENG-XXXX-XXXX" type="text" />
                     </div>
-                </div>
-                <div class="space-y-2">
-                    <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant px-1"
-                        for="access-key">Terminal Access Key</label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline"
-                            data-icon="key">key</span>
+                    <div class="space-y-2">
+                        <label
+                            class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant px-1">Access
+                            Key</label>
                         <input
-                            class="w-full bg-surface-container-low border-none rounded-sm py-4 pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
-                            id="access-key" placeholder="••••••••••••" type="password" />
+                            class="w-full bg-surface-container-low border border-outline-variant/10 rounded-sm py-3 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                            placeholder="••••••••••••" type="password" />
                     </div>
-                </div>
-                <div class="flex items-center justify-between py-2">
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/30"
-                            type="checkbox" />
-                        <span
-                            class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant group-hover:text-on-surface transition-colors">Remember
-                            Session</span>
-                    </label>
-                    <a class="font-label text-[10px] uppercase tracking-widest text-primary hover:underline"
-                        href="#">Forgot Key?</a>
-                </div>
-                <a href="admin/index.html"
-                    class="w-full anodized-gradient text-white py-4 rounded-full font-headline font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20"
-                    type="submit">
-                    <span>Authenticate As Admin</span>
-                    <span class="material-symbols-outlined text-lg" data-icon="login">login</span>
-                </a>
-                <a href="client/index.html"
-                    class="w-full anodized-gradient text-white py-4 rounded-full font-headline font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20"
-                    type="submit">
-                    <span>Authenticate As Clien</span>
-                    <span class="material-symbols-outlined text-lg" data-icon="login">login</span>
-                </a>
-            </form>
+                    <div class="flex items-center justify-between text-[10px] font-label uppercase tracking-widest">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox"
+                                class="rounded border-outline-variant text-primary focus:ring-primary/20" />
+                            <span class="group-hover:text-primary transition-colors">Remember Node</span>
+                        </label>
+                        <a href="#" class="text-primary hover:underline">Reset Gateway</a>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <a href="admin/index.html"
+                            class="bg-primary text-on-primary py-3 rounded-lg font-label font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                            Admin Login
+                        </a>
+                        <a href="client/index.html"
+                            class="bg-surface-container-high text-on-surface py-3 rounded-lg font-label font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-surface-container-highest active:scale-95 transition-all">
+                            Client Login
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <!-- Right Side: Telemetry / Sidebar -->
-        <div class="hidden md:flex flex-col gap-6 w-[280px]">
-            <!-- Status Card -->
-            <div class="glass-morphic p-6 border border-white/30 rounded-lg shadow-sm">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span class="font-label text-[10px] uppercase tracking-widest text-on-surface font-bold">System
-                        Status: Nominal</span>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center text-[11px] font-label text-on-surface-variant">
-                        <span>NODE LOAD</span>
-                        <span class="text-on-surface">14%</span>
-                    </div>
-                    <div class="grid grid-cols-10 gap-1">
-                        <div class="h-1 bg-primary rounded-full"></div>
-                        <div class="h-1 bg-primary rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                        <div class="h-1 bg-surface-container-high rounded-full"></div>
-                    </div>
-                </div>
+    </main>
+    <!-- Right Side: Telemetry / Sidebar -->
+    <div class="hidden md:flex flex-col gap-6 w-[280px]">
+        <!-- Status Card -->
+        <div class="glass-morphic p-6 border border-white/30 rounded-lg shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="font-label text-[10px] uppercase tracking-widest text-on-surface font-bold">System
+                    Status: Nominal</span>
             </div>
-            <!-- Encryption Card -->
-            <div class="surface-container-low p-6 rounded-lg flex flex-col gap-2">
-                <div class="flex items-center gap-3 text-secondary">
-                    <span class="material-symbols-outlined text-xl" data-icon="security"
-                        style="font-variation-settings: 'FILL' 1;">security</span>
-                    <span class="font-label text-[10px] uppercase tracking-widest font-bold">Secure Protocol:
-                        AES-256</span>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center text-[11px] font-label text-on-surface-variant">
+                    <span>NODE LOAD</span>
+                    <span class="text-on-surface">14%</span>
                 </div>
-                <p class="text-[11px] text-on-secondary-fixed-variant leading-tight">
-                    End-to-end encrypted connection active. Layer 7 firewall protection verified.
-                </p>
-            </div>
-            <!-- Node Card -->
-            <div
-                class="surface-container-lowest p-6 rounded-lg border border-outline-variant/10 shadow-sm flex items-center justify-between">
-                <div>
-                    <span
-                        class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant block mb-1">Current
-                        Gateway</span>
-                    <span class="font-headline text-sm font-bold text-on-surface">Active Terminal Node 01</span>
-                </div>
-                <span class="material-symbols-outlined text-primary opacity-40" data-icon="hub">hub</span>
-            </div>
-            <!-- Secondary Telemetry (Asymmetric placement) -->
-            <div class="mt-4 px-2">
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="material-symbols-outlined text-sm text-outline"
-                        data-icon="location_on">location_on</span>
-                    <span class="font-label text-[9px] uppercase tracking-widest text-outline">Uptime: 243d 12h
-                        04m</span>
+                <div class="grid grid-cols-10 gap-1">
+                    <div class="h-1 bg-primary rounded-full"></div>
+                    <div class="h-1 bg-primary rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
+                    <div class="h-1 bg-surface-container-high rounded-full"></div>
                 </div>
             </div>
         </div>
+        <!-- Encryption Card -->
+        <div class="surface-container-low p-6 rounded-lg flex flex-col gap-2">
+            <div class="flex items-center gap-3 text-secondary">
+                <span class="material-symbols-outlined text-xl" data-icon="security"
+                    style="font-variation-settings: 'FILL' 1;">security</span>
+                <span class="font-label text-[10px] uppercase tracking-widest font-bold">Secure Protocol:
+                    AES-256</span>
+            </div>
+            <p class="text-[11px] text-on-secondary-fixed-variant leading-tight">
+                End-to-end encrypted connection active. Layer 7 firewall protection verified.
+            </p>
+        </div>
+        <!-- Node Card -->
+        <div
+            class="surface-container-lowest p-6 rounded-lg border border-outline-variant/10 shadow-sm flex items-center justify-between">
+            <div>
+                <span
+                    class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant block mb-1">Current
+                    Gateway</span>
+                <span class="font-headline text-sm font-bold text-on-surface">Active Terminal Node 01</span>
+            </div>
+            <span class="material-symbols-outlined text-primary opacity-40" data-icon="hub">hub</span>
+        </div>
+        <!-- Secondary Telemetry (Asymmetric placement) -->
+        <div class="mt-4 px-2">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-sm text-outline" data-icon="location_on">location_on</span>
+                <span class="font-label text-[9px] uppercase tracking-widest text-outline">Uptime: 243d 12h
+                    04m</span>
+            </div>
+        </div>
+    </div>
     </main>
     <!-- Footer (Shared Component: Footer) -->
     <!-- Footer Shell -->

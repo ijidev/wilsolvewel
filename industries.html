@@ -75,8 +75,20 @@
           "fontFamily": {
             "headline": ["Space Grotesk"],
             "body": ["Manrope"],
-            "label": ["Space Grotesk"]
-          }
+            "fontSize": {
+              "xs": ["0.65rem", { "lineHeight": "1rem" }],
+              "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+              "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+              "lg": ["1rem", { "lineHeight": "1.5rem" }],
+              "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+              "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+              "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+              "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+              "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+              "6xl": ["3rem", { "lineHeight": "1" }],
+              "7xl": ["3.75rem", { "lineHeight": "1" }]
+            }
+          },
         },
       },
     }
@@ -86,40 +98,53 @@
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
-    .blueprint-grid {
-      background-image: linear-gradient(to right, rgba(194, 198, 212, 0.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(194, 198, 212, 0.08) 1px, transparent 1px);
+    .technical-grid {
+      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
       background-size: 24px 24px;
+      opacity: 0.05;
+    }
+
+    .anodized-gradient {
+      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+    }
+
+    .site-gradient-bg {
+      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+      background-attachment: fixed;
     }
   </style>
 </head>
 
-<body class="bg-surface font-body text-on-surface">
-  <!-- TopNavBar -->
+<body
+  class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
   <!-- Top Navigation Shell -->
   <script src="./components/header.js" data-root="./"></script>
-  <main class="pt-20 blueprint-grid min-h-screen">
+  <script src="./components/effects.js"></script>
+  <main class="relative pt-20">
+    <!-- Technical Grid Overlay Background -->
+    <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
     <!-- Hero Section / Header -->
-    <header
-      class="max-w-screen-2xl mx-auto px-8 py-16 md:py-24 flex flex-col md:flex-row md:items-end justify-between gap-8">
-      <div class="max-w-3xl">
+    <header class="relative py-16 px-6 lg:px-12 z-10">
+      <div class="max-w-7xl mx-auto">
         <div
           class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary font-label text-[10px] uppercase tracking-[0.2em] mb-4">
           Sector Overview 2024
         </div>
-        <h1 class="font-headline text-5xl md:text-7xl font-bold tracking-tighter leading-[0.9] text-on-surface mb-6">
+        <h1 class="font-headline text-3xl md:text-5xl font-bold tracking-tighter leading-[0.9] text-on-surface mb-6">
           Engineering <br />Solutions for <span class="text-primary italic">Critical Infrastructure.</span>
         </h1>
-        <p class="text-on-surface-variant text-lg max-w-xl font-light">
-          Wilsovlewel Engineering provides specialized technical expertise across five core industrial pillars,
-          delivering architectural precision and operational resilience.
+        <p class="text-on-surface-variant text-base max-w-xl font-light">
+          Wilsolvewel provides specialized technical expertise across heavy industrial sectors, delivering architectural
+          precision and operational resilience for large-scale equipment.
         </p>
       </div>
-      <div class="hidden md:flex flex-col items-end gap-2 font-label text-[10px] text-outline">
-        <span>SYSTEM STATUS: OPTIMAL</span>
-        <span>LATITUDE: 45.523062</span>
-        <span>LONGITUDE: -122.676482</span>
-      </div>
+    </header>
+    <div class="hidden md:flex flex-col items-end gap-2 font-label text-[10px] text-outline">
+      <span>SYSTEM STATUS: OPTIMAL</span>
+      <span>LATITUDE: 45.523062</span>
+      <span>LONGITUDE: -122.676482</span>
+    </div>
     </header>
     <!-- Industries Bento Grid -->
     <section class="max-w-screen-2xl mx-auto px-8 pb-32">

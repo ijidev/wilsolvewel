@@ -20,311 +20,260 @@
       darkMode: "class",
       theme: {
         extend: {
-          "colors": {
-            "tertiary-container": "#8a3e00",
-            "surface-variant": "#e1e2e9",
-            "on-error-container": "#93000a",
-            "on-surface-variant": "#424751",
-            "on-error": "#ffffff",
-            "surface": "#f9f9ff",
-            "on-secondary": "#ffffff",
-            "on-tertiary-fixed-variant": "#753400",
-            "surface-tint": "#1d5fa8",
-            "error-container": "#ffdad6",
-            "primary-container": "#06549d",
-            "inverse-surface": "#2e3036",
-            "tertiary": "#662c00",
-            "secondary-fixed-dim": "#b4c7ea",
-            "background": "#f9f9ff",
-            "outline": "#727782",
-            "surface-container": "#ededf4",
-            "secondary-container": "#c8dbfe",
-            "surface-container-low": "#f3f3fa",
-            "on-surface": "#191c20",
-            "surface-container-lowest": "#ffffff",
-            "on-tertiary-container": "#ffb991",
-            "on-background": "#191c20",
-            "tertiary-fixed-dim": "#ffb68c",
-            "on-secondary-container": "#4d607e",
-            "on-primary": "#ffffff",
-            "primary": "#003d76",
-            "inverse-primary": "#a6c8ff",
-            "on-tertiary": "#ffffff",
-            "on-tertiary-fixed": "#321200",
-            "on-primary-fixed": "#001c3b",
-            "surface-dim": "#d9dae0",
-            "surface-container-highest": "#e1e2e9",
-            "secondary-fixed": "#d5e3ff",
-            "secondary": "#4c5f7d",
-            "on-secondary-fixed-variant": "#354764",
-            "tertiary-fixed": "#ffdbc9",
-            "surface-bright": "#f9f9ff",
-            "primary-fixed": "#d5e3ff",
-            "error": "#ba1a1a",
-            "inverse-on-surface": "#f0f0f7",
-            "on-primary-fixed-variant": "#004787",
-            "primary-fixed-dim": "#a6c8ff",
-            "on-secondary-fixed": "#061c36",
-            "on-primary-container": "#aacaff",
-            "surface-container-high": "#e7e8ef",
-            "outline-variant": "#c2c6d3"
-          },
-          "borderRadius": {
-            "DEFAULT": "1rem",
-            "lg": "2rem",
-            "xl": "3rem",
-            "full": "9999px"
-          },
-          "fontFamily": {
-            "headline": ["Space Grotesk"],
-            "body": ["Manrope"],
-            "label": ["Space Grotesk"]
+          "fontSize": {
+            "xs": ["0.65rem", { "lineHeight": "1rem" }],
+            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+            "lg": ["1rem", { "lineHeight": "1.5rem" }],
+            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+            "6xl": ["3rem", { "lineHeight": "1" }],
+            "7xl": ["3.75rem", { "lineHeight": "1" }]
           }
         },
       },
     }
   </script>
   <style>
-    body {
-      font-family: 'Manrope', sans-serif;
-      background-color: #f9f9ff;
-      color: #191c20;
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
-    .font-headline {
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .blueprint-grid {
-      background-image: radial-gradient(#c2c6d3 0.5px, transparent 0.5px);
+    .technical-grid {
+      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
       background-size: 24px 24px;
-      opacity: 0.15;
+      opacity: 0.05;
     }
 
     .anodized-gradient {
-      background: linear-gradient(135deg, #003d76 0%, #06549d 100%);
+      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
     }
 
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    .site-gradient-bg {
+      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+      background-attachment: fixed;
     }
   </style>
 </head>
 
-<body class="bg-surface overflow-x-hidden">
-  <!-- Technical Grid Overlay -->
-  <div class="fixed inset-0 blueprint-grid pointer-events-none z-0"></div>
+<body
+  class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
   <!-- SideNavBar Shell -->
-  <!-- SideNavBar -->
   <script src="../components/admin_sidenav.js" data-root="../"></script>
   <!-- TopNavBar Shell -->
-  <!-- TopNavBar -->
-  <script src="../components/admin_topnav.js"></script>
-  <!-- Main Content Canvas -->
-  <main class="ml-64 mt-16 p-8 relative z-10">
-    <!-- Header Section -->
-    <header class="mb-10 flex justify-between items-end">
-      <div>
-        <p class="text-[10px] font-label uppercase tracking-[0.2em] text-blue-700 font-bold mb-1">OPERATIONAL OVERVIEW
-          // LAGOS HUB</p>
-        <h2 class="text-4xl font-bold font-headline tracking-tight text-on-surface">Wilsovlewel Control Node</h2>
-      </div>
-      <div class="flex gap-4 pb-1">
-        <div class="px-4 py-2 bg-surface-container-lowest rounded-DEFAULT shadow-sm flex items-center gap-3">
-          <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-          <span class="text-[10px] font-label uppercase tracking-widest font-bold">System Status: Nominal</span>
+  <script src="../components/admin_topnav.js" data-root="../"></script>
+  <script src="../components/effects.js"></script>
+  <main class="ml-64 relative pt-16">
+    <!-- Technical Grid Overlay Background -->
+    <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+    <div class="p-8 relative z-10">
+      <!-- Header Section -->
+      <header class="mb-10 flex justify-between items-end">
+        <div>
+          <p class="text-[10px] font-label uppercase tracking-[0.2em] text-primary font-bold mb-1">
+            OPERATIONAL OVERVIEW // LAGOS HUB</p>
+          <h2 class="text-3xl font-bold font-headline tracking-tight text-on-surface">Wilsolvewel Control Node</h2>
         </div>
-        <div class="px-4 py-2 bg-surface-container-lowest rounded-DEFAULT shadow-sm flex items-center gap-3">
-          <span class="text-[10px] font-label uppercase tracking-widest text-slate-400">Node: 10.0.4.12</span>
-        </div>
-      </div>
-    </header>
-    <!-- Bento Grid Layout -->
-    <div class="grid grid-cols-12 gap-6 items-start">
-      <!-- 1. Operational Telemetry Modules -->
-      <section class="col-span-12 lg:col-span-8 grid grid-cols-3 gap-6">
-        <!-- Stat 1 -->
-        <div
-          class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)] relative overflow-hidden">
-          <div class="flex justify-between items-start mb-6">
-            <span class="material-symbols-outlined text-primary" data-icon="speed">speed</span>
-            <span
-              class="text-[10px] font-label text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">STABLE</span>
+        <div class="flex gap-4 pb-1">
+          <div class="px-4 py-2 bg-surface-container-lowest rounded-DEFAULT shadow-sm flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span class="text-[10px] font-label uppercase tracking-widest font-bold">System Status: Nominal</span>
           </div>
-          <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Active Site Latency</p>
-          <h3 class="text-3xl font-bold font-headline tracking-tighter">14ms</h3>
-          <div class="mt-4 flex gap-1 h-1">
-            <div class="flex-1 bg-primary rounded-full"></div>
-            <div class="flex-1 bg-primary rounded-full"></div>
-            <div class="flex-1 bg-primary rounded-full"></div>
-            <div class="flex-1 bg-primary/20 rounded-full"></div>
-            <div class="flex-1 bg-primary/20 rounded-full"></div>
+          <div class="px-4 py-2 bg-surface-container-lowest rounded-DEFAULT shadow-sm flex items-center gap-3">
+            <span class="text-[10px] font-label uppercase tracking-widest text-slate-400">Node: 10.0.4.12</span>
           </div>
         </div>
-        <!-- Stat 2 -->
-        <div
-          class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
-          <div class="flex justify-between items-start mb-6">
-            <span class="material-symbols-outlined text-primary" data-icon="update">update</span>
-          </div>
-          <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">System Uptime</p>
-          <h3 class="text-3xl font-bold font-headline tracking-tighter">342:12:08</h3>
-          <p class="text-[9px] font-mono text-slate-400 mt-1 uppercase">Continuous Sync Active</p>
-        </div>
-        <!-- Stat 3 -->
-        <div
-          class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
-          <div class="flex justify-between items-start mb-6">
-            <span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
-            <span
-              class="text-[10px] font-label text-primary-container bg-secondary-container px-2 py-0.5 rounded-full font-bold">+12
-              New</span>
-          </div>
-          <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Secure Nodes</p>
-          <h3 class="text-3xl font-bold font-headline tracking-tighter">1,204</h3>
-          <div class="mt-4 h-1 bg-surface-container rounded-full overflow-hidden">
-            <div class="w-[85%] h-full bg-primary"></div>
-          </div>
-        </div>
-        <!-- Core Projects Map View -->
-        <div
-          class="col-span-3 bg-surface-container-lowest rounded-lg overflow-hidden shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)] h-96 relative">
+      </header>
+      <!-- Bento Grid Layout -->
+      <div class="grid grid-cols-12 gap-6 items-start">
+        <!-- 1. Operational Telemetry Modules -->
+        <section class="col-span-12 lg:col-span-8 grid grid-cols-3 gap-6">
+          <!-- Stat 1 -->
           <div
-            class="absolute top-6 left-6 z-10 bg-white/80 backdrop-blur-md p-4 rounded-DEFAULT shadow-sm border border-white/50">
-            <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-3">Deployment Heatmap</h4>
-            <div class="space-y-2">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-primary"></div>
-                <span class="text-[10px] font-label uppercase text-slate-600">Lagos Terminal (Alpha)</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span class="text-[10px] font-label uppercase text-slate-600">Port Harcourt Node</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-amber-500"></div>
-                <span class="text-[10px] font-label uppercase text-slate-600">Abuja Central Grid</span>
-              </div>
+            class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)] relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+              <span class="material-symbols-outlined text-primary" data-icon="speed">speed</span>
+              <span
+                class="text-[10px] font-label text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">STABLE</span>
+            </div>
+            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Active Site Latency</p>
+            <h3 class="text-3xl font-bold font-headline tracking-tighter">14ms</h3>
+            <div class="mt-4 flex gap-1 h-1">
+              <div class="flex-1 bg-primary rounded-full"></div>
+              <div class="flex-1 bg-primary rounded-full"></div>
+              <div class="flex-1 bg-primary rounded-full"></div>
+              <div class="flex-1 bg-primary/20 rounded-full"></div>
+              <div class="flex-1 bg-primary/20 rounded-full"></div>
             </div>
           </div>
-          <div class="w-full h-full grayscale-[0.5] opacity-80" data-location="Nigeria" >
-            <img class="w-full h-full object-cover"
-              data-alt="clean minimal satellite topography map of Nigeria with technical digital overlay lines and data points"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtx1_TdTaLXkO3rynEYv1wvis1VRaa8bViRgiIhFFyso7cO6WJxv9oRCTTGp1jyQiPOobVi_uCHx0R5Z2AK21t1hGVN5Pr9BU-oSgs1SnbEZFMAyc6fBSw3KDMjNzmht8bekdgbDonKWmts4sxQFOoP4ofeH2pkQcnk7iQjoFhzftgmpLOTImV91q2k_tFkanu_iYigXuZf7SH7eWSDBTcrDVbB70vNxkCZx066AWjPpxmSmBfvfwEA94EK90UOLiKnzQn1oPPfE_i" />
+          <!-- Stat 2 -->
+          <div
+            class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
+            <div class="flex justify-between items-start mb-6">
+              <span class="material-symbols-outlined text-primary" data-icon="update">update</span>
+            </div>
+            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">System Uptime</p>
+            <h3 class="text-3xl font-bold font-headline tracking-tighter">342:12:08</h3>
+            <p class="text-[9px] font-mono text-slate-400 mt-1 uppercase">Continuous Sync Active</p>
           </div>
-          <div class="absolute bottom-6 right-6 flex gap-2">
+          <!-- Stat 3 -->
+          <div
+            class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
+            <div class="flex justify-between items-start mb-6">
+              <span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+              <span
+                class="text-[10px] font-label text-primary-container bg-secondary-container px-2 py-0.5 rounded-full font-bold">+12
+                New</span>
+            </div>
+            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Secure Nodes</p>
+            <h3 class="text-3xl font-bold font-headline tracking-tighter">1,204</h3>
+            <div class="mt-4 h-1 bg-surface-container rounded-full overflow-hidden">
+              <div class="w-[85%] h-full bg-primary"></div>
+            </div>
+          </div>
+          <!-- Core Projects Map View -->
+          <div
+            class="col-span-3 bg-surface-container-lowest rounded-lg overflow-hidden shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)] h-96 relative">
+            <div
+              class="absolute top-6 left-6 z-10 bg-white/80 backdrop-blur-md p-4 rounded-DEFAULT shadow-sm border border-white/50">
+              <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-3">Deployment Heatmap</h4>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-primary"></div>
+                  <span class="text-[10px] font-label uppercase text-slate-600">Lagos Terminal (Alpha)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                  <span class="text-[10px] font-label uppercase text-slate-600">Port Harcourt Node</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                  <span class="text-[10px] font-label uppercase text-slate-600">Abuja Central Grid</span>
+                </div>
+              </div>
+            </div>
+            <div class="w-full h-full grayscale-[0.5] opacity-80" data-location="Nigeria">
+              <img class="w-full h-full object-cover"
+                data-alt="clean minimal satellite topography map of Nigeria with technical digital overlay lines and data points"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtx1_TdTaLXkO3rynEYv1wvis1VRaa8bViRgiIhFFyso7cO6WJxv9oRCTTGp1jyQiPOobVi_uCHx0R5Z2AK21t1hGVN5Pr9BU-oSgs1SnbEZFMAyc6fBSw3KDMjNzmht8bekdgbDonKWmts4sxQFOoP4ofeH2pkQcnk7iQjoFhzftgmpLOTImV91q2k_tFkanu_iYigXuZf7SH7eWSDBTcrDVbB70vNxkCZx066AWjPpxmSmBfvfwEA94EK90UOLiKnzQn1oPPfE_i" />
+            </div>
+            <div class="absolute bottom-6 right-6 flex gap-2">
+              <button
+                class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined" data-icon="add">add</span>
+              </button>
+              <button
+                class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined" data-icon="remove">remove</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- 2. Side Panel: Asset Health & Security Logs -->
+        <aside class="col-span-12 lg:col-span-4 space-y-6">
+          <!-- Asset Health Monitoring -->
+          <div class="bg-surface-container-low rounded-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h4 class="text-xs font-bold font-headline uppercase tracking-widest">Asset Health Monitoring</h4>
+              <span class="material-symbols-outlined text-slate-400 text-lg" data-icon="more_vert">more_vert</span>
+            </div>
+            <div class="space-y-4">
+              <!-- Asset Card 1 -->
+              <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-emerald-500">
+                <div class="flex justify-between items-start mb-2">
+                  <h5 class="text-sm font-bold font-headline">Turbine G-104</h5>
+                  <span
+                    class="text-[9px] font-label uppercase bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Optimal</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mb-3">Load: 84% | Temp: 42°C</p>
+                <div class="w-full h-1 bg-surface-container rounded-full">
+                  <div class="w-[84%] h-full bg-emerald-500"></div>
+                </div>
+              </div>
+              <!-- Asset Card 2 -->
+              <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-amber-500">
+                <div class="flex justify-between items-start mb-2">
+                  <h5 class="text-sm font-bold font-headline">Compressor Node B</h5>
+                  <span
+                    class="text-[9px] font-label uppercase bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Warning</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mb-3">Vibration Anomaly detected</p>
+                <div class="w-full h-1 bg-surface-container rounded-full">
+                  <div class="w-[62%] h-full bg-amber-500"></div>
+                </div>
+              </div>
+              <!-- Asset Card 3 -->
+              <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-error">
+                <div class="flex justify-between items-start mb-2">
+                  <h5 class="text-sm font-bold font-headline">Main Power Plant 01</h5>
+                  <span
+                    class="text-[9px] font-label uppercase bg-error-container text-on-error-container px-2 py-0.5 rounded-full">Critical</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mb-3">Pressure threshold exceeded</p>
+                <div class="w-full h-1 bg-surface-container rounded-full">
+                  <div class="w-[98%] h-full bg-error"></div>
+                </div>
+              </div>
+            </div>
             <button
-              class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors">
-              <span class="material-symbols-outlined" data-icon="add">add</span>
-            </button>
-            <button
-              class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors">
-              <span class="material-symbols-outlined" data-icon="remove">remove</span>
+              class="w-full mt-6 py-2 border border-slate-200 rounded-DEFAULT text-[10px] font-label uppercase tracking-widest text-slate-500 hover:bg-white hover:text-primary transition-all">
+              Full Inventory Report
             </button>
           </div>
-        </div>
-      </section>
-      <!-- 2. Side Panel: Asset Health & Security Logs -->
-      <aside class="col-span-12 lg:col-span-4 space-y-6">
-        <!-- Asset Health Monitoring -->
-        <div class="bg-surface-container-low rounded-lg p-6">
-          <div class="flex justify-between items-center mb-6">
-            <h4 class="text-xs font-bold font-headline uppercase tracking-widest">Asset Health Monitoring</h4>
-            <span class="material-symbols-outlined text-slate-400 text-lg" data-icon="more_vert">more_vert</span>
-          </div>
-          <div class="space-y-4">
-            <!-- Asset Card 1 -->
-            <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-emerald-500">
-              <div class="flex justify-between items-start mb-2">
-                <h5 class="text-sm font-bold font-headline">Turbine G-104</h5>
-                <span
-                  class="text-[9px] font-label uppercase bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Optimal</span>
+          <!-- Recent Security Logs -->
+          <div class="bg-surface-container-lowest rounded-lg p-6 shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
+            <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-6">Recent Security Logs</h4>
+            <div class="space-y-4">
+              <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
+                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary text-sm" data-icon="lock_open">lock_open</span>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-on-surface">Auth Success: Admin_LN04</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Terminal 04: Lagos Central | 2m ago</p>
+                </div>
               </div>
-              <p class="text-[10px] text-slate-500 mb-3">Load: 84% | Temp: 42°C</p>
-              <div class="w-full h-1 bg-surface-container rounded-full">
-                <div class="w-[84%] h-full bg-emerald-500"></div>
+              <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
+                <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-amber-600 text-sm" data-icon="encrypted">encrypted</span>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-on-surface">Encrypted Data Sync Initialized</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">External Backup Node 01 | 14m ago</p>
+                </div>
               </div>
-            </div>
-            <!-- Asset Card 2 -->
-            <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-amber-500">
-              <div class="flex justify-between items-start mb-2">
-                <h5 class="text-sm font-bold font-headline">Compressor Node B</h5>
-                <span
-                  class="text-[9px] font-label uppercase bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Warning</span>
-              </div>
-              <p class="text-[10px] text-slate-500 mb-3">Vibration Anomaly detected</p>
-              <div class="w-full h-1 bg-surface-container rounded-full">
-                <div class="w-[62%] h-full bg-amber-500"></div>
-              </div>
-            </div>
-            <!-- Asset Card 3 -->
-            <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-error">
-              <div class="flex justify-between items-start mb-2">
-                <h5 class="text-sm font-bold font-headline">Main Power Plant 01</h5>
-                <span
-                  class="text-[9px] font-label uppercase bg-error-container text-on-error-container px-2 py-0.5 rounded-full">Critical</span>
-              </div>
-              <p class="text-[10px] text-slate-500 mb-3">Pressure threshold exceeded</p>
-              <div class="w-full h-1 bg-surface-container rounded-full">
-                <div class="w-[98%] h-full bg-error"></div>
+              <div class="flex gap-4 items-start">
+                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-red-600 text-sm" data-icon="warning">warning</span>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-on-surface">Unauthorized Access Attempt</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Port Harcourt IP: 197.210.8.44 | 1h ago</p>
+                </div>
               </div>
             </div>
           </div>
-          <button
-            class="w-full mt-6 py-2 border border-slate-200 rounded-DEFAULT text-[10px] font-label uppercase tracking-widest text-slate-500 hover:bg-white hover:text-primary transition-all">
-            Full Inventory Report
-          </button>
-        </div>
-        <!-- Recent Security Logs -->
-        <div class="bg-surface-container-lowest rounded-lg p-6 shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
-          <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-6">Recent Security Logs</h4>
-          <div class="space-y-4">
-            <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
-              <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-primary text-sm" data-icon="lock_open">lock_open</span>
-              </div>
-              <div>
-                <p class="text-xs font-medium text-on-surface">Auth Success: Admin_LN04</p>
-                <p class="text-[10px] text-slate-400 mt-0.5">Terminal 04: Lagos Central | 2m ago</p>
-              </div>
-            </div>
-            <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
-              <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-amber-600 text-sm" data-icon="encrypted">encrypted</span>
-              </div>
-              <div>
-                <p class="text-xs font-medium text-on-surface">Encrypted Data Sync Initialized</p>
-                <p class="text-[10px] text-slate-400 mt-0.5">External Backup Node 01 | 14m ago</p>
-              </div>
-            </div>
-            <div class="flex gap-4 items-start">
-              <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-red-600 text-sm" data-icon="warning">warning</span>
-              </div>
-              <div>
-                <p class="text-xs font-medium text-on-surface">Unauthorized Access Attempt</p>
-                <p class="text-[10px] text-slate-400 mt-0.5">Port Harcourt IP: 197.210.8.44 | 1h ago</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </div>
-    <!-- System Footer (Anchored to shell but part of content flow) -->
-    <footer class="mt-12 flex justify-between items-center py-6 border-t border-slate-100">
-      <div class="flex gap-8">
-        <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
-          <span class="text-primary font-bold">Node Identity:</span> LAG-01-V12
-        </div>
-        <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
-          <span class="text-primary font-bold">Latency:</span> 14ms (Optimal)
-        </div>
+        </aside>
       </div>
-      <div class="flex items-center gap-2">
-        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-        <span class="text-[10px] font-label uppercase tracking-widest text-slate-500">Live Telemetry Active</span>
-      </div>
-    </footer>
+      <!-- System Footer (Anchored to shell but part of content flow) -->
+      <footer class="mt-12 flex justify-between items-center py-6 border-t border-slate-100">
+        <div class="flex gap-8">
+          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
+            <span class="text-primary font-bold">Node Identity:</span> LAG-01-V12
+          </div>
+          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
+            <span class="text-primary font-bold">Latency:</span> 14ms (Optimal)
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="text-[10px] font-label uppercase tracking-widest text-slate-500">Live Telemetry Active</span>
+        </div>
+      </footer>
   </main>
   <!-- Shared Footer Shell Component -->
   <footer

@@ -1,296 +1,357 @@
 <!DOCTYPE html>
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Case Studies | Industrial Precision Engineering</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-error-container": "#93000a",
-                    "tertiary": "#3c495a",
-                    "tertiary-fixed": "#d5e4f9",
-                    "inverse-primary": "#a8c8ff",
-                    "secondary": "#ad3300",
-                    "outline": "#727783",
-                    "surface-dim": "#d8dadc",
-                    "on-tertiary-fixed": "#0e1c2b",
-                    "surface-container-highest": "#e0e3e5",
-                    "primary-fixed": "#d6e3ff",
-                    "on-secondary-fixed": "#3a0b00",
-                    "inverse-on-surface": "#eff1f3",
-                    "on-primary-container": "#cadcff",
-                    "on-tertiary-container": "#cedcf1",
-                    "on-primary-fixed": "#001b3d",
-                    "tertiary-fixed-dim": "#b9c8dc",
-                    "outline-variant": "#c2c6d4",
-                    "surface-container-low": "#f2f4f6",
-                    "background": "#f8f9fb",
-                    "tertiary-container": "#536173",
-                    "on-error": "#ffffff",
-                    "primary-fixed-dim": "#a8c8ff",
-                    "surface-container-high": "#e6e8ea",
-                    "surface-bright": "#f8f9fb",
-                    "primary-container": "#005fb8",
-                    "on-tertiary-fixed-variant": "#3a4859",
-                    "secondary-container": "#ff642d",
-                    "on-secondary-container": "#5a1600",
-                    "surface": "#f8f9fb",
-                    "surface-variant": "#e0e3e5",
-                    "secondary-fixed": "#ffdbd0",
-                    "on-primary-fixed-variant": "#00468b",
-                    "surface-container": "#eceef0",
-                    "on-surface": "#191c1e",
-                    "on-secondary": "#ffffff",
-                    "on-primary": "#ffffff",
-                    "primary": "#00488d",
-                    "inverse-surface": "#2d3133",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary-fixed-variant": "#842500",
-                    "secondary-fixed-dim": "#ffb59e",
-                    "on-tertiary": "#ffffff",
-                    "on-surface-variant": "#424752",
-                    "surface-tint": "#005db5",
-                    "on-background": "#191c1e",
-                    "error": "#ba1a1a",
-                    "error-container": "#ffdad6"
-            },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Space Grotesk"],
-                    "body": ["Manrope"],
-                    "label": ["Space Grotesk"]
-            }
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Case Studies | Industrial Precision Engineering</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#93000a",
+            "tertiary": "#3c495a",
+            "tertiary-fixed": "#d5e4f9",
+            "inverse-primary": "#a8c8ff",
+            "secondary": "#ad3300",
+            "outline": "#727783",
+            "surface-dim": "#d8dadc",
+            "on-tertiary-fixed": "#0e1c2b",
+            "surface-container-highest": "#e0e3e5",
+            "primary-fixed": "#d6e3ff",
+            "on-secondary-fixed": "#3a0b00",
+            "inverse-on-surface": "#eff1f3",
+            "on-primary-container": "#cadcff",
+            "on-tertiary-container": "#cedcf1",
+            "on-primary-fixed": "#001b3d",
+            "tertiary-fixed-dim": "#b9c8dc",
+            "outline-variant": "#c2c6d4",
+            "surface-container-low": "#f2f4f6",
+            "background": "#f8f9fb",
+            "tertiary-container": "#536173",
+            "on-error": "#ffffff",
+            "primary-fixed-dim": "#a8c8ff",
+            "surface-container-high": "#e6e8ea",
+            "surface-bright": "#f8f9fb",
+            "primary-container": "#005fb8",
+            "on-tertiary-fixed-variant": "#3a4859",
+            "secondary-container": "#ff642d",
+            "on-secondary-container": "#5a1600",
+            "surface": "#f8f9fb",
+            "surface-variant": "#e0e3e5",
+            "secondary-fixed": "#ffdbd0",
+            "on-primary-fixed-variant": "#00468b",
+            "surface-container": "#eceef0",
+            "on-surface": "#191c1e",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "primary": "#00488d",
+            "inverse-surface": "#2d3133",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-fixed-variant": "#842500",
+            "secondary-fixed-dim": "#ffb59e",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#424752",
+            "surface-tint": "#005db5",
+            "on-background": "#191c1e",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6"
           },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "fontSize": {
+            "xs": ["0.65rem", { "lineHeight": "1rem" }],
+            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+            "lg": ["1rem", { "lineHeight": "1.5rem" }],
+            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+            "6xl": ["3rem", { "lineHeight": "1" }],
+            "7xl": ["3.75rem", { "lineHeight": "1" }]
+          }
         },
-      }
-    </script>
-<style>
-      .technical-grid {
-        background-image: radial-gradient(#c2c6d4 1px, transparent 1px);
-        background-size: 24px 24px;
-        opacity: 0.08;
-      }
-      .glass-nav {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(24px);
-      }
-      .industrial-shadow {
-        box-shadow: 0 40px 60px -15px rgba(25, 28, 30, 0.05);
-      }
-      .anodized-gradient {
-        background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
-      }
-      .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      }
-    </style>
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .technical-grid {
+      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.05;
+    }
+
+    .anodized-gradient {
+      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+    }
+
+    .site-gradient-bg {
+      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+  </style>
 </head>
-<body class="bg-background font-body text-on-surface">
-<!-- Technical Grid Overlay -->
-<div class="fixed inset-0 technical-grid pointer-events-none z-0"></div>
-<!-- Navigation Header -->
-<!-- Top Navigation Shell --><script src="./components/header.js" data-root="./"></script>
-<main class="relative z-10 pt-32 pb-24">
-<!-- Hero Section -->
-<section class="max-w-screen-2xl mx-auto px-8 mb-24">
-<div class="flex flex-col items-start max-w-4xl">
-<span class="font-label uppercase tracking-[0.2em] text-secondary text-sm mb-4 flex items-center">
-<span class="w-8 h-[1px] bg-secondary mr-3"></span> Project Portfolio
-                </span>
-<h1 class="font-headline text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight">
-                    ENGINEERED FOR <br/><span class="text-primary">ABSOLUTE PRECISION</span>
-</h1>
-<p class="text-on-surface-variant text-xl md:text-2xl font-light leading-relaxed max-w-2xl">
-                    Delivering technical mastery through localized industrial expertise. From complex turbine assemblies to offshore infrastructure.
+
+<body
+  class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+  <!-- Top Navigation Shell -->
+  <script src="./components/header.js" data-root="./"></script>
+  <script src="./components/effects.js"></script>
+  <main class="relative pt-20">
+    <!-- Technical Grid Overlay Background -->
+    <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+    <!-- Hero Section -->
+    <section class="relative py-16 px-6 lg:px-12 z-10 max-w-7xl mx-auto">
+      <div class="flex flex-col items-start max-w-4xl">
+        <span class="font-label uppercase tracking-[0.2em] text-primary text-[10px] mb-4 flex items-center">
+          <span class="w-8 h-[1px] bg-primary mr-3"></span> Project Portfolio
+        </span>
+        <h1 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-8 leading-tight">
+          ENGINEERED FOR <br /><span class="text-primary">MAXIMUM UPTIME</span>
+        </h1>
+        <p class="text-on-surface-variant text-base font-light leading-relaxed max-w-2xl">
+          Delivering technical mastery through specialized heavy machinery restoration. From excavator hydraulic
+          overhauls to dozer engine rebuilds.
+        </p>
+      </div>
+    </section>
+    <!-- Technical Telemetry Marker -->
+    <div class="absolute right-12 top-48 hidden xl:block">
+      <div class="flex flex-col gap-4 border-l border-outline-variant/30 pl-6">
+        <div class="text-[10px] font-label text-outline uppercase tracking-widest">System_Status</div>
+        <div class="text-primary font-headline text-2xl font-bold italic">OPTIMIZED</div>
+        <div class="w-32 h-1 bg-surface-container-highest">
+          <div class="w-3/4 h-full anodized-gradient"></div>
+        </div>
+        <div class="text-[10px] font-label text-outline uppercase tracking-widest">Location_Sync: 04.8156° N, 7.0498° E
+        </div>
+      </div>
+    </div>
+    </section>
+    <!-- Case Studies Container -->
+    <section class="max-w-screen-2xl mx-auto px-8 space-y-24">
+      <!-- Case Study 01 -->
+      <div
+        class="bg-surface-container-lowest industrial-shadow rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative group">
+        <div class="lg:col-span-7 p-10 md:p-16 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-4 mb-8">
+              <span
+                class="font-label text-xs font-bold uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full text-primary">Case_Study_01</span>
+              <span class="text-outline-variant">/</span>
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Rivers State,
+                Nigeria</span>
+            </div>
+            <h2 class="font-headline text-4xl font-bold mb-4">Gas Turbine Commissioning – Industrial Facility</h2>
+            <div class="flex items-center gap-3 mb-10">
+              <div class="w-8 h-8 rounded-sm bg-surface-container-low flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm text-secondary">verified</span>
+              </div>
+              <span class="font-label text-sm uppercase tracking-wider font-semibold">Client: Shell Petroleum
+                Development Company</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Overview</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Complete overhaul and commissioning of a 40MW
+                  gas turbine unit within a high-pressure industrial environment, requiring sub-millimeter alignment
+                  accuracy.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Challenge</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Excessive vibration signatures in the legacy
+                  assembly threatened structural integrity and operational safety during peak load cycles.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Our Solution</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Implementation of laser-guided alignment
+                  systems and custom-engineered damping mounts designed specifically for the humid delta environment.
                 </p>
-</div>
-<!-- Technical Telemetry Marker -->
-<div class="absolute right-12 top-48 hidden xl:block">
-<div class="flex flex-col gap-4 border-l border-outline-variant/30 pl-6">
-<div class="text-[10px] font-label text-outline uppercase tracking-widest">System_Status</div>
-<div class="text-primary font-headline text-2xl font-bold italic">OPTIMIZED</div>
-<div class="w-32 h-1 bg-surface-container-highest">
-<div class="w-3/4 h-full anodized-gradient"></div>
-</div>
-<div class="text-[10px] font-label text-outline uppercase tracking-widest">Location_Sync: 04.8156° N, 7.0498° E</div>
-</div>
-</div>
-</section>
-<!-- Case Studies Container -->
-<section class="max-w-screen-2xl mx-auto px-8 space-y-24">
-<!-- Case Study 01 -->
-<div class="bg-surface-container-lowest industrial-shadow rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative group">
-<div class="lg:col-span-7 p-10 md:p-16 flex flex-col justify-between">
-<div>
-<div class="flex items-center gap-4 mb-8">
-<span class="font-label text-xs font-bold uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full text-primary">Case_Study_01</span>
-<span class="text-outline-variant">/</span>
-<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Rivers State, Nigeria</span>
-</div>
-<h2 class="font-headline text-4xl font-bold mb-4">Gas Turbine Commissioning – Industrial Facility</h2>
-<div class="flex items-center gap-3 mb-10">
-<div class="w-8 h-8 rounded-sm bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-secondary">verified</span>
-</div>
-<span class="font-label text-sm uppercase tracking-wider font-semibold">Client: Shell Petroleum Development Company</span>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Overview</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Complete overhaul and commissioning of a 40MW gas turbine unit within a high-pressure industrial environment, requiring sub-millimeter alignment accuracy.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Challenge</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Excessive vibration signatures in the legacy assembly threatened structural integrity and operational safety during peak load cycles.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Our Solution</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Implementation of laser-guided alignment systems and custom-engineered damping mounts designed specifically for the humid delta environment.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Results Achieved</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed font-bold">98.5% Vibration reduction achieved. 15% increase in operational efficiency post-commissioning.</p>
-</div>
-</div>
-</div>
-<div class="pt-8 border-t border-outline-variant/10">
-<button class="flex items-center gap-2 text-primary font-label font-bold uppercase text-xs group">
-                            Full Documentation 
-                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-</div>
-<div class="lg:col-span-5 h-80 lg:h-auto overflow-hidden relative">
-<img alt="Industrial facility turbine" class="w-full h-full object-cover" data-alt="high-detail shot of industrial gas turbine internals with dramatic blue lighting and technical metallic textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx69NX_arX5MJOLBLWbBwQ5FbJewbfAGAXD-DLBdGOPrXmlskyHRuJTNRDv327LlxYD2yV0WHDXZ6ScHLBeyu879o0R5KcpBuPuB9zc9Oxau7_2tyKgwE6jnmrLz2giwyVYPs-EAYx_IXJ6TfvrD9gaMhfMaXkcj7nfzn8WFXK5_bTVmNKETkia5NGdxJ0Ii2YnaCNd8SQQQ1qkRDDHMQZLvQXh-ZJejRkO6uGZQcEH2EBqBkxToLPkakkXc1qEW_90AXa9-kZZ-eS"/>
-<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
-</div>
-</div>
-<!-- Case Study 02 (Asymmetric Shift) -->
-<div class="lg:ml-24 bg-surface-container-lowest industrial-shadow rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative">
-<div class="lg:col-span-5 h-80 lg:h-auto overflow-hidden relative">
-<img alt="Offshore platform engineering" class="w-full h-full object-cover" data-alt="Modern offshore oil platform engineering hub with workers in safety gear and clear sunset lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76"/>
-</div>
-<div class="lg:col-span-7 p-10 md:p-16 flex flex-col justify-between">
-<div>
-<div class="flex items-center gap-4 mb-8">
-<span class="font-label text-xs font-bold uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full text-primary">Case_Study_02</span>
-<span class="text-outline-variant">/</span>
-<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Bonny Island, Nigeria</span>
-</div>
-<h2 class="font-headline text-4xl font-bold mb-4">Deepwater Pipeline Structural Integrity Analysis</h2>
-<div class="flex items-center gap-3 mb-10">
-<div class="w-8 h-8 rounded-sm bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-secondary">verified</span>
-</div>
-<span class="font-label text-sm uppercase tracking-wider font-semibold">Client: NLNG (Nigeria LNG Limited)</span>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Overview</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Comprehensive non-destructive testing (NDT) of underwater pipeline infrastructure across a 12km stretch.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Challenge</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Extreme tidal pressures and bio-fouling made conventional sonar imaging ineffective for stress-point identification.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Our Solution</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Deployment of custom ROVs equipped with specialized ultrasonic sensors and high-resolution telemetry arrays.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Results Achieved</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed font-bold">Identified 4 critical weak points before failure. Extended asset life expectancy by an estimated 10 years.</p>
-</div>
-</div>
-</div>
-<div class="pt-8 border-t border-outline-variant/10">
-<button class="flex items-center gap-2 text-primary font-label font-bold uppercase text-xs group">
-                            Full Documentation 
-                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Case Study 03 -->
-<div class="bg-surface-container-lowest industrial-shadow rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative group">
-<div class="lg:col-span-7 p-10 md:p-16 flex flex-col justify-between">
-<div>
-<div class="flex items-center gap-4 mb-8">
-<span class="font-label text-xs font-bold uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full text-primary">Case_Study_03</span>
-<span class="text-outline-variant">/</span>
-<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Lagos, Nigeria</span>
-</div>
-<h2 class="font-headline text-4xl font-bold mb-4">Precision Fabrication for Refinery Modernization</h2>
-<div class="flex items-center gap-3 mb-10">
-<div class="w-8 h-8 rounded-sm bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-secondary">verified</span>
-</div>
-<span class="font-label text-sm uppercase tracking-wider font-semibold">Client: Chevron Nigeria</span>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Overview</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Modular fabrication of stainless steel catalytic conversion vessels designed for extreme corrosive environments.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Challenge</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Requirement for Zero-Tolerance welding on exotic alloy junctions to prevent sulfide stress cracking.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Our Solution</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed">Climate-controlled clean-room welding facility utilizing TIG automated systems with argon shielding.</p>
-</div>
-<div class="space-y-4">
-<h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Results Achieved</h4>
-<p class="text-on-surface-variant text-sm leading-relaxed font-bold">100% Weld pass rate under X-ray inspection. Zero reported leaks during initial 24-month operational period.</p>
-</div>
-</div>
-</div>
-<div class="pt-8 border-t border-outline-variant/10">
-<button class="flex items-center gap-2 text-primary font-label font-bold uppercase text-xs group">
-                            Full Documentation 
-                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-</div>
-<div class="lg:col-span-5 h-80 lg:h-auto overflow-hidden relative">
-<img alt="Precision Welding" class="w-full h-full object-cover" data-alt="Macro photo of precision welding spark trails and clean metallic seams in an industrial workshop environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6DuYVqq_6tGqyQRUid0WHBiR0t9T-z8mVU05FvOwG6bmybfvcVJHKg2746NvVGjiKqV1c_fTqbx0bVsQ1qatdrZIgyrC0tGnDk19g9IWwcQ7zZQAtabkpfCway6acAHUdy4-GrHLovL2XRzPITLDdKEqvKG_pHeh4CeyQu8bPt9cMrByhn0IpeDWMXCCQu1dcsq8t9RonjuVifvM-e2Pba7bYdwYEl8bx-HGhCqrnRDAaSQ7qJPAhg0EOeGLIPgVl96rCIC-0i-hY"/>
-</div>
-</div>
-</section>
-<!-- CTA Section -->
-<section class="max-w-screen-2xl mx-auto px-8 mt-32">
-<div class="bg-surface-container-low rounded-lg p-16 md:p-24 text-center relative overflow-hidden">
-<!-- Decorative Circle -->
-<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
-<div class="relative z-10 max-w-2xl mx-auto">
-<h2 class="font-headline text-4xl md:text-5xl font-bold mb-6">Ready to showcase your next engineering milestone?</h2>
-<p class="text-on-surface-variant text-lg mb-10">Partner with Wilsovlewel for precision-engineered solutions that redefine industrial standards.</p>
-<div class="flex flex-col sm:flex-row gap-4 justify-center">
-<button class="anodized-gradient text-white px-10 py-4 rounded-lg font-headline font-semibold text-lg hover:opacity-95 transition-all industrial-shadow">
-                            Contact Engineering
-                        </button>
-<button class="bg-surface-container-highest text-on-surface px-10 py-4 rounded-lg font-headline font-semibold text-lg hover:bg-surface-container-high transition-all">
-                            View Capability Statement
-                        </button>
-</div>
-</div>
-</div>
-</section>
-</main>
-<!-- Footer -->
-<!-- Footer Shell --><script src="./components/footer.js" data-root="./"></script>
-</body></html>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Results Achieved</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed font-bold">98.5% Vibration reduction achieved.
+                  15% increase in operational efficiency post-commissioning.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pt-8 border-t border-outline-variant/10">
+            <button class="flex items-center gap-2 text-primary font-label font-bold uppercase text-xs group">
+              Full Documentation
+              <span
+                class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-5 h-80 lg:h-auto overflow-hidden relative">
+          <img alt="Industrial facility turbine" class="w-full h-full object-cover"
+            data-alt="high-detail shot of industrial gas turbine internals with dramatic blue lighting and technical metallic textures"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx69NX_arX5MJOLBLWbBwQ5FbJewbfAGAXD-DLBdGOPrXmlskyHRuJTNRDv327LlxYD2yV0WHDXZ6ScHLBeyu879o0R5KcpBuPuB9zc9Oxau7_2tyKgwE6jnmrLz2giwyVYPs-EAYx_IXJ6TfvrD9gaMhfMaXkcj7nfzn8WFXK5_bTVmNKETkia5NGdxJ0Ii2YnaCNd8SQQQ1qkRDDHMQZLvQXh-ZJejRkO6uGZQcEH2EBqBkxToLPkakkXc1qEW_90AXa9-kZZ-eS" />
+          <div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+        </div>
+      </div>
+      <!-- Case Study 02 (Asymmetric Shift) -->
+      <div
+        class="lg:ml-24 bg-surface-container-lowest industrial-shadow rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative">
+        <div class="lg:col-span-5 h-80 lg:h-auto overflow-hidden relative">
+          <img alt="Offshore platform engineering" class="w-full h-full object-cover"
+            data-alt="Modern offshore oil platform engineering hub with workers in safety gear and clear sunset lighting"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76" />
+        </div>
+        <div class="lg:col-span-7 p-10 md:p-16 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-4 mb-8">
+              <span
+                class="font-label text-xs font-bold uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full text-primary">Case_Study_02</span>
+              <span class="text-outline-variant">/</span>
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Bonny Island,
+                Nigeria</span>
+            </div>
+            <h2 class="font-headline text-4xl font-bold mb-4">Deepwater Pipeline Structural Integrity Analysis</h2>
+            <div class="flex items-center gap-3 mb-10">
+              <div class="w-8 h-8 rounded-sm bg-surface-container-low flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm text-secondary">verified</span>
+              </div>
+              <span class="font-label text-sm uppercase tracking-wider font-semibold">Client: NLNG (Nigeria LNG
+                Limited)</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Overview</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Comprehensive non-destructive testing (NDT)
+                  of underwater pipeline infrastructure across a 12km stretch.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Challenge</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Extreme tidal pressures and bio-fouling made
+                  conventional sonar imaging ineffective for stress-point identification.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Our Solution</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Deployment of custom ROVs equipped with
+                  specialized ultrasonic sensors and high-resolution telemetry arrays.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Results Achieved</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed font-bold">Identified 4 critical weak points
+                  before failure. Extended asset life expectancy by an estimated 10 years.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pt-8 border-t border-outline-variant/10">
+            <button class="flex items-center gap-2 text-primary font-label font-bold uppercase text-xs group">
+              Full Documentation
+              <span
+                class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Case Study 03 -->
+      <div
+        class="bg-surface-container-lowest industrial-shadow rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative group">
+        <div class="lg:col-span-7 p-10 md:p-16 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-4 mb-8">
+              <span
+                class="font-label text-xs font-bold uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full text-primary">Case_Study_03</span>
+              <span class="text-outline-variant">/</span>
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Lagos, Nigeria</span>
+            </div>
+            <h2 class="font-headline text-4xl font-bold mb-4">Precision Fabrication for Refinery Modernization</h2>
+            <div class="flex items-center gap-3 mb-10">
+              <div class="w-8 h-8 rounded-sm bg-surface-container-low flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm text-secondary">verified</span>
+              </div>
+              <span class="font-label text-sm uppercase tracking-wider font-semibold">Client: Chevron Nigeria</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Overview</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Modular fabrication of stainless steel
+                  catalytic conversion vessels designed for extreme corrosive environments.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Challenge</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Requirement for Zero-Tolerance welding on
+                  exotic alloy junctions to prevent sulfide stress cracking.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Our Solution</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Climate-controlled clean-room welding
+                  facility utilizing TIG automated systems with argon shielding.</p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-label text-xs uppercase text-primary font-bold tracking-widest">Results Achieved</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed font-bold">100% Weld pass rate under X-ray
+                  inspection. Zero reported leaks during initial 24-month operational period.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pt-8 border-t border-outline-variant/10">
+            <button class="flex items-center gap-2 text-primary font-label font-bold uppercase text-xs group">
+              Full Documentation
+              <span
+                class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-5 h-80 lg:h-auto overflow-hidden relative">
+          <img alt="Precision Welding" class="w-full h-full object-cover"
+            data-alt="Macro photo of precision welding spark trails and clean metallic seams in an industrial workshop environment"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6DuYVqq_6tGqyQRUid0WHBiR0t9T-z8mVU05FvOwG6bmybfvcVJHKg2746NvVGjiKqV1c_fTqbx0bVsQ1qatdrZIgyrC0tGnDk19g9IWwcQ7zZQAtabkpfCway6acAHUdy4-GrHLovL2XRzPITLDdKEqvKG_pHeh4CeyQu8bPt9cMrByhn0IpeDWMXCCQu1dcsq8t9RonjuVifvM-e2Pba7bYdwYEl8bx-HGhCqrnRDAaSQ7qJPAhg0EOeGLIPgVl96rCIC-0i-hY" />
+        </div>
+      </div>
+    </section>
+    <!-- CTA Section -->
+    <section class="max-w-screen-2xl mx-auto px-8 mt-32">
+      <div class="bg-surface-container-low rounded-lg p-16 md:p-24 text-center relative overflow-hidden">
+        <!-- Decorative Circle -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10 max-w-2xl mx-auto">
+          <h2 class="font-headline text-4xl md:text-5xl font-bold mb-6">Ready to showcase your next engineering
+            milestone?</h2>
+          <p class="text-on-surface-variant text-lg mb-10">Partner with Wilsovlewel for precision-engineered solutions
+            that redefine industrial standards.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              class="anodized-gradient text-white px-10 py-4 rounded-lg font-headline font-semibold text-lg hover:opacity-95 transition-all industrial-shadow">
+              Contact Engineering
+            </button>
+            <button
+              class="bg-surface-container-highest text-on-surface px-10 py-4 rounded-lg font-headline font-semibold text-lg hover:bg-surface-container-high transition-all">
+              View Capability Statement
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Footer -->
+  <!-- Footer Shell -->
+  <script src="./components/footer.js" data-root="./"></script>
+</body>
+
+</html>

@@ -1,351 +1,385 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>WILSOVLEWEL | Terminal v1.0</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>WILSOVLEWEL | Terminal v1.0</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "surface-variant": "#e1e2e9",
-                        "on-tertiary-container": "#ffb991",
-                        "on-secondary-fixed-variant": "#354764",
-                        "surface-container-high": "#e7e8ef",
-                        "on-primary-fixed-variant": "#004787",
-                        "on-secondary": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "primary": "#003d76",
-                        "on-tertiary-fixed": "#321200",
-                        "on-secondary-fixed": "#061c36",
-                        "on-surface": "#191c20",
-                        "surface-dim": "#d9dae0",
-                        "inverse-surface": "#2e3036",
-                        "on-tertiary-fixed-variant": "#753400",
-                        "on-primary": "#ffffff",
-                        "surface-container-low": "#f3f3fa",
-                        "secondary-container": "#c8dbfe",
-                        "inverse-primary": "#a6c8ff",
-                        "on-primary-container": "#aacaff",
-                        "outline-variant": "#c2c6d3",
-                        "error": "#ba1a1a",
-                        "surface-container": "#ededf4",
-                        "secondary-fixed-dim": "#b4c7ea",
-                        "surface-container-lowest": "#ffffff",
-                        "secondary": "#4c5f7d",
-                        "surface-tint": "#1d5fa8",
-                        "surface-container-highest": "#e1e2e9",
-                        "tertiary": "#662c00",
-                        "primary-container": "#06549d",
-                        "on-secondary-container": "#4d607e",
-                        "surface": "#f9f9ff",
-                        "on-tertiary": "#ffffff",
-                        "secondary-fixed": "#d5e3ff",
-                        "primary-fixed-dim": "#a6c8ff",
-                        "on-error": "#ffffff",
-                        "surface-bright": "#f9f9ff",
-                        "on-primary-fixed": "#001c3b",
-                        "tertiary-fixed-dim": "#ffb68c",
-                        "on-surface-variant": "#424751",
-                        "inverse-on-surface": "#f0f0f7",
-                        "background": "#f9f9ff",
-                        "on-error-container": "#93000a",
-                        "outline": "#727782",
-                        "tertiary-fixed": "#ffdbc9",
-                        "tertiary-container": "#8a3e00",
-                        "on-background": "#191c20",
-                        "primary-fixed": "#d5e3ff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "label": ["Space Grotesk"]
+                    "fontSize": {
+                        "xs": ["0.65rem", { "lineHeight": "1rem" }],
+                        "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+                        "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+                        "lg": ["1rem", { "lineHeight": "1.5rem" }],
+                        "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+                        "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+                        "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+                        "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+                        "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+                        "6xl": ["3rem", { "lineHeight": "1" }],
+                        "7xl": ["3.75rem", { "lineHeight": "1" }]
                     }
                 },
             },
         }
     </script>
-<style>
-        body { font-family: 'Manrope', sans-serif; }
-        .technical-grid {
-            background-image: radial-gradient(circle, #c2c6d3 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.08;
-        }
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        .technical-grid {
+            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.05;
+        }
+
+        .anodized-gradient {
+            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+        }
+
+        .site-gradient-bg {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
     </style>
 </head>
-<body class="bg-surface text-on-surface">
-<!-- Technical Grid Overlay -->
-<div class="fixed inset-0 technical-grid pointer-events-none"></div>
-<!-- TopNavBar -->
-<!-- TopNavBar --><script src="../components/client_topnav.js"></script>
-<!-- SideNavBar -->
-<!-- SideNavBar --><script src="../components/client_sidenav.js" data-root="../"></script>
-<!-- Main Content Canvas -->
-<main class="ml-64 pt-24 pb-12 px-8 min-h-screen relative">
-<div class="max-w-7xl mx-auto">
-<!-- Header Section -->
-<header class="flex justify-between items-end mb-10">
-<div>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.2em] text-secondary font-bold">Terminal System Overview</span>
-<h1 class="text-4xl font-['Space_Grotesk'] font-bold text-on-surface tracking-tight mt-1">Operations Control</h1>
-</div>
-<div class="flex gap-3">
-<button class="px-6 py-3 bg-surface-container-high text-on-surface rounded-full font-['Space_Grotesk'] font-medium text-sm flex items-center gap-2 hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined text-lg">download</span>
+
+<body
+    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+    <!-- TopNavBar -->
+    <script src="../components/client_topnav.js" data-root="../"></script>
+    <!-- SideNavBar -->
+    <script src="../components/client_sidenav.js" data-root="../"></script>
+    <script src="../components/effects.js"></script>
+    <!-- Main Content Canvas -->
+    <main class="ml-64 pt-24 pb-12 relative min-h-screen">
+        <!-- Technical Grid Overlay Background -->
+        <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+        <div class="max-w-7xl mx-auto px-8 relative z-10">
+            <!-- Header Section -->
+            <header class="flex justify-between items-end mb-10">
+                <div>
+                    <span class="font-headline text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Terminal
+                        System Overview</span>
+                    <h1 class="text-3xl font-headline font-bold text-on-surface tracking-tight mt-1">Operations Control
+                    </h1>
+                </div>
+                <div class="flex gap-3">
+                    <button
+                        class="px-6 py-3 bg-surface-container-high text-on-surface rounded-full font-['Space_Grotesk'] font-medium text-sm flex items-center gap-2 hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-lg">download</span>
                         Export Manifest
                     </button>
-<button class="px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-['Space_Grotesk'] font-medium text-sm flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
-<span class="material-symbols-outlined text-lg">add</span>
+                    <button
+                        class="px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-['Space_Grotesk'] font-medium text-sm flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-lg">add</span>
                         New Task
                     </button>
-</div>
-</header>
-<!-- Bento Grid Layout -->
-<div class="grid grid-cols-12 gap-6 items-start">
-<!-- Fleet Health Status (Major Card) -->
-<section class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)] relative overflow-hidden">
-<div class="absolute top-0 right-0 p-8 opacity-10">
-<span class="material-symbols-outlined text-8xl">settings_slow_motion</span>
-</div>
-<div class="flex justify-between items-start mb-8 relative z-10">
-<div>
-<h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight">Fleet Health Status</h3>
-<p class="text-sm text-secondary">Active maintenance monitoring</p>
-</div>
-<div class="flex items-center gap-4">
-<div class="text-right">
-<span class="block text-2xl font-bold text-primary font-['Space_Grotesk']">94.2%</span>
-<span class="text-[10px] uppercase tracking-widest text-slate-400">Availability</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<!-- Dozer Status -->
-<div class="bg-surface-container-low p-5 rounded-xl border border-transparent hover:border-outline-variant/20 transition-all">
-<div class="flex justify-between items-center mb-4">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">agriculture</span>
-</div>
-<div>
-<h4 class="font-bold text-sm">Caterpillar D11</h4>
-<p class="text-xs text-slate-500">Unit: #DZ-402</p>
-</div>
-</div>
-<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full font-['Space_Grotesk']">IN SERVICE</span>
-</div>
-<div class="flex gap-1 mb-2">
-<div class="h-1.5 flex-1 bg-primary rounded-full"></div>
-<div class="h-1.5 flex-1 bg-primary rounded-full"></div>
-<div class="h-1.5 flex-1 bg-primary rounded-full"></div>
-<div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
-</div>
-<div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-<span>Engine Hours: 14,200</span>
-<span>Next: 15,000</span>
-</div>
-</div>
-<!-- Excavator Status -->
-<div class="bg-surface-container-low p-5 rounded-xl border border-transparent hover:border-outline-variant/20 transition-all">
-<div class="flex justify-between items-center mb-4">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-tertiary/10 rounded-lg flex items-center justify-center text-tertiary">
-<span class="material-symbols-outlined">construction</span>
-</div>
-<div>
-<h4 class="font-bold text-sm">Komatsu PC2000</h4>
-<p class="text-xs text-slate-500">Unit: #EX-890</p>
-</div>
-</div>
-<span class="px-2 py-1 bg-tertiary/10 text-tertiary text-[10px] font-bold rounded-full font-['Space_Grotesk']">HYDRAULIC WORK</span>
-</div>
-<div class="flex gap-1 mb-2">
-<div class="h-1.5 flex-1 bg-tertiary rounded-full"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-full"></div>
-<div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
-<div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
-</div>
-<div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-<span>Pressure: 320 Bar</span>
-<span>Target: 350 Bar</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Procurement Alert (Vertical Card) -->
-<section class="col-span-12 lg:col-span-4 bg-surface-container-low p-8 rounded-[1.5rem] relative">
-<h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight mb-6">Procurement Alert</h3>
-<div class="space-y-4">
-<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm border-l-4 border-error">
-<div class="flex justify-between items-start mb-2">
-<span class="font-bold text-sm">Turbocharger OEM-V8</span>
-<span class="material-symbols-outlined text-error text-lg">priority_high</span>
-</div>
-<p class="text-xs text-slate-500 mb-3">Custom clearance pending at Port Hub 4.</p>
-<div class="flex justify-between items-center">
-<span class="text-[10px] font-bold bg-error-container text-on-error-container px-2 py-1 rounded">CRITICAL</span>
-<span class="text-[10px] font-['Space_Grotesk'] text-slate-400 uppercase tracking-widest">ETA: 2 Days</span>
-</div>
-</div>
-<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm">
-<div class="flex justify-between items-start mb-2">
-<span class="font-bold text-sm">Bearing Kit-S3</span>
-<span class="material-symbols-outlined text-primary text-lg">local_shipping</span>
-</div>
-<p class="text-xs text-slate-500 mb-3">In transit from central warehouse.</p>
-<div class="flex justify-between items-center">
-<span class="text-[10px] font-bold bg-secondary-container text-on-secondary-container px-2 py-1 rounded">IN TRANSIT</span>
-<span class="text-[10px] font-['Space_Grotesk'] text-slate-400 uppercase tracking-widest">ETA: 5 Days</span>
-</div>
-</div>
-</div>
-<button class="w-full mt-6 py-4 text-primary text-xs font-bold uppercase tracking-[0.1em] border border-dashed border-primary/30 rounded-xl hover:bg-primary/5 transition-colors">
+                </div>
+            </header>
+            <!-- Bento Grid Layout -->
+            <div class="grid grid-cols-12 gap-6 items-start">
+                <!-- Fleet Health Status (Major Card) -->
+                <section
+                    class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-8 opacity-10">
+                        <span class="material-symbols-outlined text-8xl">settings_slow_motion</span>
+                    </div>
+                    <div class="flex justify-between items-start mb-8 relative z-10">
+                        <div>
+                            <h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight">Fleet Health Status</h3>
+                            <p class="text-sm text-secondary">Active maintenance monitoring</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <span class="block text-2xl font-bold text-primary font-['Space_Grotesk']">94.2%</span>
+                                <span class="text-[10px] uppercase tracking-widest text-slate-400">Availability</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Dozer Status -->
+                        <div
+                            class="bg-surface-container-low p-5 rounded-xl border border-transparent hover:border-outline-variant/20 transition-all">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                                        <span class="material-symbols-outlined">agriculture</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm">Caterpillar D11</h4>
+                                        <p class="text-xs text-slate-500">Unit: #DZ-402</p>
+                                    </div>
+                                </div>
+                                <span
+                                    class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full font-['Space_Grotesk']">IN
+                                    SERVICE</span>
+                            </div>
+                            <div class="flex gap-1 mb-2">
+                                <div class="h-1.5 flex-1 bg-primary rounded-full"></div>
+                                <div class="h-1.5 flex-1 bg-primary rounded-full"></div>
+                                <div class="h-1.5 flex-1 bg-primary rounded-full"></div>
+                                <div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
+                            </div>
+                            <div
+                                class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                                <span>Engine Hours: 14,200</span>
+                                <span>Next: 15,000</span>
+                            </div>
+                        </div>
+                        <!-- Excavator Status -->
+                        <div
+                            class="bg-surface-container-low p-5 rounded-xl border border-transparent hover:border-outline-variant/20 transition-all">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 bg-tertiary/10 rounded-lg flex items-center justify-center text-tertiary">
+                                        <span class="material-symbols-outlined">construction</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm">Komatsu PC2000</h4>
+                                        <p class="text-xs text-slate-500">Unit: #EX-890</p>
+                                    </div>
+                                </div>
+                                <span
+                                    class="px-2 py-1 bg-tertiary/10 text-tertiary text-[10px] font-bold rounded-full font-['Space_Grotesk']">HYDRAULIC
+                                    WORK</span>
+                            </div>
+                            <div class="flex gap-1 mb-2">
+                                <div class="h-1.5 flex-1 bg-tertiary rounded-full"></div>
+                                <div class="h-1.5 flex-1 bg-tertiary rounded-full"></div>
+                                <div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
+                                <div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
+                            </div>
+                            <div
+                                class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                                <span>Pressure: 320 Bar</span>
+                                <span>Target: 350 Bar</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Procurement Alert (Vertical Card) -->
+                <section class="col-span-12 lg:col-span-4 bg-surface-container-low p-8 rounded-[1.5rem] relative">
+                    <h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight mb-6">Procurement Alert</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm border-l-4 border-error">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold text-sm">Turbocharger OEM-V8</span>
+                                <span class="material-symbols-outlined text-error text-lg">priority_high</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3">Custom clearance pending at Port Hub 4.</p>
+                            <div class="flex justify-between items-center">
+                                <span
+                                    class="text-[10px] font-bold bg-error-container text-on-error-container px-2 py-1 rounded">CRITICAL</span>
+                                <span
+                                    class="text-[10px] font-['Space_Grotesk'] text-slate-400 uppercase tracking-widest">ETA:
+                                    2 Days</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold text-sm">Bearing Kit-S3</span>
+                                <span class="material-symbols-outlined text-primary text-lg">local_shipping</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3">In transit from central warehouse.</p>
+                            <div class="flex justify-between items-center">
+                                <span
+                                    class="text-[10px] font-bold bg-secondary-container text-on-secondary-container px-2 py-1 rounded">IN
+                                    TRANSIT</span>
+                                <span
+                                    class="text-[10px] font-['Space_Grotesk'] text-slate-400 uppercase tracking-widest">ETA:
+                                    5 Days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full mt-6 py-4 text-primary text-xs font-bold uppercase tracking-[0.1em] border border-dashed border-primary/30 rounded-xl hover:bg-primary/5 transition-colors">
                         View Tracked Shipments
                     </button>
-</section>
-<!-- Repair Pipeline (Horizontal Detail) -->
-<section class="col-span-12 lg:col-span-7 bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)]">
-<div class="flex justify-between items-center mb-8">
-<div>
-<h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight">Repair Pipeline</h3>
-<p class="text-sm text-secondary">Ongoing overhauls and technical cycles</p>
-</div>
-</div>
-<div class="space-y-6">
-<!-- Pipeline Item 1 -->
-<div class="group cursor-pointer">
-<div class="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-<span>Main Winch Overhaul - Unit #W21</span>
-<span class="text-primary">65% COMPLETED</span>
-</div>
-<div class="h-4 w-full bg-surface-container-low rounded-sm overflow-hidden flex gap-1">
-<div class="h-full w-1/10 bg-primary"></div>
-<div class="h-full w-1/10 bg-primary"></div>
-<div class="h-full w-1/10 bg-primary"></div>
-<div class="h-full w-1/10 bg-primary"></div>
-<div class="h-full w-1/10 bg-primary"></div>
-<div class="h-full w-1/10 bg-primary"></div>
-<div class="h-full w-1/10 bg-slate-200"></div>
-<div class="h-full w-1/10 bg-slate-200"></div>
-<div class="h-full w-1/10 bg-slate-200"></div>
-<div class="h-full w-1/10 bg-slate-200"></div>
-</div>
-<div class="mt-2 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
-<span class="text-[10px] text-slate-400 font-['Space_Grotesk']">ASSEMBLY PHASE: STEP 12/18</span>
-<span class="text-[10px] text-primary font-bold">RESOURCES ALLOCATED</span>
-</div>
-</div>
-<!-- Pipeline Item 2 -->
-<div class="group cursor-pointer">
-<div class="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-<span>Engine Rebuild - CAT C18</span>
-<span class="text-secondary">85% COMPLETED</span>
-</div>
-<div class="h-4 w-full bg-surface-container-low rounded-sm overflow-hidden flex gap-1">
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-secondary"></div>
-<div class="h-full w-1/10 bg-slate-200"></div>
-<div class="h-full w-1/10 bg-slate-200"></div>
-</div>
-<div class="mt-2 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
-<span class="text-[10px] text-slate-400 font-['Space_Grotesk']">FINAL TESTING: PHASE 4/5</span>
-<span class="text-[10px] text-secondary font-bold">AWAITING QA SIGN-OFF</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Maintenance Calendar (Asymmetric Inset) -->
-<section class="col-span-12 lg:col-span-5 bg-surface-container p-8 rounded-[1.5rem] relative translate-y-4">
-<div class="flex justify-between items-center mb-6">
-<h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight">Service Calendar</h3>
-<span class="text-xs font-bold text-primary bg-white px-3 py-1 rounded-full">OCTOBER 2024</span>
-</div>
-<div class="grid grid-cols-7 gap-1 mb-6">
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">M</div>
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">T</div>
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">W</div>
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">T</div>
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">F</div>
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">S</div>
-<div class="text-[9px] font-bold text-center text-slate-400 pb-2">S</div>
-<div class="aspect-square flex items-center justify-center text-[10px] text-slate-300">28</div>
-<div class="aspect-square flex items-center justify-center text-[10px] text-slate-300">29</div>
-<div class="aspect-square flex items-center justify-center text-[10px] text-slate-300">30</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">1</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">2</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">3</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">4</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">5</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">6</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-primary text-white rounded-lg font-bold shadow-md">7</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">8</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-tertiary text-white rounded-lg font-bold shadow-sm">9</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">10</div>
-<div class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">11</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-4 p-3 bg-white rounded-xl">
-<div class="w-1.5 h-8 bg-primary rounded-full"></div>
-<div>
-<span class="block text-[10px] font-['Space_Grotesk'] text-slate-400">OCT 07 • 08:00 AM</span>
-<span class="font-bold text-xs uppercase">Annual Load Testing</span>
-</div>
-</div>
-<div class="flex items-center gap-4 p-3 bg-white rounded-xl">
-<div class="w-1.5 h-8 bg-tertiary rounded-full"></div>
-<div>
-<span class="block text-[10px] font-['Space_Grotesk'] text-slate-400">OCT 09 • 02:00 PM</span>
-<span class="font-bold text-xs uppercase">Hydraulic Pump Calibration</span>
-</div>
-</div>
-</div>
-</section>
-</div>
-</div>
-</main>
-<!-- Floating Technical Info (Asymmetric Detail) -->
-<div class="fixed bottom-8 right-8 z-50">
-<div class="bg-slate-900/90 backdrop-blur-md text-white p-6 rounded-2xl shadow-2xl flex items-center gap-6 border border-white/10">
-<div class="flex flex-col">
-<span class="text-[9px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1">System Load</span>
-<div class="flex items-baseline gap-1">
-<span class="text-xl font-['Space_Grotesk'] font-bold">2.4</span>
-<span class="text-xs text-slate-400">GWh</span>
-</div>
-</div>
-<div class="h-10 w-[1px] bg-white/20"></div>
-<div class="flex flex-col">
-<span class="text-[9px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1">Active Staff</span>
-<div class="flex items-baseline gap-1">
-<span class="text-xl font-['Space_Grotesk'] font-bold">34</span>
-<span class="text-xs text-slate-400">Eng</span>
-</div>
-</div>
-<button class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center hover:scale-105 transition-transform active:scale-95">
-<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">bolt</span>
-</button>
-</div>
-</div>
-</body></html>
+                </section>
+                <!-- Repair Pipeline (Horizontal Detail) -->
+                <section
+                    class="col-span-12 lg:col-span-7 bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)]">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight">Repair Pipeline</h3>
+                            <p class="text-sm text-secondary">Ongoing overhauls and technical cycles</p>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <!-- Pipeline Item 1 -->
+                        <div class="group cursor-pointer">
+                            <div
+                                class="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                <span>Main Winch Overhaul - Unit #W21</span>
+                                <span class="text-primary">65% COMPLETED</span>
+                            </div>
+                            <div class="h-4 w-full bg-surface-container-low rounded-sm overflow-hidden flex gap-1">
+                                <div class="h-full w-1/10 bg-primary"></div>
+                                <div class="h-full w-1/10 bg-primary"></div>
+                                <div class="h-full w-1/10 bg-primary"></div>
+                                <div class="h-full w-1/10 bg-primary"></div>
+                                <div class="h-full w-1/10 bg-primary"></div>
+                                <div class="h-full w-1/10 bg-primary"></div>
+                                <div class="h-full w-1/10 bg-slate-200"></div>
+                                <div class="h-full w-1/10 bg-slate-200"></div>
+                                <div class="h-full w-1/10 bg-slate-200"></div>
+                                <div class="h-full w-1/10 bg-slate-200"></div>
+                            </div>
+                            <div
+                                class="mt-2 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="text-[10px] text-slate-400 font-['Space_Grotesk']">ASSEMBLY PHASE: STEP
+                                    12/18</span>
+                                <span class="text-[10px] text-primary font-bold">RESOURCES ALLOCATED</span>
+                            </div>
+                        </div>
+                        <!-- Pipeline Item 2 -->
+                        <div class="group cursor-pointer">
+                            <div
+                                class="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                <span>Engine Rebuild - CAT C18</span>
+                                <span class="text-secondary">85% COMPLETED</span>
+                            </div>
+                            <div class="h-4 w-full bg-surface-container-low rounded-sm overflow-hidden flex gap-1">
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-secondary"></div>
+                                <div class="h-full w-1/10 bg-slate-200"></div>
+                                <div class="h-full w-1/10 bg-slate-200"></div>
+                            </div>
+                            <div
+                                class="mt-2 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="text-[10px] text-slate-400 font-['Space_Grotesk']">FINAL TESTING: PHASE
+                                    4/5</span>
+                                <span class="text-[10px] text-secondary font-bold">AWAITING QA SIGN-OFF</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Maintenance Calendar (Asymmetric Inset) -->
+                <section
+                    class="col-span-12 lg:col-span-5 bg-surface-container p-8 rounded-[1.5rem] relative translate-y-4">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight">Service Calendar</h3>
+                        <span class="text-xs font-bold text-primary bg-white px-3 py-1 rounded-full">OCTOBER 2024</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 mb-6">
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">M</div>
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">T</div>
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">W</div>
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">T</div>
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">F</div>
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">S</div>
+                        <div class="text-[9px] font-bold text-center text-slate-400 pb-2">S</div>
+                        <div class="aspect-square flex items-center justify-center text-[10px] text-slate-300">28</div>
+                        <div class="aspect-square flex items-center justify-center text-[10px] text-slate-300">29</div>
+                        <div class="aspect-square flex items-center justify-center text-[10px] text-slate-300">30</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            1</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            2</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            3</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            4</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            5</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            6</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-primary text-white rounded-lg font-bold shadow-md">
+                            7</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            8</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-tertiary text-white rounded-lg font-bold shadow-sm">
+                            9</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            10</div>
+                        <div
+                            class="aspect-square flex items-center justify-center text-[10px] bg-white rounded-lg font-bold shadow-sm">
+                            11</div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-4 p-3 bg-white rounded-xl">
+                            <div class="w-1.5 h-8 bg-primary rounded-full"></div>
+                            <div>
+                                <span class="block text-[10px] font-['Space_Grotesk'] text-slate-400">OCT 07 • 08:00
+                                    AM</span>
+                                <span class="font-bold text-xs uppercase">Annual Load Testing</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-white rounded-xl">
+                            <div class="w-1.5 h-8 bg-tertiary rounded-full"></div>
+                            <div>
+                                <span class="block text-[10px] font-['Space_Grotesk'] text-slate-400">OCT 09 • 02:00
+                                    PM</span>
+                                <span class="font-bold text-xs uppercase">Hydraulic Pump Calibration</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    <!-- Floating Technical Info (Asymmetric Detail) -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <div
+            class="bg-slate-900/90 backdrop-blur-md text-white p-6 rounded-2xl shadow-2xl flex items-center gap-6 border border-white/10">
+            <div class="flex flex-col">
+                <span class="text-[9px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1">System Load</span>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-xl font-['Space_Grotesk'] font-bold">2.4</span>
+                    <span class="text-xs text-slate-400">GWh</span>
+                </div>
+            </div>
+            <div class="h-10 w-[1px] bg-white/20"></div>
+            <div class="flex flex-col">
+                <span class="text-[9px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1">Active Staff</span>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-xl font-['Space_Grotesk'] font-bold">34</span>
+                    <span class="text-xs text-slate-400">Eng</span>
+                </div>
+            </div>
+            <button
+                class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center hover:scale-105 transition-transform active:scale-95">
+                <span class="material-symbols-outlined text-white"
+                    style="font-variation-settings: 'FILL' 1;">bolt</span>
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

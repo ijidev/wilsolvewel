@@ -1,115 +1,52 @@
-<!DOCTYPE html>
+"fontSize": {
+"xs": ["0.65rem", { "lineHeight": "1rem" }],
+"sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+"base": ["0.875rem", { "lineHeight": "1.25rem" }],
+"lg": ["1rem", { "lineHeight": "1.5rem" }],
+"xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+"2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+"3xl": ["1.5rem", { "lineHeight": "2rem" }],
+"4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+"5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+"6xl": ["3rem", { "lineHeight": "1" }],
+"7xl": ["3.75rem", { "lineHeight": "1" }]
+}
+},
+},
+},
+}
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
 
-<!DOCTYPE html>
+  .technical-grid {
+    background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.05;
+  }
 
-<html class="light" lang="en">
+  .anodized-gradient {
+    background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+  }
 
-<head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Precision Forge - Asset Inventory</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "surface-dim": "#d9dae0",
-            "primary-fixed-dim": "#a6c8ff",
-            "secondary-fixed-dim": "#b4c7ea",
-            "primary-fixed": "#d5e3ff",
-            "on-secondary-fixed": "#061c36",
-            "tertiary-fixed": "#ffdbc9",
-            "on-primary-container": "#aacaff",
-            "on-primary-fixed": "#001c3b",
-            "on-surface": "#191c20",
-            "inverse-surface": "#2e3036",
-            "surface-container": "#ededf4",
-            "outline": "#727782",
-            "secondary": "#4c5f7d",
-            "tertiary": "#662c00",
-            "on-tertiary-container": "#ffb991",
-            "on-error": "#ffffff",
-            "primary": "#003d76",
-            "error-container": "#ffdad6",
-            "on-background": "#191c20",
-            "surface-container-high": "#e7e8ef",
-            "on-tertiary": "#ffffff",
-            "background": "#f9f9ff",
-            "tertiary-fixed-dim": "#ffb68c",
-            "on-secondary-container": "#4d607e",
-            "on-tertiary-fixed": "#321200",
-            "surface-bright": "#f9f9ff",
-            "surface-tint": "#1d5fa8",
-            "primary-container": "#06549d",
-            "on-primary-fixed-variant": "#004787",
-            "surface-container-low": "#f3f3fa",
-            "inverse-on-surface": "#f0f0f7",
-            "tertiary-container": "#8a3e00",
-            "outline-variant": "#c2c6d3",
-            "error": "#ba1a1a",
-            "on-tertiary-fixed-variant": "#753400",
-            "surface-variant": "#e1e2e9",
-            "on-error-container": "#93000a",
-            "secondary-container": "#c8dbfe",
-            "surface-container-highest": "#e1e2e9",
-            "on-secondary-fixed-variant": "#354764",
-            "secondary-fixed": "#d5e3ff",
-            "on-secondary": "#ffffff",
-            "on-surface-variant": "#424751",
-            "surface-container-lowest": "#ffffff",
-            "on-primary": "#ffffff",
-            "surface": "#f9f9ff",
-            "inverse-primary": "#a6c8ff"
-          },
-          "borderRadius": {
-            "DEFAULT": "1.5rem",
-            "lg": "2rem",
-            "xl": "3rem",
-            "full": "9999px"
-          },
-          "fontFamily": {
-            "headline": ["Space Grotesk"],
-            "body": ["Manrope"],
-            "label": ["Space Grotesk"]
-          }
-        },
-      },
-    }
-  </script>
-  <style>
-    .blueprint-grid {
-      background-image: linear-gradient(to right, rgba(194, 198, 211, 0.1) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(194, 198, 211, 0.1) 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-
-    .anodized-gradient {
-      background: linear-gradient(135deg, #003d76 0%, #06549d 100%);
-    }
-
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-  </style>
+  .site-gradient-bg {
+    background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+</style>
 </head>
 
-<body class="bg-surface font-body text-on-surface technical-grid min-h-screen">
-  <!-- SideNavBar Shell -->
+<body
+  class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
   <!-- SideNavBar -->
   <script src="../../components/admin_sidenav.js" data-root="../../"></script>
+  <script src="../../components/effects.js"></script>
+  <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
   <!-- Main Content Canvas -->
-  <main class="ml-64 p-8 pt-24 max-w-7xl">
+  <main class="lg:ml-64 p-8 pt-24 max-w-7xl relative z-10">
     <!-- Top Navigation Anchor (Shared Component Style) -->
     <!-- TopNavBar -->
     <script src="../../components/admin_topnav.js"></script>

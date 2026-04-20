@@ -1,257 +1,323 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "primary-fixed-dim": "#a8c8ff",
-                    "on-secondary": "#ffffff",
-                    "error-container": "#ffdad6",
-                    "on-secondary-fixed-variant": "#842500",
-                    "on-secondary-fixed": "#3a0b00",
-                    "surface-bright": "#f8f9fb",
-                    "inverse-on-surface": "#eff1f3",
-                    "surface-variant": "#e0e3e5",
-                    "tertiary-fixed": "#d5e4f9",
-                    "on-tertiary-container": "#cedcf1",
-                    "primary-fixed": "#d6e3ff",
-                    "on-primary-fixed-variant": "#00468b",
-                    "surface-container-high": "#e6e8ea",
-                    "tertiary-fixed-dim": "#b9c8dc",
-                    "on-primary-container": "#cadcff",
-                    "on-background": "#191c1e",
-                    "outline": "#727783",
-                    "surface-container-highest": "#e0e3e5",
-                    "surface-container": "#eceef0",
-                    "surface-container-lowest": "#ffffff",
-                    "on-tertiary": "#ffffff",
-                    "inverse-surface": "#2d3133",
-                    "on-secondary-container": "#5a1600",
-                    "secondary-fixed-dim": "#ffb59e",
-                    "secondary": "#ad3300",
-                    "background": "#f8f9fb",
-                    "on-error": "#ffffff",
-                    "primary-container": "#005fb8",
-                    "on-primary": "#ffffff",
-                    "tertiary-container": "#536173",
-                    "tertiary": "#3c495a",
-                    "surface": "#f8f9fb",
-                    "secondary-container": "#ff642d",
-                    "on-error-container": "#93000a",
-                    "secondary-fixed": "#ffdbd0",
-                    "on-tertiary-fixed-variant": "#3a4859",
-                    "surface-container-low": "#f2f4f6",
-                    "on-surface-variant": "#424752",
-                    "inverse-primary": "#a8c8ff",
-                    "surface-tint": "#005db5",
-                    "on-primary-fixed": "#001b3d",
-                    "primary": "#00488d",
-                    "surface-dim": "#d8dadc",
-                    "on-surface": "#191c1e",
-                    "on-tertiary-fixed": "#0e1c2b",
-                    "outline-variant": "#c2c6d4",
-                    "error": "#ba1a1a"
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#a8c8ff",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#842500",
+                        "on-secondary-fixed": "#3a0b00",
+                        "surface-bright": "#f8f9fb",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary-fixed": "#d5e4f9",
+                        "on-tertiary-container": "#cedcf1",
+                        "primary-fixed": "#d6e3ff",
+                        "on-primary-fixed-variant": "#00468b",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#b9c8dc",
+                        "on-primary-container": "#cadcff",
+                        "on-background": "#191c1e",
+                        "outline": "#727783",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-container": "#5a1600",
+                        "secondary-fixed-dim": "#ffb59e",
+                        "secondary": "#ad3300",
+                        "background": "#f8f9fb",
+                        "on-error": "#ffffff",
+                        "primary-container": "#005fb8",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#536173",
+                        "tertiary": "#3c495a",
+                        "surface": "#f8f9fb",
+                        "secondary-container": "#ff642d",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffdbd0",
+                        "on-tertiary-fixed-variant": "#3a4859",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface-variant": "#424752",
+                        "inverse-primary": "#a8c8ff",
+                        "surface-tint": "#005db5",
+                        "on-primary-fixed": "#001b3d",
+                        "primary": "#00488d",
+                        "surface-dim": "#d8dadc",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed": "#0e1c2b",
+                        "outline-variant": "#c2c6d4",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "fontSize": {
+                            "xs": ["0.65rem", { "lineHeight": "1rem" }],
+                            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+                            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+                            "lg": ["1rem", { "lineHeight": "1.5rem" }],
+                            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+                            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+                            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+                            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+                            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+                            "6xl": ["3rem", { "lineHeight": "1" }],
+                            "7xl": ["3.75rem", { "lineHeight": "1" }]
+                        }
+                    },
+                },
             },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Space Grotesk"],
-                    "body": ["Manrope"],
-                    "label": ["Space Grotesk"]
-            }
-          },
-        },
-      }
+        }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
         .technical-grid {
-            background-image: linear-gradient(to right, rgba(194, 198, 212, 0.08) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(194, 198, 212, 0.08) 1px, transparent 1px);
+            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
             background-size: 24px 24px;
+            opacity: 0.05;
         }
+
         .anodized-gradient {
             background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
         }
+
+        .site-gradient-bg {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface technical-grid min-h-screen">
-<!-- TopNavBar -->
-<!-- Top Navigation Shell --><script src="./components/header.js" data-root="./"></script>
-<main class="pt-32 pb-20 px-8 max-w-screen-2xl mx-auto">
-<!-- Hero Section -->
-<header class="mb-20 ml-6 md:ml-12 border-l-4 border-primary pl-8 py-4">
-<p class="font-label uppercase tracking-[0.2em] text-primary text-xs mb-2">Capabilities / Core Pillars</p>
-<h1 class="font-headline text-5xl md:text-7xl font-bold tracking-tight text-on-surface mb-6 leading-[1.1]">
-            Precision Integrated <br/><span class="text-primary-container">Engineering Solutions.</span>
-</h1>
-<p class="text-on-surface-variant max-w-2xl text-lg leading-relaxed">
-            Operating at the intersection of technical excellence and logistical precision. We provide end-to-end industrial services designed for mission-critical infrastructure.
-        </p>
-</header>
-<!-- Bento Grid Services Layout -->
-<div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-<!-- PILLAR 01: Engineering Services -->
-<section class="md:col-span-8 bg-surface-container-lowest rounded-lg p-10 shadow-sm relative overflow-hidden group">
-<div class="absolute top-0 right-0 p-8 flex flex-col items-end opacity-20 group-hover:opacity-100 transition-opacity">
-<span class="font-label text-4xl font-bold">01</span>
-<span class="font-label text-[10px] tracking-widest uppercase">Structural_Module</span>
-</div>
-<div class="relative z-10">
-<div class="flex items-center gap-4 mb-8">
-<div class="w-12 h-12 bg-primary-fixed flex items-center justify-center rounded-sm">
-<span class="material-symbols-outlined text-primary" data-icon="architecture">architecture</span>
-</div>
-<h2 class="font-headline text-3xl font-bold">Engineering Services</h2>
-</div>
-<div class="grid md:grid-cols-2 gap-12">
-<div>
-<p class="text-on-surface-variant mb-8 leading-relaxed">
-                            Our multi-disciplinary engineering team delivers high-fidelity blueprints, structural analysis, and mechanical design optimized for extreme industrial environments.
-                        </p>
-<ul class="space-y-4">
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-primary text-sm mt-1" data-icon="token">token</span>
-<div>
-<span class="font-headline font-semibold block text-sm">FEED &amp; Detailed Engineering</span>
-<span class="text-xs text-on-surface-variant">Front-end engineering design for large-scale capital projects.</span>
-</div>
-</li>
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-primary text-sm mt-1" data-icon="token">token</span>
-<div>
-<span class="font-headline font-semibold block text-sm">Computational Fluid Dynamics</span>
-<span class="text-xs text-on-surface-variant">Advanced flow simulation and thermal management analysis.</span>
-</div>
-</li>
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-primary text-sm mt-1" data-icon="token">token</span>
-<div>
-<span class="font-headline font-semibold block text-sm">Process Instrumentation</span>
-<span class="text-xs text-on-surface-variant">Automated control systems and sensor network integration.</span>
-</div>
-</li>
-</ul>
-</div>
-<div class="rounded-lg overflow-hidden h-64 md:h-full bg-surface-container">
-<img class="w-full h-full object-cover mix-blend-multiply opacity-80" data-alt="Technical blueprint of complex mechanical engine components with blue industrial highlights and precise drafting lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp"/>
-</div>
-</div>
-</div>
-</section>
-<!-- PILLAR 02: Procurement & Logistics -->
-<section class="md:col-span-4 bg-surface-container-low rounded-lg p-8 shadow-sm group">
-<div class="flex items-center gap-4 mb-6">
-<div class="w-10 h-10 bg-secondary-fixed flex items-center justify-center rounded-sm">
-<span class="material-symbols-outlined text-secondary" data-icon="inventory_2">inventory_2</span>
-</div>
-<h2 class="font-headline text-xl font-bold">Procurement &amp; Logistics</h2>
-</div>
-<div class="h-40 mb-6 rounded-sm overflow-hidden">
-<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Vast industrial warehouse with high-tech automated sorting system and organized shipping containers in bright daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s"/>
-</div>
-<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-                Global sourcing and supply chain management for specialized hardware and heavy industrial equipment.
+
+<body
+    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+    <!-- Top Navigation Shell -->
+    <script src="./components/header.js" data-root="./"></script>
+    <script src="./components/effects.js"></script>
+    <main class="relative pt-20">
+        <!-- Technical Grid Overlay Background -->
+        <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+        <!-- Hero Section -->
+        <header class="relative py-16 px-6 lg:px-12 z-10 border-l-4 border-primary ml-6 md:ml-12 pl-8">
+            <p class="font-label uppercase tracking-[0.2em] text-primary text-[10px] mb-2 font-bold">Capabilities /
+                Specialized Restore</p>
+            <h1 class="font-headline text-3xl md:text-5xl font-bold tracking-tight text-on-surface mb-6 leading-[1.15]">
+                Heavy Machinery <br /><span class="text-primary-container">Engineering Solutions.</span>
+            </h1>
+            <p class="text-on-surface-variant max-w-2xl text-base leading-relaxed">
+                Operating at the intersection of technical excellence and machinery reliability. We provide specialized
+                repair and maintenance for high-value earthmoving equipment and industrial systems.
             </p>
-<div class="space-y-3">
-<div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
-<span class="text-xs font-label uppercase">Strategic Sourcing</span>
-<span class="material-symbols-outlined text-sm text-outline" data-icon="chevron_right">chevron_right</span>
-</div>
-<div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
-<span class="text-xs font-label uppercase">Compliance &amp; Export</span>
-<span class="material-symbols-outlined text-sm text-outline" data-icon="chevron_right">chevron_right</span>
-</div>
-<div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
-<span class="text-xs font-label uppercase">Last-Mile Execution</span>
-<span class="material-symbols-outlined text-sm text-outline" data-icon="chevron_right">chevron_right</span>
-</div>
-</div>
-</section>
-<!-- PILLAR 03: Support & Maintenance -->
-<section class="md:col-span-5 bg-surface-container-low rounded-lg p-8 shadow-sm">
-<div class="flex items-center gap-4 mb-8">
-<div class="w-10 h-10 bg-tertiary-fixed flex items-center justify-center rounded-sm">
-<span class="material-symbols-outlined text-tertiary" data-icon="build">build</span>
-</div>
-<h2 class="font-headline text-xl font-bold">Technical Support &amp; Maintenance</h2>
-</div>
-<div class="grid grid-cols-2 gap-4 mb-8">
-<div class="bg-surface-container-lowest p-4 rounded-sm">
-<span class="font-label text-primary text-[10px] block mb-1">UPTIME RATIO</span>
-<span class="font-headline text-2xl font-bold">99.8%</span>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-sm">
-<span class="font-label text-primary text-[10px] block mb-1">RESPONSE</span>
-<span class="font-headline text-2xl font-bold">2.4h</span>
-</div>
-</div>
-<p class="text-sm text-on-surface-variant leading-relaxed">
-                Preventative and reactive maintenance protocols including field technician deployment and digital twinning for remote asset monitoring.
-            </p>
-</section>
-<!-- Technical Dashboard Data Visualization -->
-<section class="md:col-span-7 bg-on-surface rounded-lg p-8 shadow-2xl text-surface-bright relative overflow-hidden">
-<div class="absolute inset-0 opacity-10 technical-grid pointer-events-none"></div>
-<div class="flex justify-between items-start mb-8 relative z-10">
-<div>
-<h3 class="font-headline text-lg font-bold">System Telemetry</h3>
-<p class="font-label text-[10px] tracking-widest text-outline-variant">LIVE MONITORING DATA</p>
-</div>
-<div class="flex gap-2">
-<div class="w-2 h-2 rounded-full bg-primary-fixed-dim animate-pulse"></div>
-<span class="text-[10px] font-label text-outline-variant">ACTIVE DATASTREAMS</span>
-</div>
-</div>
-<div class="grid grid-cols-5 gap-2 h-32 items-end mb-8 relative z-10">
-<div class="bg-primary-container h-[60%] rounded-t-sm"></div>
-<div class="bg-primary-container h-[85%] rounded-t-sm"></div>
-<div class="bg-primary-container h-[45%] rounded-t-sm"></div>
-<div class="bg-primary-container h-[95%] rounded-t-sm"></div>
-<div class="bg-primary-container h-[70%] rounded-t-sm"></div>
-</div>
-<div class="flex flex-wrap gap-4 relative z-10">
-<div class="border border-outline/30 px-3 py-1 rounded-full flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-<span class="text-[10px] font-label uppercase">Turbine Thermal Analysis</span>
-</div>
-<div class="border border-outline/30 px-3 py-1 rounded-full flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-<span class="text-[10px] font-label uppercase">Logistics Tracking (EU-09)</span>
-</div>
-</div>
-</section>
-</div>
-<!-- Call to Action / Technical Modular Block -->
-<div class="mt-20 bg-surface-container-high rounded-lg p-12 flex flex-col md:flex-row items-center justify-between gap-8 border-l-8 border-secondary">
-<div>
-<h2 class="font-headline text-3xl font-bold mb-2">Ready to Engineer the Future?</h2>
-<p class="text-on-surface-variant font-body">Contact our senior technical leads for a customized capability assessment.</p>
-</div>
-<div class="flex gap-4">
-<button class="bg-on-surface text-surface py-4 px-8 rounded-lg font-headline font-bold text-sm tracking-wide hover:bg-slate-800 transition-colors">
-                SCHEDULE CONSULTATION
-            </button>
-<button class="bg-surface-container-lowest text-on-surface py-4 px-8 rounded-lg font-headline font-bold text-sm tracking-wide shadow-sm hover:bg-white transition-colors">
-                DOWNLOAD BROCHURE (PDF)
-            </button>
-</div>
-</div>
-</main>
-<!-- Footer -->
-<!-- Footer Shell --><script src="./components/footer.js" data-root="./"></script>
-</body></html>
+        </header>
+        <!-- Bento Grid Services Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            <!-- PILLAR 01: Engineering Services -->
+            <section
+                class="md:col-span-8 bg-surface-container-lowest rounded-lg p-10 shadow-sm relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 p-8 flex flex-col items-end opacity-20 group-hover:opacity-100 transition-opacity">
+                    <span class="font-label text-4xl font-bold">01</span>
+                    <span class="font-label text-[10px] tracking-widest uppercase">Structural_Module</span>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-primary-fixed flex items-center justify-center rounded-sm">
+                            <span class="material-symbols-outlined text-primary"
+                                data-icon="architecture">architecture</span>
+                        </div>
+                        <h2 class="font-headline text-3xl font-bold">Engineering Services</h2>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-12">
+                        <div>
+                            <p class="text-on-surface-variant mb-8 leading-relaxed">
+                                Our multi-disciplinary engineering team delivers high-fidelity blueprints, structural
+                                analysis, and mechanical design optimized for extreme industrial environments.
+                            </p>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-sm mt-1"
+                                        data-icon="token">token</span>
+                                    <div>
+                                        <span class="font-headline font-semibold block text-sm">FEED &amp; Detailed
+                                            Engineering</span>
+                                        <span class="text-xs text-on-surface-variant">Front-end engineering design for
+                                            large-scale capital projects.</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-sm mt-1"
+                                        data-icon="token">token</span>
+                                    <div>
+                                        <span class="font-headline font-semibold block text-sm">Computational Fluid
+                                            Dynamics</span>
+                                        <span class="text-xs text-on-surface-variant">Advanced flow simulation and
+                                            thermal management analysis.</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-sm mt-1"
+                                        data-icon="token">token</span>
+                                    <div>
+                                        <span class="font-headline font-semibold block text-sm">Process
+                                            Instrumentation</span>
+                                        <span class="text-xs text-on-surface-variant">Automated control systems and
+                                            sensor network integration.</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="rounded-lg overflow-hidden h-64 md:h-full bg-surface-container">
+                            <img class="w-full h-full object-cover mix-blend-multiply opacity-80"
+                                data-alt="Technical blueprint of complex mechanical engine components with blue industrial highlights and precise drafting lines"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- PILLAR 02: Procurement & Logistics -->
+            <section class="md:col-span-4 bg-surface-container-low rounded-lg p-8 shadow-sm group">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-10 h-10 bg-secondary-fixed flex items-center justify-center rounded-sm">
+                        <span class="material-symbols-outlined text-secondary"
+                            data-icon="inventory_2">inventory_2</span>
+                    </div>
+                    <h2 class="font-headline text-xl font-bold">Procurement &amp; Logistics</h2>
+                </div>
+                <div class="h-40 mb-6 rounded-sm overflow-hidden">
+                    <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        data-alt="Vast industrial warehouse with high-tech automated sorting system and organized shipping containers in bright daylight"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
+                </div>
+                <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
+                    Global sourcing and supply chain management for specialized hardware and heavy industrial equipment.
+                </p>
+                <div class="space-y-3">
+                    <div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
+                        <span class="text-xs font-label uppercase">Strategic Sourcing</span>
+                        <span class="material-symbols-outlined text-sm text-outline"
+                            data-icon="chevron_right">chevron_right</span>
+                    </div>
+                    <div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
+                        <span class="text-xs font-label uppercase">Compliance &amp; Export</span>
+                        <span class="material-symbols-outlined text-sm text-outline"
+                            data-icon="chevron_right">chevron_right</span>
+                    </div>
+                    <div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
+                        <span class="text-xs font-label uppercase">Last-Mile Execution</span>
+                        <span class="material-symbols-outlined text-sm text-outline"
+                            data-icon="chevron_right">chevron_right</span>
+                    </div>
+                </div>
+            </section>
+            <!-- PILLAR 03: Heavy Machinery Workshop -->
+            <section class="md:col-span-5 bg-surface-container-low rounded-lg p-8 shadow-sm">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-10 h-10 bg-tertiary-fixed flex items-center justify-center rounded-sm">
+                        <span class="material-symbols-outlined text-tertiary"
+                            data-icon="settings_suggest">settings_suggest</span>
+                    </div>
+                    <h2 class="font-headline text-xl font-bold">Machinery Workshop</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-surface-container-lowest p-4 rounded-sm text-center">
+                        <span class="font-label text-primary text-[10px] block mb-1 uppercase tracking-widest">Hydraulic
+                            PSI</span>
+                        <span class="font-headline text-xl font-bold">5000+</span>
+                    </div>
+                    <div class="bg-surface-container-lowest p-4 rounded-sm text-center">
+                        <span class="font-label text-primary text-[10px] block mb-1 uppercase tracking-widest">Restore
+                            Rate</span>
+                        <span class="font-headline text-xl font-bold">94%</span>
+                    </div>
+                </div>
+                <p class="text-sm text-on-surface-variant leading-relaxed">
+                    Full-scale restoration of earthmoving equipment (Dozers/Excavators). Specialized drivetrain repair,
+                    hydraulic cylinder re-sealing, and structural welding.
+                </p>
+            </section>
+            <!-- Technical Dashboard Data Visualization -->
+            <section
+                class="md:col-span-7 bg-on-surface rounded-lg p-8 shadow-2xl text-surface-bright relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 technical-grid pointer-events-none"></div>
+                <div class="flex justify-between items-start mb-8 relative z-10">
+                    <div>
+                        <h3 class="font-headline text-lg font-bold">System Telemetry</h3>
+                        <p class="font-label text-[10px] tracking-widest text-outline-variant">LIVE MONITORING DATA</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="w-2 h-2 rounded-full bg-primary-fixed-dim animate-pulse"></div>
+                        <span class="text-[10px] font-label text-outline-variant">ACTIVE DATASTREAMS</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-5 gap-2 h-32 items-end mb-8 relative z-10">
+                    <div class="bg-primary-container h-[60%] rounded-t-sm"></div>
+                    <div class="bg-primary-container h-[85%] rounded-t-sm"></div>
+                    <div class="bg-primary-container h-[45%] rounded-t-sm"></div>
+                    <div class="bg-primary-container h-[95%] rounded-t-sm"></div>
+                    <div class="bg-primary-container h-[70%] rounded-t-sm"></div>
+                </div>
+                <div class="flex flex-wrap gap-4 relative z-10">
+                    <div class="border border-outline/30 px-3 py-1 rounded-full flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                        <span class="text-[10px] font-label uppercase">Turbine Thermal Analysis</span>
+                    </div>
+                    <div class="border border-outline/30 px-3 py-1 rounded-full flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                        <span class="text-[10px] font-label uppercase">Logistics Tracking (EU-09)</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Call to Action / Technical Modular Block -->
+        <div
+            class="mt-20 bg-surface-container-high rounded-lg p-12 flex flex-col md:flex-row items-center justify-between gap-8 border-l-8 border-secondary">
+            <div>
+                <h2 class="font-headline text-3xl font-bold mb-2">Ready to Engineer the Future?</h2>
+                <p class="text-on-surface-variant font-body">Contact our senior technical leads for a customized
+                    capability assessment.</p>
+            </div>
+            <div class="flex gap-4">
+                <button
+                    class="bg-on-surface text-surface py-4 px-8 rounded-lg font-headline font-bold text-sm tracking-wide hover:bg-slate-800 transition-colors">
+                    SCHEDULE CONSULTATION
+                </button>
+                <button
+                    class="bg-surface-container-lowest text-on-surface py-4 px-8 rounded-lg font-headline font-bold text-sm tracking-wide shadow-sm hover:bg-white transition-colors">
+                    DOWNLOAD BROCHURE (PDF)
+                </button>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <!-- Footer Shell -->
+    <script src="./components/footer.js" data-root="./"></script>
+</body>
+
+</html>

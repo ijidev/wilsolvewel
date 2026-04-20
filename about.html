@@ -1,301 +1,379 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>About Us | Wilsovlewel Engineering</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>About Us | Wilsovlewel Engineering</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "primary-fixed-dim": "#a8c8ff",
-                      "on-secondary": "#ffffff",
-                      "error-container": "#ffdad6",
-                      "on-secondary-fixed-variant": "#842500",
-                      "on-secondary-fixed": "#3a0b00",
-                      "surface-bright": "#f8f9fb",
-                      "inverse-on-surface": "#eff1f3",
-                      "surface-variant": "#e0e3e5",
-                      "tertiary-fixed": "#d5e4f9",
-                      "on-tertiary-container": "#cedcf1",
-                      "primary-fixed": "#d6e3ff",
-                      "on-primary-fixed-variant": "#00468b",
-                      "surface-container-high": "#e6e8ea",
-                      "tertiary-fixed-dim": "#b9c8dc",
-                      "on-primary-container": "#cadcff",
-                      "on-background": "#191c1e",
-                      "outline": "#727783",
-                      "surface-container-highest": "#e0e3e5",
-                      "surface-container": "#eceef0",
-                      "surface-container-lowest": "#ffffff",
-                      "on-tertiary": "#ffffff",
-                      "inverse-surface": "#2d3133",
-                      "on-secondary-container": "#5a1600",
-                      "secondary-fixed-dim": "#ffb59e",
-                      "secondary": "#ad3300",
-                      "background": "#f8f9fb",
-                      "on-error": "#ffffff",
-                      "primary-container": "#005fb8",
-                      "on-primary": "#ffffff",
-                      "tertiary-container": "#536173",
-                      "tertiary": "#3c495a",
-                      "surface": "#f8f9fb",
-                      "secondary-container": "#ff642d",
-                      "on-error-container": "#93000a",
-                      "secondary-fixed": "#ffdbd0",
-                      "on-tertiary-fixed-variant": "#3a4859",
-                      "surface-container-low": "#f2f4f6",
-                      "on-surface-variant": "#424752",
-                      "inverse-primary": "#a8c8ff",
-                      "surface-tint": "#005db5",
-                      "on-primary-fixed": "#001b3d",
-                      "primary": "#00488d",
-                      "surface-dim": "#d8dadc",
-                      "on-surface": "#191c1e",
-                      "on-tertiary-fixed": "#0e1c2b",
-                      "outline-variant": "#c2c6d4",
-                      "error": "#ba1a1a"
-              },
-              "borderRadius": {
-                      "DEFAULT": "1rem",
-                      "lg": "2rem",
-                      "xl": "3rem",
-                      "full": "9999px"
-              },
-              "fontFamily": {
-                      "headline": ["Space Grotesk"],
-                      "body": ["Manrope"],
-                      "label": ["Space Grotesk"]
-              }
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#a8c8ff",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#842500",
+                        "on-secondary-fixed": "#3a0b00",
+                        "surface-bright": "#f8f9fb",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary-fixed": "#d5e4f9",
+                        "on-tertiary-container": "#cedcf1",
+                        "primary-fixed": "#d6e3ff",
+                        "on-primary-fixed-variant": "#00468b",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#b9c8dc",
+                        "on-primary-container": "#cadcff",
+                        "on-background": "#191c1e",
+                        "outline": "#727783",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-container": "#5a1600",
+                        "secondary-fixed-dim": "#ffb59e",
+                        "secondary": "#ad3300",
+                        "background": "#f8f9fb",
+                        "on-error": "#ffffff",
+                        "primary-container": "#005fb8",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#536173",
+                        "tertiary": "#3c495a",
+                        "surface": "#f8f9fb",
+                        "secondary-container": "#ff642d",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffdbd0",
+                        "on-tertiary-fixed-variant": "#3a4859",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface-variant": "#424752",
+                        "inverse-primary": "#a8c8ff",
+                        "surface-tint": "#005db5",
+                        "on-primary-fixed": "#001b3d",
+                        "primary": "#00488d",
+                        "surface-dim": "#d8dadc",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed": "#0e1c2b",
+                        "outline-variant": "#c2c6d4",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "fontSize": {
+                            "xs": ["0.65rem", { "lineHeight": "1rem" }],
+                            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+                            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+                            "lg": ["1rem", { "lineHeight": "1.5rem" }],
+                            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+                            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+                            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+                            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+                            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+                            "6xl": ["3rem", { "lineHeight": "1" }],
+                            "7xl": ["3.75rem", { "lineHeight": "1" }]
+                        }
+                    },
+                },
             },
-          },
         }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
         .technical-grid {
-            background-image: linear-gradient(to right, rgba(194, 198, 212, 0.05) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(194, 198, 212, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
             background-size: 24px 24px;
+            opacity: 0.05;
         }
+
         .anodized-gradient {
             background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
         }
+
+        .site-gradient-bg {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface technical-grid">
-<!-- Top Navigation Bar (Updated to DATA:COMPONENTS:COMPONENTS_97 style) -->
-<!-- Top Navigation Shell --><script src="./components/header.js" data-root="./"></script>
-<main class="pt-32 pb-24 px-6 md:px-12 max-w-screen-2xl mx-auto">
-<!-- Hero Section: Company Overview -->
-<section class="mb-32">
-<div class="flex flex-col lg:flex-row gap-16 items-start">
-<div class="lg:w-7/12">
-<span class="font-label uppercase tracking-[0.2em] text-primary text-sm font-semibold mb-6 block">Company Overview</span>
-<h1 class="font-headline text-5xl md:text-7xl font-bold text-on-surface leading-[1.1] mb-8 tracking-tight">
-                        ABOUT WILSOLVEWEL NIGERIA LIMITED
+
+<body
+    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+    <!-- Top Navigation Shell -->
+    <script src="./components/header.js" data-root="./"></script>
+    <script src="./components/effects.js"></script>
+    <main class="relative pt-20">
+        <!-- Technical Grid Overlay Background -->
+        <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+        <!-- Hero Section -->
+        <section class="relative py-20 px-6 lg:px-12 z-10">
+            <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 items-start">
+                <div class="lg:w-7/12 space-y-6">
+                    <span class="font-label uppercase tracking-[0.2em] text-primary text-[10px] font-bold block">Company
+                        Infrastructure</span>
+                    <h1
+                        class="font-headline text-3xl md:text-5xl font-bold text-on-surface leading-[1.15] tracking-tight">
+                        WILSOLVEWEL NIGERIA LIMITED
                     </h1>
-<p class="text-xl md:text-2xl font-light text-on-surface-variant border-l-4 border-secondary pl-8 py-2">
-                        Engineering Strength. Operational Reliability. Trusted Partnership.
+                    <p
+                        class="text-lg font-light text-on-surface-variant border-l-4 border-secondary pl-6 py-1 leading-relaxed">
+                        Engineering Precision. Heavy Machinery Reliability. Specialized Life-cycle Management.
                     </p>
-<div class="mt-12 text-on-surface-variant leading-relaxed max-w-2xl text-lg">
-                        Wilsovlewel Engineering is a premier indigenous technical solutions provider in Nigeria, bridging the gap between complex engineering challenges and sustainable operational success. We combine deep local insights with international standards to deliver precision in every schematic.
+                    <div class="text-on-surface-variant leading-relaxed max-w-xl text-base">
+                        Wilsovlewel Engineering is a premier technical specialist in heavy-duty machinery restoration.
+                        We provide the expertise required to keep excavators, dozers, and industrial drivetrain systems
+                        operational under the most demanding Nigerian field conditions.
                     </div>
-</div>
-<div class="lg:w-5/12 relative group">
-<div class="absolute -inset-4 bg-primary/5 rounded-lg -z-10 transition-transform group-hover:scale-105"></div>
-<img alt="Precision engineering blueprint on digital tablet in modern lab" class="w-full h-[500px] object-cover rounded-lg shadow-2xl grayscale hover:grayscale-0 transition-all duration-700" data-alt="Close-up of a high-tech digital engineering schematic displayed on a tablet in a clean, modern industrial laboratory setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoiC3Rxm03OmGzT8s4cxzzD6CqTr49EN7zUgr4MdewbZ32bTu6oje81NkZmBg7Bn7g2eG3JoX0DO-Sjt1jOe0wskEIBSVSKc2v-7oe8km3bCT1X7M1WI70k2zDsYIz9ote_CD2PdoH4NcJCBXNppqqeEM431VDKvb7QNYPkgy7UjOaaQ-bE3bjZow8e06SQ_e49JeuLyHQALD33DzNCGohdL87_kSsXg6g0ZQaF0jnWw0oeeQ_xhPYyU83RJ0NLKAj2EQkIwqCqjuF"/>
-</div>
-</div>
-</section>
-<!-- Vision & Mission: Asymmetric Layout -->
-<section class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-32">
-<div class="md:col-span-7 bg-surface-container-lowest p-12 rounded-lg shadow-sm">
-<span class="material-symbols-outlined text-primary text-4xl mb-6">visibility</span>
-<h3 class="font-headline text-3xl font-bold mb-6">Our Vision</h3>
-<p class="text-on-surface-variant text-lg leading-relaxed">
-                    To be the foremost architectural pillar of Nigerian engineering, setting the gold standard for technical excellence and operational reliability across West Africa. We envision a future where local expertise drives global industrial standards.
+                </div>
+                <div class="lg:w-5/12 relative group">
+                    <div
+                        class="absolute -inset-4 bg-primary/5 rounded-lg -z-10 transition-transform group-hover:scale-105">
+                    </div>
+                    <img alt="Precision engineering blueprint on digital tablet in modern lab"
+                        class="w-full h-[500px] object-cover rounded-lg shadow-2xl grayscale hover:grayscale-0 transition-all duration-700"
+                        data-alt="Close-up of a high-tech digital engineering schematic displayed on a tablet in a clean, modern industrial laboratory setting"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoiC3Rxm03OmGzT8s4cxzzD6CqTr49EN7zUgr4MdewbZ32bTu6oje81NkZmBg7Bn7g2eG3JoX0DO-Sjt1jOe0wskEIBSVSKc2v-7oe8km3bCT1X7M1WI70k2zDsYIz9ote_CD2PdoH4NcJCBXNppqqeEM431VDKvb7QNYPkgy7UjOaaQ-bE3bjZow8e06SQ_e49JeuLyHQALD33DzNCGohdL87_kSsXg6g0ZQaF0jnWw0oeeQ_xhPYyU83RJ0NLKAj2EQkIwqCqjuF" />
+                </div>
+            </div>
+        </section>
+        <!-- Vision & Mission: Asymmetric Layout -->
+        <section class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-32">
+            <div class="md:col-span-7 bg-surface-container-lowest p-12 rounded-lg shadow-sm">
+                <span class="material-symbols-outlined text-primary text-4xl mb-6">visibility</span>
+                <h3 class="font-headline text-3xl font-bold mb-6">Our Vision</h3>
+                <p class="text-on-surface-variant text-lg leading-relaxed">
+                    To be the foremost architectural pillar of Nigerian engineering, setting the gold standard for
+                    technical excellence and operational reliability across West Africa. We envision a future where
+                    local expertise drives global industrial standards.
                 </p>
-</div>
-<div class="md:col-span-5 bg-primary text-white p-12 rounded-lg flex flex-col justify-between">
-<div>
-<span class="material-symbols-outlined text-4xl mb-6">rocket_launch</span>
-<h3 class="font-headline text-3xl font-bold mb-6">Our Mission</h3>
-</div>
-<p class="text-primary-fixed-dim text-lg leading-relaxed">
-                    To empower our clients through uncompromising precision, innovative technical strategies, and the relentless pursuit of engineering integrity that safeguards both people and assets.
+            </div>
+            <div class="md:col-span-5 bg-primary text-white p-12 rounded-lg flex flex-col justify-between">
+                <div>
+                    <span class="material-symbols-outlined text-4xl mb-6">rocket_launch</span>
+                    <h3 class="font-headline text-3xl font-bold mb-6">Our Mission</h3>
+                </div>
+                <p class="text-primary-fixed-dim text-lg leading-relaxed">
+                    To empower our clients through uncompromising precision, innovative technical strategies, and the
+                    relentless pursuit of engineering integrity that safeguards both people and assets.
                 </p>
-</div>
-</section>
-<!-- Core Values: Bento Grid -->
-<section class="mb-32">
-<div class="flex items-center justify-between mb-12">
-<h2 class="font-headline text-4xl font-bold">Core Values</h2>
-<div class="h-px bg-outline-variant/30 flex-grow ml-8"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<!-- Excellence -->
-<div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
-<div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
-<span class="material-symbols-outlined text-primary" data-weight="fill">verified</span>
-</div>
-<h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Excellence</h4>
-<p class="text-sm text-on-surface-variant">Unwavering commitment to quality that exceeds industry specifications in every project.</p>
-</div>
-<!-- Innovation -->
-<div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
-<div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
-<span class="material-symbols-outlined text-primary" data-weight="fill">lightbulb</span>
-</div>
-<h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Innovation</h4>
-<p class="text-sm text-on-surface-variant">Leveraging emerging technologies to solve ancient engineering bottlenecks with modern precision.</p>
-</div>
-<!-- Integrity -->
-<div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
-<div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
-<span class="material-symbols-outlined text-primary" data-weight="fill">gavel</span>
-</div>
-<h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Integrity</h4>
-<p class="text-sm text-on-surface-variant">Transparent operations and ethical engineering practices that build long-term trust.</p>
-</div>
-<!-- Customer Success -->
-<div class="md:col-span-2 bg-secondary-container/10 p-8 rounded-lg flex flex-col md:flex-row gap-8 items-center border border-secondary/10">
-<div class="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-secondary text-3xl">handshake</span>
-</div>
-<div>
-<h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Customer Success</h4>
-<p class="text-sm text-on-surface-variant">We measure our success by the operational longevity and profitability of our partners. Your uptime is our primary directive.</p>
-</div>
-</div>
-<!-- Sustainability -->
-<div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
-<div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
-<span class="material-symbols-outlined text-primary" data-weight="fill">eco</span>
-</div>
-<h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Sustainability</h4>
-<p class="text-sm text-on-surface-variant">Engineering solutions designed for the future, minimizing environmental impact while maximizing efficiency.</p>
-</div>
-</div>
-</section>
-<!-- Operational Approach: Technical Flow -->
-<section class="mb-32">
-<div class="bg-slate-900 rounded-lg p-12 text-white overflow-hidden relative">
-<div class="absolute top-0 right-0 w-1/3 h-full bg-primary/20 blur-[120px] -z-0"></div>
-<div class="relative z-10">
-<span class="font-label uppercase tracking-widest text-primary-fixed-dim text-xs mb-4 block">Execution Strategy</span>
-<h2 class="font-headline text-4xl font-bold mb-16">Our Operational Approach</h2>
-<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-<!-- Step 1 -->
-<div class="border-t border-white/20 pt-6">
-<span class="font-headline text-4xl font-light text-white/30 mb-4 block">01</span>
-<h5 class="font-headline font-bold mb-2">Discovery</h5>
-<p class="text-xs text-slate-400 leading-relaxed">In-depth audit of current infrastructure and project requirements.</p>
-</div>
-<!-- Step 2 -->
-<div class="border-t border-white/20 pt-6">
-<span class="font-headline text-4xl font-light text-white/30 mb-4 block">02</span>
-<h5 class="font-headline font-bold mb-2">Schematic</h5>
-<p class="text-xs text-slate-400 leading-relaxed">Drafting precise engineering models and technical strategies.</p>
-</div>
-<!-- Step 3 -->
-<div class="border-t border-white/20 pt-6">
-<span class="font-headline text-4xl font-light text-white/30 mb-4 block">03</span>
-<h5 class="font-headline font-bold mb-2">Execution</h5>
-<p class="text-xs text-slate-400 leading-relaxed">Deployment of on-site technical teams and high-spec hardware.</p>
-</div>
-<!-- Step 4 -->
-<div class="border-t border-white/20 pt-6">
-<span class="font-headline text-4xl font-light text-white/30 mb-4 block">04</span>
-<h5 class="font-headline font-bold mb-2">Optimization</h5>
-<p class="text-xs text-slate-400 leading-relaxed">Performance tuning and real-time operational adjustments.</p>
-</div>
-<!-- Step 5 -->
-<div class="border-t border-white/20 pt-6">
-<span class="font-headline text-4xl font-light text-white/30 mb-4 block">05</span>
-<h5 class="font-headline font-bold mb-2">Handover</h5>
-<p class="text-xs text-slate-400 leading-relaxed">Documentation transfer and post-project reliability assurance.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Leadership Council -->
-<section class="mb-32">
-<div class="text-center mb-16">
-<h2 class="font-headline text-4xl font-bold mb-4">Leadership Council</h2>
-<p class="text-on-surface-variant max-w-2xl mx-auto">Guided by industry veterans with decades of combined experience in mechanical, electrical, and structural engineering.</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-<!-- Leader 1 -->
-<div class="group">
-<div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
-<img alt="Professional portrait of engineering executive" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" data-alt="Professional portrait of a male engineering executive in a sharp navy suit, looking confident against a clean grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn41HZ3rIWL-ydI7bYFGMdF72l6EOVlaqifFARVr63L1KG2YhGCWISoI4g6txmmPx1lNDklZBt3SdkCdThw372KO6KUoG3PRDrL-zwVZONfLrdG7-waz22DnwsUaixhS2U-17uB09V9pbbkS5ALjBCRGmrvLe2WRcbECNuouIOjbSCyFdxbkk4nmTcLv8prTc4ta389Z4BBcRj1gfVtWczYTtGhbIraVJCNpFIpCgIqJMMRvsCz7KS1tsY57RFpxsb3Xn0PFraRZuE"/>
-</div>
-<h4 class="font-headline font-bold text-xl mb-1">Chief Executive Officer</h4>
-<p class="font-label text-xs tracking-wider text-primary mb-4">LEADERSHIP</p>
-<p class="text-sm text-on-surface-variant leading-relaxed">Driving the strategic vision and engineering standards across the national energy sector.</p>
-</div>
-<!-- Leader 2 -->
-<div class="group">
-<div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
-<img alt="Professional portrait of technical director" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" data-alt="Close-up portrait of a professional female technical director with a confident expression, modern office setting background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuDLQIrRqM-7AA3U_ktpDQ_yy4WcTfzANDLFCZw--l6FzeX-4hKHL6Lo8G3ezO1KDsVe7mZJKKVp81D3kB8QI_EfQXb_Ikhgn53PxhET7INHK3q8Z80fqFcdesONQyZKRVMYB6ss4isDmzwkOPDZwZI_u79jbBcARewac1ZFVwEf-77_X1KWYc4AQB3q1f4w90Udeb0odQL6ZNsv9YGqN36ke5Tt8C0Om7T6tGAoFW19o-1hidCABeJzzNbDgFxcrjFEJXa17wwTe2"/>
-</div>
-<h4 class="font-headline font-bold text-xl mb-1">Technical Director</h4>
-<p class="font-label text-xs tracking-wider text-primary mb-4">OPERATIONS</p>
-<p class="text-sm text-on-surface-variant leading-relaxed">Overseeing precision implementation and site-specific engineering compliance.</p>
-</div>
-<!-- Leader 3 -->
-<div class="group">
-<div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
-<img alt="Professional portrait of head of logistics" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" data-alt="Mid-shot of a male executive in casual business attire, leaning against a clean white wall with a soft smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTtyxssDXIzkzR1txiI-r45pIrFMwVdLy6PjznIu_euGLs3eEWTUQyBkqEJJUPwG2B6BqITX3oru55CMe5a3jl-CAgQG1d4fTYL6dHmTJNowFXjxZmxbzkEa4iyPJrmBZaSTBNdg9p-BdQiNvc5wSmA8imkTljDaEqhQO0T0_Vp5FvKO-s7bMNM41VySHbIWlK8hARdlufat1LkTU0MREblDlwopA70jRZoDaQCIP3SlsEXv4EKk7M9GnTeEnwvsZoUy4xRZsTUBcs"/>
-</div>
-<h4 class="font-headline font-bold text-xl mb-1">Head of HSSE</h4>
-<p class="font-label text-xs tracking-wider text-primary mb-4">COMPLIANCE</p>
-<p class="text-sm text-on-surface-variant leading-relaxed">Ensuring world-class safety standards and environmental stewardship in all operations.</p>
-</div>
-<!-- Leader 4 -->
-<div class="group">
-<div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
-<div class="w-full h-full flex items-center justify-center bg-slate-100">
-<span class="material-symbols-outlined text-slate-300 text-6xl">person</span>
-</div>
-</div>
-<h4 class="font-headline font-bold text-xl mb-1">Project Coordinator</h4>
-<p class="font-label text-xs tracking-wider text-primary mb-4">STRATEGY</p>
-<p class="text-sm text-on-surface-variant leading-relaxed">Managing client relationships and end-to-end project lifecycle efficiency.</p>
-</div>
-</div>
-</section>
-<!-- Our Experience: Technical Stats -->
-<section class="mb-12">
-<div class="bg-surface-container-low rounded-lg p-12 flex flex-wrap justify-between gap-12 items-center">
-<div class="flex-1 min-w-[200px]">
-<span class="font-headline text-5xl font-bold text-primary block mb-2">150+</span>
-<span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Projects Delivered</span>
-</div>
-<div class="flex-1 min-w-[200px]">
-<span class="font-headline text-5xl font-bold text-primary block mb-2">10M+</span>
-<span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Man-Hours HSSE Free</span>
-</div>
-<div class="flex-1 min-w-[200px]">
-<span class="font-headline text-5xl font-bold text-primary block mb-2">24/7</span>
-<span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Technical Support</span>
-</div>
-<div class="flex-1 min-w-[200px]">
-<span class="font-headline text-5xl font-bold text-primary block mb-2">100%</span>
-<span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Indigenous Content</span>
-</div>
-</div>
-</section>
-</main>
-<!-- Footer Component (Updated to exactly reflect link request and style) -->
-<!-- Footer Shell --><script src="./components/footer.js" data-root="./"></script>
-</body></html>
+            </div>
+        </section>
+        <!-- Core Values: Bento Grid -->
+        <section class="mb-32">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="font-headline text-4xl font-bold">Core Values</h2>
+                <div class="h-px bg-outline-variant/30 flex-grow ml-8"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Excellence -->
+                <div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
+                    <div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
+                        <span class="material-symbols-outlined text-primary" data-weight="fill">verified</span>
+                    </div>
+                    <h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Excellence</h4>
+                    <p class="text-sm text-on-surface-variant">Unwavering commitment to quality that exceeds industry
+                        specifications in every project.</p>
+                </div>
+                <!-- Innovation -->
+                <div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
+                    <div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
+                        <span class="material-symbols-outlined text-primary" data-weight="fill">lightbulb</span>
+                    </div>
+                    <h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Innovation</h4>
+                    <p class="text-sm text-on-surface-variant">Leveraging emerging technologies to solve ancient
+                        engineering bottlenecks with modern precision.</p>
+                </div>
+                <!-- Integrity -->
+                <div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
+                    <div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
+                        <span class="material-symbols-outlined text-primary" data-weight="fill">gavel</span>
+                    </div>
+                    <h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Integrity</h4>
+                    <p class="text-sm text-on-surface-variant">Transparent operations and ethical engineering practices
+                        that build long-term trust.</p>
+                </div>
+                <!-- Customer Success -->
+                <div
+                    class="md:col-span-2 bg-secondary-container/10 p-8 rounded-lg flex flex-col md:flex-row gap-8 items-center border border-secondary/10">
+                    <div class="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-secondary text-3xl">handshake</span>
+                    </div>
+                    <div>
+                        <h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Customer Success</h4>
+                        <p class="text-sm text-on-surface-variant">We measure our success by the operational longevity
+                            and profitability of our partners. Your uptime is our primary directive.</p>
+                    </div>
+                </div>
+                <!-- Sustainability -->
+                <div class="bg-surface-container-low p-8 rounded-lg hover:bg-surface-container-high transition-colors">
+                    <div class="w-12 h-12 bg-white rounded-sm flex items-center justify-center mb-6 shadow-sm">
+                        <span class="material-symbols-outlined text-primary" data-weight="fill">eco</span>
+                    </div>
+                    <h4 class="font-headline text-xl font-bold mb-3 uppercase tracking-wide">Sustainability</h4>
+                    <p class="text-sm text-on-surface-variant">Engineering solutions designed for the future, minimizing
+                        environmental impact while maximizing efficiency.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Operational Approach: Technical Flow -->
+        <section class="mb-32">
+            <div class="bg-slate-900 rounded-lg p-12 text-white overflow-hidden relative">
+                <div class="absolute top-0 right-0 w-1/3 h-full bg-primary/20 blur-[120px] -z-0"></div>
+                <div class="relative z-10">
+                    <span
+                        class="font-label uppercase tracking-widest text-primary-fixed-dim text-xs mb-4 block">Execution
+                        Strategy</span>
+                    <h2 class="font-headline text-4xl font-bold mb-16">Our Operational Approach</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <!-- Step 1 -->
+                        <div class="border-t border-white/20 pt-6">
+                            <span class="font-headline text-4xl font-light text-white/30 mb-4 block">01</span>
+                            <h5 class="font-headline font-bold mb-2">Discovery</h5>
+                            <p class="text-xs text-slate-400 leading-relaxed">In-depth audit of current infrastructure
+                                and project requirements.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="border-t border-white/20 pt-6">
+                            <span class="font-headline text-4xl font-light text-white/30 mb-4 block">02</span>
+                            <h5 class="font-headline font-bold mb-2">Schematic</h5>
+                            <p class="text-xs text-slate-400 leading-relaxed">Drafting precise engineering models and
+                                technical strategies.</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="border-t border-white/20 pt-6">
+                            <span class="font-headline text-4xl font-light text-white/30 mb-4 block">03</span>
+                            <h5 class="font-headline font-bold mb-2">Execution</h5>
+                            <p class="text-xs text-slate-400 leading-relaxed">Deployment of on-site technical teams and
+                                high-spec hardware.</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="border-t border-white/20 pt-6">
+                            <span class="font-headline text-4xl font-light text-white/30 mb-4 block">04</span>
+                            <h5 class="font-headline font-bold mb-2">Optimization</h5>
+                            <p class="text-xs text-slate-400 leading-relaxed">Performance tuning and real-time
+                                operational adjustments.</p>
+                        </div>
+                        <!-- Step 5 -->
+                        <div class="border-t border-white/20 pt-6">
+                            <span class="font-headline text-4xl font-light text-white/30 mb-4 block">05</span>
+                            <h5 class="font-headline font-bold mb-2">Handover</h5>
+                            <p class="text-xs text-slate-400 leading-relaxed">Documentation transfer and post-project
+                                reliability assurance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Leadership Council -->
+        <section class="mb-32">
+            <div class="text-center mb-16">
+                <h2 class="font-headline text-4xl font-bold mb-4">Leadership Council</h2>
+                <p class="text-on-surface-variant max-w-2xl mx-auto">Guided by industry veterans with decades of
+                    combined experience in mechanical, electrical, and structural engineering.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Leader 1 -->
+                <div class="group">
+                    <div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
+                        <img alt="Professional portrait of engineering executive"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                            data-alt="Professional portrait of a male engineering executive in a sharp navy suit, looking confident against a clean grey background"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn41HZ3rIWL-ydI7bYFGMdF72l6EOVlaqifFARVr63L1KG2YhGCWISoI4g6txmmPx1lNDklZBt3SdkCdThw372KO6KUoG3PRDrL-zwVZONfLrdG7-waz22DnwsUaixhS2U-17uB09V9pbbkS5ALjBCRGmrvLe2WRcbECNuouIOjbSCyFdxbkk4nmTcLv8prTc4ta389Z4BBcRj1gfVtWczYTtGhbIraVJCNpFIpCgIqJMMRvsCz7KS1tsY57RFpxsb3Xn0PFraRZuE" />
+                    </div>
+                    <h4 class="font-headline font-bold text-xl mb-1">Chief Executive Officer</h4>
+                    <p class="font-label text-xs tracking-wider text-primary mb-4">LEADERSHIP</p>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">Driving the strategic vision and
+                        engineering standards across the national energy sector.</p>
+                </div>
+                <!-- Leader 2 -->
+                <div class="group">
+                    <div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
+                        <img alt="Professional portrait of technical director"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                            data-alt="Close-up portrait of a professional female technical director with a confident expression, modern office setting background"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuDLQIrRqM-7AA3U_ktpDQ_yy4WcTfzANDLFCZw--l6FzeX-4hKHL6Lo8G3ezO1KDsVe7mZJKKVp81D3kB8QI_EfQXb_Ikhgn53PxhET7INHK3q8Z80fqFcdesONQyZKRVMYB6ss4isDmzwkOPDZwZI_u79jbBcARewac1ZFVwEf-77_X1KWYc4AQB3q1f4w90Udeb0odQL6ZNsv9YGqN36ke5Tt8C0Om7T6tGAoFW19o-1hidCABeJzzNbDgFxcrjFEJXa17wwTe2" />
+                    </div>
+                    <h4 class="font-headline font-bold text-xl mb-1">Technical Director</h4>
+                    <p class="font-label text-xs tracking-wider text-primary mb-4">OPERATIONS</p>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">Overseeing precision implementation and
+                        site-specific engineering compliance.</p>
+                </div>
+                <!-- Leader 3 -->
+                <div class="group">
+                    <div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
+                        <img alt="Professional portrait of head of logistics"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                            data-alt="Mid-shot of a male executive in casual business attire, leaning against a clean white wall with a soft smile"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTtyxssDXIzkzR1txiI-r45pIrFMwVdLy6PjznIu_euGLs3eEWTUQyBkqEJJUPwG2B6BqITX3oru55CMe5a3jl-CAgQG1d4fTYL6dHmTJNowFXjxZmxbzkEa4iyPJrmBZaSTBNdg9p-BdQiNvc5wSmA8imkTljDaEqhQO0T0_Vp5FvKO-s7bMNM41VySHbIWlK8hARdlufat1LkTU0MREblDlwopA70jRZoDaQCIP3SlsEXv4EKk7M9GnTeEnwvsZoUy4xRZsTUBcs" />
+                    </div>
+                    <h4 class="font-headline font-bold text-xl mb-1">Head of HSSE</h4>
+                    <p class="font-label text-xs tracking-wider text-primary mb-4">COMPLIANCE</p>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">Ensuring world-class safety standards and
+                        environmental stewardship in all operations.</p>
+                </div>
+                <!-- Leader 4 -->
+                <div class="group">
+                    <div class="aspect-[4/5] bg-surface-container-high rounded-lg overflow-hidden mb-6">
+                        <div class="w-full h-full flex items-center justify-center bg-slate-100">
+                            <span class="material-symbols-outlined text-slate-300 text-6xl">person</span>
+                        </div>
+                    </div>
+                    <h4 class="font-headline font-bold text-xl mb-1">Project Coordinator</h4>
+                    <p class="font-label text-xs tracking-wider text-primary mb-4">STRATEGY</p>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">Managing client relationships and
+                        end-to-end project lifecycle efficiency.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Our Experience: Technical Stats -->
+        <section class="mb-12">
+            <div class="bg-surface-container-low rounded-lg p-12 flex flex-wrap justify-between gap-12 items-center">
+                <div class="flex-1 min-w-[200px]">
+                    <span class="font-headline text-5xl font-bold text-primary block mb-2">150+</span>
+                    <span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Projects
+                        Delivered</span>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <span class="font-headline text-5xl font-bold text-primary block mb-2">10M+</span>
+                    <span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Man-Hours HSSE
+                        Free</span>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <span class="font-headline text-5xl font-bold text-primary block mb-2">24/7</span>
+                    <span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Technical
+                        Support</span>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <span class="font-headline text-5xl font-bold text-primary block mb-2">100%</span>
+                    <span class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Indigenous
+                        Content</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer Component (Updated to exactly reflect link request and style) -->
+    <!-- Footer Shell -->
+    <script src="./components/footer.js" data-root="./"></script>
+</body>
+
+</html>
