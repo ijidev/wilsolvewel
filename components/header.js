@@ -15,11 +15,13 @@
 <div class="hidden lg:flex items-center gap-6" id="nav-links">
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}index.html">Home</a>
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}about.html">About</a>
+<a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}faq.html">FAQ</a>
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}services.html">Services</a>
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}industries.html">Industries</a>
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}hsse.html">HSSE</a>
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}projects.html">Projects</a>
 <a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}career.html">Careers</a>
+<a class="nav-link text-slate-600 pb-1 font-headline tracking-tight text-sm uppercase font-bold hover:text-blue-600 transition-colors duration-200" href="${rootPath}contact.html">Contact</a>
 </div>
 <div class="flex items-center gap-4">
 <a href="${rootPath}login.html" class="text-slate-600 hover:text-blue-600 transition-colors group flex items-center justify-center">
