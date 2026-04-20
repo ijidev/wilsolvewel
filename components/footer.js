@@ -21,6 +21,8 @@
 <a class="text-slate-500 hover:text-slate-900 transition-colors font-body text-xs font-medium underline-offset-4 hover:underline" href="${rootPath}hsse.html">HSSE</a>
 <a class="text-slate-500 hover:text-slate-900 transition-colors font-body text-xs font-medium underline-offset-4 hover:underline" href="${rootPath}projects.html">Projects</a>
 <a class="text-slate-500 hover:text-slate-900 transition-colors font-body text-xs font-medium underline-offset-4 hover:underline" href="${rootPath}career.html">Careers</a>
+<a class="text-slate-500 hover:text-slate-900 transition-colors font-body text-xs font-medium underline-offset-4 hover:underline" href="${rootPath}faq.html">FAQ</a>
+<a class="text-slate-500 hover:text-slate-900 transition-colors font-body text-xs font-medium underline-offset-4 hover:underline" href="${rootPath}contact.html">Contact</a>
 <a class="text-slate-500 hover:text-slate-900 transition-colors font-body text-xs font-medium underline-offset-4 hover:underline" href="${rootPath}login.html">Terminal</a>
 </div>
 <div class="flex justify-end gap-4">
