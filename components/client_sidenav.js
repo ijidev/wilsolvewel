@@ -7,7 +7,7 @@
 
     const clientSidenavHTML = `
 <!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 z-40 bg-slate-50 dark:bg-slate-950 border-r border-slate-200/50 dark:border-slate-800/50 flex flex-col p-4 gap-2 pt-20 font-['Manrope'] text-sm font-medium transition-all">
+<aside class="h-screen w-64 fixed left-0 top-0 z-[60] bg-slate-50 dark:bg-slate-950 border-r border-slate-200/50 dark:border-slate-800/50 flex flex-col p-4 gap-2 pt-20 font-['Manrope'] text-sm font-medium transition-transform duration-300 -translate-x-full lg:translate-x-0">
 <div class="px-4 py-2">
 <span class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-[10px] text-slate-500">Terminal v1.0</span>
 <h2 class="text-lg font-bold text-on-surface">Wilsovlewel</h2>

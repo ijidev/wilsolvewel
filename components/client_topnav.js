@@ -3,7 +3,10 @@
 <!-- TopNavBar -->
 <nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl bg-gradient-to-b from-slate-200/20 to-transparent shadow-[0_40px_60px_-15px_rgba(0,0,0,0.05)]">
 <div class="flex justify-between items-center px-8 h-16 w-full max-w-[1920px] mx-auto">
-<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<button id="client-sidebar-toggle" class="lg:hidden p-2 text-slate-500 hover:text-blue-600 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
 <span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 font-['Space_Grotesk']">WILSOVLEWEL</span>
 <div class="hidden md:flex items-center gap-6 font-['Space_Grotesk'] tracking-tight">
 <a class="text-blue-700 dark:text-blue-400 font-bold border-b-2 border-blue-700 transition-colors" href="#">Terminal</a>
@@ -26,4 +29,20 @@
 </nav>
     `;
     document.write(clientTopnavHTML);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById('client-sidebar-toggle');
+        const sidebar = document.querySelector('aside');
+        if (toggle && sidebar) {
+            toggle.onclick = (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('-translate-x-full');
+            };
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        }
+    });
 })();

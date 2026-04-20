@@ -1,27 +1,18 @@
 <!DOCTYPE html>
+<html class="light" lang="en">
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>WILSOVLEWEL | Client Tickets Portal</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .technical-grid {
-            background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .glass-header {
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
-    </style>
-<script id="tailwind-config">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>WILSOVLEWEL | Client Tickets Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -85,288 +76,377 @@
                         "headline": ["Space Grotesk"],
                         "body": ["Manrope"],
                         "label": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "xs": ["0.65rem", { "lineHeight": "1rem" }],
+                        "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+                        "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+                        "lg": ["1rem", { "lineHeight": "1.5rem" }],
+                        "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+                        "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+                        "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+                        "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+                        "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+                        "6xl": ["3rem", { "lineHeight": "1" }],
+                        "7xl": ["3.75rem", { "lineHeight": "1" }]
                     }
                 },
             },
         }
     </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .technical-grid {
+            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.05;
+        }
+
+        .anodized-gradient {
+            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+        }
+
+        .site-gradient-bg {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+    </style>
 </head>
-<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-white">
-<!-- TopNavBar -->
-<!-- TopNavBar --><script src="../components/client_topnav.js"></script>
-<!-- SideNavBar -->
-<!-- SideNavBar --><script src="../components/client_sidenav.js" data-root="../"></script>
-<!-- Main Content -->
-<main class="lg:ml-64 pt-24 px-8 pb-12">
-<div class="max-w-7xl mx-auto">
-<!-- Header Section with Asymmetry -->
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-<div class="md:translate-x-[-12px]">
-<span class="font-headline text-[10px] uppercase tracking-[0.2em] text-secondary">System Support Console</span>
-<h1 class="font-headline text-5xl font-bold text-on-surface tracking-tight mt-2">Active Tickets</h1>
-<p class="text-on-surface-variant mt-2 max-w-md">Precision monitoring and resolution tracking for mechanical infrastructure at Site 04-Alpha.</p>
-</div>
-<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-3 rounded-full font-headline font-medium flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform active:opacity-80">
-<span class="material-symbols-outlined">add</span> Report Mechanical Fault
+
+<body
+    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+    <!-- SideNavBar -->
+    <script src="../components/client_sidenav.js" data-root="../"></script>
+    <script src="../components/effects.js"></script>
+    <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+    <!-- Main Content Canvas -->
+    <main class="lg:ml-64 pt-24 pb-12 px-8 relative z-10">
+        <!-- TopNavBar -->
+        <script src="../components/client_topnav.js" data-root="../"></script>
+        <div class="max-w-7xl mx-auto">
+            <!-- Header Section with Asymmetry -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div class="md:translate-x-[-12px]">
+                    <span class="font-headline text-[10px] uppercase tracking-[0.2em] text-secondary">System
+                        Support Console</span>
+                    <h1 class="font-headline text-5xl font-bold text-on-surface tracking-tight mt-2">Active
+                        Tickets</h1>
+                    <p class="text-on-surface-variant mt-2 max-w-md">Precision monitoring and resolution
+                        tracking for mechanical infrastructure at Site 04-Alpha.</p>
+                </div>
+                <button
+                    class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-3 rounded-full font-headline font-medium flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform active:opacity-80">
+                    <span class="material-symbols-outlined">add</span> Report Mechanical Fault
                 </button>
-</div>
-<div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-<!-- Left Column: Tickets List -->
-<div class="xl:col-span-8 space-y-6">
-<!-- Filters -->
-<div class="flex gap-4 overflow-x-auto pb-2">
-<button class="bg-primary text-white px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap">All Tickets (24)</button>
-<button class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap hover:bg-surface-container-highest">Open (8)</button>
-<button class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap hover:bg-surface-container-highest">In Progress (12)</button>
-<button class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap hover:bg-surface-container-highest">Resolved (4)</button>
-</div>
-<!-- Ticket Card: Critical -->
-<div class="group bg-surface-container-lowest rounded-lg p-6 shadow-sm border-l-4 border-error hover:shadow-md transition-shadow">
-<div class="flex justify-between items-start mb-4">
-<div>
-<div class="flex items-center gap-3 mb-1">
-<span class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 bg-error-container text-on-error-container rounded-full">Critical</span>
-<span class="text-xs text-outline font-headline">#TKT-9821-X</span>
-</div>
-<h3 class="text-xl font-bold text-on-surface font-headline">Hydraulic Pressure Variance in Main Lift</h3>
-</div>
-<div class="text-right">
-<span class="text-xs text-outline font-headline uppercase block">Reported</span>
-<span class="text-sm font-medium">14 mins ago</span>
-</div>
-</div>
-<p class="text-on-surface-variant text-sm mb-6 max-w-2xl leading-relaxed">System reporting 15% drop in pressure on Secondary Cylinder B. Safety locks engaged automatically. On-site inspection required for gasket seal integrity check.</p>
-<div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-container-low">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
-<span class="material-symbols-outlined text-primary scale-75" style="font-variation-settings: 'FILL' 1;">person</span>
-</div>
-<div>
-<p class="text-xs text-outline font-headline uppercase">Assigned Technician</p>
-<p class="text-sm font-bold">Marcus Sterling</p>
-</div>
-</div>
-<div class="flex items-center gap-8">
-<div>
-<p class="text-xs text-outline font-headline uppercase">ETA Resolution</p>
-<p class="text-sm font-bold text-primary">2h 45m</p>
-</div>
-<button class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                <!-- Left Column: Tickets List -->
+                <div class="xl:col-span-8 space-y-6">
+                    <!-- Filters -->
+                    <div class="flex gap-4 overflow-x-auto pb-2">
+                        <button
+                            class="bg-primary text-white px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap">All
+                            Tickets (24)</button>
+                        <button
+                            class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap hover:bg-surface-container-highest">Open
+                            (8)</button>
+                        <button
+                            class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap hover:bg-surface-container-highest">In
+                            Progress (12)</button>
+                        <button
+                            class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-xs font-headline font-medium whitespace-nowrap hover:bg-surface-container-highest">Resolved
+                            (4)</button>
+                    </div>
+                    <!-- Ticket Card: Critical -->
+                    <div
+                        class="group bg-surface-container-lowest rounded-lg p-6 shadow-sm border-l-4 border-error hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span
+                                        class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 bg-error-container text-on-error-container rounded-full">Critical</span>
+                                    <span class="text-xs text-outline font-headline">#TKT-9821-X</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-on-surface font-headline">Hydraulic Pressure
+                                    Variance in Main Lift</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-outline font-headline uppercase block">Reported</span>
+                                <span class="text-sm font-medium">14 mins ago</span>
+                            </div>
+                        </div>
+                        <p class="text-on-surface-variant text-sm mb-6 max-w-2xl leading-relaxed">System
+                            reporting 15% drop in pressure on Secondary Cylinder B. Safety locks engaged
+                            automatically. On-site inspection required for gasket seal integrity check.</p>
+                        <div
+                            class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-container-low">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary scale-75"
+                                        style="font-variation-settings: 'FILL' 1;">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-outline font-headline uppercase">Assigned Technician
+                                    </p>
+                                    <p class="text-sm font-bold">Marcus Sterling</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-8">
+                                <div>
+                                    <p class="text-xs text-outline font-headline uppercase">ETA Resolution</p>
+                                    <p class="text-sm font-bold text-primary">2h 45m</p>
+                                </div>
+                                <button
+                                    class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
                                     View Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Ticket Card: Urgent -->
-<div class="group bg-surface-container-lowest rounded-lg p-6 shadow-sm border-l-4 border-secondary-container hover:shadow-md transition-shadow">
-<div class="flex justify-between items-start mb-4">
-<div>
-<div class="flex items-center gap-3 mb-1">
-<span class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full">Urgent</span>
-<span class="text-xs text-outline font-headline">#TKT-9755-A</span>
-</div>
-<h3 class="text-xl font-bold text-on-surface font-headline">Conveyor Belt Misalignment: Section 4</h3>
-</div>
-<div class="text-right">
-<span class="text-xs text-outline font-headline uppercase block">Reported</span>
-<span class="text-sm font-medium">3 hours ago</span>
-</div>
-</div>
-<p class="text-on-surface-variant text-sm mb-6 max-w-2xl leading-relaxed">Irregular noise detected during peak operational load. Thermal sensors indicate 12°C rise in bearing housing. Requesting lubrication and re-alignment.</p>
-<div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-container-low">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
-<span class="material-symbols-outlined text-primary scale-75" style="font-variation-settings: 'FILL' 1;">person</span>
-</div>
-<div>
-<p class="text-xs text-outline font-headline uppercase">Assigned Technician</p>
-<p class="text-sm font-bold">Sarah Chen</p>
-</div>
-</div>
-<div class="flex items-center gap-8">
-<div>
-<p class="text-xs text-outline font-headline uppercase">Status</p>
-<p class="text-sm font-bold">In Transit</p>
-</div>
-<button class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ticket Card: Urgent -->
+                    <div
+                        class="group bg-surface-container-lowest rounded-lg p-6 shadow-sm border-l-4 border-secondary-container hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span
+                                        class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full">Urgent</span>
+                                    <span class="text-xs text-outline font-headline">#TKT-9755-A</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-on-surface font-headline">Conveyor Belt
+                                    Misalignment: Section 4</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-outline font-headline uppercase block">Reported</span>
+                                <span class="text-sm font-medium">3 hours ago</span>
+                            </div>
+                        </div>
+                        <p class="text-on-surface-variant text-sm mb-6 max-w-2xl leading-relaxed">Irregular
+                            noise detected during peak operational load. Thermal sensors indicate 12°C rise in
+                            bearing housing. Requesting lubrication and re-alignment.</p>
+                        <div
+                            class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-container-low">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary scale-75"
+                                        style="font-variation-settings: 'FILL' 1;">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-outline font-headline uppercase">Assigned Technician
+                                    </p>
+                                    <p class="text-sm font-bold">Sarah Chen</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-8">
+                                <div>
+                                    <p class="text-xs text-outline font-headline uppercase">Status</p>
+                                    <p class="text-sm font-bold">In Transit</p>
+                                </div>
+                                <button
+                                    class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
                                     View Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Ticket Card: Routine -->
-<div class="group bg-surface-container-lowest rounded-lg p-6 shadow-sm border-l-4 border-outline-variant hover:shadow-md transition-shadow">
-<div class="flex justify-between items-start mb-4">
-<div>
-<div class="flex items-center gap-3 mb-1">
-<span class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded-full">Routine</span>
-<span class="text-xs text-outline font-headline">#TKT-9740-B</span>
-</div>
-<h3 class="text-xl font-bold text-on-surface font-headline">Calibration of Environmental Sensors</h3>
-</div>
-<div class="text-right">
-<span class="text-xs text-outline font-headline uppercase block">Reported</span>
-<span class="text-sm font-medium">1 day ago</span>
-</div>
-</div>
-<p class="text-on-surface-variant text-sm mb-6 max-w-2xl leading-relaxed">Standard quarterly calibration required for humidity and temperature sensors in Storage Zone 2. System within tolerance but due for verification.</p>
-<div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-container-low">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
-<span class="material-symbols-outlined text-primary scale-75" style="font-variation-settings: 'FILL' 1;">person</span>
-</div>
-<div>
-<p class="text-xs text-outline font-headline uppercase">Assigned Technician</p>
-<p class="text-sm font-bold">Waiting Assignment</p>
-</div>
-</div>
-<div class="flex items-center gap-8">
-<div>
-<p class="text-xs text-outline font-headline uppercase">Next Window</p>
-<p class="text-sm font-bold">Tomorrow, 09:00</p>
-</div>
-<button class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ticket Card: Routine -->
+                    <div
+                        class="group bg-surface-container-lowest rounded-lg p-6 shadow-sm border-l-4 border-outline-variant hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span
+                                        class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded-full">Routine</span>
+                                    <span class="text-xs text-outline font-headline">#TKT-9740-B</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-on-surface font-headline">Calibration of
+                                    Environmental Sensors</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-outline font-headline uppercase block">Reported</span>
+                                <span class="text-sm font-medium">1 day ago</span>
+                            </div>
+                        </div>
+                        <p class="text-on-surface-variant text-sm mb-6 max-w-2xl leading-relaxed">Standard
+                            quarterly calibration required for humidity and temperature sensors in Storage Zone
+                            2. System within tolerance but due for verification.</p>
+                        <div
+                            class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-container-low">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary scale-75"
+                                        style="font-variation-settings: 'FILL' 1;">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-outline font-headline uppercase">Assigned Technician
+                                    </p>
+                                    <p class="text-sm font-bold">Waiting Assignment</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-8">
+                                <div>
+                                    <p class="text-xs text-outline font-headline uppercase">Next Window</p>
+                                    <p class="text-sm font-bold">Tomorrow, 09:00</p>
+                                </div>
+                                <button
+                                    class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
                                     View Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-<!-- Right Column: System Status & Stats -->
-<div class="xl:col-span-4 space-y-8">
-<!-- Performance Bento Card -->
-<div class="bg-surface-container-low rounded-lg p-6 technical-grid text-on-surface-variant/10">
-<div class="relative text-on-surface">
-<h2 class="font-headline text-lg font-bold mb-4">System Uptime</h2>
-<div class="flex items-end gap-1 mb-6">
-<span class="text-4xl font-bold font-headline tracking-tighter">99.98</span>
-<span class="text-lg font-headline font-medium opacity-60 pb-1">%</span>
-</div>
-<!-- Segmented Progress Bar -->
-<div class="flex gap-1 h-3 mb-4">
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm"></div>
-<div class="flex-1 bg-primary rounded-sm opacity-30"></div>
-<div class="flex-1 bg-primary rounded-sm opacity-10"></div>
-</div>
-<p class="text-xs font-headline uppercase tracking-widest opacity-60">Section 04 Health Scan Complete</p>
-</div>
-</div>
-<!-- Technicians On Duty -->
-<div class="bg-surface-container-lowest rounded-lg p-6 shadow-sm">
-<h2 class="font-headline text-lg font-bold mb-6 flex justify-between items-center">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column: System Status & Stats -->
+                <div class="xl:col-span-4 space-y-8">
+                    <!-- Performance Bento Card -->
+                    <div class="bg-surface-container-low rounded-lg p-6 technical-grid text-on-surface-variant/10">
+                        <div class="relative text-on-surface">
+                            <h2 class="font-headline text-lg font-bold mb-4">System Uptime</h2>
+                            <div class="flex items-end gap-1 mb-6">
+                                <span class="text-4xl font-bold font-headline tracking-tighter">99.98</span>
+                                <span class="text-lg font-headline font-medium opacity-60 pb-1">%</span>
+                            </div>
+                            <!-- Segmented Progress Bar -->
+                            <div class="flex gap-1 h-3 mb-4">
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm"></div>
+                                <div class="flex-1 bg-primary rounded-sm opacity-30"></div>
+                                <div class="flex-1 bg-primary rounded-sm opacity-10"></div>
+                            </div>
+                            <p class="text-xs font-headline uppercase tracking-widest opacity-60">Section 04
+                                Health Scan Complete</p>
+                        </div>
+                    </div>
+                    <!-- Technicians On Duty -->
+                    <div class="bg-surface-container-lowest rounded-lg p-6 shadow-sm">
+                        <h2 class="font-headline text-lg font-bold mb-6 flex justify-between items-center">
                             On-Call Squad
-                            <span class="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full">4 Active</span>
-</h2>
-<div class="space-y-4">
-<div class="flex items-center gap-3">
-<img alt="Sarah Chen" class="w-10 h-10 rounded-full object-cover" data-alt="professional portrait of an asian female engineer in a blue technical jacket with a clean industrial workshop background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC922-I7vI92Rm-uF7CcEnZ6IzULYfmIh3059A50jPA4TjwtW0KxdNuSpe1kQme3VFx-ZWRPoQtiT7UasaBC3IQMqUh8nsaFRSo5Wk15znLF7CEd019Q9NW6ZZIg2jXuX3Fw2-XRb-WjKwhQbmGLd-flvUWQcpDZOurE8IIa720vX7Vo5LYo5h3g9T5oqFAajfUJ_tUmd_5ZkKxHcksyiEnSHbMMg3Z02IWuhSikYKwPdFyvK6Z88O945z8QY-YnTAZEZmr7-LaVoe_"/>
-<div>
-<p class="text-sm font-bold">Sarah Chen</p>
-<p class="text-xs text-outline">Lead Mechanical</p>
-</div>
-<span class="ml-auto w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-</div>
-<div class="flex items-center gap-3">
-<img alt="Marcus Sterling" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a confident male technician in industrial gear looking directly at the camera with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbOBnXitTgxsn8P1R7SRX8AANdCKSJl1pObCU_UUG8mmCc-dHAmYz10Ab4Di9huYEG_PgKrk0Z-qlJe6JWB_JUMuCkeqPM30admS6vrpwjP8T-USuI5PeFa_bbEZnzhGJT3_oSB_Q6S0lvRCiRdXjmpIdBXWY7GFD1gJ7MYxNEJsmoIxOJtOCRP0dZREtdqhkgmlDBzkrmwtPv4-dJky0O9UUUb0SX6nownNLMGgesAKiUi7z7PXIL4mtO8XVRP0X6djD-S0tMBYXy"/>
-<div>
-<p class="text-sm font-bold">Marcus Sterling</p>
-<p class="text-xs text-outline">Hydraulics Specialist</p>
-</div>
-<span class="ml-auto w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-</div>
-<div class="flex items-center gap-3">
-<img alt="Elena Rodriguez" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a focused woman engineer wearing safety glasses perched on her head in a brightly lit lab environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY6aDCQdMU7Z3AVHKM0BHkPHDFaQORTaeMNruKP9rX8Ol6FNionbhgbiobfgAJZLgzmD0pl-VUu4J9eagVJzaSyQ9wSaiPYGvE-nkCWdAxOv5pyPllJs94QQUJwcfmHRrgo7ljUDH6pjFho2fvQo0qF1PtrLALQnDK2QVhFwfbhw2XmqB2sa3XWAKHlnDMWB7u1-cYXSjlSh2q27886lfzerdOIPLbXuSMR_PWfVBxfhK9bTvGpkrlCkFtV5axwXbO85NaNYS56IjP"/>
-<div>
-<p class="text-sm font-bold">Elena Rodriguez</p>
-<p class="text-xs text-outline">Sensor Logistics</p>
-</div>
-<span class="ml-auto w-2 h-2 rounded-full bg-orange-400"></span>
-</div>
-</div>
-</div>
-<!-- Quick Link Card -->
-<div class="bg-primary rounded-lg p-6 text-on-primary shadow-xl shadow-primary/30 relative overflow-hidden group">
-<div class="relative z-10">
-<span class="material-symbols-outlined mb-4 scale-150 origin-left">menu_book</span>
-<h3 class="font-headline text-lg font-bold mb-2 leading-tight">Emergency Protocol Manual</h3>
-<p class="text-sm text-on-primary/70 mb-6">Immediate steps for total system isolation and manual override procedures.</p>
-<button class="bg-white/10 hover:bg-white/20 transition-colors px-4 py-2 rounded-md text-xs font-headline font-bold flex items-center gap-2">
+                            <span
+                                class="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full">4
+                                Active</span>
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3">
+                                <img alt="Sarah Chen" class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="professional portrait of an asian female engineer in a blue technical jacket with a clean industrial workshop background"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC922-I7vI92Rm-uF7CcEnZ6IzULYfmIh3059A50jPA4TjwtW0KxdNuSpe1kQme3VFx-ZWRPoQtiT7UasaBC3IQMqUh8nsaFRSo5Wk15znLF7CEd019Q9NW6ZZIg2jXuX3Fw2-XRb-WjKwhQbmGLd-flvUWQcpDZOurE8IIa720vX7Vo5LYo5h3g9T5oqFAajfUJ_tUmd_5ZkKxHcksyiEnSHbMMg3Z02IWuhSikYKwPdFyvK6Z88O945z8QY-YnTAZEZmr7-LaVoe_" />
+                                <div>
+                                    <p class="text-sm font-bold">Sarah Chen</p>
+                                    <p class="text-xs text-outline">Lead Mechanical</p>
+                                </div>
+                                <span
+                                    class="ml-auto w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <img alt="Marcus Sterling" class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="portrait of a confident male technician in industrial gear looking directly at the camera with warm lighting"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbOBnXitTgxsn8P1R7SRX8AANdCKSJl1pObCU_UUG8mmCc-dHAmYz10Ab4Di9huYEG_PgKrk0Z-qlJe6JWB_JUMuCkeqPM30admS6vrpwjP8T-USuI5PeFa_bbEZnzhGJT3_oSB_Q6S0lvRCiRdXjmpIdBXWY7GFD1gJ7MYxNEJsmoIxOJtOCRP0dZREtdqhkgmlDBzkrmwtPv4-dJky0O9UUUb0SX6nownNLMGgesAKiUi7z7PXIL4mtO8XVRP0X6djD-S0tMBYXy" />
+                                <div>
+                                    <p class="text-sm font-bold">Marcus Sterling</p>
+                                    <p class="text-xs text-outline">Hydraulics Specialist</p>
+                                </div>
+                                <span
+                                    class="ml-auto w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <img alt="Elena Rodriguez" class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="portrait of a focused woman engineer wearing safety glasses perched on her head in a brightly lit lab environment"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY6aDCQdMU7Z3AVHKM0BHkPHDFaQORTaeMNruKP9rX8Ol6FNionbhgbiobfgAJZLgzmD0pl-VUu4J9eagVJzaSyQ9wSaiPYGvE-nkCWdAxOv5pyPllJs94QQUJwcfmHRrgo7ljUDH6pjFho2fvQo0qF1PtrLALQnDK2QVhFwfbhw2XmqB2sa3XWAKHlnDMWB7u1-cYXSjlSh2q27886lfzerdOIPLbXuSMR_PWfVBxfhK9bTvGpkrlCkFtV5axwXbO85NaNYS56IjP" />
+                                <div>
+                                    <p class="text-sm font-bold">Elena Rodriguez</p>
+                                    <p class="text-xs text-outline">Sensor Logistics</p>
+                                </div>
+                                <span class="ml-auto w-2 h-2 rounded-full bg-orange-400"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quick Link Card -->
+                    <div
+                        class="bg-primary rounded-lg p-6 text-on-primary shadow-xl shadow-primary/30 relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <span class="material-symbols-outlined mb-4 scale-150 origin-left">menu_book</span>
+                            <h3 class="font-headline text-lg font-bold mb-2 leading-tight">Emergency Protocol
+                                Manual</h3>
+                            <p class="text-sm text-on-primary/70 mb-6">Immediate steps for total system
+                                isolation and manual override procedures.</p>
+                            <button
+                                class="bg-white/10 hover:bg-white/20 transition-colors px-4 py-2 rounded-md text-xs font-headline font-bold flex items-center gap-2">
                                 DOWNLOAD PDF <span class="material-symbols-outlined text-sm">download</span>
-</button>
-</div>
-<!-- Abstract Design Element -->
-<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
-</div>
-</div>
-</div>
-<!-- Recent Resolutions Section (Full Width Table Style) -->
-<div class="mt-16">
-<h2 class="font-headline text-2xl font-bold mb-8">Resolution Timeline</h2>
-<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm">
-<table class="w-full text-left">
-<thead class="bg-surface-container-low border-b border-surface-container">
-<tr>
-<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">Ticket Ref</th>
-<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">System Component</th>
-<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">Resolution Action</th>
-<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">Resolved By</th>
-<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">Date</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container-low">
-<tr class="hover:bg-surface/50 transition-colors">
-<td class="px-6 py-4 font-headline text-xs font-bold text-primary">#TKT-9600-Z</td>
-<td class="px-6 py-4 text-sm font-medium">Exhaust Fan 12-A</td>
-<td class="px-6 py-4 text-sm text-on-surface-variant">Bearing replacement and noise calibration.</td>
-<td class="px-6 py-4 text-sm">Marcus S.</td>
-<td class="px-6 py-4 text-sm text-outline">Oct 24, 2023</td>
-</tr>
-<tr class="hover:bg-surface/50 transition-colors">
-<td class="px-6 py-4 font-headline text-xs font-bold text-primary">#TKT-9588-M</td>
-<td class="px-6 py-4 text-sm font-medium">Main Power Grid</td>
-<td class="px-6 py-4 text-sm text-on-surface-variant">Capacitor bank upgrade for Section 3.</td>
-<td class="px-6 py-4 text-sm">Sarah C.</td>
-<td class="px-6 py-4 text-sm text-outline">Oct 22, 2023</td>
-</tr>
-<tr class="hover:bg-surface/50 transition-colors">
-<td class="px-6 py-4 font-headline text-xs font-bold text-primary">#TKT-9511-L</td>
-<td class="px-6 py-4 text-sm font-medium">Cooling Pump 4</td>
-<td class="px-6 py-4 text-sm text-on-surface-variant">Emergency valve gasket repair.</td>
-<td class="px-6 py-4 text-sm">Elena R.</td>
-<td class="px-6 py-4 text-sm text-outline">Oct 19, 2023</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</main>
-<!-- Bottom Navigation (Mobile Only) -->
-<nav class="md:hidden fixed bottom-0 w-full bg-white/90 backdrop-blur-xl border-t-0 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-50">
-<div class="flex justify-around items-center h-16">
-<button class="flex flex-col items-center gap-1 text-slate-500">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="text-[10px] font-headline font-bold uppercase">Home</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-500">
-<span class="material-symbols-outlined">engineering</span>
-<span class="text-[10px] font-headline font-bold uppercase">Projects</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-blue-700">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
-<span class="text-[10px] font-headline font-bold uppercase border-b-2 border-blue-700">Tickets</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-500">
-<span class="material-symbols-outlined">person</span>
-<span class="text-[10px] font-headline font-bold uppercase">Profile</span>
-</button>
-</div>
-</nav>
-</body></html>
+                            </button>
+                        </div>
+                        <!-- Abstract Design Element -->
+                        <div
+                            class="absolute -right-12 -bottom-12 w-48 h-48 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Resolutions Section (Full Width Table Style) -->
+            <div class="mt-16">
+                <h2 class="font-headline text-2xl font-bold mb-8">Resolution Timeline</h2>
+                <div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm">
+                    <table class="w-full text-left">
+                        <thead class="bg-surface-container-low border-b border-surface-container">
+                            <tr>
+                                <th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">
+                                    Ticket Ref</th>
+                                <th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">
+                                    System Component</th>
+                                <th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">
+                                    Resolution Action</th>
+                                <th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">
+                                    Resolved By</th>
+                                <th class="px-6 py-4 text-[10px] uppercase tracking-widest font-headline text-outline">
+                                    Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-container-low">
+                            <tr class="hover:bg-surface/50 transition-colors">
+                                <td class="px-6 py-4 font-headline text-xs font-bold text-primary">#TKT-9600-Z
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium">Exhaust Fan 12-A</td>
+                                <td class="px-6 py-4 text-sm text-on-surface-variant">Bearing replacement and
+                                    noise calibration.</td>
+                                <td class="px-6 py-4 text-sm">Marcus S.</td>
+                                <td class="px-6 py-4 text-sm text-outline">Oct 24, 2023</td>
+                            </tr>
+                            <tr class="hover:bg-surface/50 transition-colors">
+                                <td class="px-6 py-4 font-headline text-xs font-bold text-primary">#TKT-9588-M
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium">Main Power Grid</td>
+                                <td class="px-6 py-4 text-sm text-on-surface-variant">Capacitor bank upgrade for
+                                    Section 3.</td>
+                                <td class="px-6 py-4 text-sm">Sarah C.</td>
+                                <td class="px-6 py-4 text-sm text-outline">Oct 22, 2023</td>
+                            </tr>
+                            <tr class="hover:bg-surface/50 transition-colors">
+                                <td class="px-6 py-4 font-headline text-xs font-bold text-primary">#TKT-9511-L
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium">Cooling Pump 4</td>
+                                <td class="px-6 py-4 text-sm text-on-surface-variant">Emergency valve gasket
+                                    repair.</td>
+                                <td class="px-6 py-4 text-sm">Elena R.</td>
+                                <td class="px-6 py-4 text-sm text-outline">Oct 19, 2023</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

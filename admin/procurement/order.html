@@ -1,281 +1,261 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-surface-variant": "#424751",
-                    "on-secondary": "#ffffff",
-                    "surface-container-highest": "#e1e2e9",
-                    "on-secondary-fixed-variant": "#354764",
-                    "secondary-fixed": "#d5e3ff",
-                    "surface": "#f9f9ff",
-                    "inverse-primary": "#a6c8ff",
-                    "on-primary": "#ffffff",
-                    "surface-container-lowest": "#ffffff",
-                    "outline-variant": "#c2c6d3",
-                    "error": "#ba1a1a",
-                    "tertiary-container": "#8a3e00",
-                    "inverse-on-surface": "#f0f0f7",
-                    "surface-tint": "#1d5fa8",
-                    "primary-container": "#06549d",
-                    "on-primary-fixed-variant": "#004787",
-                    "surface-container-low": "#f3f3fa",
-                    "secondary-container": "#c8dbfe",
-                    "on-tertiary-fixed-variant": "#753400",
-                    "surface-variant": "#e1e2e9",
-                    "on-error-container": "#93000a",
-                    "on-tertiary": "#ffffff",
-                    "on-background": "#191c20",
-                    "surface-container-high": "#e7e8ef",
-                    "primary": "#003d76",
-                    "error-container": "#ffdad6",
-                    "tertiary": "#662c00",
-                    "on-tertiary-container": "#ffb991",
-                    "on-error": "#ffffff",
-                    "on-tertiary-fixed": "#321200",
-                    "surface-bright": "#f9f9ff",
-                    "tertiary-fixed-dim": "#ffb68c",
-                    "on-secondary-container": "#4d607e",
-                    "background": "#f9f9ff",
-                    "on-primary-container": "#aacaff",
-                    "tertiary-fixed": "#ffdbc9",
-                    "surface-dim": "#d9dae0",
-                    "primary-fixed-dim": "#a6c8ff",
-                    "secondary-fixed-dim": "#b4c7ea",
-                    "primary-fixed": "#d5e3ff",
-                    "on-secondary-fixed": "#061c36",
-                    "outline": "#727782",
-                    "secondary": "#4c5f7d",
-                    "inverse-surface": "#2e3036",
-                    "surface-container": "#ededf4",
-                    "on-primary-fixed": "#001c3b",
-                    "on-surface": "#191c20"
-            },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Space Grotesk"],
-                    "body": ["Manrope"],
-                    "label": ["Space Grotesk"]
-            }
-          },
-        },
-      }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .technical-grid {
-            background-image: radial-gradient(circle, #c2c6d3 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.05;
-        }
-        .anodized-gradient {
-            background: linear-gradient(135deg, #003d76 0%, #06549d 100%);
-        }
-    </style>
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  "fontSize": {
+  "xs": ["0.65rem", { "lineHeight": "1rem" }],
+  "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+  "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+  "lg": ["1rem", { "lineHeight": "1.5rem" }],
+  "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+  "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+  "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+  "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+  "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+  "6xl": ["3rem", { "lineHeight": "1" }],
+  "7xl": ["3.75rem", { "lineHeight": "1" }]
+  }
+  },
+  },
+  },
+  }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .technical-grid {
+      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.05;
+    }
+
+    .anodized-gradient {
+      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+    }
+
+    .site-gradient-bg {
+      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+  </style>
 </head>
-<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
-<div class="fixed inset-0 technical-grid pointer-events-none"></div>
-<!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl flex justify-between items-center px-8 h-16 w-full shadow-[0_40px_60px_-15px_rgba(0,0,0,0.05)]">
-<div class="flex items-center gap-4">
-<span class="text-xl font-bold tracking-tighter text-slate-900 font-['Space_Grotesk']">Wilsovlewel Nigeria</span>
-</div>
-<div class="hidden md:flex items-center gap-8">
-<a class="font-['Space_Grotesk'] tracking-tight text-slate-500 hover:text-blue-600 transition-colors" href="#">Dashboard</a>
-<a class="font-['Space_Grotesk'] tracking-tight text-blue-700 border-b-2 border-blue-600" href="#">Procurement</a>
-<a class="font-['Space_Grotesk'] tracking-tight text-slate-500 hover:text-blue-600 transition-colors" href="#">Assets</a>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined">account_circle</span>
-</button>
-</div>
-</nav>
-<!-- SideNavBar -->
-<!-- SideNavBar --><script src="../../components/admin_sidenav.js" data-root="../../"></script>
-<!-- Main Content Area -->
-<main class="ml-64 pt-24 px-12 pb-20 max-w-7xl">
-<!-- Header Section -->
-<!-- TopNavBar --><script src="../../components/admin_topnav.js"></script>
-<!-- Asymmetric Layout Grid -->
-<div class="grid grid-cols-12 gap-8 items-start">
-<!-- Left Column: Primary Order Data -->
-<div class="col-span-8 space-y-8">
-<!-- Order Details Surface -->
-<section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)]">
-<div class="flex items-center gap-3 mb-8">
-<span class="material-symbols-outlined text-primary">inventory_2</span>
-<h2 class="font-headline font-bold text-xl tracking-tight">Order Specifications</h2>
-</div>
-<div class="grid grid-cols-2 gap-x-12 gap-y-8">
-<div class="col-span-2">
-<label class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Item Nomenclature</label>
-<div class="bg-surface-container-low p-4 rounded-sm border-l-4 border-primary font-body text-lg font-bold text-on-background">
-                                Excavator Track Assembly (CAT-349-X02)
-                            </div>
-</div>
-<div>
-<label class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Quantity Required</label>
-<div class="relative">
-<input class="w-full bg-surface-container-low border-none rounded-sm p-4 font-headline font-medium focus:ring-2 focus:ring-primary/20" type="number" value="02"/>
-<span class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-sm font-label">UNITS</span>
-</div>
-</div>
-<div>
-<label class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Preferred Supplier</label>
-<div class="bg-surface-container-low flex items-center gap-3 p-4 rounded-sm">
-<span class="material-symbols-outlined text-on-surface-variant/60">corporate_fare</span>
-<span class="font-body font-semibold">Caterpillar Strategic Logistics</span>
-</div>
-</div>
-<div class="col-span-2">
-<label class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Delivery Site (Logistics Hub)</label>
-<div class="bg-surface-container-low flex items-center gap-3 p-4 rounded-sm">
-<span class="material-symbols-outlined text-primary">location_on</span>
-<span class="font-body font-medium">Terminal Sector 4: Port Harcourt Industrial Complex</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Technical Schematic Attachment -->
-<section class="bg-surface-container-low p-8 rounded-lg border-2 border-dashed border-outline-variant/30">
-<div class="flex justify-between items-center mb-6">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-secondary">architecture</span>
-<h2 class="font-headline font-bold text-lg tracking-tight uppercase">Technical Schema Attachment</h2>
-</div>
-<button class="text-primary font-headline text-xs font-bold flex items-center gap-1 hover:underline">
-<span class="material-symbols-outlined text-sm">add_circle</span> ATTACH DRAWING
-                        </button>
-</div>
-<div class="grid grid-cols-3 gap-4">
-<!-- Schematic Card -->
-<div class="bg-surface-container-lowest p-4 rounded-lg flex flex-col gap-3 group cursor-pointer hover:shadow-md transition-shadow">
-<div class="aspect-video bg-surface rounded-sm flex items-center justify-center overflow-hidden relative">
-<img class="object-cover w-full h-full opacity-60 grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all" data-alt="precise technical engineering blueprint of heavy machinery components with measurements and mechanical lines on a clean white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZge6zvZ_jFZ1b8CB4-A1pqYmi-27v8c-D6sXTzxx1geqTIedSEzgDF5S0mFwGHgF9Un-XZEvOiMQuZzsEX3HrL0p-By9UHEOJAthy9tUBCCsHL07nZcgFJkIPq5Y5zRB-ZpX-KqXazjd2V-aS0_gYxA6nX0k-6KCHnn007xpou9G8xl_QmvRRv4oYt3mYbUkb9J6Yu-hOodY1-mSDw80Cp2MMwJeByTd0_gdk7UjrrfafsLzg2jGhEeBTccxBkE9C0TGzZTdREKhV"/>
-<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10">
-<span class="material-symbols-outlined text-primary">visibility</span>
-</div>
-</div>
-<div>
-<div class="text-xs font-bold font-headline truncate">CAT-349-X02-SPEC.PDF</div>
-<div class="text-[10px] text-on-surface-variant/60 font-label uppercase">CAD/ISO STANDARD • 4.2MB</div>
-</div>
-</div>
-<!-- Empty Slot -->
-<div class="border border-dashed border-outline-variant/50 rounded-lg flex flex-col items-center justify-center p-6 bg-surface/30 group hover:bg-surface transition-colors cursor-pointer">
-<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:text-primary transition-colors">cloud_upload</span>
-<span class="text-[10px] font-bold font-headline text-on-surface-variant/40 mt-2 uppercase">Add ISO Diagram</span>
-</div>
-</div>
-</section>
-</div>
-<!-- Right Column: Summary and Lead Time -->
-<div class="col-span-4 space-y-8">
-<!-- Budget Summary Card -->
-<section class="bg-surface-container-lowest rounded-lg shadow-xl overflow-hidden border border-outline-variant/10">
-<div class="anodized-gradient p-6 text-white">
-<div class="font-label text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-1">Financial Analysis</div>
-<h3 class="font-headline font-bold text-2xl tracking-tight">Budget Summary</h3>
-</div>
-<div class="p-6 space-y-6">
-<div class="space-y-4">
-<div class="flex justify-between text-sm">
-<span class="text-on-surface-variant font-medium">Unit Price (Est.)</span>
-<span class="font-bold">$12,870.00</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-on-surface-variant font-medium">Logistics &amp; Handling</span>
-<span class="font-bold">Included</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-on-surface-variant font-medium">Tax/Duties (15%)</span>
-<span class="font-bold">$0.00 (Exempt)</span>
-</div>
-</div>
-<div class="pt-6 border-t border-surface-container-high">
-<div class="flex justify-between items-end">
-<span class="font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Total Est. Cost</span>
-<span class="text-3xl font-headline font-bold text-primary tracking-tighter">$25,740.00</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Lead Time Section -->
-<section class="bg-surface-container-low p-6 rounded-lg">
-<div class="flex items-center gap-3 mb-6">
-<span class="material-symbols-outlined text-secondary">schedule</span>
-<h3 class="font-headline font-bold text-lg tracking-tight uppercase">Operational Velocity</h3>
-</div>
-<div class="space-y-4">
-<div class="flex items-center justify-between">
-<span class="text-sm font-medium text-on-surface-variant">Est. Lead Time</span>
-<span class="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-bold font-headline">14-18 DAYS</span>
-</div>
-<!-- Segmented Progress Bar -->
-<div class="flex gap-1 h-2">
-<div class="flex-1 bg-primary rounded-l-full"></div>
-<div class="flex-1 bg-primary"></div>
-<div class="flex-1 bg-primary"></div>
-<div class="flex-1 bg-primary"></div>
-<div class="flex-1 bg-primary/20"></div>
-<div class="flex-1 bg-primary/20"></div>
-<div class="flex-1 bg-primary/20"></div>
-<div class="flex-1 bg-primary/20"></div>
-<div class="flex-1 bg-primary/20"></div>
-<div class="flex-1 bg-primary/20 rounded-r-full"></div>
-</div>
-<p class="text-[10px] text-on-surface-variant leading-relaxed">
-                            Logistics route: Peoria, US → Rotterdam Hub → Port Harcourt Terminal. Current status: <span class="text-primary font-bold">Standard Priority</span>.
-                        </p>
-</div>
-</section>
-<!-- Action Required / Status Chips -->
-<section class="space-y-3">
-<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border-l-4 border-secondary shadow-sm">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-secondary text-lg">verified_user</span>
-<span class="text-xs font-bold font-headline uppercase tracking-widest">HSSE Review Required</span>
-</div>
-<span class="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
-</div>
-<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border-l-4 border-outline-variant shadow-sm">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-outline text-lg">history_edu</span>
-<span class="text-xs font-bold font-headline uppercase tracking-widest text-on-surface-variant/60">Project Alignment</span>
-</div>
-<span class="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
-</div>
-</section>
-</div>
-</div>
-</main>
-<!-- Contextual Information Overlay (Subtle Blueprint aesthetic) -->
-<div class="fixed bottom-8 right-8 pointer-events-none opacity-40">
-<div class="text-[8px] font-label font-bold uppercase tracking-[0.4em] text-on-surface-variant text-right">
-            System Node: X-PROC-9<br/>
-            Auth Status: Secured<br/>
-            Terminal: 4.0.2
-        </div>
-</div>
-</body></html>
+
+<body
+  class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+  <!-- SideNavBar -->
+  <script src="../../components/admin_sidenav.js" data-root="../../"></script>
+  <script src="../../components/effects.js"></script>
+  <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+  <!-- Main Content Canvas -->
+  <main class="lg:ml-64 p-8 relative z-10">
+    <!-- TopNavBar -->
+    <script src="../../components/admin_topnav.js" data-root="../../"></script>
+    <!-- Asymmetric Layout Grid -->
+    <div class="grid grid-cols-12 gap-8 items-start">
+      <!-- Left Column: Primary Order Data -->
+      <div class="col-span-8 space-y-8">
+        <!-- Order Details Surface -->
+        <section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-3 mb-8">
+            <span class="material-symbols-outlined text-primary">inventory_2</span>
+            <h2 class="font-headline font-bold text-xl tracking-tight">Order Specifications</h2>
+          </div>
+          <div class="grid grid-cols-2 gap-x-12 gap-y-8">
+            <div class="col-span-2">
+              <label
+                class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Item
+                Nomenclature</label>
+              <div
+                class="bg-surface-container-low p-4 rounded-sm border-l-4 border-primary font-body text-lg font-bold text-on-background">
+                Excavator Track Assembly (CAT-349-X02)
+              </div>
+            </div>
+            <div>
+              <label
+                class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Quantity
+                Required</label>
+              <div class="relative">
+                <input
+                  class="w-full bg-surface-container-low border-none rounded-sm p-4 font-headline font-medium focus:ring-2 focus:ring-primary/20"
+                  type="number" value="02" />
+                <span
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-sm font-label">UNITS</span>
+              </div>
+            </div>
+            <div>
+              <label
+                class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Preferred
+                Supplier</label>
+              <div class="bg-surface-container-low flex items-center gap-3 p-4 rounded-sm">
+                <span class="material-symbols-outlined text-on-surface-variant/60">corporate_fare</span>
+                <span class="font-body font-semibold">Caterpillar Strategic Logistics</span>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <label
+                class="block font-label text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest mb-2">Delivery
+                Site (Logistics Hub)</label>
+              <div class="bg-surface-container-low flex items-center gap-3 p-4 rounded-sm">
+                <span class="material-symbols-outlined text-primary">location_on</span>
+                <span class="font-body font-medium">Terminal Sector 4: Port Harcourt Industrial Complex</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Technical Schematic Attachment -->
+        <section class="bg-surface-container-low p-8 rounded-lg border-2 border-dashed border-outline-variant/30">
+          <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary">architecture</span>
+              <h2 class="font-headline font-bold text-lg tracking-tight uppercase">Technical Schema Attachment</h2>
+            </div>
+            <button class="text-primary font-headline text-xs font-bold flex items-center gap-1 hover:underline">
+              <span class="material-symbols-outlined text-sm">add_circle</span> ATTACH DRAWING
+            </button>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <!-- Schematic Card -->
+            <div
+              class="bg-surface-container-lowest p-4 rounded-lg flex flex-col gap-3 group cursor-pointer hover:shadow-md transition-shadow">
+              <div class="aspect-video bg-surface rounded-sm flex items-center justify-center overflow-hidden relative">
+                <img
+                  class="object-cover w-full h-full opacity-60 grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all"
+                  data-alt="precise technical engineering blueprint of heavy machinery components with measurements and mechanical lines on a clean white background"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZge6zvZ_jFZ1b8CB4-A1pqYmi-27v8c-D6sXTzxx1geqTIedSEzgDF5S0mFwGHgF9Un-XZEvOiMQuZzsEX3HrL0p-By9UHEOJAthy9tUBCCsHL07nZcgFJkIPq5Y5zRB-ZpX-KqXazjd2V-aS0_gYxA6nX0k-6KCHnn007xpou9G8xl_QmvRRv4oYt3mYbUkb9J6Yu-hOodY1-mSDw80Cp2MMwJeByTd0_gdk7UjrrfafsLzg2jGhEeBTccxBkE9C0TGzZTdREKhV" />
+                <div
+                  class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10">
+                  <span class="material-symbols-outlined text-primary">visibility</span>
+                </div>
+              </div>
+              <div>
+                <div class="text-xs font-bold font-headline truncate">CAT-349-X02-SPEC.PDF</div>
+                <div class="text-[10px] text-on-surface-variant/60 font-label uppercase">CAD/ISO STANDARD • 4.2MB</div>
+              </div>
+            </div>
+            <!-- Empty Slot -->
+            <div
+              class="border border-dashed border-outline-variant/50 rounded-lg flex flex-col items-center justify-center p-6 bg-surface/30 group hover:bg-surface transition-colors cursor-pointer">
+              <span
+                class="material-symbols-outlined text-on-surface-variant/30 group-hover:text-primary transition-colors">cloud_upload</span>
+              <span class="text-[10px] font-bold font-headline text-on-surface-variant/40 mt-2 uppercase">Add ISO
+                Diagram</span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- Right Column: Summary and Lead Time -->
+      <div class="col-span-4 space-y-8">
+        <!-- Budget Summary Card -->
+        <section
+          class="bg-surface-container-lowest rounded-lg shadow-xl overflow-hidden border border-outline-variant/10">
+          <div class="anodized-gradient p-6 text-white">
+            <div class="font-label text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-1">Financial Analysis
+            </div>
+            <h3 class="font-headline font-bold text-2xl tracking-tight">Budget Summary</h3>
+          </div>
+          <div class="p-6 space-y-6">
+            <div class="space-y-4">
+              <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant font-medium">Unit Price (Est.)</span>
+                <span class="font-bold">$12,870.00</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant font-medium">Logistics &amp; Handling</span>
+                <span class="font-bold">Included</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant font-medium">Tax/Duties (15%)</span>
+                <span class="font-bold">$0.00 (Exempt)</span>
+              </div>
+            </div>
+            <div class="pt-6 border-t border-surface-container-high">
+              <div class="flex justify-between items-end">
+                <span
+                  class="font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Total
+                  Est. Cost</span>
+                <span class="text-3xl font-headline font-bold text-primary tracking-tighter">$25,740.00</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Lead Time Section -->
+        <section class="bg-surface-container-low p-6 rounded-lg">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-secondary">schedule</span>
+            <h3 class="font-headline font-bold text-lg tracking-tight uppercase">Operational Velocity</h3>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-on-surface-variant">Est. Lead Time</span>
+              <span class="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-bold font-headline">14-18
+                DAYS</span>
+            </div>
+            <!-- Segmented Progress Bar -->
+            <div class="flex gap-1 h-2">
+              <div class="flex-1 bg-primary rounded-l-full"></div>
+              <div class="flex-1 bg-primary"></div>
+              <div class="flex-1 bg-primary"></div>
+              <div class="flex-1 bg-primary"></div>
+              <div class="flex-1 bg-primary/20"></div>
+              <div class="flex-1 bg-primary/20"></div>
+              <div class="flex-1 bg-primary/20"></div>
+              <div class="flex-1 bg-primary/20"></div>
+              <div class="flex-1 bg-primary/20"></div>
+              <div class="flex-1 bg-primary/20 rounded-r-full"></div>
+            </div>
+            <p class="text-[10px] text-on-surface-variant leading-relaxed">
+              Logistics route: Peoria, US → Rotterdam Hub → Port Harcourt Terminal. Current status: <span
+                class="text-primary font-bold">Standard Priority</span>.
+            </p>
+          </div>
+        </section>
+        <!-- Action Required / Status Chips -->
+        <section class="space-y-3">
+          <div
+            class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border-l-4 border-secondary shadow-sm">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary text-lg">verified_user</span>
+              <span class="text-xs font-bold font-headline uppercase tracking-widest">HSSE Review Required</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
+          </div>
+          <div
+            class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border-l-4 border-outline-variant shadow-sm">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-outline text-lg">history_edu</span>
+              <span class="text-xs font-bold font-headline uppercase tracking-widest text-on-surface-variant/60">Project
+                Alignment</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <!-- Contextual Information Overlay (Subtle Blueprint aesthetic) -->
+  <div class="fixed bottom-8 right-8 pointer-events-none opacity-40">
+    <div class="text-[8px] font-label font-bold uppercase tracking-[0.4em] text-on-surface-variant text-right">
+      System Node: X-PROC-9<br />
+      Auth Status: Secured<br />
+      Terminal: 4.0.2
+    </div>
+  </div>
+</body>
+
+</html>

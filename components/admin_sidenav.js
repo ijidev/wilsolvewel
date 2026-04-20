@@ -7,7 +7,7 @@
 
     const sidenavHTML = `
 <!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 px-4 z-50 transition-all">
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 px-4 z-[60] transition-transform duration-300 -translate-x-full lg:translate-x-0">
 <div class="mb-10 px-2">
 <a href="${rootPath}admin/index.html" class="block hover:opacity-80 transition-opacity">
 <h1 class="text-xl font-bold font-['Space_Grotesk'] tracking-tight text-slate-900 dark:text-slate-100">Wilsolvewel</h1>
