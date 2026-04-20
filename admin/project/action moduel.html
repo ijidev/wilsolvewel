@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e2e9",
+                    "background": "#f9f9ff",
+                    "secondary-container": "#c8dbfe",
+                    "surface-container-highest": "#e1e2e9",
+                    "primary-fixed-dim": "#a6c8ff",
+                    "on-primary-fixed": "#001c3b",
+                    "secondary-fixed-dim": "#b4c7ea",
+                    "on-surface-variant": "#424751",
+                    "surface-dim": "#d9dae0",
+                    "outline": "#727782",
+                    "on-secondary-container": "#4d607e",
+                    "tertiary-container": "#8a3e00",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c2c6d3",
+                    "tertiary-fixed": "#ffdbc9",
+                    "surface-container-low": "#f3f3fa",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-container": "#ffb991",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e7e8ef",
+                    "on-tertiary-fixed-variant": "#753400",
+                    "secondary-fixed": "#d5e3ff",
+                    "primary-fixed": "#d5e3ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#662c00",
+                    "on-tertiary-fixed": "#321200",
+                    "inverse-on-surface": "#f0f0f7",
+                    "surface-container": "#ededf4",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#a6c8ff",
+                    "on-primary-container": "#aacaff",
+                    "inverse-surface": "#2e3036",
+                    "secondary": "#4c5f7d",
+                    "on-primary-fixed-variant": "#004787",
+                    "on-secondary-fixed-variant": "#354764",
+                    "surface-tint": "#1d5fa8",
+                    "on-secondary-fixed": "#061c36",
+                    "error-container": "#ffdad6",
+                    "on-background": "#191c20",
+                    "primary": "#003d76",
+                    "on-surface": "#191c20",
+                    "tertiary-fixed-dim": "#ffb68c",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9ff",
+                    "primary-container": "#06549d",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Manrope"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .technical-grid {
+            background-image: linear-gradient(to right, #c2c6d3 1px, transparent 1px), linear-gradient(to bottom, #c2c6d3 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.05;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface min-h-screen relative overflow-hidden">
+<!-- Technical Grid Overlay -->
+<div class="fixed inset-0 technical-grid pointer-events-none"></div>
+<!-- SideNavBar (Suppressed for focused action module, but shown here as shell anchor for context) -->
+<!-- SideNavBar --><script src="../../components/admin_sidenav.js" data-root="../../"></script>
+<!-- TopNavBar -->
+<!-- TopNavBar --><script src="../../components/admin_topnav.js"></script>
+<!-- Main Content Canvas (The Background Ledger) -->
+<main class="pl-80 pt-28 pr-8 pb-8 min-h-screen">
+<div class="max-w-6xl mx-auto opacity-40 blur-sm pointer-events-none">
+<div class="flex items-center justify-between mb-10">
+<div>
+<span class="font-['Space_Grotesk'] uppercase tracking-widest text-[10px] text-secondary font-bold">Registry / Sector 07</span>
+<h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight mt-1">Projects Ledger</h1>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-12 bg-surface-container-lowest rounded-lg p-8">
+<div class="h-96 w-full flex flex-col gap-4">
+<div class="h-12 bg-surface-container rounded w-full"></div>
+<div class="h-12 bg-surface-container-low rounded w-full"></div>
+<div class="h-12 bg-surface-container rounded w-full"></div>
+<div class="h-12 bg-surface-container-low rounded w-full"></div>
+<div class="h-12 bg-surface-container rounded w-full"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- MODAL OVERLAY: Project Action Module -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
+<div class="w-full max-w-4xl bg-surface-container-lowest rounded-lg shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col md:flex-row relative">
+<!-- Left Panel: Contextual Data -->
+<div class="w-full md:w-80 bg-surface-container-low p-8 flex flex-col border-r border-outline-variant/10">
+<div class="mb-8">
+<span class="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full font-label text-[10px] font-bold uppercase tracking-widest mb-4">Project ID: WP-9942</span>
+<h2 class="text-2xl font-headline font-bold text-on-surface tracking-tight leading-none mb-2">Site Prep &amp; Foundation</h2>
+<p class="text-sm text-secondary font-medium">Wilsovlewel Terminal Expansion</p>
+</div>
+<div class="space-y-6 mt-4">
+<div>
+<p class="font-label uppercase text-[10px] tracking-widest text-outline mb-2">Phase Progress</p>
+<div class="flex gap-1">
+<div class="h-2 w-full bg-primary rounded-sm"></div>
+<div class="h-2 w-full bg-primary rounded-sm"></div>
+<div class="h-2 w-full bg-primary rounded-sm"></div>
+<div class="h-2 w-full bg-primary rounded-sm"></div>
+<div class="h-2 w-full bg-surface-variant rounded-sm"></div>
+<div class="h-2 w-full bg-surface-variant rounded-sm"></div>
+</div>
+<p class="text-[11px] font-medium text-on-surface-variant mt-2">66% Completed — On Schedule</p>
+</div>
+<div class="p-4 bg-white/50 rounded-md border border-outline-variant/20">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="location_on">location_on</span>
+<span class="text-sm font-bold text-on-surface">Sector 07-B</span>
+</div>
+<div class="aspect-video bg-slate-200 rounded overflow-hidden">
+<img class="w-full h-full object-cover grayscale contrast-125 opacity-70" data-alt="satellite orthophoto of a construction site with foundation trenches and heavy machinery visible" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5zpyOHGRH8NhhTQFXEBwhfEpzSFSGpmYna7voHxuvJI62IOB8NPrnrZlYBg2SJ0cZWY3DqS4_IExnkfTU_LmA5WIJUurdp0TlZTesl0I1SKUO-A8d03bPOhlSKqpAOq2IkvBKss6-8nhRLPNKTqvyxJ0JDh2UZU2CNRz01Vam6fUpUDj6JtkQjkf9YdMHaFvuIFDGV1073jL51Y4hTtREsISek8u0gN4Bo04k10bvn0XKn7ZfPtA7C5V-r8A7U6x3tTKdLPNY0vsP"/>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/20">
+<p class="font-label uppercase text-[10px] tracking-widest text-outline mb-1">Supervisor</p>
+<p class="text-sm font-bold text-on-surface">Elena Vance</p>
+<p class="text-[11px] text-secondary">Chief Field Engineer</p>
+</div>
+</div>
+</div>
+<!-- Right Panel: Action Selection -->
+<div class="flex-1 p-8 lg:p-12 relative">
+<button class="absolute top-6 right-6 p-2 text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<div class="mb-10">
+<h3 class="font-headline text-lg font-bold tracking-tight text-on-surface mb-1">Project Actions</h3>
+<p class="text-sm text-secondary">Select an administrative or tactical deployment task to proceed.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Action Card 1 -->
+<button class="group p-6 rounded-lg bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 text-left border border-transparent hover:border-outline-variant/30 flex flex-col h-full">
+<div class="w-10 h-10 bg-white rounded-md flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="update">update</span>
+</div>
+<p class="font-headline font-bold text-on-surface mb-1">Update Status</p>
+<p class="text-[11px] text-secondary leading-relaxed">Modify project phase, milestones, or current operational state.</p>
+</button>
+<!-- Action Card 2 -->
+<button class="group p-6 rounded-lg bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 text-left border border-transparent hover:border-outline-variant/30 flex flex-col h-full">
+<div class="w-10 h-10 bg-white rounded-md flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+</div>
+<p class="font-headline font-bold text-on-surface mb-1">View Field Reports</p>
+<p class="text-[11px] text-secondary leading-relaxed">Access daily logs, soil analysis, and site safety documentation.</p>
+</button>
+<!-- Action Card 3 -->
+<button class="group p-6 rounded-lg border-2 border-primary/20 bg-blue-50/30 hover:bg-blue-50 transition-all duration-300 text-left flex flex-col h-full relative overflow-hidden">
+<div class="w-10 h-10 bg-primary-container rounded-md flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white" data-icon="agriculture" data-weight="fill" style="font-variation-settings: 'FILL' 1;">agriculture</span>
+</div>
+<p class="font-headline font-bold text-on-surface mb-1">Assign Fleet</p>
+<p class="text-[11px] text-secondary leading-relaxed">Deploy excavators, dozers, and foundation piling rigs to Sector 07-B.</p>
+<div class="absolute -bottom-2 -right-2 opacity-5 scale-150 rotate-12">
+<span class="material-symbols-outlined text-9xl" data-icon="precision_manufacturing">precision_manufacturing</span>
+</div>
+</button>
+<!-- Action Card 4 -->
+<button class="group p-6 rounded-lg bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 text-left border border-transparent hover:border-outline-variant/30 flex flex-col h-full">
+<div class="w-10 h-10 bg-white rounded-md flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="task_alt">task_alt</span>
+</div>
+<p class="font-headline font-bold text-on-surface mb-1">Finalize Milestone</p>
+<p class="text-[11px] text-secondary leading-relaxed">Submit completion audit for Site Prep and move to Structural Phase.</p>
+</button>
+</div>
+<div class="mt-12 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span class="text-[10px] font-label uppercase tracking-widest text-secondary">Awaiting Fleet Dispatch</span>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2.5 rounded-md font-label text-xs font-bold uppercase tracking-widest text-secondary hover:text-on-surface transition-colors">Cancel</button>
+<button class="px-8 py-2.5 rounded-md bg-gradient-to-br from-primary to-primary-container text-white font-label text-xs font-bold uppercase tracking-widest shadow-md hover:shadow-lg active:scale-95 transition-all">Execute Selection</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="fixed bottom-10 right-10 flex flex-col items-end opacity-20 pointer-events-none select-none">
+<span class="font-headline text-[12rem] font-bold leading-none tracking-tighter text-outline-variant/30">07-B</span>
+<span class="font-label uppercase tracking-[1em] text-xl -mt-8 text-outline">Industrial Precision</span>
+</div>
+</body></html>

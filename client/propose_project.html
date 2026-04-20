@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wilsovlewel | Propose Project</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#e1e2e9",
+            "on-tertiary-container": "#ffb991",
+            "on-secondary-fixed-variant": "#354764",
+            "surface-container-high": "#e7e8ef",
+            "on-primary-fixed-variant": "#004787",
+            "on-secondary": "#ffffff",
+            "error-container": "#ffdad6",
+            "primary": "#003d76",
+            "on-tertiary-fixed": "#321200",
+            "on-secondary-fixed": "#061c36",
+            "on-surface": "#191c20",
+            "surface-dim": "#d9dae0",
+            "inverse-surface": "#2e3036",
+            "on-tertiary-fixed-variant": "#753400",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#f3f3fa",
+            "secondary-container": "#c8dbfe",
+            "inverse-primary": "#a6c8ff",
+            "on-primary-container": "#aacaff",
+            "outline-variant": "#c2c6d3",
+            "error": "#ba1a1a",
+            "surface-container": "#ededf4",
+            "secondary-fixed-dim": "#b4c7ea",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#4c5f7d",
+            "surface-tint": "#1d5fa8",
+            "surface-container-highest": "#e1e2e9",
+            "tertiary": "#662c00",
+            "primary-container": "#06549d",
+            "on-secondary-container": "#4d607e",
+            "surface": "#f9f9ff",
+            "on-tertiary": "#ffffff",
+            "secondary-fixed": "#d5e3ff",
+            "primary-fixed-dim": "#a6c8ff",
+            "on-error": "#ffffff",
+            "surface-bright": "#f9f9ff",
+            "on-primary-fixed": "#001c3b",
+            "tertiary-fixed-dim": "#ffb68c",
+            "on-surface-variant": "#424751",
+            "inverse-on-surface": "#f0f0f7",
+            "background": "#f9f9ff",
+            "on-error-container": "#93000a",
+            "outline": "#727782",
+            "tertiary-fixed": "#ffdbc9",
+            "tertiary-container": "#8a3e00",
+            "on-background": "#191c20",
+            "primary-fixed": "#d5e3ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Space Grotesk"],
+            "body": ["Manrope"],
+            "label": ["Space Grotesk"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .technical-grid {
+      background-image: linear-gradient(to right, rgba(194, 198, 211, 0.05) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(194, 198, 211, 0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface technical-grid min-h-screen">
+<!-- TopNavBar -->
+<!-- TopNavBar --><script src="../components/client_topnav.js"></script>
+<!-- SideNavBar (Desktop) -->
+<!-- SideNavBar --><script src="../components/client_sidenav.js" data-root="../"></script>
+<!-- Main Content Area -->
+<main class="lg:ml-64 pt-24 pb-12 px-6 md:px-12 max-w-7xl">
+<div class="mb-12">
+<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.2em] text-primary/60 font-bold">New Submittal</span>
+<h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface mt-2">Propose Project</h1>
+<p class="text-on-surface-variant mt-4 max-w-2xl leading-relaxed">
+        Initiate a maintenance or overhaul request by detailing asset specifications. All submissions are cross-referenced with current HSSE protocols and fleet availability.
+      </p>
+</div>
+<!-- Asymmetric Bento-style Form Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Primary Form -->
+<div class="lg:col-span-8 bg-surface-container-lowest p-8 rounded-lg shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)] relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-9xl" data-icon="engineering">engineering</span>
+</div>
+<form class="space-y-8 relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Machine Model -->
+<div class="space-y-2">
+<label class="font-label text-[11px] uppercase tracking-wider text-outline font-bold ml-4">Machine Model</label>
+<div class="relative">
+<select class="w-full h-12 px-6 rounded-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 appearance-none text-on-surface">
+<option>Select Asset Class...</option>
+<option>Caterpillar D11 Bulldozer</option>
+<option>Komatsu PC2000 Excavator</option>
+<option>Liebherr LTM 11200 Crane</option>
+<option>Volvo A60H Articulated Hauler</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Serial/Asset Number -->
+<div class="space-y-2">
+<label class="font-label text-[11px] uppercase tracking-wider text-outline font-bold ml-4">Serial / Asset Number</label>
+<input class="w-full h-12 px-6 rounded-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline/50" placeholder="e.g. SN-8829-XL" type="text"/>
+</div>
+<!-- Type of Service -->
+<div class="space-y-2">
+<label class="font-label text-[11px] uppercase tracking-wider text-outline font-bold ml-4">Type of Service</label>
+<div class="relative">
+<select class="w-full h-12 px-6 rounded-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 appearance-none text-on-surface">
+<option>Select Service Type...</option>
+<option>Major Overhaul (Level 4)</option>
+<option>Component Repair</option>
+<option>Preventive Maintenance</option>
+<option>Emergency Breakdown</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3 text-outline pointer-events-none" data-icon="settings_suggest">settings_suggest</span>
+</div>
+</div>
+<!-- Asset Location -->
+<div class="space-y-2">
+<label class="font-label text-[11px] uppercase tracking-wider text-outline font-bold ml-4">Asset Location</label>
+<input class="w-full h-12 px-6 rounded-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline/50" placeholder="Coordinates or Site Zone" type="text"/>
+</div>
+</div>
+<!-- Issue Description -->
+<div class="space-y-2">
+<label class="font-label text-[11px] uppercase tracking-wider text-outline font-bold ml-4">Issue Description / Symptoms</label>
+<textarea class="w-full p-6 rounded-2xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline/50 resize-none" placeholder="Describe mechanical anomalies, error codes, or performance degradation..." rows="4"></textarea>
+</div>
+<!-- Priority Level -->
+<div class="space-y-4">
+<label class="font-label text-[11px] uppercase tracking-wider text-outline font-bold ml-4">Priority Level</label>
+<div class="flex flex-wrap gap-4 px-4">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="hidden peer" name="priority" type="radio"/>
+<div class="px-5 py-2 rounded-full border border-outline-variant peer-checked:bg-secondary-container peer-checked:border-transparent peer-checked:text-on-secondary-container transition-all text-sm font-medium">
+                  Routine
+                </div>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input checked="" class="hidden peer" name="priority" type="radio"/>
+<div class="px-5 py-2 rounded-full border border-outline-variant peer-checked:bg-primary peer-checked:border-transparent peer-checked:text-white transition-all text-sm font-medium">
+                  Standard
+                </div>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="hidden peer" name="priority" type="radio"/>
+<div class="px-5 py-2 rounded-full border border-outline-variant peer-checked:bg-tertiary-container peer-checked:border-transparent peer-checked:text-white transition-all text-sm font-medium">
+                  Urgent
+                </div>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="hidden peer" name="priority" type="radio"/>
+<div class="px-5 py-2 rounded-full border border-outline-variant peer-checked:bg-error-container peer-checked:border-transparent peer-checked:text-on-error-container transition-all text-sm font-medium">
+                  Critical
+                </div>
+</label>
+</div>
+</div>
+<div class="pt-6 flex justify-end gap-4">
+<button class="px-8 py-3 rounded-full font-headline font-medium text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+              Save Draft
+            </button>
+<button class="px-10 py-3 rounded-full font-headline font-medium bg-gradient-to-br from-primary to-primary-container text-white shadow-lg active:scale-95 transition-all" type="submit">
+              Submit Proposal
+            </button>
+</div>
+</form>
+</div>
+<!-- Right Column: Contextual Data / Status -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Site Map Card -->
+<div class="bg-surface-container-lowest rounded-lg p-1 overflow-hidden shadow-sm">
+<div class="h-48 w-full bg-slate-200 rounded-md relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-60" data-alt="satellite view of a large scale mining operation with tiered excavation sites and industrial roads" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSZB1zQczCPAn3-hmig90-TM5c6CrCizrqU4pl6XEyUmnU_Ri7_rKh436MH-m5N2aG51lNDWtoNsNY7BVWkf6w5-_5DajXoTCCYiJPKWCcz4IYlsuXr0_zn0Jna_EGFbIaSUUuHO7x9m-5uF9WsNGVWuiJNvxZ_LIkEBaXooeEkq4CbFbk7bF_yK4HLA2VoG-SH-oee42jQYWgjp1XGVpx6Xm0T4fpio5dfMoELDoq44I8ru9-Vxdz0Q9bCt3qKkS1dwetxrpZueXZ"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold font-['Space_Grotesk'] text-primary uppercase">
+              Live Site: Sector 7G
+            </div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center animate-pulse">
+<div class="w-3 h-3 bg-primary rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="p-4">
+<h4 class="font-headline font-bold text-sm">Site Validation</h4>
+<p class="text-xs text-on-surface-variant mt-1">Automatic asset detection active within 500m radius.</p>
+</div>
+</div>
+<!-- System Checks Bento -->
+<div class="bg-surface-container-low rounded-lg p-6 space-y-6">
+<h4 class="font-headline font-bold text-xs uppercase tracking-widest text-outline">Resource Availability</h4>
+<div class="space-y-4">
+<!-- Progress Item 1 -->
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-bold">
+<span class="text-on-surface">Workforce Capacity</span>
+<span class="text-primary">80%</span>
+</div>
+<div class="flex gap-1 h-2">
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-primary rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+</div>
+</div>
+<!-- Progress Item 2 -->
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-bold">
+<span class="text-on-surface">Parts Inventory</span>
+<span class="text-tertiary">40%</span>
+</div>
+<div class="flex gap-1 h-2">
+<div class="flex-1 bg-tertiary rounded-sm"></div>
+<div class="flex-1 bg-tertiary rounded-sm"></div>
+<div class="flex-1 bg-tertiary rounded-sm"></div>
+<div class="flex-1 bg-tertiary rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-sm"></div>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<div class="flex gap-3 items-start">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="info">info</span>
+<p class="text-[10px] text-secondary leading-tight">
+                Note: Major Overhaul projects require a minimum of 72 hours for technician assignment.
+              </p>
+</div>
+</div>
+</div>
+<!-- Documentation Helper -->
+<div class="bg-primary-container rounded-lg p-6 text-on-primary-container relative overflow-hidden group cursor-pointer transition-all hover:translate-y-[-4px]">
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-9xl" data-icon="menu_book">menu_book</span>
+</div>
+<h4 class="font-headline font-bold text-lg leading-tight mb-2">View Technical Library</h4>
+<p class="text-xs opacity-80 mb-4 leading-relaxed">Access OEM manuals and maintenance histories for the selected machine model.</p>
+<div class="flex items-center gap-2 font-bold text-xs uppercase tracking-tighter">
+            Open Documentation <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Navigation Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-md border-t-0 flex justify-around items-center px-4 z-50">
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px]">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined" data-icon="engineering">engineering</span>
+<span class="text-[10px]">Projects</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-blue-700">
+<span class="material-symbols-outlined" data-icon="add_task">add_task</span>
+<span class="text-[10px] font-bold">Propose</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="text-[10px]">Supply</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px]">Config</span>
+</button>
+</nav>
+</body></html>

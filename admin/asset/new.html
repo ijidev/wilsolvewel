@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Precision Forge - Asset Inventory</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-dim": "#d9dae0",
+            "primary-fixed-dim": "#a6c8ff",
+            "secondary-fixed-dim": "#b4c7ea",
+            "primary-fixed": "#d5e3ff",
+            "on-secondary-fixed": "#061c36",
+            "tertiary-fixed": "#ffdbc9",
+            "on-primary-container": "#aacaff",
+            "on-primary-fixed": "#001c3b",
+            "on-surface": "#191c20",
+            "inverse-surface": "#2e3036",
+            "surface-container": "#ededf4",
+            "outline": "#727782",
+            "secondary": "#4c5f7d",
+            "tertiary": "#662c00",
+            "on-tertiary-container": "#ffb991",
+            "on-error": "#ffffff",
+            "primary": "#003d76",
+            "error-container": "#ffdad6",
+            "on-background": "#191c20",
+            "surface-container-high": "#e7e8ef",
+            "on-tertiary": "#ffffff",
+            "background": "#f9f9ff",
+            "tertiary-fixed-dim": "#ffb68c",
+            "on-secondary-container": "#4d607e",
+            "on-tertiary-fixed": "#321200",
+            "surface-bright": "#f9f9ff",
+            "surface-tint": "#1d5fa8",
+            "primary-container": "#06549d",
+            "on-primary-fixed-variant": "#004787",
+            "surface-container-low": "#f3f3fa",
+            "inverse-on-surface": "#f0f0f7",
+            "tertiary-container": "#8a3e00",
+            "outline-variant": "#c2c6d3",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#753400",
+            "surface-variant": "#e1e2e9",
+            "on-error-container": "#93000a",
+            "secondary-container": "#c8dbfe",
+            "surface-container-highest": "#e1e2e9",
+            "on-secondary-fixed-variant": "#354764",
+            "secondary-fixed": "#d5e3ff",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#424751",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "surface": "#f9f9ff",
+            "inverse-primary": "#a6c8ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1.5rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Space Grotesk"],
+            "body": ["Manrope"],
+            "label": ["Space Grotesk"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .blueprint-grid {
+      background-image: linear-gradient(to right, rgba(194, 198, 211, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(194, 198, 211, 0.1) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .anodized-gradient {
+      background: linear-gradient(135deg, #003d76 0%, #06549d 100%);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface technical-grid min-h-screen">
+  <!-- SideNavBar Shell -->
+  <!-- SideNavBar -->
+  <script src="../../components/admin_sidenav.js" data-root="../../"></script>
+  <!-- Main Content Canvas -->
+  <main class="ml-64 p-8 pt-24 max-w-7xl">
+    <!-- Top Navigation Anchor (Shared Component Style) -->
+    <!-- TopNavBar -->
+    <script src="../../components/admin_topnav.js"></script>
+    <!-- Form Layout Section -->
+    <div class="grid grid-cols-12 gap-8 mt-4">
+      <!-- Left Column: Primary Registration Form -->
+      <div class="col-span-12 lg:col-span-7 flex flex-col gap-8 translate-x-6">
+        <section class="bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)]">
+          <header class="mb-10">
+            <span class="font-headline text-xs font-bold tracking-[0.2em] text-primary uppercase">Asset
+              Identification</span>
+            <h2 class="font-headline text-3xl font-bold mt-2 text-on-surface">New Asset Registration</h2>
+            <p class="text-on-surface-variant text-sm mt-2 max-w-md">Input technical specifications for heavy industrial
+              machinery deployment. Fields marked as mandatory are required for verification.</p>
+          </header>
+          <form class="space-y-8">
+            <div class="grid grid-cols-2 gap-6">
+              <div class="flex flex-col gap-2">
+                <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Model
+                  Number</label>
+                <input
+                  class="bg-surface-container-low border-none rounded-sm p-4 text-sm focus:ring-1 focus:ring-primary/20 transition-all font-medium placeholder:text-outline-variant"
+                  placeholder="e.g. CAT 336-07" type="text" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Serial
+                  Number</label>
+                <input
+                  class="bg-surface-container-low border-none rounded-sm p-4 text-sm focus:ring-1 focus:ring-primary/20 transition-all font-medium placeholder:text-outline-variant"
+                  placeholder="VIN / Chassis ID" type="text" />
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label
+                class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Equipment
+                Manufacturer</label>
+              <div class="flex gap-4">
+                <label class="flex-1 cursor-pointer">
+                  <input class="hidden peer" name="manufacturer" type="radio" />
+                  <div
+                    class="p-4 rounded-sm bg-surface-container-low border-none peer-checked:bg-secondary-container/30 peer-checked:text-primary transition-all flex items-center justify-center gap-3">
+                    <span class="font-headline text-sm font-bold">CATERPILLAR</span>
+                  </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                  <input class="hidden peer" name="manufacturer" type="radio" />
+                  <div
+                    class="p-4 rounded-sm bg-surface-container-low border-none peer-checked:bg-secondary-container/30 peer-checked:text-primary transition-all flex items-center justify-center gap-3">
+                    <span class="font-headline text-sm font-bold">KOMATSU</span>
+                  </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                  <input class="hidden peer" name="manufacturer" type="radio" />
+                  <div
+                    class="p-4 rounded-sm bg-surface-container-low border-none peer-checked:bg-secondary-container/30 peer-checked:text-primary transition-all flex items-center justify-center gap-3">
+                    <span class="font-headline text-sm font-bold">HITACHI</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="flex flex-col gap-2">
+                <label
+                  class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Deployment
+                  Site</label>
+                <select
+                  class="bg-surface-container-low border-none rounded-sm p-4 text-sm focus:ring-1 focus:ring-primary/20 transition-all font-medium appearance-none">
+                  <option>Lagos Terminal A1</option>
+                  <option>Port Harcourt North</option>
+                  <option>Abuja Strategic Depot</option>
+                </select>
+              </div>
+              <div class="flex flex-col gap-2">
+                <label
+                  class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Current
+                  Condition</label>
+                <div class="flex items-center h-full gap-4">
+                  <div class="h-2 w-full bg-surface-container-low rounded-full overflow-hidden flex">
+                    <div class="h-full bg-primary w-[85%]"></div>
+                    <div class="h-full bg-surface-container-high w-[15%]"></div>
+                  </div>
+                  <span class="font-headline text-sm font-bold text-primary">85%</span>
+                </div>
+              </div>
+            </div>
+            <div class="pt-6">
+              <button
+                class="anodized-gradient text-white w-full py-4 rounded-[1rem] font-headline font-bold uppercase tracking-widest text-sm hover:opacity-90 transition-opacity"
+                type="submit">
+                Execute Asset Registration
+              </button>
+            </div>
+          </form>
+        </section>
+        <!-- Technical Verification Protocol -->
+        <section class="bg-surface-container-low p-8 rounded-[1.5rem]">
+          <header class="mb-6 flex justify-between items-end">
+            <div>
+              <span class="font-headline text-[10px] font-bold tracking-[0.2em] text-secondary uppercase">Safety
+                Cluster</span>
+              <h3 class="font-headline text-xl font-bold text-on-surface">Verification Protocol</h3>
+            </div>
+            <div
+              class="bg-white px-3 py-1 rounded-full text-[10px] font-bold font-headline text-primary border border-primary/10">
+              V.401-COMPLIANCE</div>
+          </header>
+          <div class="space-y-3">
+            <label
+              class="group flex items-center justify-between p-4 bg-white rounded-sm cursor-pointer hover:bg-white/80 transition-colors">
+              <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+                <span class="text-sm font-medium">HSSE Environmental Impact Clearance</span>
+              </div>
+              <input class="w-5 h-5 rounded-sm border-2 border-outline-variant text-primary focus:ring-0"
+                type="checkbox" />
+            </label>
+            <label
+              class="group flex items-center justify-between p-4 bg-white rounded-sm cursor-pointer hover:bg-white/80 transition-colors">
+              <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-secondary"
+                  data-icon="settings_suggest">settings_suggest</span>
+                <span class="text-sm font-medium">Hydraulic System Precision Calibrated</span>
+              </div>
+              <input checked="" class="w-5 h-5 rounded-sm border-2 border-outline-variant text-primary focus:ring-0"
+                type="checkbox" />
+            </label>
+            <label
+              class="group flex items-center justify-between p-4 bg-white rounded-sm cursor-pointer hover:bg-white/80 transition-colors">
+              <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-secondary" data-icon="qr_code_2">qr_code_2</span>
+                <span class="text-sm font-medium">Asset RFID Identification Tag Applied</span>
+              </div>
+              <input checked="" class="w-5 h-5 rounded-sm border-2 border-outline-variant text-primary focus:ring-0"
+                type="checkbox" />
+            </label>
+          </div>
+        </section>
+      </div>
+      <!-- Right Column: Asset Visualization & Specs -->
+      <div class="col-span-12 lg:col-span-5 flex flex-col gap-8">
+        <!-- 3D Visualization Placeholder -->
+        <div
+          class="aspect-square w-full bg-white rounded-[2rem] shadow-[0_40px_60px_-15px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+          <div
+            class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(62,120,195,0.05)_0%,transparent_100%)]">
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center p-12">
+            <img alt="Heavy Machinery Visualization"
+              class="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-transform duration-700 group-hover:scale-105"
+              data-alt="Modern yellow industrial excavator in a high-tech studio setting with dramatic architectural lighting and blueprint grid background"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_VbU52Xhbcpr7eNONlJ3uiQDzwW-CH6cukyqxqV9REE0o4-Ryp-JpEiqU7wFBSD16WkTd8emopaGa148abhZ_mWVteKpZXBOb2E9QIQ9bPilM7eKDWB4dfqk8VPmjlvnxtbXK4H95WWBOQH7mQcGk_F-ATSXoNoILBq9Lww6RlF_PS-0aCIOSJ2rwy74UA3COPA_z5Q_ez3auZAlhYZG-VVyb5QkLdm2yG2-io2FWFTc7MiwIikoPbE4VxDJoXXPeKJx4APTX4cdZ" />
+          </div>
+          <div
+            class="absolute bottom-6 left-6 right-6 flex justify-between items-center bg-white/70 backdrop-blur-md p-4 rounded-xl">
+            <div>
+              <p class="font-label text-[10px] text-slate-500 font-bold uppercase tracking-wider">Visual Scan</p>
+              <p class="font-headline text-sm font-bold text-primary">3D GEOMETRY ACTIVE</p>
+            </div>
+            <div class="flex gap-1">
+              <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+              <span class="w-1.5 h-1.5 bg-primary/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 bg-primary/20 rounded-full"></span>
+            </div>
+          </div>
+        </div>
+        <!-- Asset Metrics -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-surface-container-high p-6 rounded-[1.5rem]">
+            <span class="material-symbols-outlined text-primary mb-3" data-icon="weight">weight</span>
+            <p class="font-label text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Gross Weight
+            </p>
+            <p class="font-headline text-xl font-bold mt-1">36,000 KG</p>
+          </div>
+          <div class="bg-surface-container-high p-6 rounded-[1.5rem]">
+            <span class="material-symbols-outlined text-primary mb-3" data-icon="bolt">bolt</span>
+            <p class="font-label text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Net Power</p>
+            <p class="font-headline text-xl font-bold mt-1">204 KW</p>
+          </div>
+        </div>
+        <!-- Schematic Preview -->
+        <div class="bg-primary text-white p-8 rounded-[1.5rem] relative overflow-hidden">
+          <div class="absolute top-0 right-0 p-4 opacity-20">
+            <span class="material-symbols-outlined text-[120px]" data-icon="architecture">architecture</span>
+          </div>
+          <h4 class="font-headline text-lg font-bold mb-4 relative z-10">Schematic Validation</h4>
+          <p class="text-sm opacity-80 mb-6 relative z-10">Cross-referencing manufacturer technical documentation with
+            Wilsovlewel Terminal standard operating procedures.</p>
+          <div class="space-y-4 relative z-10">
+            <div class="flex justify-between items-center">
+              <span class="text-xs uppercase tracking-widest font-bold">Linkage Integrity</span>
+              <span class="text-xs font-mono">NOMINAL</span>
+            </div>
+            <div class="h-1 w-full bg-white/20 rounded-full">
+              <div class="h-full bg-white w-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Contextual FAB (Shared Component Strategy) -->
+  <button
+    class="fixed bottom-10 right-10 anodized-gradient text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform">
+    <span class="material-symbols-outlined text-3xl" data-icon="qr_code_scanner">qr_code_scanner</span>
+  </button>
+</body>
+
+</html>

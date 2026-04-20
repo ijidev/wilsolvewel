@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Precision Forge - Asset Inventory</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d9dae0",
+                        "primary-fixed-dim": "#a6c8ff",
+                        "secondary-fixed-dim": "#b4c7ea",
+                        "primary-fixed": "#d5e3ff",
+                        "on-secondary-fixed": "#061c36",
+                        "tertiary-fixed": "#ffdbc9",
+                        "on-primary-container": "#aacaff",
+                        "on-primary-fixed": "#001c3b",
+                        "on-surface": "#191c20",
+                        "inverse-surface": "#2e3036",
+                        "surface-container": "#ededf4",
+                        "outline": "#727782",
+                        "secondary": "#4c5f7d",
+                        "tertiary": "#662c00",
+                        "on-tertiary-container": "#ffb991",
+                        "on-error": "#ffffff",
+                        "primary": "#003d76",
+                        "error-container": "#ffdad6",
+                        "on-background": "#191c20",
+                        "surface-container-high": "#e7e8ef",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed-dim": "#ffb68c",
+                        "on-secondary-container": "#4d607e",
+                        "on-tertiary-fixed": "#321200",
+                        "surface-bright": "#f9f9ff",
+                        "surface-tint": "#1d5fa8",
+                        "primary-container": "#06549d",
+                        "on-primary-fixed-variant": "#004787",
+                        "surface-container-low": "#f3f3fa",
+                        "inverse-on-surface": "#f0f0f7",
+                        "tertiary-container": "#8a3e00",
+                        "outline-variant": "#c2c6d3",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#753400",
+                        "surface-variant": "#e1e2e9",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#c8dbfe",
+                        "surface-container-highest": "#e1e2e9",
+                        "on-secondary-fixed-variant": "#354764",
+                        "secondary-fixed": "#d5e3ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#424751",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "inverse-primary": "#a6c8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1.5rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .blueprint-grid {
+            background-image: linear-gradient(to right, rgba(194, 198, 211, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(194, 198, 211, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .anodized-gradient {
+            background: linear-gradient(135deg, #003d76 0%, #06549d 100%);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background font-body text-on-surface overflow-x-hidden">
+    <!-- SideNavBar Shell -->
+    <!-- SideNavBar -->
+    <script src="../../components/admin_sidenav.js" data-root="../../"></script>
+    <!-- Main Content Canvas -->
+    <main class="ml-64 min-h-screen blueprint-grid">
+        <!-- TopNavBar Shell -->
+        <!-- TopNavBar -->
+        <script src="../../components/admin_topnav.js"></script>
+        <div class="p-8 max-w-7xl mx-auto space-y-10">
+            <!-- Header Section -->
+            <div class="flex justify-between items-end">
+                <div class="space-y-1">
+                    <span class="font-label text-[11px] uppercase tracking-[0.2em] text-primary font-bold">Terminal /
+                        Inventory</span>
+                    <h2 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Asset Inventory</h2>
+                </div>
+                <a href="new.html"
+                    class="anodized-gradient text-white px-6 py-3 rounded-DEFAULT font-headline font-medium flex items-center gap-2 shadow-lg hover:opacity-90 transition-opacity">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                    Register New Asset
+                </a>
+            </div>
+            <!-- Bento Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div
+                    class="md:col-span-2 bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 flex flex-col justify-between h-48 relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <p class="font-label text-xs uppercase tracking-widest text-outline">Total Inventory Value</p>
+                        <h3 class="text-4xl font-headline font-bold mt-2">$42,850,200</h3>
+                        <div class="flex items-center gap-2 mt-4 text-primary font-bold text-sm">
+                            <span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                            +12% vs last quarter
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-0 right-0 w-32 h-32 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <span class="material-symbols-outlined text-[120px]"
+                            data-icon="account_balance">account_balance</span>
+                    </div>
+                </div>
+                <div
+                    class="bg-surface-container-low p-6 rounded-DEFAULT border border-outline-variant/15 flex flex-col justify-between h-48">
+                    <div>
+                        <p class="font-label text-xs uppercase tracking-widest text-outline">Total Units</p>
+                        <h3 class="text-3xl font-headline font-bold mt-2">1,284</h3>
+                    </div>
+                    <div class="flex -space-x-2">
+                        <div
+                            class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-white">
+                            <span class="material-symbols-outlined text-xs text-primary"
+                                data-icon="factory">factory</span>
+                        </div>
+                        <div
+                            class="w-8 h-8 rounded-full bg-secondary-container/50 flex items-center justify-center border-2 border-white">
+                            <span class="material-symbols-outlined text-xs text-secondary" data-icon="bolt">bolt</span>
+                        </div>
+                        <div
+                            class="w-8 h-8 rounded-full bg-tertiary-fixed/30 flex items-center justify-center border-2 border-white">
+                            <span class="material-symbols-outlined text-xs text-tertiary"
+                                data-icon="water_drop">water_drop</span>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-error-container/20 p-6 rounded-DEFAULT border border-error/10 flex flex-col justify-between h-48">
+                    <div>
+                        <p class="font-label text-xs uppercase tracking-widest text-error">Critical Condition</p>
+                        <h3 class="text-3xl font-headline font-bold mt-2 text-error">07</h3>
+                    </div>
+                    <div class="text-xs text-error font-medium flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm" data-icon="warning">warning</span>
+                        Immediate Action Required
+                    </div>
+                </div>
+            </div>
+            <!-- List Controls -->
+            <div
+                class="flex flex-wrap items-center justify-between gap-4 bg-surface-container-low/50 p-4 rounded-xl border border-outline-variant/10">
+                <div class="flex items-center gap-2">
+                    <button
+                        class="bg-surface-container-lowest px-4 py-2 rounded-lg text-sm font-label font-bold border border-outline-variant/20 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                        Filters
+                    </button>
+                    <div class="h-4 w-[1px] bg-outline-variant mx-2"></div>
+                    <span class="text-xs font-label uppercase tracking-widest text-outline">Active Filters:</span>
+                    <div class="flex gap-2">
+                        <span
+                            class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                            Status: Active <span class="material-symbols-outlined text-[12px]"
+                                data-icon="close">close</span>
+                        </span>
+                        <span
+                            class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                            Site: Terminal A <span class="material-symbols-outlined text-[12px]"
+                                data-icon="close">close</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-outline font-medium">Sort by: <span
+                            class="text-on-surface font-bold">Recent Maintenance</span></span>
+                    <div class="flex bg-surface-container-high p-1 rounded-lg">
+                        <button class="bg-white shadow-sm p-1.5 rounded-md"><span
+                                class="material-symbols-outlined text-sm" data-icon="list">list</span></button>
+                        <button class="p-1.5 rounded-md text-outline hover:text-on-surface"><span
+                                class="material-symbols-outlined text-sm"
+                                data-icon="grid_view">grid_view</span></button>
+                    </div>
+                </div>
+            </div>
+            <!-- Asset Grid/Table -->
+            <div class="space-y-4">
+                <!-- Asset Card 1 -->
+                <div
+                    class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 hover:shadow-xl transition-all group">
+                    <div class="grid grid-cols-12 gap-6 items-center">
+                        <div class="col-span-12 md:col-span-4 flex items-center gap-4">
+                            <div
+                                class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+                                <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                                    data-alt="high-tech industrial turbine with metallic fins and blue accent lighting in a clean warehouse environment"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVsK-04Bn7cCddNMTWUHt0AxmYNRlyg0kr8Xw0LP4NfxB0f2djx8Eh6FVGnk19N5AqwRaBxC7HbnN2VtSvyK1cHItqAtGN4tCOHWee-p6hrtFrhWNeHorTS18rBXPRhP1FdDO8R6fBc8OVlV5XiSw_iPAD24qspUJdA_6P5p2hKO2nvc82K7fQD1I-yIyBat7upknbRN1SWqtpp8CjiC2CGejDWJlTNDoId2QT69uSWRKugjBkrpTb7jY92HMx05QYP0EncYAXgo-4" />
+                            </div>
+                            <div>
+                                <h4 class="font-headline font-bold text-lg group-hover:text-primary transition-colors">
+                                    Vortex G-Series Turbine</h4>
+                                <p class="text-xs font-label text-outline tracking-wider uppercase">Serial: VT-8820-04X
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Health Metric
+                            </p>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 w-[94%]"></div>
+                                </div>
+                                <span class="text-xs font-bold text-on-surface">94%</span>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Status</p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span
+                                    class="text-xs font-bold uppercase tracking-wide text-on-surface">Operational</span>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Last Service
+                            </p>
+                            <p class="text-sm font-medium">14 Oct 2023</p>
+                            <p class="text-[10px] text-outline">Next: 14 Jan 2024</p>
+                        </div>
+                        <div class="col-span-6 md:col-span-2 flex justify-end gap-2">
+                            <button
+                                class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    data-icon="analytics">analytics</span>
+                            </button>
+                            <button
+                                class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    data-icon="more_vert">more_vert</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Asset Card 2 -->
+                <div
+                    class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 hover:shadow-xl transition-all group">
+                    <div class="grid grid-cols-12 gap-6 items-center">
+                        <div class="col-span-12 md:col-span-4 flex items-center gap-4">
+                            <div
+                                class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+                                <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                                    data-alt="heavy-duty hydraulic pump system with pressure gauges and industrial piping in a manufacturing facility"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDHT2z0INo7jEturIR9f55v0Cr-D8bI2mASxZa5CX0m03qyncxb-ptPMUNADSmw90IT9u2aIO7Dj78ivVaW8PqYhenZgxJFIOKick6wgFTXDwuCC_xXaJdW1eH3tv2hHVhT1p-ObBWQEAxIWw8JPytxgQAFlt2HD8maluXna7jOpNSESDGRenjFNyGMFGEFn3D_UOKcuFD9R94-cVsgnDauOlJ9qRAYQJkFaXPINf-b0nFyYFhJOm8h86U4hWfoaHn8aPt7PYr0ZN9" />
+                            </div>
+                            <div>
+                                <h4 class="font-headline font-bold text-lg group-hover:text-primary transition-colors">
+                                    Hydra-Flow P-400 Pump</h4>
+                                <p class="text-xs font-label text-outline tracking-wider uppercase">Serial: HF-1122-89K
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Health Metric
+                            </p>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500 w-[62%]"></div>
+                                </div>
+                                <span class="text-xs font-bold text-on-surface">62%</span>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Status</p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span class="text-xs font-bold uppercase tracking-wide text-on-surface">Pending
+                                    Maint.</span>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Last Service
+                            </p>
+                            <p class="text-sm font-medium">02 Sep 2023</p>
+                            <p class="text-[10px] text-error font-bold">OVERDUE (12 Days)</p>
+                        </div>
+                        <div class="col-span-6 md:col-span-2 flex justify-end gap-2">
+                            <button
+                                class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    data-icon="analytics">analytics</span>
+                            </button>
+                            <button
+                                class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    data-icon="more_vert">more_vert</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Asset Card 3 -->
+                <div
+                    class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 hover:shadow-xl transition-all group">
+                    <div class="grid grid-cols-12 gap-6 items-center">
+                        <div class="col-span-12 md:col-span-4 flex items-center gap-4">
+                            <div
+                                class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+                                <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                                    data-alt="large industrial metal pressing machine with safety gates and control panel in a factory setting"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCYPNFHz0NqWTzFRBXJny5qimxwjhbZ3xWag9FtICj1etLgS1mClCXrcneQXxrcKOk9ryE9STrJRSdJQgGVOaah6X5dMVEhrqp6wdMAm0Zd6VUzrkTKCby_-A4SN8WDKBcnzsaGlc76CDSx1Kc0L_38YmvAWg0VmK8cQA2ULcKhtimWQXazIPHwXD8O_MDgZflt-3TON7GKUggyGqW-hwfUuCZJrZV2qUIVUy_wM69CeFdhv4G1L8-TGwXqtnUBkYCyofjvHEwW2dI" />
+                            </div>
+                            <div>
+                                <h4 class="font-headline font-bold text-lg group-hover:text-primary transition-colors">
+                                    ForgeMaster 5000 Press</h4>
+                                <p class="text-xs font-label text-outline tracking-wider uppercase">Serial:
+                                    FM-5K-2023-A1</p>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Health Metric
+                            </p>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 w-[88%]"></div>
+                                </div>
+                                <span class="text-xs font-bold text-on-surface">88%</span>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Status</p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span
+                                    class="text-xs font-bold uppercase tracking-wide text-on-surface">Operational</span>
+                            </div>
+                        </div>
+                        <div class="col-span-6 md:col-span-2">
+                            <p class="text-[10px] font-label text-outline uppercase tracking-widest mb-1">Last Service
+                            </p>
+                            <p class="text-sm font-medium">10 Nov 2023</p>
+                            <p class="text-[10px] text-outline">Next: 10 May 2024</p>
+                        </div>
+                        <div class="col-span-6 md:col-span-2 flex justify-end gap-2">
+                            <button
+                                class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    data-icon="analytics">analytics</span>
+                            </button>
+                            <button
+                                class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    data-icon="more_vert">more_vert</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Detail Section / Asymmetric Feature -->
+            <div class="flex flex-col lg:flex-row gap-8 pt-10">
+                <div class="lg:w-2/3 bg-white p-8 rounded-DEFAULT border border-outline-variant/15 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-headline font-bold text-xl">Critical Issues Pipeline</h4>
+                        <button
+                            class="text-primary font-bold text-xs font-label uppercase tracking-widest hover:underline">View
+                            All Tickets</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="flex items-center gap-6 p-4 bg-error-container/5 rounded-xl border-l-4 border-error">
+                            <div
+                                class="shrink-0 w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-error">
+                                <span class="material-symbols-outlined" data-icon="emergency_home">emergency_home</span>
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="font-bold text-sm">Critical Vibration: Main Hub G-22</h5>
+                                <p class="text-xs text-outline">Detected 42 mins ago in Site B. Shutdown recommended.
+                                </p>
+                            </div>
+                            <a href="manage.html"
+                                class="px-4 py-2 bg-error text-white text-xs font-bold rounded-lg uppercase tracking-wider"> Execute </a>
+                        </div>
+                        <div
+                            class="flex items-center gap-6 p-4 bg-surface-container-low rounded-xl border-l-4 border-outline">
+                            <div
+                                class="shrink-0 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
+                                <span class="material-symbols-outlined" data-icon="build">build</span>
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="font-bold text-sm">Scheduled Replacement: Seal Pack #04</h5>
+                                <p class="text-xs text-outline">Due in 2 days. Replacement parts arrived at Bay 4.</p>
+                            </div>
+                            <a href="manage.html"
+                                class="px-4 py-2 bg-on-surface text-white text-xs font-bold rounded-lg uppercase tracking-wider"> Assign </a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="lg:w-1/3 bg-primary-container text-on-primary-container p-8 rounded-DEFAULT relative overflow-hidden flex flex-col justify-between min-h-[300px]">
+                    <div class="relative z-10">
+                        <h4 class="font-headline font-bold text-2xl leading-tight">Asset Distribution Map</h4>
+                        <p class="text-sm opacity-80 mt-2">Real-time geolocation of active mobile assets across Terminal
+                            A and B.</p>
+                    </div>
+                    <div class="relative z-10 mt-10">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div
+                                class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md">
+                                <span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-label uppercase opacity-60">Primary Site</p>
+                                <p class="font-bold">Dusseldorf Logistics Hub</p>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-white text-primary py-3 rounded-xl font-bold font-label uppercase tracking-widest text-xs hover:bg-opacity-90 transition-all">
+                            Open Global Map
+                        </button>
+                    </div>
+                    <!-- Abstract Background Map Decor -->
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform rotate-12">
+                        <span class="material-symbols-outlined text-[240px]" data-icon="map">map</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pagination / Footer -->
+        <footer
+            class="p-8 border-t border-outline-variant/10 mt-10 flex justify-between items-center text-outline text-xs font-medium">
+            <p>© 2024 Precision Forge Industrial Terminal. All systems operational.</p>
+            <div class="flex items-center gap-4">
+                <button class="hover:text-primary transition-colors">Documentation</button>
+                <div class="w-1 h-1 bg-outline-variant rounded-full"></div>
+                <button class="hover:text-primary transition-colors">API Status</button>
+                <div class="w-1 h-1 bg-outline-variant rounded-full"></div>
+                <button class="hover:text-primary transition-colors">System Logs</button>
+            </div>
+        </footer>
+    </main>
+    <!-- Floating Action for Mobile / Quick Action -->
+    <button
+        class="fixed bottom-8 right-8 w-14 h-14 anodized-gradient text-white rounded-full shadow-2xl flex items-center justify-center md:hidden z-50">
+        <span class="material-symbols-outlined" data-icon="add">add</span>
+    </button>
+</body>
+
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WILSOVLEWEL | Client Projects Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e1e2e9",
+                        "on-tertiary-container": "#ffb991",
+                        "on-secondary-fixed-variant": "#354764",
+                        "surface-container-high": "#e7e8ef",
+                        "on-primary-fixed-variant": "#004787",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary": "#003d76",
+                        "on-tertiary-fixed": "#321200",
+                        "on-secondary-fixed": "#061c36",
+                        "on-surface": "#191c20",
+                        "surface-dim": "#d9dae0",
+                        "inverse-surface": "#2e3036",
+                        "on-tertiary-fixed-variant": "#753400",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f3fa",
+                        "secondary-container": "#c8dbfe",
+                        "inverse-primary": "#a6c8ff",
+                        "on-primary-container": "#aacaff",
+                        "outline-variant": "#c2c6d3",
+                        "error": "#ba1a1a",
+                        "surface-container": "#ededf4",
+                        "secondary-fixed-dim": "#b4c7ea",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#4c5f7d",
+                        "surface-tint": "#1d5fa8",
+                        "surface-container-highest": "#e1e2e9",
+                        "tertiary": "#662c00",
+                        "primary-container": "#06549d",
+                        "on-secondary-container": "#4d607e",
+                        "surface": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d5e3ff",
+                        "primary-fixed-dim": "#a6c8ff",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed": "#001c3b",
+                        "tertiary-fixed-dim": "#ffb68c",
+                        "on-surface-variant": "#424751",
+                        "inverse-on-surface": "#f0f0f7",
+                        "background": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "outline": "#727782",
+                        "tertiary-fixed": "#ffdbc9",
+                        "tertiary-container": "#8a3e00",
+                        "on-background": "#191c20",
+                        "primary-fixed": "#d5e3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .blueprint-grid {
+            background-image: radial-gradient(#c2c6d3 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.15;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary-container">
+<!-- TopNavBar -->
+<!-- TopNavBar --><script src="../components/client_topnav.js"></script>
+<!-- SideNavBar -->
+<!-- SideNavBar --><script src="../components/client_sidenav.js" data-root="../"></script>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-24 px-8 pb-12 min-h-screen relative overflow-hidden">
+<!-- Blueprint Overlay -->
+<div class="absolute inset-0 blueprint-grid pointer-events-none -z-10"></div>
+<div class="max-w-7xl mx-auto space-y-10">
+<!-- Header & Action Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div class="space-y-2">
+<span class="font-headline text-primary font-medium tracking-widest text-[11px] uppercase bg-primary/5 px-3 py-1 rounded-full">System Ledger // Active Logs</span>
+<h1 class="text-4xl lg:text-5xl font-headline font-bold text-on-surface tracking-tight">Machinery Repair Projects</h1>
+<p class="text-on-surface-variant max-w-xl font-body text-sm leading-relaxed">
+                        Managing high-precision engineering workflows for industrial assets. Track diagnostic real-time data and component lifecycle status across all active heavy machinery units.
+                    </p>
+</div>
+<button class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-headline font-medium shadow-[0_20px_40px_-10px_rgba(0,61,118,0.3)] hover:translate-y-[-2px] transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+                    Propose New Project
+                </button>
+</header>
+<!-- Key Metrics Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<div class="md:col-span-2 bg-surface-container-lowest p-8 rounded-lg shadow-sm flex flex-col justify-between group overflow-hidden relative">
+<div class="relative z-10">
+<span class="font-headline text-[10px] uppercase tracking-widest text-outline">Performance Aggregate</span>
+<h3 class="text-4xl font-headline font-bold text-on-surface mt-2">94.2%</h3>
+<p class="text-on-surface-variant text-sm mt-1">Maintenance Efficiency Index</p>
+</div>
+<div class="mt-8 flex gap-1 h-12 items-end relative z-10">
+<div class="flex-1 bg-primary/10 rounded-sm h-[40%] group-hover:h-[60%] transition-all duration-500"></div>
+<div class="flex-1 bg-primary/10 rounded-sm h-[60%] group-hover:h-[80%] transition-all duration-500 delay-75"></div>
+<div class="flex-1 bg-primary/10 rounded-sm h-[50%] group-hover:h-[70%] transition-all duration-500 delay-100"></div>
+<div class="flex-1 bg-primary/10 rounded-sm h-[90%] group-hover:h-[100%] transition-all duration-500 delay-150"></div>
+<div class="flex-1 bg-primary/10 rounded-sm h-[70%] group-hover:h-[90%] transition-all duration-500 delay-200"></div>
+<div class="flex-1 bg-primary/20 rounded-sm h-[85%] group-hover:h-[95%] transition-all duration-500 delay-300"></div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5">
+<span class="material-symbols-outlined text-[120px]">monitoring</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-lg flex flex-col justify-between">
+<div>
+<span class="font-headline text-[10px] uppercase tracking-widest text-outline">Total Assets</span>
+<h3 class="text-3xl font-headline font-bold text-on-surface mt-2">48</h3>
+<p class="text-on-surface-variant text-xs mt-1">Machinery units under management</p>
+</div>
+<div class="flex -space-x-3 mt-4">
+<div class="w-10 h-10 rounded-full border-2 border-white bg-slate-200">
+<img class="w-full h-full object-cover rounded-full" data-alt="close up of complex mechanical gears in motion with industrial precision lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpI2vYGg6qEAFP4G8aYPjxe_1mcfobEoAZAWDWnJNCQttdomL5SKklXm-DKwheSAjxuyHNq2RvQ5noTsZtufdGpThLIHkuwFGFC-dOvpmPgogcDHTFsEOhi8isBOepMa_Q4cOj5hn-taCp5QZ0H1eFANeefoKYhXP2maYuzjF9Ov0lVSmi-kRjW74fNbzgo8Cp4Bhn9ekjyPlzOb8e_PNyl5Mw8mLAOxJpbZVimeyfa4Rh9QkSleQus8uJ5yO-hqKlU0U9uOqI1cFL"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-slate-300">
+<img class="w-full h-full object-cover rounded-full" data-alt="highly detailed close up of metal industrial components and machinery parts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG-re65iilXHI5mDSuWceQPbu9RD7X22j7yZxu67EWwwXkvLOgzIU8So4lvUCP6ZkMjTfSPYo-h-3I6fjTupaufr9iVDkbSxx7u-SPFVtGiC2R5bPxtiy0DvHGMLlXbudCU1dYL5qDEVeUU7_ga-Zy3FKP5dQNfTzrH10l-MaJFnwrhHi3kzajkpJeKuJeyX9l9kZY1OrPAp8TW5dMHsJ3AN9xk9hEgdz01vaJJmWqplEBZP9XmNp9290j0CnhFMh8CrB9OYlIjVeE"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-primary text-white flex items-center justify-center text-[10px] font-bold">+45</div>
+</div>
+</div>
+<div class="bg-primary text-white p-8 rounded-lg flex flex-col justify-between">
+<span class="material-symbols-outlined text-3xl">build_circle</span>
+<div>
+<h3 class="text-2xl font-headline font-bold">12</h3>
+<p class="opacity-80 text-xs mt-1 uppercase tracking-wider">Ready for Pickup</p>
+</div>
+</div>
+</section>
+<!-- Projects Ledger Section -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-headline font-bold text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+                        Active Project Ledger
+                    </h2>
+<div class="flex gap-2">
+<button class="p-2 bg-surface-container rounded-md hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+<button class="p-2 bg-surface-container rounded-md hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</button>
+</div>
+</div>
+<!-- Technical Table View -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden border border-outline-variant/10 shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-6 py-4 font-headline text-[10px] uppercase tracking-widest text-outline font-semibold">Asset Identification</th>
+<th class="px-6 py-4 font-headline text-[10px] uppercase tracking-widest text-outline font-semibold">Maintenance Stage</th>
+<th class="px-6 py-4 font-headline text-[10px] uppercase tracking-widest text-outline font-semibold text-center">Efficiency Score</th>
+<th class="px-6 py-4 font-headline text-[10px] uppercase tracking-widest text-outline font-semibold">Operational ETA</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Project Row 1 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center border border-outline-variant/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="yellow heavy machinery engine block in a clean workshop setting with bright focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfMY_Kuln60ybWyA7s4HDjl8UCgL9gy7kv7yDG11pxmr-5C-nbLmQ9x1GjTBTclVwEiGHkILQ8OSIZbqIySqfmp0lnjBx_IaFrBRBa0I8CN9LvA-OlC9CEuSCBFEySaFpq67IX42htKZdxLpLHwFzQ71TiBehmRr0ENHPr2SD6I64JOvxnSjOb3gVSI2tsQQ4Po6xYoZHH3lONYcHGZYksFYijbY7SEWQTYfNtbaqti6uO8jRFWizMq9IRysFXt2WYf2l6HWYDOc3A"/>
+</div>
+<div>
+<div class="font-bold text-on-surface text-sm">CAT D8 Engine Rebuild</div>
+<div class="text-[10px] font-headline text-outline uppercase">Serial: #8839-AXL</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-surface-container-high rounded-full h-1.5 max-w-[100px] overflow-hidden">
+<div class="bg-blue-600 h-full w-[65%]"></div>
+</div>
+<span class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider rounded">In-Progress</span>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="font-headline font-bold text-on-surface">92.4%</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                        Oct 12, 2023
+                                    </div>
+</td>
+<td class="px-6 py-6 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Project Row 2 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center border border-outline-variant/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="modern excavator hydraulic system detail with blue steel parts and mechanical focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACfFdABgFrln2fYbjbWzUECvsiFtRF9zWbxlwxIWprM3XXUaA6R5pqVmePmi8g5ViLvL7CesN8HhDgK47CIS4sTZwKOrAWX11cnPLWclzIMgwO3FSu-7zzqIHHOWDbrdhpVvdACO-G2giP0LEVoS-qc8J3YaYMigVkXkp2Z08bx740qZawTXUQAREJjQdpar5ourEJWpPQJ7D6r1RgkghnEBVzjAdBUUn5zEx99AdHYmWhxcrIC_DRDWrn_lnZpUeOfDS4QNeyDS9x"/>
+</div>
+<div>
+<div class="font-bold text-on-surface text-sm">Komatsu Excavator Hydraulics</div>
+<div class="text-[10px] font-headline text-outline uppercase">Serial: #KMT-7721</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-surface-container-high rounded-full h-1.5 max-w-[100px] overflow-hidden">
+<div class="bg-orange-500 h-full w-[25%]"></div>
+</div>
+<span class="px-2 py-1 bg-orange-50 text-orange-700 text-[10px] font-bold uppercase tracking-wider rounded">Diagnostic</span>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="font-headline font-bold text-on-surface">--</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                        Oct 28, 2023
+                                    </div>
+</td>
+<td class="px-6 py-6 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Project Row 3 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center border border-outline-variant/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="heavy duty truck transmission being serviced in a clean bright industrial garage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRyQbdv2i3sK3MP8C-oPB11QxRjqoBL9DDLQFBKeDThvddmbNrzsvNkUa9HRWnCWDFxMzzhGtUsVDRi0ZxlhTFKFXwOT656hLzcZreR9FSvRKmHFKIfg98fyXXtd3ougwzwZdd8VCdRf3llATsmlOahTKFkxq3V35GnQeqs-DX9bB8a_vLfGyI55o89IVWS-qGjHXAU6ZFvdyDkDDdi-2fQOV5rtZrq3utkQQkUDwXQIyAVSkbrele3EruG0dQPRyaPSpOLeRvQE3s"/>
+</div>
+<div>
+<div class="font-bold text-on-surface text-sm">Volvo Hauler Transmission</div>
+<div class="text-[10px] font-headline text-outline uppercase">Serial: #VL-9002-T</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-surface-container-high rounded-full h-1.5 max-w-[100px] overflow-hidden">
+<div class="bg-emerald-500 h-full w-[100%]"></div>
+</div>
+<span class="px-2 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded">Ready for Pickup</span>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="font-headline font-bold text-on-surface">98.1%</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2 text-sm text-emerald-600 font-bold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                        Available Now
+                                    </div>
+</td>
+<td class="px-6 py-6 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Project Row 4 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center border border-outline-variant/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="industrial turbine components with precision measurement tools and technical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF16kItnm2FVV8RXQ2vKZBrXD6bS8YQ5qWo8BHAXjkM1tQKsYnVuAHMmxA3cq8SXgQUC7WW1c3hWWkT8j_19i5ugMt8eL5IXPZrrH16EYfRaQ7y9_Wnb5xbA2mTeO1_PfP5NKMjuFgQxzcUQZ0P9Iyptic-hA1bygHC_cNnDmwBaPO7bGxAUASCaqrIal-N9rkGL2xLZslvUysZXlIkG2Japk9aRF-RbB949hMR69VsGuNx49bMmClA97OY_nPCbNZCzlsEsGepJIq"/>
+</div>
+<div>
+<div class="font-bold text-on-surface text-sm">Putzmeister Pump Testing</div>
+<div class="text-[10px] font-headline text-outline uppercase">Serial: #PZ-CONC-4</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-surface-container-high rounded-full h-1.5 max-w-[100px] overflow-hidden">
+<div class="bg-purple-600 h-full w-[85%]"></div>
+</div>
+<span class="px-2 py-1 bg-purple-50 text-purple-700 text-[10px] font-bold uppercase tracking-wider rounded">Testing</span>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="font-headline font-bold text-on-surface">88.5%</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                        Oct 15, 2023
+                                    </div>
+</td>
+<td class="px-6 py-6 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Subtle Pagination/Footer Info -->
+<div class="flex justify-between items-center text-xs font-headline text-outline uppercase tracking-widest px-2">
+<span>Showing 4 of 48 active assets</span>
+<div class="flex gap-4">
+<button class="hover:text-primary transition-colors">Previous</button>
+<div class="flex gap-2">
+<span class="text-on-surface font-bold">01</span>
+<span>02</span>
+<span>03</span>
+</div>
+<button class="hover:text-primary transition-colors">Next</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Floating Quick View (Asymmetric Layout Element) -->
+<div class="fixed bottom-12 right-12 w-80 bg-white/80 backdrop-blur-xl border border-outline-variant/20 p-6 rounded-lg shadow-2xl hidden xl:block">
+<div class="flex items-center justify-between mb-4">
+<span class="font-headline text-[10px] uppercase tracking-widest text-primary font-bold">System Status</span>
+<span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-xs text-on-surface-variant">Active Repair Bays</span>
+<span class="font-headline font-bold text-lg">14/16</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1 overflow-hidden">
+<div class="bg-primary h-full w-[87%]"></div>
+</div>
+<div class="flex justify-between items-end pt-2">
+<span class="text-xs text-on-surface-variant">Labor Bandwidth</span>
+<span class="font-headline font-bold text-lg text-orange-600">Critical</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-tight">High priority alerts detected in Bay 4. Hydrualic pressure variance out of tolerance.</p>
+</div>
+</div>
+</main>
+</body></html>
