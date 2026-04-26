@@ -12,103 +12,7 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "surface-variant": "#e1e2e9",
-            "on-tertiary-container": "#ffb991",
-            "on-secondary-fixed-variant": "#354764",
-            "surface-container-high": "#e7e8ef",
-            "on-primary-fixed-variant": "#004787",
-            "on-secondary": "#ffffff",
-            "error-container": "#ffdad6",
-            "primary": "#003d76",
-            "on-tertiary-fixed": "#321200",
-            "on-secondary-fixed": "#061c36",
-            "on-surface": "#191c20",
-            "surface-dim": "#d9dae0",
-            "inverse-surface": "#2e3036",
-            "on-tertiary-fixed-variant": "#753400",
-            "on-primary": "#ffffff",
-            "surface-container-low": "#f3f3fa",
-            "secondary-container": "#c8dbfe",
-            "inverse-primary": "#a6c8ff",
-            "on-primary-container": "#aacaff",
-            "outline-variant": "#c2c6d3",
-            "error": "#ba1a1a",
-            "surface-container": "#ededf4",
-            "secondary-fixed-dim": "#b4c7ea",
-            "surface-container-lowest": "#ffffff",
-            "secondary": "#4c5f7d",
-            "surface-tint": "#1d5fa8",
-            "surface-container-highest": "#e1e2e9",
-            "tertiary": "#662c00",
-            "primary-container": "#06549d",
-            "on-secondary-container": "#4d607e",
-            "surface": "#f9f9ff",
-            "on-tertiary": "#ffffff",
-            "secondary-fixed": "#d5e3ff",
-            "primary-fixed-dim": "#a6c8ff",
-            "on-error": "#ffffff",
-            "surface-bright": "#f9f9ff",
-            "on-primary-fixed": "#001c3b",
-            "tertiary-fixed-dim": "#ffb68c",
-            "on-surface-variant": "#424751",
-            "inverse-on-surface": "#f0f0f7",
-            "background": "#f9f9ff",
-            "on-error-container": "#93000a",
-            "outline": "#727782",
-            "tertiary-fixed": "#ffdbc9",
-            "tertiary-container": "#8a3e00",
-            "on-background": "#191c20",
-            "primary-fixed": "#d5e3ff"
-          },
-          "fontFamily": {
-            "headline": ["Space Grotesk"],
-            "body": ["Manrope"],
-            "label": ["Space Grotesk"]
-          },
-          "fontSize": {
-            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-            "lg": ["1rem", { "lineHeight": "1.5rem" }],
-            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-            "6xl": ["3rem", { "lineHeight": "1" }],
-            "7xl": ["3.75rem", { "lineHeight": "1" }]
-          }
-        },
-      },
-    }
-  </script>
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
 
-    .technical-grid {
-      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
-      background-size: 24px 24px;
-      opacity: 0.05;
-    }
-
-    .anodized-gradient {
-      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
-    }
-
-    .site-gradient-bg {
-      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
-      background-attachment: fixed;
-    }
-  </style>
 </head>
 
 <body
@@ -120,147 +24,82 @@
     <!-- Technical Grid Overlay Background -->
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
     <!-- Hero Section -->
-    <section class="relative py-16 px-6 lg:px-12 z-10 max-w-7xl mx-auto flex flex-col justify-center min-h-[60vh]">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-7">
-          <div class="inline-flex items-center space-x-2 px-3 py-1 bg-primary/10 rounded-full mb-6">
-            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            <span class="text-[10px] font-headline font-bold uppercase tracking-widest text-primary">Careers at
-              Wilsolvewel Engineering</span>
-          </div>
-          <h1 class="text-4xl md:text-6xl font-headline font-bold text-on-surface tracking-tighter leading-tight mb-8">
-            Join the <span class="text-primary italic">Workshop</span> Force.
-          </h1>
-          <p class="text-base text-on-surface-variant max-w-xl font-light leading-relaxed mb-10">
-            Build the Future of Heavy Engineering with Wilsolvewel. We are looking for technical masterminds to lead the
-            next era of machinery restoration.
-          </p>
-        </div> class="flex flex-wrap gap-4">
-        <button
-          class="anodized-gradient text-white px-8 py-4 rounded-lg font-headline font-bold flex items-center gap-2 group">
-          Explore Roles
-          <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-        </button>
-        <button
-          class="px-8 py-4 rounded-lg font-headline font-bold text-primary bg-surface-container-lowest border border-outline-variant/20 shadow-sm">
-          Our Impact
-        </button>
-      </div>
-      </div>
-      <div class="lg:col-span-5 relative">
-        <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-2xl">
-          <img alt="Industrial Engineering" class="w-full h-full object-cover"
-            data-alt="close-up of a high-tech robotic arm in a sterile manufacturing facility with cool blue lighting and technical overlays"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCskSpUXDG8TBndO5FBg2r8tQZX_zvEqYyw-7RmWeQJNhsmfrTtt1MYXVqOls9Yz33Z0_GnU4z0S-XODI1H6OEddlW9rRN0J7urSAVgvGbhwkJ03Oo5NqOLG9Mb88APXWwFStGuQ6ggHtywPZV8Ue_upteOvfshCQjqMHduoNHkGKqWnnkJj26frE5qmmW1GKk1xGsKisOtHoOHzqXYxJYedetTyCKV9pgusUMRyAqSwHaeKUj6seCheJFle-kCXsvVL1YkPulae1Dw" />
-          <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
-          <!-- Telemetry Overlay -->
-          <div
-            class="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-4 rounded-lg border border-white/30 text-[10px] font-headline text-white uppercase tracking-widest">
-            <div class="mb-2 flex justify-between gap-4"><span>Status:</span> <span
-                class="text-green-400">Optimal</span></div>
-            <div class="mb-2 flex justify-between gap-4"><span>Precision:</span> <span>99.998%</span></div>
-            <div class="flex justify-between gap-4"><span>Sector:</span> <span>Lagos HQ</span></div>
-          </div>
-        </div>
-        <!-- Asymmetric Floating Card -->
-        <div
-          class="absolute -bottom-8 -left-8 bg-surface-container-lowest p-6 rounded-lg shadow-xl max-w-xs border border-outline-variant/10">
-          <span class="material-symbols-outlined text-primary text-4xl mb-4">precision_manufacturing</span>
-          <h4 class="font-headline font-bold text-lg mb-2">Integrated Systems</h4>
-          <p class="text-sm text-on-surface-variant">Developing world-class infrastructure for the West African
-            corridor.</p>
-        </div>
-      </div>
-      </div>
-    </section>
-    <!-- Growth Mindset Section (Bento Grid) -->
-    <section class="px-8 py-24 bg-surface-container-low/50">
-      <div class="max-w-[1440px] mx-auto">
-        <div class="mb-16">
-          <h2 class="text-4xl font-headline font-bold tracking-tight mb-4">Precision-Guided Growth</h2>
-          <p class="text-on-surface-variant max-w-2xl">We don't just hire employees; we engineer careers. Our
-            professional development framework is built on the same principles of precision and integrity as our
-            infrastructure projects.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div
-            class="md:col-span-2 bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between border border-outline-variant/10 shadow-sm">
-            <div>
-              <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-6">
-                <span class="material-symbols-outlined" data-icon="model_training">model_training</span>
-              </div>
-              <h3 class="text-2xl font-headline font-bold mb-4">Technical Training Excellence</h3>
-              <p class="text-on-surface-variant">Continuous upskilling in advanced mechatronics, BIM, and lean
-                manufacturing through our internal Academy of Engineering.</p>
+        <!-- Hero Section -->
+        <section class="relative py-24 px-6 lg:px-12 z-10 max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16 items-center min-h-[60vh]">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-3 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.2em]">Join the Elite</span>
+                    </div>
+                    <h1 class="font-headline text-4xl md:text-7xl font-bold tracking-tighter text-on-surface leading-[0.95]">
+                        BECOME AN <br /><span class="text-primary italic">ENGINEERING SURGEON.</span>
+                    </h1>
+                    <p class="text-on-surface-variant text-lg font-light leading-relaxed">
+                        We don't just fix machines; we restore industrial lifelines. Wilsolvewel is looking for the top 1% of technical talent—those who value precision, hate downtime, and live for complex engineering challenges.
+                    </p>
+                    <div class="flex flex-wrap gap-6">
+                        <a href="#openings" class="bg-primary text-on-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                            View Openings
+                        </a>
+                        <a href="about.html" class="bg-surface-container-high text-on-surface px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
+                            Our Mission
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="aspect-[4/5] rounded-[4rem] overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 shadow-2xl border border-outline-variant/10">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCskSpUXDG8TBndO5FBg2r8tQZX_zvEqYyw-7RmWeQJNhsmfrTtt1MYXVqOls9Yz33Z0_GnU4z0S-XODI1H6OEddlW9rRN0J7urSAVgvGbhwkJ03Oo5NqOLG9Mb88APXWwFStGuQ6ggHtywPZV8Ue_upteOvfshCQjqMHduoNHkGKqWnnkJj26frE5qmmW1GKk1xGsKisOtHoOHzqXYxJYedetTyCKV9pgusUMRyAqSwHaeKUj6seCheJFle-kCXsvVL1YkPulae1Dw" class="w-full h-full object-cover" alt="Join the team" />
+                    </div>
+                    <!-- Stats Overlay -->
+                    <div class="absolute -bottom-10 -right-10 p-10 bg-on-surface text-surface rounded-[3rem] shadow-2xl max-w-xs space-y-6 border-t-4 border-primary">
+                        <div class="space-y-1">
+                            <div class="text-4xl font-bold text-primary">150+</div>
+                            <div class="text-[9px] font-label uppercase tracking-widest text-surface-bright/40">Projects Mastered</div>
+                        </div>
+                        <div class="h-px bg-surface-bright/10 w-full"></div>
+                        <p class="text-[11px] text-surface-bright/60 leading-relaxed font-light italic">"At WSW, we value the expert above the machine. Here, your technical intuition is your greatest tool."</p>
+                    </div>
+                </div>
             </div>
-            <div class="mt-8 flex gap-2">
-              <div class="h-1 flex-1 bg-primary/20 rounded-full overflow-hidden">
-                <div class="h-full bg-primary w-2/3"></div>
-              </div>
-              <div class="h-1 flex-1 bg-primary/20 rounded-full overflow-hidden">
-                <div class="h-full bg-primary w-full"></div>
-              </div>
-              <div class="h-1 flex-1 bg-primary/20 rounded-full overflow-hidden">
-                <div class="h-full bg-primary w-1/4"></div>
-              </div>
+        </section>
+
+        <!-- Core Values Bento -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-12 pb-32">
+            <div class="mb-16 space-y-4">
+                <h2 class="font-headline text-3xl md:text-4xl font-bold tracking-tight">Our DNA. <span class="text-primary">Our Code.</span></h2>
+                <p class="text-on-surface-variant max-w-2xl font-light">We operate by three non-negotiable values that define every restoration project and every team interaction.</p>
             </div>
-          </div>
-          <div
-            class="bg-surface-container-lowest p-8 rounded-lg border border-outline-variant/10 shadow-sm relative overflow-hidden group">
-            <div class="relative z-10">
-              <span class="material-symbols-outlined text-primary text-3xl mb-4">leaderboard</span>
-              <h3 class="text-xl font-headline font-bold mb-2">Leadership Tracks</h3>
-              <p class="text-sm text-on-surface-variant">Direct pathways from technical specialist to project
-                directorship.</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Excellence -->
+                <div class="p-12 bg-surface-container-low rounded-[3rem] border border-outline-variant/10 space-y-8 group hover:bg-on-surface hover:text-surface transition-all duration-500">
+                    <div class="text-primary font-headline text-5xl font-bold italic opacity-30 group-hover:opacity-100 transition-opacity">01</div>
+                    <div class="space-y-4">
+                        <h3 class="font-headline text-2xl font-bold">Excellence</h3>
+                        <p class="text-sm font-light leading-relaxed group-hover:text-surface-bright/60">We don't take shortcuts. We provide the highest possible quality for every job, ensuring 100% asset reliability.</p>
+                    </div>
+                </div>
+
+                <!-- Integrity -->
+                <div class="p-12 bg-surface-container-low rounded-[3rem] border border-outline-variant/10 space-y-8 group hover:bg-on-surface hover:text-surface transition-all duration-500">
+                    <div class="text-primary font-headline text-5xl font-bold italic opacity-30 group-hover:opacity-100 transition-opacity">02</div>
+                    <div class="space-y-4">
+                        <h3 class="font-headline text-2xl font-bold">Integrity</h3>
+                        <p class="text-sm font-light leading-relaxed group-hover:text-surface-bright/60">Honesty is our hallmark. We treat clients and colleagues with total transparency and unwavering respect.</p>
+                    </div>
+                </div>
+
+                <!-- Speed -->
+                <div class="p-12 bg-surface-container-low rounded-[3rem] border border-outline-variant/10 space-y-8 group hover:bg-on-surface hover:text-surface transition-all duration-500">
+                    <div class="text-primary font-headline text-5xl font-bold italic opacity-30 group-hover:opacity-100 transition-opacity">03</div>
+                    <div class="space-y-4">
+                        <h3 class="font-headline text-2xl font-bold">Speed</h3>
+                        <p class="text-sm font-light leading-relaxed group-hover:text-surface-bright/60">We move fast. We provide rapid responses and fast-tracked solutions to keep industries running smoothly.</p>
+                    </div>
+                </div>
             </div>
-            <div
-              class="absolute -bottom-10 -right-10 text-9-xl opacity-[0.03] rotate-12 transition-transform group-hover:rotate-0">
-              <span class="material-symbols-outlined text-[160px]">stars</span>
-            </div>
-          </div>
-          <div
-            class="bg-anodized-gradient p-8 rounded-lg text-white shadow-xl flex flex-col justify-center items-center text-center">
-            <div class="text-5xl font-headline font-bold mb-2">150+</div>
-            <div class="text-xs font-headline uppercase tracking-[0.2em] opacity-80">Certified Engineers Trained</div>
-            <div class="mt-6 p-3 bg-white/10 rounded-full backdrop-blur-sm">
-              <span class="material-symbols-outlined" data-icon="verified"
-                style="font-variation-settings: 'FILL' 1;">verified</span>
-            </div>
-          </div>
-          <!-- Culture section integrated as bento item -->
-          <div
-            class="md:col-span-2 bg-surface-container-lowest p-8 rounded-lg border border-outline-variant/10 shadow-sm">
-            <div class="grid grid-cols-3 gap-8">
-              <div class="text-center">
-                <div class="text-primary font-headline font-bold text-3xl mb-1">01</div>
-                <div class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant mb-3">
-                  Excellence</div>
-                <p class="text-xs text-on-surface-variant">No compromise on the quality of our engineering outputs.</p>
-              </div>
-              <div class="text-center border-x border-outline-variant/20 px-4">
-                <div class="text-primary font-headline font-bold text-3xl mb-1">02</div>
-                <div class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant mb-3">
-                  Innovation</div>
-                <p class="text-xs text-on-surface-variant">Pushing the boundaries of what is possible in infrastructure.
-                </p>
-              </div>
-              <div class="text-center">
-                <div class="text-primary font-headline font-bold text-3xl mb-1">03</div>
-                <div class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant mb-3">
-                  Integrity</div>
-                <p class="text-xs text-on-surface-variant">Ethical engineering that serves the Nigerian community.</p>
-              </div>
-            </div>
-          </div>
-          <div class="md:col-span-2 relative rounded-lg overflow-hidden h-64 shadow-inner">
-            <img alt="Engineering Workshop" class="w-full h-full object-cover"
-              data-alt="wide shot of a bright modern engineering studio with large architectural drawings and 3D models on wooden desks"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBiqnwnFfvpVhkjbhfZFpez3WeUHqmG5DsOpwG3nTnqZ0nVlyEpejFIZDorWD52iaYsLoe5Ll7HuXqVDw5jy_F6XhOkJQMFL7tG7HQtbHQ6IRKcl9CxxFX9TWvUS0KBlQLkc55SsNSNJnEF3t84K9yiznkLsmvIO_VngOXraNmYnyL_UKM-iJ5A_Y7GbzTrcsGiKi1Z25cuFawbA2pD6lVClUcBmWPl2gEEk3FvLpXZzytFmJ6h_41FuYessn2GJhC26bT6sMQEzz9" />
-            <div class="absolute inset-0 bg-primary/20 backdrop-grayscale-[0.5]"></div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
     <!-- Current Openings Section -->
     <section class="px-8 py-24 max-w-[1440px] mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">

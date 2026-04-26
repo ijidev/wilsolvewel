@@ -1,39 +1,61 @@
-# Project Reference: Wilsovlewel Engineering
+# Project Reference & Timeline: Wilsolvewel Engineering
 
-## Preferences
-- Always check the "stitch mpc server" for design references (use code.html as code source and image as visual reference).
-- Ensure all CSS properties and CDNs are copied correctly or created manually if not working.
-- Implement functionality, avoid simple dummy placeholder UI.
-- All links must be functional and correctly pointed; avoid dummy text or "#" links.
-- For design prompts, apply "stitch loop skills" to deeply integrate with stitch mpc.
-- Always redefine and optimize prompts for best possible results.
+## Project Overview
+A comprehensive technical revamp and synchronization of the Wilsolvewel Engineering website based on the 2026 Company Profile.
 
-## Instructions
-1. Establish a prototype for the client.
-2. Connect all page links correctly to each other.
-3. Centralize dynamic header, footer, nav menu instead of static inline on all pages. Fix this before proceeding to other instructions.
-4. **Redesign**: Scale down typography and elements for a more balanced "zoomed out" look.
-5. **Responsiveness**: Ensure navigation and content are fully optimized for mobile and tablet.
+**Primary Goal**: Transforming the digital presence into a high-precision, engineering-led industrial portal.
 
-## Timeline
-- **April 18, 2026**: Project initialized, dynamic header/footer implementation.
-- **April 19, 2026**: Git repository setup and PAT authentication.
-- **April 20, 2026**: Website Redesign and Optimization (Industry Focus), synchronization of all pages, and responsive navigation implementation.
+---
 
-## To-Do List (Tasks)
-- [x] Create project reference folder and initialization document.
-- [x] Extract header and footer to a central location.
-- [x] Replace inline headers with a dynamic inclusion method on all pages.
-- [x] Connect navigational links properly.
-- [x] Implement central dynamic system for `admin` and `client` subdirectories.
-- [x] Push project to GitHub repository.
-- [x] Implement global scaling and styling (smaller fonts, element spacing).
-- [x] Develop mobile-responsive navigation in `header.js`.
-- [x] Update `index.html` content for Heavy Machinery Repair focus.
-- [x] Final site-wide responsiveness polish for secondary pages.
-- [x] Synchronization of Admin and Client area pages.
-- [x] Implementation of interactive Engineering Node effects.
-- [/] Deployment to GitHub via PAT.
+## Core Brand Identity
+- **Tagline**: Reducing Equipment Downtime. Delivering Reliable Engineering Solutions.
+- **Theme**: "Precision Forge" / "Iron Heart of Nigeria"
+- **Colors**: Orange (Primary), Black/White (Secondary), Red (Accent).
 
-## Implementation Plans & Walkthroughs
-- See `project_log.md` for detailed historical record of all implementation phases and walkthroughs.
+---
+
+## Project Timeline & Tasks
+
+### Phase 1: Infrastructure & Centralization (Completed)
+- [x] Create centralized `header.js` for dynamic navigation.
+- [x] Create `global.css` for shared industrial styles.
+- [x] Clean up local Tailwind/CSS configs from all root pages.
+- [x] Synchronize site-wide theme and logo logic.
+
+### Phase 2: UI Fixes & Navigation (Completed)
+- [x] Remove "Home" from menu; Reorder: Services -> About -> Industries...
+- [x] Fix padding/margins in HSSE section.
+- [x] Fix career page broken HTML.
+- [x] Fix contact page layout/zoom issue.
+
+### Phase 3: Content Revamp (Completed)
+- [x] **Home Page Overhaul**: Expanded 3-pillar services and new hero content.
+- [x] **About Page Update**: Integrity, Corporate Overview, and "Who We Serve".
+- [x] **Services Synchronization**:
+    - [x] Engineering Services (Mechanical/Civil focus).
+    - [x] Procurement & Logistics (Caterpillar/Cummins focus).
+    - [x] Technical Support & Maintenance.
+- [x] **Specialized Content**:
+    - [x] HSSE Protocols revamp.
+    - [x] FAQ technical update.
+    - [x] Industry-specific sectors (Oil & Gas, Power, etc.).
+- [x] **Portfolio Update**: 2021-2025 real-world project portfolio integration.
+
+### Phase 4: Functional Forms & Polish (Completed)
+- [x] **Technical Forms**: Implement functional Pump/Material spec forms (not dummy UI).
+- [x] **Navigation Integration**: Added "Technical Specs" to the main header menu.
+- [x] **Multi-Point Connectivity**: Linked spec forms from the Home page (Procurement card) and Services page (Specialized modules).
+- [ ] **Final Link Audit**: Ensure 100% functional connectivity across all sub-pages.
+- [ ] **Asset Finalization**: Replace placeholders with final client assets if available.
+
+---
+
+## Technical Documentation Log
+- [Implementation Plan (2026 Revamp)](file:///c:/Users/HP/Desktop/wilsolvewel/wilsovewel.com/project%20ref/implementation_plan.md)
+- [Project Walkthrough](file:///c:/Users/HP/Desktop/wilsolvewel/wilsovewel.com/project%20ref/walkthrough.md)
+
+---
+
+## Latest Updates
+- **2026-04-26 (Latest)**: Completed full site-wide content overhaul based on the 2026 Company Profile. Revamped 8+ pages (Home, Services, About, Projects, Industries, FAQ, HSSE, Careers) to align with "Engineering Surgeon" identity and real-world project data.
+- **2026-04-26 (Initial)**: Received full company profile. Initialized Phase 3. Re-ordered navigation to prioritize "Services". Fixed layout issues in HSSE, Career, and Contact pages.

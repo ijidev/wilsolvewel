@@ -12,109 +12,7 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "surface-variant": "#e1e2e9",
-            "on-tertiary-container": "#ffb991",
-            "on-secondary-fixed-variant": "#354764",
-            "surface-container-high": "#e7e8ef",
-            "on-primary-fixed-variant": "#004787",
-            "on-secondary": "#ffffff",
-            "error-container": "#ffdad6",
-            "primary": "#003d76",
-            "on-tertiary-fixed": "#321200",
-            "on-secondary-fixed": "#061c36",
-            "on-surface": "#191c20",
-            "surface-dim": "#d9dae0",
-            "inverse-surface": "#2e3036",
-            "on-tertiary-fixed-variant": "#753400",
-            "on-primary": "#ffffff",
-            "surface-container-low": "#f3f3fa",
-            "secondary-container": "#c8dbfe",
-            "inverse-primary": "#a6c8ff",
-            "on-primary-container": "#aacaff",
-            "outline-variant": "#c2c6d3",
-            "error": "#ba1a1a",
-            "surface-container": "#ededf4",
-            "secondary-fixed-dim": "#b4c7ea",
-            "surface-container-lowest": "#ffffff",
-            "secondary": "#4c5f7d",
-            "surface-tint": "#1d5fa8",
-            "surface-container-highest": "#e1e2e9",
-            "tertiary": "#662c00",
-            "primary-container": "#06549d",
-            "on-secondary-container": "#4d607e",
-            "surface": "#f9f9ff",
-            "on-tertiary": "#ffffff",
-            "secondary-fixed": "#d5e3ff",
-            "primary-fixed-dim": "#a6c8ff",
-            "on-error": "#ffffff",
-            "surface-bright": "#f9f9ff",
-            "on-primary-fixed": "#001c3b",
-            "tertiary-fixed-dim": "#ffb68c",
-            "on-surface-variant": "#424751",
-            "inverse-on-surface": "#f0f0f7",
-            "background": "#f9f9ff",
-            "on-error-container": "#93000a",
-            "outline": "#727782",
-            "tertiary-fixed": "#ffdbc9",
-            "tertiary-container": "#8a3e00",
-            "on-background": "#191c20",
-            "primary-fixed": "#d5e3ff"
-          },
-          "borderRadius": {
-            "DEFAULT": "1rem",
-            "lg": "2rem",
-            "xl": "3rem",
-            "full": "9999px"
-          },
-          "fontFamily": {
-            "headline": ["Space Grotesk"],
-            "body": ["Manrope"],
-            "label": ["Space Grotesk"]
-          },
-          "fontSize": {
-            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-            "lg": ["1rem", { "lineHeight": "1.5rem" }],
-            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-            "6xl": ["3rem", { "lineHeight": "1" }],
-            "7xl": ["3.75rem", { "lineHeight": "1" }]
-          }
-        },
-      },
-    }
-  </script>
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
 
-    .technical-grid {
-      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
-      background-size: 24px 24px;
-      opacity: 0.05;
-    }
-
-    .anodized-gradient {
-      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
-    }
-
-    .site-gradient-bg {
-      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
-      background-attachment: fixed;
-    }
-  </style>
 </head>
 
 <body
@@ -125,150 +23,124 @@
   <main class="relative pt-20">
     <!-- Technical Grid Overlay Background -->
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
-    <!-- Hero Section / Header -->
-    <header class="relative py-16 px-6 lg:px-12 z-10">
-      <div class="max-w-7xl mx-auto">
-        <div
-          class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary font-label text-[10px] uppercase tracking-[0.2em] mb-4">
-          Sector Overview 2024
-        </div>
-        <h1 class="font-headline text-3xl md:text-5xl font-bold tracking-tighter leading-[0.9] text-on-surface mb-6">
-          Engineering <br />Solutions for <span class="text-primary italic">Critical Infrastructure.</span>
-        </h1>
-        <p class="text-on-surface-variant text-base max-w-xl font-light">
-          Wilsolvewel provides specialized technical expertise across heavy industrial sectors, delivering architectural
-          precision and operational resilience for large-scale equipment.
-        </p>
-      </div>
-    </header>
-    <div class="hidden md:flex flex-col items-end gap-2 font-label text-[10px] text-outline">
-      <span>SYSTEM STATUS: OPTIMAL</span>
-      <span>LATITUDE: 45.523062</span>
-      <span>LONGITUDE: -122.676482</span>
-    </div>
-    </header>
-    <!-- Industries Bento Grid -->
-    <section class="max-w-screen-2xl mx-auto px-8 pb-32">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <!-- Oil & Gas - Primary Large Card -->
-        <div
-          class="md:col-span-8 group relative overflow-hidden bg-surface-container-lowest rounded-lg h-[500px] shadow-sm flex flex-col justify-end p-10">
-          <div class="absolute inset-0 z-0">
-            <img
-              alt="high-tech offshore oil rig at twilight with industrial lighting reflecting on steel surfaces and calm dark water"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 grayscale hover:grayscale-0"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmqb8YSoQkfZuF5y6GOqPMKGv1q4TlY4E5jGdh1CcUF9d14KWRGoCteIOw90vLVezeFdJbD5MZcvyZ8yiuY7-OxCjip0_6imeCwtAi4ap7aHKFk9_-OAyLiwpKafuvBiIL2HPj6V_QuWVRDVmS_HlADY-KivD0jGrh--hPUH5U1n2kGoMVBvgJDQUln4dJ9XTv9UgS1n5mUIc_pwwHzZ1cJXtWtThsHAB70njUlLW2sqSkhoSJTXe8P7AhL6cit-y5INPgXCPyYDE1" />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-transparent">
+    <!-- Hero Section -->
+        <section class="relative py-24 px-6 lg:px-12 z-10 max-w-7xl mx-auto">
+            <div class="flex flex-col items-start max-w-4xl space-y-6">
+                <span class="font-label uppercase tracking-[0.3em] text-primary text-[10px] font-bold block">Sector Expertise</span>
+                <h1 class="font-headline text-4xl md:text-6xl font-bold tracking-tighter text-on-surface leading-[0.95]">
+                    VITAL <br /><span class="text-primary italic">INFRASTRUCTURE.</span>
+                </h1>
+                <p class="text-on-surface-variant text-lg font-light leading-relaxed max-w-2xl">
+                    We deliver specialized engineering and maintenance solutions across the five primary pillars of Nigeria's industrial economy.
+                </p>
             </div>
-          </div>
-          <div class="relative z-10">
-            <div class="flex items-center gap-4 mb-4">
-              <span class="material-symbols-outlined text-primary text-4xl" data-icon="oil_barrel">oil_barrel</span>
-              <span class="font-label text-xs uppercase tracking-widest text-primary font-bold">Sector 01</span>
+        </section>
+
+        <!-- Industries Bento Grid -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-12 pb-32">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <!-- Oil & Gas -->
+                <div class="md:col-span-8 group relative overflow-hidden bg-surface-container-low rounded-3xl min-h-[500px] border border-outline-variant/10 flex flex-col justify-end p-12">
+                    <div class="absolute inset-0 z-0">
+                        <img class="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 opacity-60" 
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76" alt="Oil & Gas" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent"></div>
+                    </div>
+                    <div class="relative z-10 space-y-4">
+                        <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em]">Sector 01</span>
+                        <h2 class="font-headline text-4xl font-bold tracking-tight">Oil & Gas</h2>
+                        <p class="text-on-surface-variant max-w-xl font-light">Supporting E&P flow improvement, refinery maintenance, and offshore equipment reliability. We specialize in reducing downtime for critical export infrastructure.</p>
+                        <div class="flex flex-wrap gap-3 pt-4">
+                            <span class="px-4 py-2 bg-white/5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-white/10">Refineries</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-white/10">Offshore Support</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-white/10">Pipeline Ops</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power Generation -->
+                <div class="md:col-span-4 bg-on-surface text-surface rounded-3xl p-12 flex flex-col justify-between border-t-4 border-primary shadow-2xl">
+                    <div class="space-y-6">
+                        <span class="material-symbols-outlined text-primary text-5xl">bolt</span>
+                        <h2 class="font-headline text-3xl font-bold tracking-tight">Power <br />Generation</h2>
+                        <p class="text-surface-bright/60 font-light text-sm leading-relaxed">Providing high-precision commissioning and technical support for gas turbines, thermal plants, and hydro-electric facilities across the national grid.</p>
+                    </div>
+                    <a href="services.html#maintenance" class="flex items-center gap-2 text-primary font-label text-[10px] font-bold uppercase tracking-[0.2em] group">
+                        Technical Scope <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform text-sm">arrow_forward</span>
+                    </a>
+                </div>
+
+                <!-- Manufacturing -->
+                <div class="md:col-span-4 group bg-surface-container-lowest rounded-3xl p-10 border border-outline-variant/10 space-y-8">
+                    <div class="aspect-video rounded-2xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFr582YiArBIQjEPMH_T-xgEh4j0HJAhiW6tqr1Fr8NiEH-CZ9sDVC0AFApM9RADHB9Fz7CgSJyWw0AOLc8HxBziJA79bKlJT11hYANSLCsTZ6qzQFYfq5Z7lSYPNQEyMrsWyBwIovdqtEX6kQJJ-Jc9NjDCqzZw0iWdmSwfnwNcxAeRx3PSwbuRyhHu7F32F8liwvrgRAknDLyMTU0EyPHxkD9N4C3fQnFmSRCHE6aDXEEwdFZK34QaFSHStCMPW31bYqzJl0gLo" class="w-full h-full object-cover" alt="Manufacturing" />
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="font-headline text-2xl font-bold">Manufacturing</h2>
+                        <p class="text-on-surface-variant font-light text-sm">FMCG and heavy industrial plant maintenance. We restore failed engine components and optimize manufacturing line flow through precise civil works.</p>
+                    </div>
+                </div>
+
+                <!-- Construction -->
+                <div class="md:col-span-4 bg-surface-container-low rounded-3xl p-10 border border-outline-variant/10 flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute -right-12 -top-12 opacity-5 scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+                        <span class="material-symbols-outlined text-[200px]">architecture</span>
+                    </div>
+                    <div class="space-y-6">
+                        <span class="material-symbols-outlined text-primary text-4xl">foundation</span>
+                        <h2 class="font-headline text-2xl font-bold">Construction & Infrastructure</h2>
+                        <p class="text-on-surface-variant font-light text-sm">Specialized civil engineering for heavy machinery foundations and structural rehabilitation for large-scale lifting equipment (Cranes, Pilers).</p>
+                    </div>
+                    <div class="pt-8 grid grid-cols-2 gap-4 border-t border-outline-variant/20">
+                        <div>
+                            <div class="text-2xl font-bold text-on-surface">150+</div>
+                            <div class="text-[9px] font-label uppercase text-outline font-bold">Assets Restored</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-on-surface">Zero</div>
+                            <div class="text-[9px] font-label uppercase text-outline font-bold">Structural Failures</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Government -->
+                <div class="md:col-span-4 anodized-gradient text-on-primary rounded-3xl p-10 shadow-xl shadow-primary/20 flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-start">
+                            <span class="material-symbols-outlined text-4xl text-white">account_balance</span>
+                            <span class="px-3 py-1 bg-white/10 rounded-full text-[8px] font-bold uppercase tracking-widest">Compliant</span>
+                        </div>
+                        <h2 class="font-headline text-3xl font-bold tracking-tight">Government & Civic</h2>
+                        <p class="text-primary-fixed/70 font-light text-sm">Supporting national development through infrastructure maintenance and specialized engineering for government-led facility modernization.</p>
+                    </div>
+                    <div class="space-y-2 mt-8">
+                        <div class="h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-white w-full"></div>
+                        </div>
+                        <div class="flex justify-between text-[8px] font-label uppercase tracking-widest text-white/50 font-bold">
+                            <span>Regulatory Standards</span>
+                            <span>100% Alignment</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h2 class="font-headline text-4xl font-bold mb-4 tracking-tight">Oil &amp; Gas</h2>
-            <p class="text-on-surface-variant max-w-lg mb-6">Upstream, midstream, and downstream engineering solutions.
-              We specialize in subsea architectural schematics and refinery optimization.</p>
-            <div class="flex gap-2">
-              <span
-                class="px-3 py-1 bg-surface-container-high rounded-full font-label text-[10px] uppercase">Refining</span>
-              <span
-                class="px-3 py-1 bg-surface-container-high rounded-full font-label text-[10px] uppercase">Pipelines</span>
-              <span
-                class="px-3 py-1 bg-surface-container-high rounded-full font-label text-[10px] uppercase">Drilling</span>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="py-24 px-6 lg:px-12 bg-surface-container-low/50 text-center">
+            <div class="max-w-3xl mx-auto space-y-10">
+                <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Technical Resilience Across <span class="text-primary italic">Every Frontier.</span></h2>
+                <p class="text-on-surface-variant text-lg font-light leading-relaxed">Whether you operate in deepwater O&G or urban manufacturing, our 'Engineering Surgeon' approach ensures your assets perform at peak efficiency.</p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="contact.html" class="bg-primary text-on-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                        Consult Sector Lead
+                    </a>
+                    <a href="projects.html" class="bg-on-surface text-surface px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-on-surface/90 transition-all">
+                        View Sector Projects
+                    </a>
+                </div>
             </div>
-          </div>
-        </div>
-        <!-- Power Generation -->
-        <div
-          class="md:col-span-4 group bg-surface-container-lowest rounded-lg p-8 shadow-sm flex flex-col border-t-4 border-secondary">
-          <div class="mb-auto">
-            <span class="material-symbols-outlined text-secondary text-5xl mb-6" data-icon="bolt">bolt</span>
-            <h2 class="font-headline text-3xl font-bold mb-4">Power Generation</h2>
-            <p class="text-sm text-on-surface-variant leading-relaxed mb-6">Transitioning global energy through nuclear,
-              thermal, and renewable thermal dynamics. Grid stabilization and high-voltage precision.</p>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-center gap-3 text-xs font-label uppercase tracking-wider text-outline">
-              <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Smart Grid Integration
-            </li>
-            <li class="flex items-center gap-3 text-xs font-label uppercase tracking-wider text-outline">
-              <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Thermal Efficiency
-            </li>
-            <li class="flex items-center gap-3 text-xs font-label uppercase tracking-wider text-outline">
-              <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Asset Management
-            </li>
-          </ul>
-          <button
-            class="text-primary font-label text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
-            Explore Capabilities <span class="material-symbols-outlined text-sm"
-              data-icon="arrow_forward">arrow_forward</span>
-          </button>
-        </div>
-        <!-- Manufacturing -->
-        <div class="md:col-span-4 group bg-surface-container-low rounded-lg p-8 shadow-sm">
-          <div class="relative w-full h-48 mb-8 rounded-lg overflow-hidden">
-            <img
-              alt="precise robotic arms in a clean-room automated manufacturing facility with cool blue industrial lighting"
-              class="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFr582YiArBIQjEPMH_T-xgEh4j0HJAhiW6tqr1Fr8NiEH-CZ9sDVC0AFApM9RADHB9Fz7CgSJyWw0AOLc8HxBziJA79bKlJT11hYANSLCsTZ6qzQFYfq5Z7lSYPNQEyMrsWyBwIovdqtEX6kQJJ-Jc9NjDCqzZw0iWdmSwfnwNcxAeRx3PSwbuRyhHu7F32F8liwvrgRAknDLyMTU0EyPHxkD9N4C3fQnFmSRCHE6aDXEEwdFZK34QaFSHStCMPW31bYqzJl0gLo" />
-          </div>
-          <div class="flex items-center gap-3 mb-4">
-            <span class="material-symbols-outlined text-primary"
-              data-icon="precision_manufacturing">precision_manufacturing</span>
-            <h2 class="font-headline text-2xl font-bold">Manufacturing</h2>
-          </div>
-          <p class="text-sm text-on-surface-variant mb-6">Advanced robotics and automated fabrication lines.
-            Precision-engineered for 99.9% uptime and lean throughput.</p>
-        </div>
-        <!-- Construction & Infrastructure -->
-        <div
-          class="md:col-span-4 group bg-surface-container-lowest rounded-lg p-8 shadow-sm flex flex-col relative overflow-hidden">
-          <div class="absolute -right-12 -top-12 opacity-5 scale-150 rotate-12">
-            <span class="material-symbols-outlined text-[200px]" data-icon="architecture">architecture</span>
-          </div>
-          <span class="material-symbols-outlined text-primary text-4xl mb-6" data-icon="foundation">foundation</span>
-          <h2 class="font-headline text-2xl font-bold mb-4">Construction &amp; Infrastructure</h2>
-          <p class="text-sm text-on-surface-variant mb-8">Heavy civil engineering for bridges, tunnels, and urban
-            development. Architectural integrity for the next century.</p>
-          <div class="mt-auto pt-6 border-t border-outline-variant/20 grid grid-cols-2 gap-4">
-            <div class="text-center">
-              <div class="font-headline text-2xl font-bold text-primary">450+</div>
-              <div class="font-label text-[9px] uppercase text-outline">Projects Done</div>
-            </div>
-            <div class="text-center">
-              <div class="font-headline text-2xl font-bold text-primary">12k</div>
-              <div class="font-label text-[9px] uppercase text-outline">Steel Tons</div>
-            </div>
-          </div>
-        </div>
-        <!-- Government Facilities -->
-        <div
-          class="md:col-span-4 group bg-primary text-on-primary rounded-lg p-8 shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-10">
-              <span class="material-symbols-outlined text-4xl" data-icon="account_balance">account_balance</span>
-              <span
-                class="px-2 py-1 rounded border border-on-primary/30 font-label text-[8px] uppercase tracking-widest">Secure
-                Access</span>
-            </div>
-            <h2 class="font-headline text-3xl font-bold mb-4">Government Facilities</h2>
-            <p class="text-sm opacity-80 leading-relaxed">Designing and securing federal architecture. HSSE compliant
-              engineering for mission-critical operations and civic resilience.</p>
-          </div>
-          <div class="flex flex-col gap-4 mt-12">
-            <div class="h-1 bg-on-primary/10 rounded-full overflow-hidden">
-              <div class="h-full bg-on-primary w-2/3"></div>
-            </div>
-            <div class="flex justify-between text-[10px] font-label uppercase tracking-widest">
-              <span>Regulatory Compliance</span>
-              <span>68% Capacity</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
     <!-- Technical Telemetry / Stats Section -->
     <section class="bg-surface-container-low py-24 relative">
       <div class="max-w-screen-2xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

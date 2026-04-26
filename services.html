@@ -12,108 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary-fixed-dim": "#a8c8ff",
-                        "on-secondary": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "on-secondary-fixed-variant": "#842500",
-                        "on-secondary-fixed": "#3a0b00",
-                        "surface-bright": "#f8f9fb",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-variant": "#e0e3e5",
-                        "tertiary-fixed": "#d5e4f9",
-                        "on-tertiary-container": "#cedcf1",
-                        "primary-fixed": "#d6e3ff",
-                        "on-primary-fixed-variant": "#00468b",
-                        "surface-container-high": "#e6e8ea",
-                        "tertiary-fixed-dim": "#b9c8dc",
-                        "on-primary-container": "#cadcff",
-                        "on-background": "#191c1e",
-                        "outline": "#727783",
-                        "surface-container-highest": "#e0e3e5",
-                        "surface-container": "#eceef0",
-                        "surface-container-lowest": "#ffffff",
-                        "on-tertiary": "#ffffff",
-                        "inverse-surface": "#2d3133",
-                        "on-secondary-container": "#5a1600",
-                        "secondary-fixed-dim": "#ffb59e",
-                        "secondary": "#ad3300",
-                        "background": "#f8f9fb",
-                        "on-error": "#ffffff",
-                        "primary-container": "#005fb8",
-                        "on-primary": "#ffffff",
-                        "tertiary-container": "#536173",
-                        "tertiary": "#3c495a",
-                        "surface": "#f8f9fb",
-                        "secondary-container": "#ff642d",
-                        "on-error-container": "#93000a",
-                        "secondary-fixed": "#ffdbd0",
-                        "on-tertiary-fixed-variant": "#3a4859",
-                        "surface-container-low": "#f2f4f6",
-                        "on-surface-variant": "#424752",
-                        "inverse-primary": "#a8c8ff",
-                        "surface-tint": "#005db5",
-                        "on-primary-fixed": "#001b3d",
-                        "primary": "#00488d",
-                        "surface-dim": "#d8dadc",
-                        "on-surface": "#191c1e",
-                        "on-tertiary-fixed": "#0e1c2b",
-                        "outline-variant": "#c2c6d4",
-                        "error": "#ba1a1a"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "fontSize": {
-                            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-                            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-                            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-                            "lg": ["1rem", { "lineHeight": "1.5rem" }],
-                            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-                            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-                            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-                            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-                            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-                            "6xl": ["3rem", { "lineHeight": "1" }],
-                            "7xl": ["3.75rem", { "lineHeight": "1" }]
-                        }
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
 
-        .technical-grid {
-            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.05;
-        }
-
-        .anodized-gradient {
-            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
-        }
-
-        .site-gradient-bg {
-            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
-    </style>
 </head>
 
 <body
@@ -125,193 +24,334 @@
         <!-- Technical Grid Overlay Background -->
         <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
         <!-- Hero Section -->
-        <header class="relative py-16 px-6 lg:px-12 z-10 border-l-4 border-primary ml-6 md:ml-12 pl-8">
-            <p class="font-label uppercase tracking-[0.2em] text-primary text-[10px] mb-2 font-bold">Capabilities /
-                Specialized Restore</p>
-            <h1 class="font-headline text-3xl md:text-5xl font-bold tracking-tight text-on-surface mb-6 leading-[1.15]">
-                Heavy Machinery <br /><span class="text-primary-container">Engineering Solutions.</span>
-            </h1>
-            <p class="text-on-surface-variant max-w-2xl text-base leading-relaxed">
-                Operating at the intersection of technical excellence and machinery reliability. We provide specialized
-                repair and maintenance for high-value earthmoving equipment and industrial systems.
-            </p>
+        <header class="relative py-24 px-6 lg:px-12 z-10">
+            <div class="max-w-7xl mx-auto border-l-4 border-primary pl-8 md:pl-12">
+                <p class="font-label uppercase tracking-[0.3em] text-primary text-[10px] mb-4 font-bold">Comprehensive Capabilities</p>
+                <h1 class="font-headline text-4xl md:text-6xl font-bold tracking-tighter text-on-surface mb-8 leading-[0.95]">
+                    Engineering. Procurement. <br /><span class="text-primary italic">Technical Excellence.</span>
+                </h1>
+                <p class="text-on-surface-variant max-w-3xl text-lg leading-relaxed font-light">
+                    We deliver high-performance solutions across Nigeria’s Oil & Gas, Power Generation, Construction, and Manufacturing sectors. Reducing downtime through innovation and engineering integrity.
+                </p>
+            </div>
         </header>
-        <!-- Bento Grid Services Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            <!-- PILLAR 01: Engineering Services -->
-            <section
-                class="md:col-span-8 bg-surface-container-lowest rounded-lg p-10 shadow-sm relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 p-8 flex flex-col items-end opacity-20 group-hover:opacity-100 transition-opacity">
-                    <span class="font-label text-4xl font-bold">01</span>
-                    <span class="font-label text-[10px] tracking-widest uppercase">Structural_Module</span>
-                </div>
-                <div class="relative z-10">
-                    <div class="flex items-center gap-4 mb-8">
-                        <div class="w-12 h-12 bg-primary-fixed flex items-center justify-center rounded-sm">
-                            <span class="material-symbols-outlined text-primary"
-                                data-icon="architecture">architecture</span>
-                        </div>
-                        <h2 class="font-headline text-3xl font-bold">Engineering Services</h2>
+
+        <!-- Service Pillars Navigation -->
+        <div class="sticky top-20 z-20 bg-surface/80 backdrop-blur-md border-y border-outline-variant/10 py-4 px-6 lg:px-12">
+            <div class="max-w-7xl mx-auto flex flex-wrap gap-8 justify-center md:justify-start">
+                <a href="#engineering" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">01. Engineering</a>
+                <a href="#procurement" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">02. Procurement</a>
+                <a href="#maintenance" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">03. Technical Support</a>
+                <a href="#specialized" class="text-[10px] font-label font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors">04. Specialized Solutions</a>
+            </div>
+        </div>
+
+        <!-- PILLAR 01: Engineering Services -->
+        <section id="engineering" class="py-32 px-6 lg:px-12 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-3 text-primary">
+                        <span class="material-symbols-outlined text-4xl">architecture</span>
+                        <span class="font-label text-xs font-bold uppercase tracking-[0.2em]">Engineering Services</span>
                     </div>
-                    <div class="grid md:grid-cols-2 gap-12">
-                        <div>
-                            <p class="text-on-surface-variant mb-8 leading-relaxed">
-                                Our multi-disciplinary engineering team delivers high-fidelity blueprints, structural
-                                analysis, and mechanical design optimized for extreme industrial environments.
-                            </p>
+                    <h2 class="font-headline text-4xl font-bold tracking-tight">Civil & Structural Engineering for <span class="text-primary italic">Heavy Operations.</span></h2>
+                    <p class="text-on-surface-variant leading-relaxed font-light">
+                        We provide specialized civil drawings and structural engineering designed to support heavy-duty machinery. Our solutions focus on structural integrity, load safety, and durability, ensuring that equipment installations perform optimally throughout their service life.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <h4 class="font-headline font-bold text-sm text-on-surface uppercase tracking-widest">Solutions We Deliver</h4>
+                            <ul class="space-y-3">
+                                <li class="flex gap-3 text-xs text-on-surface-variant font-medium">
+                                    <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                    Equipment Base & Foundation Design
+                                </li>
+                                <li class="flex gap-3 text-xs text-on-surface-variant font-medium">
+                                    <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                    Concrete Platforms & Reinforced Structures
+                                </li>
+                                <li class="flex gap-3 text-xs text-on-surface-variant font-medium">
+                                    <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                    Structural Civil Works for Plants
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="space-y-4">
+                            <h4 class="font-headline font-bold text-sm text-on-surface uppercase tracking-widest">Ideal Applications</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Factories, Power Plants, Energy Facilities, and large-scale Construction infrastructure projects.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/10">
+                        <img class="w-full aspect-[4/5] object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" alt="Industrial Civil Engineering" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PILLAR 02: Procurement & International Logistics -->
+        <section id="procurement" class="py-32 px-6 lg:px-12 bg-surface-container-low/50 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-20 space-y-4">
+                    <div class="inline-flex items-center gap-3 text-secondary mb-4">
+                        <span class="material-symbols-outlined text-4xl">inventory_2</span>
+                        <span class="font-label text-xs font-bold uppercase tracking-[0.2em]">Procurement & Logistics</span>
+                    </div>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Reliable <span class="text-secondary italic">OEM Sourcing</span> Without Supply Delays.</h2>
+                    <p class="text-on-surface-variant font-light leading-relaxed">
+                        We manage the entire supply chain, from technical sourcing and supplier verification to global pickup, international shipping, and customs clearance.
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-12 mb-20">
+                    <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10">
+                        <h3 class="font-headline font-bold text-xl mb-4">Brands We Support</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <span class="p-3 bg-surface-container rounded-lg text-xs font-bold text-center">Caterpillar</span>
+                            <span class="p-3 bg-surface-container rounded-lg text-xs font-bold text-center">Cummins</span>
+                            <span class="p-3 bg-surface-container rounded-lg text-xs font-bold text-center">Perkins</span>
+                            <span class="p-3 bg-surface-container rounded-lg text-xs font-bold text-center">Terex</span>
+                            <span class="p-3 bg-surface-container rounded-lg text-xs font-bold text-center">Schwing</span>
+                            <span class="p-3 bg-surface-container rounded-lg text-xs font-bold text-center">OEM-Equiv.</span>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10">
+                        <h3 class="font-headline font-bold text-xl mb-6">Our Procurement Capability</h3>
+                        <div class="grid md:grid-cols-2 gap-8">
                             <ul class="space-y-4">
-                                <li class="flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-primary text-sm mt-1"
-                                        data-icon="token">token</span>
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-secondary text-sm">settings_input_component</span>
+                                    </div>
                                     <div>
-                                        <span class="font-headline font-semibold block text-sm">FEED &amp; Detailed
-                                            Engineering</span>
-                                        <span class="text-xs text-on-surface-variant">Front-end engineering design for
-                                            large-scale capital projects.</span>
+                                        <span class="block text-xs font-bold uppercase">Mechanical & Rotational</span>
+                                        <span class="text-[10px] text-on-surface-variant">Pumps, Compressors, Gearboxes</span>
                                     </div>
                                 </li>
-                                <li class="flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-primary text-sm mt-1"
-                                        data-icon="token">token</span>
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-secondary text-sm">bolt</span>
+                                    </div>
                                     <div>
-                                        <span class="font-headline font-semibold block text-sm">Computational Fluid
-                                            Dynamics</span>
-                                        <span class="text-xs text-on-surface-variant">Advanced flow simulation and
-                                            thermal management analysis.</span>
+                                        <span class="block text-xs font-bold uppercase">Electrical & Instrumentation</span>
+                                        <span class="text-[10px] text-on-surface-variant">Switchgear, Transmitters, Sensors</span>
                                     </div>
                                 </li>
-                                <li class="flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-primary text-sm mt-1"
-                                        data-icon="token">token</span>
+                            </ul>
+                            <ul class="space-y-4">
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-secondary text-sm">water_drop</span>
+                                    </div>
                                     <div>
-                                        <span class="font-headline font-semibold block text-sm">Process
-                                            Instrumentation</span>
-                                        <span class="text-xs text-on-surface-variant">Automated control systems and
-                                            sensor network integration.</span>
+                                        <span class="block text-xs font-bold uppercase">Hydraulic Systems</span>
+                                        <span class="text-[10px] text-on-surface-variant">Accessories, Valves, Seals</span>
+                                    </div>
+                                </li>
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-secondary text-sm">search</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xs font-bold uppercase">Specialized Materials</span>
+                                        <span class="text-[10px] text-on-surface-variant">Hard-to-source components</span>
                                     </div>
                                 </li>
                             </ul>
                         </div>
-                        <div class="rounded-lg overflow-hidden h-64 md:h-full bg-surface-container">
-                            <img class="w-full h-full object-cover mix-blend-multiply opacity-80"
-                                data-alt="Technical blueprint of complex mechanical engine components with blue industrial highlights and precise drafting lines"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
+                    </div>
+                </div>
+
+                <!-- Procurement Flow -->
+                <div class="p-10 bg-on-surface rounded-3xl text-surface relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10 technical-grid pointer-events-none"></div>
+                    <div class="relative z-10 flex flex-wrap justify-between gap-8 text-center items-start">
+                        <div class="flex-1 min-w-[120px] space-y-4">
+                            <span class="w-8 h-8 rounded-full border border-surface/30 flex items-center justify-center mx-auto text-xs font-bold">1</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest">Spec Review</span>
+                        </div>
+                        <div class="flex-1 min-w-[120px] space-y-4">
+                            <span class="w-8 h-8 rounded-full border border-surface/30 flex items-center justify-center mx-auto text-xs font-bold">2</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest">OEM Verify</span>
+                        </div>
+                        <div class="flex-1 min-w-[120px] space-y-4">
+                            <span class="w-8 h-8 rounded-full border border-surface/30 flex items-center justify-center mx-auto text-xs font-bold">3</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest">Execution</span>
+                        </div>
+                        <div class="flex-1 min-w-[120px] space-y-4">
+                            <span class="w-8 h-8 rounded-full border border-surface/30 flex items-center justify-center mx-auto text-xs font-bold">4</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest">Global Freight</span>
+                        </div>
+                        <div class="flex-1 min-w-[120px] space-y-4">
+                            <span class="w-8 h-8 rounded-full border border-surface/30 flex items-center justify-center mx-auto text-xs font-bold">5</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest">Clearance</span>
+                        </div>
+                        <div class="flex-1 min-w-[120px] space-y-4">
+                            <span class="w-8 h-8 rounded-full border border-secondary bg-secondary flex items-center justify-center mx-auto text-xs font-bold text-on-secondary">6</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-widest text-secondary">Final Delivery</span>
                         </div>
                     </div>
                 </div>
-            </section>
-            <!-- PILLAR 02: Procurement & Logistics -->
-            <section class="md:col-span-4 bg-surface-container-low rounded-lg p-8 shadow-sm group">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-10 h-10 bg-secondary-fixed flex items-center justify-center rounded-sm">
-                        <span class="material-symbols-outlined text-secondary"
-                            data-icon="inventory_2">inventory_2</span>
-                    </div>
-                    <h2 class="font-headline text-xl font-bold">Procurement &amp; Logistics</h2>
-                </div>
-                <div class="h-40 mb-6 rounded-sm overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                        data-alt="Vast industrial warehouse with high-tech automated sorting system and organized shipping containers in bright daylight"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
-                </div>
-                <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-                    Global sourcing and supply chain management for specialized hardware and heavy industrial equipment.
-                </p>
-                <div class="space-y-3">
-                    <div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
-                        <span class="text-xs font-label uppercase">Strategic Sourcing</span>
-                        <span class="material-symbols-outlined text-sm text-outline"
-                            data-icon="chevron_right">chevron_right</span>
-                    </div>
-                    <div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
-                        <span class="text-xs font-label uppercase">Compliance &amp; Export</span>
-                        <span class="material-symbols-outlined text-sm text-outline"
-                            data-icon="chevron_right">chevron_right</span>
-                    </div>
-                    <div class="p-3 bg-surface-container-lowest rounded-sm flex justify-between items-center">
-                        <span class="text-xs font-label uppercase">Last-Mile Execution</span>
-                        <span class="material-symbols-outlined text-sm text-outline"
-                            data-icon="chevron_right">chevron_right</span>
-                    </div>
-                </div>
-            </section>
-            <!-- PILLAR 03: Heavy Machinery Workshop -->
-            <section class="md:col-span-5 bg-surface-container-low rounded-lg p-8 shadow-sm">
-                <div class="flex items-center gap-4 mb-8">
-                    <div class="w-10 h-10 bg-tertiary-fixed flex items-center justify-center rounded-sm">
-                        <span class="material-symbols-outlined text-tertiary"
-                            data-icon="settings_suggest">settings_suggest</span>
-                    </div>
-                    <h2 class="font-headline text-xl font-bold">Machinery Workshop</h2>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-surface-container-lowest p-4 rounded-sm text-center">
-                        <span class="font-label text-primary text-[10px] block mb-1 uppercase tracking-widest">Hydraulic
-                            PSI</span>
-                        <span class="font-headline text-xl font-bold">5000+</span>
-                    </div>
-                    <div class="bg-surface-container-lowest p-4 rounded-sm text-center">
-                        <span class="font-label text-primary text-[10px] block mb-1 uppercase tracking-widest">Restore
-                            Rate</span>
-                        <span class="font-headline text-xl font-bold">94%</span>
-                    </div>
-                </div>
-                <p class="text-sm text-on-surface-variant leading-relaxed">
-                    Full-scale restoration of earthmoving equipment (Dozers/Excavators). Specialized drivetrain repair,
-                    hydraulic cylinder re-sealing, and structural welding.
-                </p>
-            </section>
-            <!-- Technical Dashboard Data Visualization -->
-            <section
-                class="md:col-span-7 bg-on-surface rounded-lg p-8 shadow-2xl text-surface-bright relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10 technical-grid pointer-events-none"></div>
-                <div class="flex justify-between items-start mb-8 relative z-10">
-                    <div>
-                        <h3 class="font-headline text-lg font-bold">System Telemetry</h3>
-                        <p class="font-label text-[10px] tracking-widest text-outline-variant">LIVE MONITORING DATA</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <div class="w-2 h-2 rounded-full bg-primary-fixed-dim animate-pulse"></div>
-                        <span class="text-[10px] font-label text-outline-variant">ACTIVE DATASTREAMS</span>
-                    </div>
-                </div>
-                <div class="grid grid-cols-5 gap-2 h-32 items-end mb-8 relative z-10">
-                    <div class="bg-primary-container h-[60%] rounded-t-sm"></div>
-                    <div class="bg-primary-container h-[85%] rounded-t-sm"></div>
-                    <div class="bg-primary-container h-[45%] rounded-t-sm"></div>
-                    <div class="bg-primary-container h-[95%] rounded-t-sm"></div>
-                    <div class="bg-primary-container h-[70%] rounded-t-sm"></div>
-                </div>
-                <div class="flex flex-wrap gap-4 relative z-10">
-                    <div class="border border-outline/30 px-3 py-1 rounded-full flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                        <span class="text-[10px] font-label uppercase">Turbine Thermal Analysis</span>
-                    </div>
-                    <div class="border border-outline/30 px-3 py-1 rounded-full flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                        <span class="text-[10px] font-label uppercase">Logistics Tracking (EU-09)</span>
-                    </div>
-                </div>
-            </section>
-        </div>
-        <!-- Call to Action / Technical Modular Block -->
-        <div
-            class="mt-20 bg-surface-container-high rounded-lg p-12 flex flex-col md:flex-row items-center justify-between gap-8 border-l-8 border-secondary">
-            <div>
-                <h2 class="font-headline text-3xl font-bold mb-2">Ready to Engineer the Future?</h2>
-                <p class="text-on-surface-variant font-body">Contact our senior technical leads for a customized
-                    capability assessment.</p>
             </div>
-            <div class="flex gap-4">
-                <button
-                    class="bg-on-surface text-surface py-4 px-8 rounded-lg font-headline font-bold text-sm tracking-wide hover:bg-slate-800 transition-colors">
-                    SCHEDULE CONSULTATION
-                </button>
-                <button
-                    class="bg-surface-container-lowest text-on-surface py-4 px-8 rounded-lg font-headline font-bold text-sm tracking-wide shadow-sm hover:bg-white transition-colors">
-                    DOWNLOAD BROCHURE (PDF)
-                </button>
+        </section>
+
+        <!-- PILLAR 03: Technical Support & Maintenance -->
+        <section id="maintenance" class="py-32 px-6 lg:px-12 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col lg:flex-row gap-20 items-center">
+                    <div class="lg:w-1/2 order-2 lg:order-1">
+                        <div class="relative">
+                            <div class="aspect-square rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/10">
+                                <img class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" alt="Technical Maintenance" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 space-y-8 order-1 lg:order-2">
+                        <div class="inline-flex items-center gap-3 text-primary">
+                            <span class="material-symbols-outlined text-4xl">engineering</span>
+                            <span class="font-label text-xs font-bold uppercase tracking-[0.2em]">Technical Support</span>
+                        </div>
+                        <h2 class="font-headline text-4xl font-bold tracking-tight">Fast-Response Maintenance for <span class="text-primary italic">Operational Reliability.</span></h2>
+                        <p class="text-on-surface-variant leading-relaxed font-light">
+                            We minimize downtime through structured troubleshooting, corrective maintenance, and overhaul services. Our team addresses root causes to protect your equipment investments and ensure safe performance.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="p-6 bg-surface-container rounded-2xl flex gap-6 items-start border border-outline-variant/10">
+                                <span class="material-symbols-outlined text-primary text-3xl">build_circle</span>
+                                <div>
+                                    <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Engine Overhaul & Repair</h4>
+                                    <p class="text-xs text-on-surface-variant">Restoring performance for heavy-duty engines and machinery using technical supervision.</p>
+                                </div>
+                            </div>
+                            <div class="p-6 bg-surface-container rounded-2xl flex gap-6 items-start border border-outline-variant/10">
+                                <span class="material-symbols-outlined text-primary text-3xl">monitoring</span>
+                                <div>
+                                    <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Caterpillar Diagnostic Tools</h4>
+                                    <p class="text-xs text-on-surface-variant">Expert consultancy using Electronic Technician (ET) and Service Information System (SIS).</p>
+                                </div>
+                            </div>
+                            <div class="p-6 bg-surface-container rounded-2xl flex gap-6 items-start border border-outline-variant/10">
+                                <span class="material-symbols-outlined text-primary text-3xl">groups</span>
+                                <div>
+                                    <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Manpower & Training</h4>
+                                    <p class="text-xs text-on-surface-variant">Provision of skilled technicians, engineers, and structured technical training programs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPECIALIZED MODULES -->
+        <section id="specialized" class="py-32 px-6 lg:px-12 bg-on-surface text-surface relative">
+            <div class="absolute inset-0 opacity-5 technical-grid pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto space-y-24 relative z-10">
+                <!-- Hydraulic Pump Solution -->
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-7 space-y-8">
+                        <div class="inline-flex items-center gap-3 text-secondary">
+                            <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+                            <span class="font-label text-xs font-bold uppercase tracking-[0.2em]">Strategic Focus</span>
+                        </div>
+                        <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Hydraulic Pump <span class="text-secondary">Refurbishment Solution.</span></h2>
+                        <p class="text-surface-bright/80 font-light leading-relaxed">
+                            Rather than purchasing an entirely new pump assembly, many systems can be restored to optimal performance through professional refurbishment supported by authentic OEM internal components.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <ul class="space-y-3">
+                                <li class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Cylinder Blocks
+                                </li>
+                                <li class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Piston Shoes
+                                </li>
+                                <li class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Valve Plates
+                                </li>
+                            </ul>
+                            <ul class="space-y-3">
+                                <li class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Swash Plates
+                                </li>
+                                <li class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Seal & Gasket Kits
+                                </li>
+                                <li class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Control Assemblies
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5">
+                        <div class="bg-surface/5 backdrop-blur-xl p-8 rounded-3xl border border-surface/10 space-y-6">
+                            <h4 class="font-headline font-bold text-lg">Download Specification Form</h4>
+                            <p class="text-xs text-surface-bright/60 leading-relaxed">Submit your pump manufacturer, model, and serial number for a structured sourcing evaluation.</p>
+                            <a href="#" class="block bg-secondary text-on-secondary text-center py-4 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform">
+                                Download Template (PDF)
+                            </a>
+                            <p class="text-[10px] text-center text-surface-bright/40 italic">Send completed form to: procurement@wilsolvewel.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-px bg-surface/10"></div>
+
+                <!-- Strategic Global Sourcing -->
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-5 order-2 lg:order-1">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-6 bg-surface/5 rounded-2xl border border-surface/10 text-center">
+                                <span class="material-symbols-outlined text-primary text-3xl mb-3">memory</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-widest">IT & Technical</span>
+                            </div>
+                            <div class="p-6 bg-surface/5 rounded-2xl border border-surface/10 text-center">
+                                <span class="material-symbols-outlined text-primary text-3xl mb-3">settings_input_component</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-widest">Valves & Flow</span>
+                            </div>
+                            <div class="p-6 bg-surface/5 rounded-2xl border border-surface/10 text-center">
+                                <span class="material-symbols-outlined text-primary text-3xl mb-3">bolt</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-widest">Electrical</span>
+                            </div>
+                            <div class="p-6 bg-surface/5 rounded-2xl border border-surface/10 text-center">
+                                <span class="material-symbols-outlined text-primary text-3xl mb-3">settings_suggest</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-widest">Instrumentation</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 space-y-8 order-1 lg:order-2">
+                        <div class="inline-flex items-center gap-3 text-primary">
+                            <span class="material-symbols-outlined text-4xl">public</span>
+                            <span class="font-label text-xs font-bold uppercase tracking-[0.2em]">Global Network</span>
+                        </div>
+                        <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Strategic <span class="text-primary">Global Sourcing</span> Solutions.</h2>
+                        <p class="text-surface-bright/80 font-light leading-relaxed">
+                            We provide precision procurement for specialized and hard-to-source materials based strictly on client specifications. We do not engage in speculative sourcing; we source precisely what you specify using our verified international supplier network.
+                        </p>
+                        <a href="spec-forms.html#pump-form" class="inline-flex items-center gap-4 text-secondary font-headline font-bold text-sm uppercase tracking-widest border-b border-secondary pb-1 hover:gap-6 transition-all">
+                            Request Pump Diagnostic <span class="material-symbols-outlined">east</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <div class="py-24 px-6 lg:px-12 bg-surface-container-high relative overflow-hidden">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
+                <div class="max-w-xl">
+                    <h2 class="font-headline text-4xl font-bold mb-4">Partner with Engineering Experts.</h2>
+                    <p class="text-on-surface-variant font-light text-lg">We build partnerships that last. Contact our senior technical leads for a customized capability assessment.</p>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="spec-forms.html#pump-form" class="bg-primary text-on-primary px-8 py-4 rounded-xl font-headline font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-primary/20">
+                        Hydraulic Pump Specification Form
+                    </a>
+                    <a href="spec-forms.html#sourcing-form" class="bg-on-surface text-surface px-8 py-4 rounded-xl font-headline font-bold text-xs uppercase tracking-widest hover:bg-on-surface/90 transition-all">
+                        Material Specification Submission Form
+                    </a>
+                </div>
             </div>
         </div>
     </main>

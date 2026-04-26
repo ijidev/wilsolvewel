@@ -13,108 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-tertiary": "#ffffff",
-                        "secondary-fixed-dim": "#ffb59e",
-                        "on-secondary-fixed-variant": "#842500",
-                        "surface-container-lowest": "#ffffff",
-                        "inverse-surface": "#2d3133",
-                        "primary": "#00488d",
-                        "error-container": "#ffdad6",
-                        "surface-tint": "#005db5",
-                        "on-background": "#191c1e",
-                        "error": "#ba1a1a",
-                        "on-surface-variant": "#424752",
-                        "surface": "#f8f9fb",
-                        "on-secondary-container": "#5a1600",
-                        "secondary-container": "#ff642d",
-                        "primary-container": "#005fb8",
-                        "on-tertiary-fixed-variant": "#3a4859",
-                        "on-primary": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "surface-container": "#eceef0",
-                        "on-surface": "#191c1e",
-                        "secondary-fixed": "#ffdbd0",
-                        "on-primary-fixed-variant": "#00468b",
-                        "surface-variant": "#e0e3e5",
-                        "tertiary-container": "#536173",
-                        "surface-container-low": "#f2f4f6",
-                        "background": "#f8f9fb",
-                        "outline-variant": "#c2c6d4",
-                        "tertiary-fixed-dim": "#b9c8dc",
-                        "surface-bright": "#f8f9fb",
-                        "surface-container-high": "#e6e8ea",
-                        "primary-fixed-dim": "#a8c8ff",
-                        "on-error": "#ffffff",
-                        "on-tertiary-fixed": "#0e1c2b",
-                        "surface-dim": "#d8dadc",
-                        "secondary": "#ad3300",
-                        "outline": "#727783",
-                        "tertiary-fixed": "#d5e4f9",
-                        "inverse-primary": "#a8c8ff",
-                        "tertiary": "#3c495a",
-                        "on-error-container": "#93000a",
-                        "on-primary-fixed": "#001b3d",
-                        "on-tertiary-container": "#cedcf1",
-                        "on-primary-container": "#cadcff",
-                        "surface-container-highest": "#e0e3e5",
-                        "primary-fixed": "#d6e3ff",
-                        "on-secondary-fixed": "#3a0b00",
-                        "inverse-on-surface": "#eff1f3"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "fontSize": {
-                            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-                            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-                            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-                            "lg": ["1rem", { "lineHeight": "1.5rem" }],
-                            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-                            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-                            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-                            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-                            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-                            "6xl": ["3rem", { "lineHeight": "1" }],
-                            "7xl": ["3.75rem", { "lineHeight": "1" }]
-                        }
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
 
-        .technical-grid {
-            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.05;
-        }
-
-        .anodized-gradient {
-            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
-        }
-
-        .site-gradient-bg {
-            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
-    </style>
 </head>
 
 <body
@@ -141,152 +40,154 @@
                 </p>
             </div>
         </div>
-        <!-- Main Content Section: Two Column Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
-            <!-- Left Column: Inquiry Form -->
-            <div
-                class="lg:col-span-7 bg-surface-container-lowest rounded-lg p-10 shadow-[0_40px_60px_rgba(25,28,30,0.04)]">
-                <form class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Full
-                                Name</label>
-                            <input
-                                class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
-                                placeholder="John Doe" type="text" />
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Main Content Section: Two Column Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
+                <!-- Left Column: Inquiry Form -->
+                <div
+                    class="lg:col-span-7 bg-surface-container-lowest rounded-lg p-10 shadow-[0_40px_60px_rgba(25,28,30,0.04)]">
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Full
+                                    Name</label>
+                                <input
+                                    class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
+                                    placeholder="John Doe" type="text" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Email
+                                    Address</label>
+                                <input
+                                    class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
+                                    placeholder="j.doe@enterprise.com" type="email" />
+                            </div>
                         </div>
                         <div class="space-y-2">
-                            <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Email
-                                Address</label>
-                            <input
+                            <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Subject /
+                                Department</label>
+                            <select
+                                class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all appearance-none">
+                                <option>Infrastructure Logistics</option>
+                                <option>Compliance &amp; Certification</option>
+                                <option>Safety Standards Consultation</option>
+                                <option>General Industrial Inquiry</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Project Brief
+                                / Message</label>
+                            <textarea
                                 class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
-                                placeholder="j.doe@enterprise.com" type="email" />
+                                placeholder="Describe your industrial requirements in detail..." rows="5"></textarea>
+                        </div>
+                        <button
+                            class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-full font-headline font-semibold text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-transform"
+                            type="submit">
+                            Transmit Inquiry
+                            <span class="material-symbols-outlined text-xl">send</span>
+                        </button>
+                    </form>
+                </div>
+                <!-- Right Column: Contact Details -->
+                <div class="lg:col-span-5 space-y-8">
+                    <!-- Contact Cards -->
+                    <div class="bg-surface-container-low rounded-lg p-8 border-l-4 border-primary">
+                        <h3 class="font-headline font-bold text-xl mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">hub</span>
+                            Headquarters
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-primary">location_on</span>
+                                </div>
+                                <div>
+                                    <p class="font-label text-[10px] uppercase tracking-widest text-outline">Office Address
+                                    </p>
+                                    <p class="text-on-surface font-semibold">Victoria Island, Lagos, Nigeria.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-primary">mail</span>
+                                </div>
+                                <div>
+                                    <p class="font-label text-[10px] uppercase tracking-widest text-outline">Digital
+                                        Correspondence</p>
+                                    <p class="text-on-surface font-semibold">info@wilsovlewel.com</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-primary">call</span>
+                                </div>
+                                <div>
+                                    <p class="font-label text-[10px] uppercase tracking-widest text-outline">Direct Line</p>
+                                    <p class="text-on-surface font-semibold">+234 (0) 800 945 768</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Subject /
-                            Department</label>
-                        <select
-                            class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all appearance-none">
-                            <option>Infrastructure Logistics</option>
-                            <option>Compliance &amp; Certification</option>
-                            <option>Safety Standards Consultation</option>
-                            <option>General Industrial Inquiry</option>
-                        </select>
+                    <!-- Business Hours Card -->
+                    <div class="bg-surface-container-high rounded-lg p-8">
+                        <h3 class="font-headline font-bold text-xl mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-secondary">schedule</span>
+                            Operations Window
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+                                <span class="font-label text-sm uppercase text-on-surface-variant">Mon - Fri</span>
+                                <span class="font-bold text-on-surface">8:00 AM - 5:00 PM</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+                                <span class="font-label text-sm uppercase text-on-surface-variant">Saturday</span>
+                                <span class="font-bold text-on-surface">By Appointment</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2">
+                                <span class="font-label text-sm uppercase text-on-surface-variant">Sunday</span>
+                                <span class="font-bold text-secondary">Closed</span>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="space-y-2">
-                        <label class="font-label text-xs uppercase tracking-widest text-outline font-bold">Project Brief
-                            / Message</label>
-                        <textarea
-                            class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
-                            placeholder="Describe your industrial requirements in detail..." rows="5"></textarea>
+                    <!-- Emergency Support -->
+                    <div class="p-6 bg-secondary/5 rounded-lg border border-secondary/20 flex items-center gap-4">
+                        <span class="material-symbols-outlined text-secondary text-3xl"
+                            style="font-variation-settings: 'FILL' 1;">warning</span>
+                        <div>
+                            <p class="text-sm font-bold text-secondary uppercase tracking-tighter">Emergency Field Response
+                            </p>
+                            <p class="text-xs text-on-surface-variant">Available 24/7 for active blueprint site partners.
+                            </p>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <!-- Large Section: Interactive Map -->
+            <div class="w-full relative group mb-24">
+                <div
+                    class="absolute top-8 left-8 z-10 bg-surface-container-lowest/90 backdrop-blur-md p-6 rounded-lg shadow-xl max-w-xs border border-outline-variant/20">
+                    <h4 class="font-headline font-bold text-lg mb-2">Technical Hub Lagos</h4>
+                    <p class="text-sm text-on-surface-variant mb-4">Industrial District Phase II, Lagos State Logistics
+                        Zone.</p>
                     <button
-                        class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-full font-headline font-semibold text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-transform"
-                        type="submit">
-                        Transmit Inquiry
-                        <span class="material-symbols-outlined text-xl">send</span>
+                        class="text-primary font-label text-xs uppercase font-bold flex items-center gap-2 hover:underline">
+                        Get Navigational Data
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </button>
-                </form>
-            </div>
-            <!-- Right Column: Contact Details -->
-            <div class="lg:col-span-5 space-y-8">
-                <!-- Contact Cards -->
-                <div class="bg-surface-container-low rounded-lg p-8 border-l-4 border-primary">
-                    <h3 class="font-headline font-bold text-xl mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">hub</span>
-                        Headquarters
-                    </h3>
-                    <div class="space-y-6">
-                        <div class="flex gap-4">
-                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-primary">location_on</span>
-                            </div>
-                            <div>
-                                <p class="font-label text-[10px] uppercase tracking-widest text-outline">Office Address
-                                </p>
-                                <p class="text-on-surface font-semibold">Victoria Island, Lagos, Nigeria.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-primary">mail</span>
-                            </div>
-                            <div>
-                                <p class="font-label text-[10px] uppercase tracking-widest text-outline">Digital
-                                    Correspondence</p>
-                                <p class="text-on-surface font-semibold">info@wilsovlewel.com</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-primary">call</span>
-                            </div>
-                            <div>
-                                <p class="font-label text-[10px] uppercase tracking-widest text-outline">Direct Line</p>
-                                <p class="text-on-surface font-semibold">+234 (0) 800 945 768</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <!-- Business Hours Card -->
-                <div class="bg-surface-container-high rounded-lg p-8">
-                    <h3 class="font-headline font-bold text-xl mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary">schedule</span>
-                        Operations Window
-                    </h3>
-                    <ul class="space-y-3">
-                        <li class="flex justify-between items-center py-2 border-b border-outline-variant/30">
-                            <span class="font-label text-sm uppercase text-on-surface-variant">Mon - Fri</span>
-                            <span class="font-bold text-on-surface">8:00 AM - 5:00 PM</span>
-                        </li>
-                        <li class="flex justify-between items-center py-2 border-b border-outline-variant/30">
-                            <span class="font-label text-sm uppercase text-on-surface-variant">Saturday</span>
-                            <span class="font-bold text-on-surface">By Appointment</span>
-                        </li>
-                        <li class="flex justify-between items-center py-2">
-                            <span class="font-label text-sm uppercase text-on-surface-variant">Sunday</span>
-                            <span class="font-bold text-secondary">Closed</span>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Emergency Support -->
-                <div class="p-6 bg-secondary/5 rounded-lg border border-secondary/20 flex items-center gap-4">
-                    <span class="material-symbols-outlined text-secondary text-3xl"
-                        style="font-variation-settings: 'FILL' 1;">warning</span>
-                    <div>
-                        <p class="text-sm font-bold text-secondary uppercase tracking-tighter">Emergency Field Response
-                        </p>
-                        <p class="text-xs text-on-surface-variant">Available 24/7 for active blueprint site partners.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Large Section: Interactive Map -->
-        <div class="w-full relative group">
-            <div
-                class="absolute top-8 left-8 z-10 bg-surface-container-lowest/90 backdrop-blur-md p-6 rounded-lg shadow-xl max-w-xs border border-outline-variant/20">
-                <h4 class="font-headline font-bold text-lg mb-2">Technical Hub Lagos</h4>
-                <p class="text-sm text-on-surface-variant mb-4">Industrial District Phase II, Lagos State Logistics
-                    Zone.</p>
-                <button
-                    class="text-primary font-label text-xs uppercase font-bold flex items-center gap-2 hover:underline">
-                    Get Navigational Data
-                    <span class="material-symbols-outlined text-sm">open_in_new</span>
-                </button>
-            </div>
-            <div class="w-full h-[500px] rounded-lg overflow-hidden relative shadow-2xl">
-                <img class="w-full h-full object-cover grayscale contrast-125 opacity-40"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
-                <div class="absolute inset-0 bg-primary/5 technical-grid"></div>
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <div class="relative">
-                        <div class="absolute inset-0 animate-ping rounded-full bg-primary/40 scale-150"></div>
-                        <div
-                            class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white relative z-10 shadow-lg border-4 border-surface">
-                            <span class="material-symbols-outlined"
-                                style="font-variation-settings: 'FILL' 1;">precision_manufacturing</span>
+                <div class="w-full h-[500px] rounded-lg overflow-hidden relative shadow-2xl">
+                    <img class="w-full h-full object-cover grayscale contrast-125 opacity-40"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
+                    <div class="absolute inset-0 bg-primary/5 technical-grid"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div class="relative">
+                            <div class="absolute inset-0 animate-ping rounded-full bg-primary/40 scale-150"></div>
+                            <div
+                                class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white relative z-10 shadow-lg border-4 border-surface">
+                                <span class="material-symbols-outlined"
+                                    style="font-variation-settings: 'FILL' 1;">precision_manufacturing</span>
+                            </div>
                         </div>
                     </div>
                 </div>

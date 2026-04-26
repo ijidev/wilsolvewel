@@ -22,8 +22,6 @@
 
 ---
 
----
-
 ## [2026-04-20] Full Site Synchronization & Interactive Engineering Effects
 
 ### Objectives
@@ -56,3 +54,26 @@
 - **Verification**: Manually audited code structure for responsiveness.
 - **Repository**: Final push initiated to GitHub main branch.
 
+---
+
+## [2026-04-25] Brand Identity & Dynamic Header Optimization
+
+### Objectives
+- Shift primary brand color to Industrial Orange (#FF6B00).
+- Integrate company logo while cropping out registration details.
+- Implement scroll-aware dynamic header (hide on scroll down, show on scroll up).
+- Ensure 100% synchronization across all frontend templates.
+
+### Proposed Actions
+- **Tailwind Config**: Update `primary`, `secondary`, and `error` color tokens across all HTML files.
+- **header.js**:
+    - Add `scroll` event listener for visibility toggling.
+    - Inject `WSW logo.jpg.jpeg` with CSS-based cropping.
+    - Apply orange-primary theme to all interactive elements.
+- **footer.js**:
+    - Standardize footer layout with the new color palette.
+    - Include the cropped brand logo.
+
+### Status
+- **Plan Created**: 2026-04-25
+- **Execution**: Pending Approval

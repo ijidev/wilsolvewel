@@ -15,108 +15,7 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-dim": "#d9dae0",
-                        "inverse-primary": "#a6c8ff",
-                        "on-background": "#191c20",
-                        "background": "#f9f9ff",
-                        "on-secondary-container": "#4d607e",
-                        "secondary": "#4c5f7d",
-                        "on-primary-fixed-variant": "#004787",
-                        "on-error-container": "#93000a",
-                        "surface-container-low": "#f3f3fa",
-                        "outline": "#727782",
-                        "on-surface-variant": "#424751",
-                        "tertiary-container": "#8a3e00",
-                        "on-secondary-fixed": "#061c36",
-                        "surface-variant": "#e1e2e9",
-                        "surface": "#f9f9ff",
-                        "secondary-container": "#c8dbfe",
-                        "on-tertiary-container": "#ffb991",
-                        "tertiary-fixed": "#ffdbc9",
-                        "surface-container": "#ededf4",
-                        "on-primary-fixed": "#001c3b",
-                        "on-tertiary": "#ffffff",
-                        "inverse-on-surface": "#f0f0f7",
-                        "surface-container-highest": "#e1e2e9",
-                        "surface-container-lowest": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "inverse-surface": "#2e3036",
-                        "on-secondary-fixed-variant": "#354764",
-                        "outline-variant": "#c2c6d3",
-                        "surface-container-high": "#e7e8ef",
-                        "on-tertiary-fixed-variant": "#753400",
-                        "tertiary": "#662c00",
-                        "primary-fixed": "#d5e3ff",
-                        "on-tertiary-fixed": "#321200",
-                        "tertiary-fixed-dim": "#ffb68c",
-                        "primary": "#003d76",
-                        "error-container": "#ffdad6",
-                        "secondary-fixed": "#d5e3ff",
-                        "primary-fixed-dim": "#a6c8ff",
-                        "surface-tint": "#1d5fa8",
-                        "on-primary": "#ffffff",
-                        "on-error": "#ffffff",
-                        "on-surface": "#191c20",
-                        "secondary-fixed-dim": "#b4c7ea",
-                        "on-primary-container": "#aacaff",
-                        "surface-bright": "#f9f9ff",
-                        "primary-container": "#06549d",
-                        "error": "#ba1a1a"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "fontSize": {
-                            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-                            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-                            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-                            "lg": ["1rem", { "lineHeight": "1.5rem" }],
-                            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-                            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-                            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-                            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-                            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-                            "6xl": ["3rem", { "lineHeight": "1" }],
-                            "7xl": ["3.75rem", { "lineHeight": "1" }]
-                        }
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
 
-        .technical-grid {
-            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.05;
-        }
-
-        .anodized-gradient {
-            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
-        }
-
-        .site-gradient-bg {
-            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
-    </style>
 </head>
 
 <body
@@ -128,253 +27,156 @@
         <!-- Technical Grid Overlay Background -->
         <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
         <!-- Main Content Canvas -->
+        <!-- Main Content Canvas -->
         <main class="relative z-10 py-16 px-8 max-w-7xl mx-auto">
             <!-- Header Section -->
-            <header class="mb-16 text-center md:text-left">
-                <div
-                    class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container/30 text-secondary font-label text-[10px] tracking-[0.2em] uppercase rounded-full mb-6">
-                    <span class="material-symbols-outlined text-sm" data-icon="verified">verified</span>
-                    Technical Knowledge Base
+            <header class="mb-16 text-center md:text-left space-y-6">
+                <div class="inline-flex items-center gap-3 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.2em]">Technical Knowledge Base</span>
                 </div>
-                <h1
-                    class="font-headline text-3xl md:text-5xl font-bold tracking-tighter text-on-surface mb-6 max-w-3xl leading-[0.95]">
-                    Operation Restore <span class="text-primary">FAQ Portal</span>
+                <h1 class="font-headline text-4xl md:text-6xl font-bold tracking-tighter text-on-surface leading-[0.95]">
+                    SOLVING INDUSTRIAL <br /><span class="text-primary italic">HEADACHES.</span>
                 </h1>
-                <p class="text-on-surface-variant text-base max-w-2xl leading-relaxed">
-                    Technical documentation and maintenance procedures for Wilsovlewel Nigeria Limited's heavy machinery
-                    assets and site operations.
+                <p class="text-on-surface-variant text-lg font-light max-w-2xl leading-relaxed">
+                    Clear answers to the technical, logistical, and operational questions that drive industrial efficiency in Nigeria.
                 </p>
             </header>
-            <!-- Bento Grid Category Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-24">
-                <!-- Category Sidebar -->
-                <div class="md:col-span-3 space-y-4">
-                    <div class="sticky top-32">
-                        <h3 class="font-headline text-xs font-bold uppercase tracking-widest text-outline mb-6"
-                            style="">Categories</h3>
-                        <div class="space-y-1">
-                            <button
-                                class="w-full text-left px-4 py-3 bg-primary-fixed text-on-primary-fixed rounded-lg font-headline text-sm font-bold flex justify-between items-center group"
-                                style="">
-                                General Inquiries
-                                <span
-                                    class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform"
-                                    data-icon="chevron_right" style="">chevron_right</span>
-                            </button>
-                            <button
-                                class="w-full text-left px-4 py-3 hover:bg-surface-container-high rounded-lg font-headline text-sm text-on-surface-variant flex justify-between items-center group transition-colors"
-                                style="">
-                                Services &amp; EPC
-                                <span
-                                    class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform"
-                                    data-icon="chevron_right" style="">chevron_right</span>
-                            </button>
-                            <button
-                                class="w-full text-left px-4 py-3 hover:bg-surface-container-high rounded-lg font-headline text-sm text-on-surface-variant flex justify-between items-center group transition-colors"
-                                style="">
-                                HSSE &amp; Compliance
-                                <span
-                                    class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform"
-                                    data-icon="chevron_right" style="">chevron_right</span>
-                            </button>
-                            <button
-                                class="w-full text-left px-4 py-3 hover:bg-surface-container-high rounded-lg font-headline text-sm text-on-surface-variant flex justify-between items-center group transition-colors"
-                                style="">
-                                Talent &amp; Careers
-                                <span
-                                    class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform"
-                                    data-icon="chevron_right" style="">chevron_right</span>
-                            </button>
+
+            <!-- FAQ Sections -->
+            <div class="grid lg:grid-cols-12 gap-16">
+                <!-- Navigation -->
+                <div class="lg:col-span-3">
+                    <div class="sticky top-32 space-y-8">
+                        <div class="space-y-2">
+                            <h3 class="text-[10px] font-label font-bold uppercase tracking-[0.4em] text-outline mb-6">Navigation</h3>
+                            <nav class="flex flex-col gap-1">
+                                <a href="#reliability" class="px-4 py-3 rounded-xl bg-primary text-on-primary font-headline font-bold text-sm flex justify-between items-center group">
+                                    Reliability
+                                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+                                </a>
+                                <a href="#engineering" class="px-4 py-3 rounded-xl hover:bg-surface-container-high transition-colors font-headline font-bold text-sm flex justify-between items-center group">
+                                    Engineering
+                                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+                                </a>
+                                <a href="#procurement" class="px-4 py-3 rounded-xl hover:bg-surface-container-high transition-colors font-headline font-bold text-sm flex justify-between items-center group">
+                                    Procurement
+                                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+                                </a>
+                            </nav>
                         </div>
-                        <div class="mt-12 p-6 rounded-lg bg-surface-container-low border border-outline-variant/10">
-                            <span class="material-symbols-outlined text-primary mb-4 block" data-icon="support_agent"
-                                style="">support_agent</span>
-                            <h4 class="font-headline text-sm font-bold uppercase mb-2" style="">Need Live Support?</h4>
-                            <p class="text-xs text-on-surface-variant mb-4" style="">Our engineering support team is
-                                available 24/7 for critical site inquiries.</p>
-                            <button
-                                class="text-primary font-headline text-xs font-bold flex items-center gap-1 hover:underline underline-offset-4"
-                                style="">
-                                Contact Technical Desk
-                                <span class="material-symbols-outlined text-xs" data-icon="arrow_forward"
-                                    style="">arrow_forward</span>
-                            </button>
+
+                        <div class="p-6 bg-surface-container-low rounded-3xl border border-outline-variant/10 space-y-4">
+                            <span class="material-symbols-outlined text-primary text-3xl">support_agent</span>
+                            <h4 class="font-headline font-bold text-sm uppercase tracking-widest">24/7 Response</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Facing a critical asset failure? Our diagnostic teams are ready for immediate deployment.</p>
+                            <a href="contact.html" class="inline-flex items-center gap-2 text-primary font-label text-[10px] font-bold uppercase tracking-widest hover:underline">
+                                Request Inspection <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-                <!-- FAQ Accordions -->
-                <div class="md:col-span-9 space-y-12">
-                    <!-- General Section -->
-                    <section>
-                        <div class="flex items-center gap-4 mb-8">
-                            <div class="h-10 w-10 rounded bg-primary flex items-center justify-center text-white">
-                                <span class="material-symbols-outlined" data-icon="manufacturing"
-                                    style="">manufacturing</span>
+
+                <!-- Content -->
+                <div class="lg:col-span-9 space-y-20">
+                    <!-- Reliability Section -->
+                    <section id="reliability" class="space-y-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
                             </div>
-                            <h2 class="font-headline text-2xl font-bold tracking-tight" style="">General Inquiries</h2>
+                            <h2 class="font-headline text-3xl font-bold tracking-tight">Reliability & Response</h2>
                         </div>
+
                         <div class="space-y-4">
-                            <!-- Q1 -->
-                            <div
-                                class="bg-surface-container-lowest rounded-xl p-1 transition-all hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.03)] border border-transparent hover:border-outline-variant/20">
-                                <details class="group" open="" style="">
-                                    <summary class="flex justify-between items-center p-6 cursor-pointer list-none"
-                                        style="">
-                                        <span class="font-headline font-bold text-on-surface" style="">What defines
-                                            Wilsovlewel’s approach to industrial engineering in Nigeria?</span>
-                                        <span
-                                            class="material-symbols-outlined transition-transform group-open:rotate-180"
-                                            data-icon="expand_more" style="">expand_more</span>
-                                    </summary>
-                                    <div class="px-6 pb-6 text-on-surface-variant leading-relaxed border-t border-surface-container-low pt-4"
-                                        style="">
-                                        Our approach is rooted in the "Precision Forge" methodology—integrating global
-                                        engineering standards with deep localized operational intelligence. We focus on
-                                        structural integrity, sustainable procurement, and advanced predictive
-                                        maintenance to ensure life-cycle longevity for all infrastructure projects
-                                        within the Nigerian energy and industrial sectors.
-                                    </div>
-                                </details>
-                            </div>
-                            <!-- Q2 -->
-                            <div
-                                class="bg-surface-container-lowest rounded-xl p-1 transition-all hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.03)] border border-transparent hover:border-outline-variant/20">
-                                <details class="group" style="">
-                                    <summary class="flex justify-between items-center p-6 cursor-pointer list-none"
-                                        style="">
-                                        <span class="font-headline font-bold text-on-surface" style="">Where are
-                                            Wilsovlewel’s primary operational hubs located?</span>
-                                        <span
-                                            class="material-symbols-outlined transition-transform group-open:rotate-180"
-                                            data-icon="expand_more" style="">expand_more</span>
-                                    </summary>
-                                    <div class="px-6 pb-6 text-on-surface-variant leading-relaxed border-t border-surface-container-low pt-4"
-                                        style="">
-                                        Headquartered in Lagos, we maintain strategic operational bases in Port Harcourt
-                                        and Warri to support downstream and upstream oil and gas operations. Our
-                                        logistical reach extends across the six geopolitical zones of Nigeria, supported
-                                        by a network of certified supply chain partners.
-                                    </div>
-                                </details>
-                            </div>
+                            <details class="group bg-surface-container-low rounded-2xl border border-outline-variant/5 overflow-hidden transition-all hover:border-primary/20">
+                                <summary class="flex justify-between items-center p-8 cursor-pointer list-none font-headline font-bold text-lg">
+                                    How does Wilsolvewel prevent industrial downtime?
+                                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+                                </summary>
+                                <div class="px-8 pb-8 text-on-surface-variant font-light leading-relaxed border-t border-outline-variant/5 pt-6">
+                                    We use the 'Engineering Surgeon' methodology. Instead of simple fixes, we perform deep diagnostics using OEM-grade tools (like Caterpillar ET/SIS) to identify the root cause of failures. Our fast-response teams are structured to restore failed assets in hours, not weeks, protecting your production schedule.
+                                </div>
+                            </details>
+
+                            <details class="group bg-surface-container-low rounded-2xl border border-outline-variant/5 overflow-hidden transition-all hover:border-primary/20">
+                                <summary class="flex justify-between items-center p-8 cursor-pointer list-none font-headline font-bold text-lg">
+                                    What specific machinery do you specialize in?
+                                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+                                </summary>
+                                <div class="px-8 pb-8 text-on-surface-variant font-light leading-relaxed border-t border-outline-variant/5 pt-6">
+                                    We specialize in heavy-duty diesel engines, hydraulic systems, and drivetrain assemblies. This includes excavators, bulldozers, generators, and industrial pumps from global brands like Caterpillar, Cummins, Perkins, and Terex.
+                                </div>
+                            </details>
                         </div>
                     </section>
-                    <!-- Services Section -->
-                    <section>
-                        <div class="flex items-center gap-4 mb-8">
-                            <div class="h-10 w-10 rounded bg-secondary flex items-center justify-center text-white">
-                                <span class="material-symbols-outlined" data-icon="settings_suggest"
-                                    style="">settings_suggest</span>
+
+                    <!-- Engineering Section -->
+                    <section id="engineering" class="space-y-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
+                                <span class="material-symbols-outlined text-3xl">architecture</span>
                             </div>
-                            <h2 class="font-headline text-2xl font-bold tracking-tight" style="">Services &amp;
-                                Procurement</h2>
+                            <h2 class="font-headline text-3xl font-bold tracking-tight">Engineering Mastery</h2>
                         </div>
+
                         <div class="space-y-4">
-                            <!-- Q3 -->
-                            <div
-                                class="bg-surface-container-lowest rounded-xl p-1 transition-all hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.03)]">
-                                <details class="group" style="">
-                                    <summary class="flex justify-between items-center p-6 cursor-pointer list-none"
-                                        style="">
-                                        <span class="font-headline font-bold text-on-surface" style="">How does the
-                                            "Precision Procurement" model minimize project downtime?</span>
-                                        <span
-                                            class="material-symbols-outlined transition-transform group-open:rotate-180"
-                                            data-icon="expand_more" style="">expand_more</span>
-                                    </summary>
-                                    <div class="px-6 pb-6 text-on-surface-variant leading-relaxed border-t border-surface-container-low pt-4"
-                                        style="">
-                                        We utilize a proprietary Just-In-Time (JIT) supply chain algorithm tailored for
-                                        the West African landscape. By pre-vetting OEMs and maintaining strategic buffer
-                                        stocks of critical long-lead items, we reduce standard procurement lead times by
-                                        approximately 22% compared to industry averages.
-                                    </div>
-                                </details>
-                            </div>
-                            <!-- Q4 -->
-                            <div
-                                class="bg-surface-container-lowest rounded-xl p-1 transition-all hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.03)]">
-                                <details class="group" style="">
-                                    <summary class="flex justify-between items-center p-6 cursor-pointer list-none"
-                                        style="">
-                                        <span class="font-headline font-bold text-on-surface" style="">Do you provide
-                                            sub-sea engineering support for offshore assets?</span>
-                                        <span
-                                            class="material-symbols-outlined transition-transform group-open:rotate-180"
-                                            data-icon="expand_more" style="">expand_more</span>
-                                    </summary>
-                                    <div class="px-6 pb-6 text-on-surface-variant leading-relaxed border-t border-surface-container-low pt-4"
-                                        style="">
-                                        Yes. Our sub-sea division specializes in pipeline integrity management,
-                                        ROV-assisted inspections, and riser maintenance. All offshore operations adhere
-                                        to IMCA and NIPEX regulatory standards, ensuring maximum safety and operational
-                                        continuity in deep-water environments.
-                                    </div>
-                                </details>
-                            </div>
+                            <details class="group bg-surface-container-low rounded-2xl border border-outline-variant/5 overflow-hidden transition-all hover:border-secondary/20">
+                                <summary class="flex justify-between items-center p-8 cursor-pointer list-none font-headline font-bold text-lg">
+                                    What is 'Specialized Civil Engineering for Machinery'?
+                                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-secondary">expand_more</span>
+                                </summary>
+                                <div class="px-8 pb-8 text-on-surface-variant font-light leading-relaxed border-t border-outline-variant/5 pt-6">
+                                    Heavy machinery requires stable foundations to prevent vibration-induced failure. We design and build reinforced concrete plinths, dynamic mountings, and drainage systems specifically engineered to handle the load and torque of industrial equipment.
+                                </div>
+                            </details>
+
+                            <details class="group bg-surface-container-low rounded-2xl border border-outline-variant/5 overflow-hidden transition-all hover:border-secondary/20">
+                                <summary class="flex justify-between items-center p-8 cursor-pointer list-none font-headline font-bold text-lg">
+                                    How do you handle structural rehabilitation?
+                                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-secondary">expand_more</span>
+                                </summary>
+                                <div class="px-8 pb-8 text-on-surface-variant font-light leading-relaxed border-t border-outline-variant/5 pt-6">
+                                    For aging assets like Tower Cranes or industrial warehouses, we perform non-destructive testing (NDT), structural welding, and system modernization to bring the asset back to OEM safety and performance standards.
+                                </div>
+                            </details>
                         </div>
                     </section>
-                    <!-- HSSE Section -->
-                    <section>
-                        <div class="flex items-center gap-4 mb-8">
-                            <div class="h-10 w-10 rounded bg-error flex items-center justify-center text-white">
-                                <span class="material-symbols-outlined" data-icon="security" style="">security</span>
+
+                    <!-- Procurement Section -->
+                    <section id="procurement" class="space-y-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-3xl">shopping_cart</span>
                             </div>
-                            <h2 class="font-headline text-2xl font-bold tracking-tight" style="">HSSE &amp; Compliance
-                            </h2>
+                            <h2 class="font-headline text-3xl font-bold tracking-tight">Strategic Procurement</h2>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-surface-container-low p-8 rounded-2xl border border-outline-variant/10">
-                                <h4 class="font-headline font-bold mb-4 flex items-center gap-2" style="">
-                                    <span class="material-symbols-outlined text-error" data-icon="health_and_safety"
-                                        style="">health_and_safety</span>
-                                    Safety First Protocols
-                                </h4>
-                                <p class="text-sm text-on-surface-variant leading-relaxed" style="">
-                                    Our Zero-Harm policy is mandatory for all site personnel. We conduct daily Tailgate
-                                    Safety Meetings (TSM) and weekly comprehensive risk assessments (JHA) to identify
-                                    and mitigate latent hazards before operations commence.
-                                </p>
-                            </div>
-                            <div class="bg-surface-container-low p-8 rounded-2xl border border-outline-variant/10">
-                                <h4 class="font-headline font-bold mb-4 flex items-center gap-2" style="">
-                                    <span class="material-symbols-outlined text-primary" data-icon="gavel"
-                                        style="">gavel</span>
-                                    Regulatory Alignment
-                                </h4>
-                                <p class="text-sm text-on-surface-variant leading-relaxed" style="">
-                                    Fully compliant with the Nigerian Oil and Gas Industry Content Development (NOGICD)
-                                    Act. We prioritize local value creation through manpower training and local
-                                    component manufacturing partnerships.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- Careers Section -->
-                    <section class="bg-primary p-12 rounded-3xl text-white relative overflow-hidden">
-                        <div class="relative z-10">
-                            <h2 class="font-headline text-3xl font-bold mb-4" style="">Engineering Your Future?</h2>
-                            <p class="text-on-primary-container text-lg max-w-xl mb-8" style="">
-                                We are constantly seeking Lead Engineers, HSSE Officers, and Procurement Specialists to
-                                join our "Precision Forge" talent pool.
-                            </p>
-                            <div class="flex flex-wrap gap-4">
-                                <button
-                                    class="bg-white text-primary font-headline font-bold px-8 py-3 rounded-full hover:bg-primary-fixed transition-colors"
-                                    style="">View Open Positions</button>
-                                <button
-                                    class="border border-white/30 text-white font-headline font-bold px-8 py-3 rounded-full hover:bg-white/10 transition-colors"
-                                    style="">Graduate Trainee Program</button>
-                            </div>
-                        </div>
-                        <!-- Decorative Graphic -->
-                        <div class="absolute right-[-10%] top-[-10%] opacity-10 pointer-events-none">
-                            <span class="material-symbols-outlined text-[300px]" data-icon="architecture"
-                                style="">architecture</span>
+
+                        <div class="space-y-4">
+                            <details class="group bg-surface-container-low rounded-2xl border border-outline-variant/5 overflow-hidden transition-all hover:border-primary/20">
+                                <summary class="flex justify-between items-center p-8 cursor-pointer list-none font-headline font-bold text-lg">
+                                    Are all sourced parts genuine OEM?
+                                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+                                </summary>
+                                <div class="px-8 pb-8 text-on-surface-variant font-light leading-relaxed border-t border-outline-variant/5 pt-6">
+                                    Yes. We maintain a direct network of verified OEM distributors worldwide. We do not use third-party knock-offs. Every critical component we source comes with full traceability and manufacturer warranty protection.
+                                </div>
+                            </details>
+
+                            <details class="group bg-surface-container-low rounded-2xl border border-outline-variant/5 overflow-hidden transition-all hover:border-primary/20">
+                                <summary class="flex justify-between items-center p-8 cursor-pointer list-none font-headline font-bold text-lg">
+                                    Can you source legacy or discontinued parts?
+                                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+                                </summary>
+                                <div class="px-8 pb-8 text-on-surface-variant font-light leading-relaxed border-t border-outline-variant/5 pt-6">
+                                    Our global logistics network allows us to track down discontinued components from verified industrial stockpiles globally. If a part is truly unavailable, our engineering team can provide a high-spec alternative solution.
+                                </div>
+                            </details>
                         </div>
                     </section>
                 </div>
             </div>
+        </main>
             <!-- Technical Specs / Footer Info Area -->
             <div class="border-t border-outline-variant/20 pt-16 grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div class="space-y-4">

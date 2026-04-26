@@ -7,12 +7,22 @@
 
     const footerHTML = `
 <!-- Footer Shell -->
-<footer class="w-full bg-surface-container-low py-16 px-6 lg:px-12 border-t border-outline-variant/20 relative z-20 transition-all">
+<footer class="w-full bg-surface py-16 px-6 lg:px-12 border-t border-outline-variant/20 relative z-20 transition-all">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
         <!-- Brand Section -->
         <div class="md:col-span-4 space-y-6">
-            <a href="${rootPath}index.html" class="text-lg font-bold font-headline text-on-surface hover:text-primary transition-colors block">
-                Wilsovlewel Engineering
+            <a href="${rootPath}index.html" class="flex items-center gap-4 group">
+                <div class="h-16 w-20 overflow-hidden rounded-lg shadow-sm border border-outline-variant/20 bg-white">
+                    <img src="${rootPath}assets/WSW logo.jpg.jpeg" class="w-full h-[150%] object-cover object-top" alt="WSW Logo">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-lg font-bold font-headline text-on-surface group-hover:text-primary transition-colors">
+                        Wilsovlewel
+                    </span>
+                    <span class="text-[10px] font-bold font-headline uppercase tracking-[0.2em] text-on-surface-variant/60">
+                        Engineering
+                    </span>
+                </div>
             </a>
             <p class="text-on-surface-variant text-sm leading-relaxed max-w-sm">
                 Nigeria's specialized technical partner for heavy machinery repair, technical procurement, and industrial asset optimization.

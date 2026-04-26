@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Technical Specifications | Wilsolvewel Engineering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        .technical-grid {
+            background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 selection:bg-orange-500 selection:text-white">
+    <script src="./components/header.js" data-root="./"></script>
+    
+    <main class="relative pt-32 pb-24 px-6 lg:px-12 max-w-7xl mx-auto z-10">
+        <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+
+        <div class="relative z-10 grid lg:grid-cols-12 gap-16">
+            <!-- Sidebar Info -->
+            <div class="lg:col-span-4 space-y-12">
+                <div class="space-y-6">
+                    <span class="inline-block px-3 py-1 bg-orange-500/10 text-orange-600 font-mono text-[10px] font-bold uppercase tracking-widest rounded">Technical Intake</span>
+                    <h1 class="text-4xl md:text-5xl font-bold tracking-tighter leading-none">Precise Data.<br /><span class="text-orange-500">Perfect Results.</span></h1>
+                    <p class="text-slate-500 font-light leading-relaxed">
+                        To ensure our 'Engineering Surgeon' approach delivers maximum uptime, we require detailed technical specifications. Please select the relevant form below.
+                    </p>
+                </div>
+
+                <div class="p-8 bg-slate-900 text-white rounded-3xl space-y-6 shadow-2xl">
+                    <h3 class="text-lg font-bold">Why Detailed Specs?</h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-4 text-xs font-light">
+                            <span class="material-symbols-outlined text-orange-500">check_circle</span>
+                            Reduces procurement errors by 98%
+                        </li>
+                        <li class="flex gap-4 text-xs font-light">
+                            <span class="material-symbols-outlined text-orange-500">check_circle</span>
+                            Enables 1:1 OEM compatibility
+                        </li>
+                        <li class="flex gap-4 text-xs font-light">
+                            <span class="material-symbols-outlined text-orange-500">check_circle</span>
+                            Accelerates diagnostic turnaround
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Forms Container -->
+            <div class="lg:col-span-8 space-y-16">
+                
+                <!-- Hydraulic Pump Form -->
+                <section id="pump-form" class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-sm border border-slate-200">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined">settings_input_component</span>
+                        </div>
+                        <h2 class="text-2xl font-bold">Hydraulic Pump Specification</h2>
+                    </div>
+
+                    <form action="#" method="POST" class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Pump Type / Model</label>
+                            <input type="text" placeholder="e.g. Axial Piston, Gear" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Max Operating Pressure (PSI/Bar)</label>
+                            <input type="text" placeholder="e.g. 5000 PSI" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Flow Rate (GPM/LPM)</label>
+                            <input type="text" placeholder="e.g. 45 GPM" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Mounting Style</label>
+                            <select class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                                <option>SAE 2-Bolt</option>
+                                <option>SAE 4-Bolt</option>
+                                <option>Foot Mount</option>
+                                <option>Custom</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Application Details</label>
+                            <textarea rows="4" placeholder="Describe the machinery and environment..." class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500"></textarea>
+                        </div>
+                        <button type="submit" class="md:col-span-2 bg-slate-900 text-white py-5 rounded-2xl font-bold uppercase tracking-widest text-sm hover:bg-orange-500 transition-colors shadow-lg">Submit for Review</button>
+                    </form>
+                </section>
+
+                <!-- Material Sourcing Form -->
+                <section id="sourcing-form" class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-sm border border-slate-200">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined">shopping_cart</span>
+                        </div>
+                        <h2 class="text-2xl font-bold">Global Sourcing Request</h2>
+                    </div>
+
+                    <form action="#" method="POST" class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Part Number / SKU</label>
+                            <input type="text" placeholder="Required for accuracy" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">OEM Brand</label>
+                            <input type="text" placeholder="e.g. Caterpillar, Cummins" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Quantity</label>
+                            <input type="number" placeholder="1" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Urgency Level</label>
+                            <select class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                                <option>Routine Maintenance</option>
+                                <option>AOG / Site Down (Urgent)</option>
+                                <option>Stock Replenishment</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Delivery Location</label>
+                            <input type="text" placeholder="Port Harcourt, Lagos, etc." class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <button type="submit" class="md:col-span-2 bg-orange-500 text-white py-5 rounded-2xl font-bold uppercase tracking-widest text-sm hover:bg-slate-900 transition-colors shadow-lg">Request Sourcing</button>
+                    </form>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="./components/footer.js" data-root="./"></script>
+</body>
+</html>
