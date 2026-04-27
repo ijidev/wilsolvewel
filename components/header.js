@@ -18,10 +18,10 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#FF6B00",
-                        "on-primary": "#FFFFFF",
-                        "primary-container": "#FFDBCB",
-                        "on-primary-container": "#331200",
+                        "primary": "#EAB308",
+                        "on-primary": "#000000",
+                        "primary-container": "#FEF9C3",
+                        "on-primary-container": "#422006",
                         "secondary": "#1A1A1A",
                         "on-secondary": "#FFFFFF",
                         "secondary-container": "#E0E0E0",
@@ -34,6 +34,11 @@
                         "on-surface": "#1A1A1A",
                         "surface-variant": "#F5F5F5",
                         "on-surface-variant": "#4A4A4A",
+                        "surface-container-lowest": "#FFFFFF",
+                        "surface-container-low": "#F7F7F7",
+                        "surface-container": "#F3F3F3",
+                        "surface-container-high": "#EFEFEF",
+                        "surface-container-highest": "#EBEBEB",
                         "outline": "#79747E",
                         "outline-variant": "#CAC4D0",
                         "error": "#B00020"
@@ -97,9 +102,6 @@
                 <div class="h-10 w-12 overflow-hidden rounded shadow-sm border border-outline-variant/20 bg-white">
                     <img src="${rootPath}assets/WSW logo.jpg.jpeg" class="w-full h-[150%] object-cover object-top" alt="WSW Logo">
                 </div>
-                <span class="text-sm font-bold tracking-tighter text-on-surface font-headline group-hover:text-primary transition-colors hidden sm:block">
-                    Wilsovlewel Engineering
-                </span>
             </a>
             
             <!-- Desktop Nav -->
