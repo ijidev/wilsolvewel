@@ -73,39 +73,105 @@
     }
 
     const pages = [
-        { name: 'Services', path: 'services.html' },
+        { 
+            name: 'Services', 
+            path: 'services.html',
+            hasMega: true,
+            items: [
+                { name: 'Civil Engineering', path: 'services/engineering.html', desc: 'Structural design & foundations', icon: 'architecture' },
+                { name: 'OEM Procurement', path: 'services/procurement.html', desc: 'Global sourcing & logistics', icon: 'inventory_2' },
+                { name: 'Technical Support', path: 'services/technical-support.html', desc: 'Maintenance & diagnostics', icon: 'engineering' },
+                { name: 'Specialized Solutions', path: 'services.html#specialized', desc: 'Custom hydraulic refurbishment', icon: 'water_drop' }
+            ]
+        },
+        { 
+            name: 'Industries', 
+            path: 'industries.html',
+            hasMega: true,
+            items: [
+                { name: 'Oil & Gas', path: 'industries.html#oil-gas', desc: 'E&P flow improvement', icon: 'oil_barrel' },
+                { name: 'Power Gen', path: 'industries.html#power', desc: 'Turbine & grid support', icon: 'bolt' },
+                { name: 'Manufacturing', path: 'industries.html#manufacturing', desc: 'Plant flow optimization', icon: 'factory' },
+                { name: 'Construction', path: 'industries.html#construction', desc: 'Heavy machinery foundations', icon: 'foundation' }
+            ]
+        },
         { name: 'About', path: 'about.html' },
-        { name: 'Industries', path: 'industries.html' },
         { name: 'HSSE', path: 'hsse.html' },
         { name: 'Projects', path: 'projects.html' },
-        { name: 'Careers', path: 'career.html' },
         { name: 'Technical Specs', path: 'spec-forms.html' },
-        { name: 'FAQ', path: 'faq.html' },
         { name: 'Contact', path: 'contact.html' }
     ];
 
-    const navLinksHTML = pages.map(page => `
-        <a class="nav-link text-on-surface-variant font-headline font-bold text-[11px] uppercase tracking-widest hover:text-primary transition-all pb-1" 
-           href="${rootPath}${page.path}">${page.name}</a>
-    `).join('');
+    const navLinksHTML = pages.map(page => {
+        if (page.hasMega) {
+            return `
+            <div class="group/mega relative h-full flex items-center">
+                <a class="nav-link text-on-surface-variant font-headline font-bold text-[11px] uppercase tracking-widest hover:text-primary transition-all pb-1 flex items-center gap-1 cursor-pointer" 
+                   href="${rootPath}${page.path}">
+                   ${page.name}
+                   <span class="material-symbols-outlined text-xs transition-transform group-hover/mega:rotate-180">expand_more</span>
+                </a>
+                
+                <!-- Mega Menu Dropdown -->
+                <div class="absolute top-[calc(100%-8px)] left-1/2 -translate-x-1/2 w-[480px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-outline-variant/10 p-6 opacity-0 translate-y-4 pointer-events-none group-hover/mega:opacity-100 group-hover/mega:translate-y-0 group-hover/mega:pointer-events-auto transition-all duration-300 ease-out z-[110]">
+                    <div class="grid grid-cols-2 gap-4">
+                        ${page.items.map(item => `
+                            <a href="${rootPath}${item.path}" class="flex items-start gap-4 p-4 rounded-xl hover:bg-primary/5 group/item transition-colors">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0 group-hover/item:bg-primary/10">
+                                    <span class="material-symbols-outlined text-on-surface-variant group-hover/item:text-primary transition-colors text-xl">${item.icon}</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="block text-[11px] font-bold uppercase tracking-widest text-on-surface group-hover/item:text-primary transition-colors">${item.name}</span>
+                                    <span class="block text-[10px] text-on-surface-variant font-light leading-tight opacity-70">${item.desc}</span>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+        return `
+            <a class="nav-link text-on-surface-variant font-headline font-bold text-[11px] uppercase tracking-widest hover:text-primary transition-all pb-1" 
+               href="${rootPath}${page.path}">${page.name}</a>
+        `;
+    }).join('');
 
-    const mobileLinksHTML = pages.map(page => `
-        <a class="mobile-nav-link text-on-surface text-lg font-headline font-bold py-4 border-b border-outline-variant/30 w-full" 
-           href="${rootPath}${page.path}">${page.name}</a>
-    `).join('');
+    const mobileLinksHTML = pages.map(page => {
+        if (page.hasMega) {
+            return `
+            <div class="w-full">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')" class="flex justify-between items-center w-full text-on-surface text-lg font-headline font-bold py-4 border-b border-outline-variant/30">
+                    ${page.name}
+                    <span class="material-symbols-outlined arrow transition-transform">expand_more</span>
+                </button>
+                <div class="hidden bg-surface-container-low/50 px-4 py-2 border-b border-outline-variant/10">
+                    ${page.items.map(item => `
+                        <a class="mobile-nav-link block py-3 text-sm font-headline font-bold text-on-surface-variant hover:text-primary" 
+                           href="${rootPath}${item.path}">${item.name}</a>
+                    `).join('')}
+                </div>
+            </div>
+            `;
+        }
+        return `
+            <a class="mobile-nav-link text-on-surface text-lg font-headline font-bold py-4 border-b border-outline-variant/30 w-full" 
+               href="${rootPath}${page.path}">${page.name}</a>
+        `;
+    }).join('');
 
     const headerHTML = `
     <!-- Top Navigation Shell -->
     <nav id="main-header" class="fixed top-0 w-full z-[100] glass-nav h-16 flex items-center shadow-sm transition-all duration-500 ease-in-out">
-        <div class="max-w-7xl mx-auto w-full px-6 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto w-full px-6 flex justify-between items-center h-full">
             <a href="${rootPath}index.html" class="flex items-center gap-3 group">
-                <div class="h-10 w-12 overflow-hidden rounded shadow-sm border border-outline-variant/20 bg-white">
-                    <img src="${rootPath}assets/WSW logo.jpg.jpeg" class="w-full h-[150%] object-cover object-top" alt="WSW Logo">
+                <div class="h-10 w-16 overflow-hidden rounded shadow-sm border border-outline-variant/20 bg-white">
+                    <img src="${rootPath}assets/WSW logo.jpg" class="w-full h-full object-contain" alt="WSW Logo">
                 </div>
             </a>
             
             <!-- Desktop Nav -->
-            <div class="hidden lg:flex items-center gap-6" id="nav-links">
+            <div class="hidden lg:flex items-center gap-8 h-full" id="nav-links">
                 ${navLinksHTML}
             </div>
 
@@ -126,8 +192,8 @@
     <div id="mobile-menu" class="fixed inset-0 z-[110] bg-surface-container transition-all duration-300 translate-x-full lg:hidden">
         <div class="flex flex-col h-full bg-surface-container-low p-8">
             <div class="flex justify-between items-center mb-12">
-                <div class="h-12 w-14 overflow-hidden rounded bg-white">
-                     <img src="${rootPath}assets/WSW logo.jpg.jpeg" class="w-full h-[150%] object-cover object-top" alt="WSW Logo">
+                <div class="h-12 w-20 overflow-hidden rounded bg-white">
+                     <img src="${rootPath}assets/WSW logo.jpg" class="w-full h-full object-contain" alt="WSW Logo">
                 </div>
                 <button id="mobile-menu-close" class="p-2 text-on-surface">
                     <span class="material-symbols-outlined text-3xl">close</span>

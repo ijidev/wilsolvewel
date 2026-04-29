@@ -51,10 +51,20 @@
             </div>
 
             <!-- Forms Container -->
-            <div class="lg:col-span-8 space-y-16">
+            <div class="lg:col-span-8 space-y-8">
                 
+                <!-- Dynamic Selector -->
+                <div class="flex p-1 bg-slate-200/50 rounded-2xl w-full md:w-fit mb-4">
+                    <button id="btn-pump" onclick="showForm('pump')" class="flex-1 md:flex-none px-8 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all bg-white shadow-sm text-slate-900">
+                        Hydraulic Pump
+                    </button>
+                    <button id="btn-sourcing" onclick="showForm('sourcing')" class="flex-1 md:flex-none px-8 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all text-slate-500 hover:text-slate-900">
+                        Material Sourcing
+                    </button>
+                </div>
+
                 <!-- Hydraulic Pump Form -->
-                <section id="pump-form" class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-sm border border-slate-200">
+                <section id="pump-form" class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-sm border border-slate-200 transition-all duration-500">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white">
                             <span class="material-symbols-outlined">settings_input_component</span>
@@ -93,7 +103,7 @@
                 </section>
 
                 <!-- Material Sourcing Form -->
-                <section id="sourcing-form" class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-sm border border-slate-200">
+                <section id="sourcing-form" class="hidden bg-white rounded-[2.5rem] p-10 md:p-16 shadow-sm border border-slate-200 transition-all duration-500">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white">
                             <span class="material-symbols-outlined">shopping_cart</span>
@@ -129,6 +139,39 @@
                         <button type="submit" class="md:col-span-2 bg-orange-500 text-white py-5 rounded-2xl font-bold uppercase tracking-widest text-sm hover:bg-slate-900 transition-colors shadow-lg">Request Sourcing</button>
                     </form>
                 </section>
+
+                <script>
+                    function showForm(type) {
+                        const pumpForm = document.getElementById('pump-form');
+                        const sourcingForm = document.getElementById('sourcing-form');
+                        const btnPump = document.getElementById('btn-pump');
+                        const btnSourcing = document.getElementById('btn-sourcing');
+
+                        if (type === 'pump') {
+                            pumpForm.classList.remove('hidden');
+                            sourcingForm.classList.add('hidden');
+                            btnPump.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+                            btnPump.classList.remove('text-slate-500');
+                            btnSourcing.classList.remove('bg-white', 'shadow-sm', 'text-slate-900');
+                            btnSourcing.classList.add('text-slate-500');
+                        } else {
+                            pumpForm.classList.add('hidden');
+                            sourcingForm.classList.remove('hidden');
+                            btnSourcing.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+                            btnSourcing.classList.remove('text-slate-500');
+                            btnPump.classList.remove('bg-white', 'shadow-sm', 'text-slate-900');
+                            btnPump.classList.add('text-slate-500');
+                        }
+                    }
+
+                    // Handle URL hash for direct linking
+                    window.addEventListener('load', () => {
+                        if (window.location.hash === '#sourcing-form') {
+                            showForm('sourcing');
+                        }
+                    });
+                </script>
+            </div>
 
             </div>
         </div>

@@ -12,8 +12,8 @@
         <!-- Brand Section -->
         <div class="md:col-span-4 space-y-6">
             <a href="${rootPath}index.html" class="flex items-center gap-4 group">
-                <div class="h-16 w-20 overflow-hidden rounded-lg shadow-sm border border-outline-variant/20 bg-white">
-                    <img src="${rootPath}assets/WSW logo.jpg.jpeg" class="w-full h-[150%] object-cover object-top" alt="WSW Logo">
+                <div class="h-16 w-24 overflow-hidden rounded-lg shadow-sm border border-outline-variant/20 bg-white">
+                    <img src="${rootPath}assets/WSW logo.jpg" class="w-full h-full object-contain" alt="WSW Logo">
                 </div>
                 <div class="flex flex-col">
                     <span class="text-lg font-bold font-headline text-on-surface group-hover:text-primary transition-colors">

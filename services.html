@@ -37,14 +37,31 @@
         </header>
 
         <!-- Service Pillars Navigation -->
-        <div class="sticky top-20 z-20 bg-surface/80 backdrop-blur-md border-y border-outline-variant/10 py-4 px-6 lg:px-12">
-            <div class="max-w-7xl mx-auto flex flex-wrap gap-8 justify-center md:justify-start">
-                <a href="#engineering" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">01. Engineering</a>
-                <a href="#procurement" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">02. Procurement</a>
-                <a href="#maintenance" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">03. Technical Support</a>
-                <a href="#specialized" class="text-[10px] font-label font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors">04. Specialized Solutions</a>
+        <div id="service-nav" class="sticky top-16 z-20 bg-surface/90 backdrop-blur-lg border-y border-outline-variant/10 py-3 px-6 lg:px-12 transition-all duration-500">
+            <div class="max-w-7xl mx-auto flex overflow-x-auto no-scrollbar gap-8 justify-start md:justify-start flex-nowrap items-center whitespace-nowrap">
+                <a href="services/engineering.html" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors shrink-0">01. Engineering</a>
+                <a href="services/procurement.html" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors shrink-0">02. Procurement</a>
+                <a href="services/technical-support.html" class="text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors shrink-0">03. Technical Support</a>
+                <a href="#specialized" class="text-[10px] font-label font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors shrink-0">04. Specialized Solutions</a>
             </div>
         </div>
+
+        <style>
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        </style>
+
+        <script>
+            window.addEventListener('scroll', () => {
+                const header = document.getElementById('main-header');
+                const serviceNav = document.getElementById('service-nav');
+                if (header.classList.contains('nav-hidden')) {
+                    serviceNav.style.top = '0';
+                } else {
+                    serviceNav.style.top = '64px'; // 4rem = top-16
+                }
+            });
+        </script>
 
         <!-- PILLAR 01: Engineering Services -->
         <section id="engineering" class="py-32 px-6 lg:px-12 relative overflow-hidden">
