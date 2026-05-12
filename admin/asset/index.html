@@ -17,23 +17,41 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
     <script id="tailwind-config">
-        "fontSize": {
-            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-                "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-                    "base": ["0.875rem", { "lineHeight": "1.25rem" }],
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#EAB308",
+                        "on-primary": "#000000",
+                        "primary-container": "#FEF9C3",
+                        "on-primary-container": "#422006",
+                        "secondary": "#1A1A1A",
+                        "on-secondary": "#FFFFFF",
+                        "surface": "#FDFDFD",
+                        "on-surface": "#1A1A1A",
+                        "surface-container-lowest": "#FFFFFF",
+                        "surface-container-low": "#F7F7F7",
+                        "surface-container": "#F3F3F3",
+                        "outline-variant": "#CAC4D0",
+                        "error": "#B00020"
+                    },
+                    "fontSize": {
+                        "xs": ["0.65rem", { "lineHeight": "1rem" }],
+                        "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
+                        "base": ["0.875rem", { "lineHeight": "1.25rem" }],
                         "lg": ["1rem", { "lineHeight": "1.5rem" }],
-                            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-                                "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-                                    "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-                                        "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-                                            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-                                                "6xl": ["3rem", { "lineHeight": "1" }],
-                                                    "7xl": ["3.75rem", { "lineHeight": "1" }]
-        }
+                        "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
+                        "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
+                        "3xl": ["1.5rem", { "lineHeight": "2rem" }],
+                        "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
+                        "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
+                        "6xl": ["3rem", { "lineHeight": "1" }],
+                        "7xl": ["3.75rem", { "lineHeight": "1" }]
+                    }
                 },
             },
-        },
-    }
+        }
     </script>
     <style>
         .material-symbols-outlined {
@@ -41,25 +59,25 @@
         }
 
         .technical-grid {
-            background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+            background-image: radial-gradient(circle, #EAB308 1px, transparent 1px);
             background-size: 24px 24px;
             opacity: 0.05;
         }
 
         .anodized-gradient {
-            background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+            background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
         }
 
         .site-gradient-bg {
-            background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+            background: radial-gradient(circle at 0% 0%, rgba(234, 179, 8, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.05) 0%, transparent 50%);
             background-attachment: fixed;
         }
     </style>
 </head>
 
 <body
-    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
+    class="bg-surface font-body text-on-surface selection:bg-primary selection:text-on-primary site-gradient-bg">
     <!-- SideNavBar -->
     <script src="../../components/admin_sidenav.js" data-root="../../"></script>
     <script src="../../components/effects.js"></script>

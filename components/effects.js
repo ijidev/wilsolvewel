@@ -62,7 +62,7 @@
         }
 
         draw() {
-            ctx.fillStyle = 'rgba(0, 72, 141, 0.5)';
+            ctx.fillStyle = 'rgba(234, 179, 8, 0.5)';
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
@@ -87,7 +87,7 @@
 
                 if (distance < connectionDistance) {
                     let opacity = 1 - (distance / connectionDistance);
-                    ctx.strokeStyle = `rgba(0, 72, 141, ${opacity * 0.2})`;
+                    ctx.strokeStyle = `rgba(234, 179, 8, ${opacity * 0.2})`;
                     ctx.lineWidth = 0.5;
                     ctx.beginPath();
                     ctx.moveTo(particles[a].x, particles[a].y);
@@ -103,7 +103,7 @@
                 let distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < mouse.radius) {
                     let opacity = 1 - (distance / mouse.radius);
-                    ctx.strokeStyle = `rgba(0, 72, 141, ${opacity * 0.3})`;
+                    ctx.strokeStyle = `rgba(234, 179, 8, ${opacity * 0.3})`;
                     ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.moveTo(particles[a].x, particles[a].y);

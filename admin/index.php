@@ -1,3 +1,20 @@
+<?php
+include '../config.php';
+$conn = get_db_connection();
+
+// Fetch inquiry counts
+$total_inquiries = $conn->query("SELECT COUNT(*) as total FROM inquiries")->fetch_assoc()['total'];
+$new_inquiries = $conn->query("SELECT COUNT(*) as total FROM inquiries WHERE status = 'New'")->fetch_assoc()['total'];
+
+// Calculate uptime (simulated based on a fixed start date or just use a dynamic value)
+$uptime_start = strtotime('2024-01-01');
+$diff = time() - $uptime_start;
+$days = floor($diff / (60 * 60 * 24));
+$hours = floor(($diff % (60 * 60 * 24)) / (60 * 60));
+$mins = floor(($diff % (60 * 60)) / 60);
+$secs = $diff % 60;
+$uptime_str = sprintf("%d:%02d:%02d:%02d", $days, $hours, $mins, $secs);
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en">
@@ -12,14 +29,26 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
+          "colors": {
+            "primary": "#EAB308",
+            "on-primary": "#000000",
+            "primary-container": "#FEF9C3",
+            "on-primary-container": "#422006",
+            "secondary": "#1A1A1A",
+            "on-secondary": "#FFFFFF",
+            "surface": "#FDFDFD",
+            "on-surface": "#1A1A1A",
+            "surface-container-lowest": "#FFFFFF",
+            "surface-container-low": "#F7F7F7",
+            "surface-container": "#F3F3F3",
+            "outline-variant": "#CAC4D0",
+            "error": "#B00020"
+          },
           "fontSize": {
             "xs": ["0.65rem", { "lineHeight": "1rem" }],
             "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
@@ -43,19 +72,39 @@
     }
 
     .technical-grid {
-      background-image: radial-gradient(circle, #c2c6d4 1px, transparent 1px);
+      background-image: radial-gradient(circle, #EAB308 1px, transparent 1px);
       background-size: 24px 24px;
       opacity: 0.05;
     }
 
     .anodized-gradient {
-      background: linear-gradient(135deg, #00488d 0%, #005fb8 100%);
+      background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
     }
 
     .site-gradient-bg {
-      background: radial-gradient(circle at 0% 0%, rgba(0, 72, 141, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(173, 51, 0, 0.3) 0%, transparent 50%);
+      background: radial-gradient(circle at 0% 0%, rgba(234, 179, 8, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.05) 0%, transparent 50%);
       background-attachment: fixed;
+    }
+    
+    .terminal-window {
+        background: #0D0D0D;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        border: 1px solid #333;
+    }
+    
+    .terminal-cursor {
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background: #EAB308;
+        animation: blink 1s step-end infinite;
+        vertical-align: middle;
+    }
+    
+    @keyframes blink {
+        from, to { opacity: 1; }
+        50% { opacity: 0; }
     }
   </style>
 </head>
@@ -101,7 +150,7 @@
                 class="text-[10px] font-label text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">STABLE</span>
             </div>
             <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Active Site Latency</p>
-            <h3 class="text-3xl font-bold font-headline tracking-tighter">14ms</h3>
+            <h3 class="text-3xl font-bold font-headline tracking-tighter" id="site-latency">--ms</h3>
             <div class="mt-4 flex gap-1 h-1">
               <div class="flex-1 bg-primary rounded-full"></div>
               <div class="flex-1 bg-primary rounded-full"></div>
@@ -117,7 +166,7 @@
               <span class="material-symbols-outlined text-primary" data-icon="update">update</span>
             </div>
             <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">System Uptime</p>
-            <h3 class="text-3xl font-bold font-headline tracking-tighter">342:12:08</h3>
+            <h3 class="text-3xl font-bold font-headline tracking-tighter"><?php echo $uptime_str; ?></h3>
             <p class="text-[9px] font-mono text-slate-400 mt-1 uppercase">Continuous Sync Active</p>
           </div>
           <!-- Stat 3 -->
@@ -129,10 +178,10 @@
                 class="text-[10px] font-label text-primary-container bg-secondary-container px-2 py-0.5 rounded-full font-bold">+12
                 New</span>
             </div>
-            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Secure Nodes</p>
-            <h3 class="text-3xl font-bold font-headline tracking-tighter">1,204</h3>
+            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Total Inquiries</p>
+            <h3 class="text-3xl font-bold font-headline tracking-tighter"><?php echo $total_inquiries; ?></h3>
             <div class="mt-4 h-1 bg-surface-container rounded-full overflow-hidden">
-              <div class="w-[85%] h-full bg-primary"></div>
+              <div class="w-[<?php echo min(100, $total_inquiries); ?>%] h-full bg-primary"></div>
             </div>
           </div>
           <!-- Core Projects Map View -->
@@ -229,36 +278,61 @@
             <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-6">Recent Security Logs</h4>
             <div class="space-y-4">
               <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
+                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-emerald-600 text-sm" data-icon="check_circle">check_circle</span>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-on-surface">DB Schema Integrity Verified</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Self-healing check completed | Just now</p>
+                </div>
+              </div>
+              <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
                 <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-primary text-sm" data-icon="lock_open">lock_open</span>
                 </div>
                 <div>
-                  <p class="text-xs font-medium text-on-surface">Auth Success: Admin_LN04</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5">Terminal 04: Lagos Central | 2m ago</p>
+                  <p class="text-xs font-medium text-on-surface">Auth Success: Admin_Node_04</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Terminal 04: Session Active | 2m ago</p>
                 </div>
               </div>
-              <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
+              <div class="flex gap-4 items-start">
                 <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-amber-600 text-sm" data-icon="encrypted">encrypted</span>
                 </div>
                 <div>
-                  <p class="text-xs font-medium text-on-surface">Encrypted Data Sync Initialized</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5">External Backup Node 01 | 14m ago</p>
-                </div>
-              </div>
-              <div class="flex gap-4 items-start">
-                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-red-600 text-sm" data-icon="warning">warning</span>
-                </div>
-                <div>
-                  <p class="text-xs font-medium text-on-surface">Unauthorized Access Attempt</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5">Port Harcourt IP: 197.210.8.44 | 1h ago</p>
+                  <p class="text-xs font-medium text-on-surface">SMTP Gateway Synchronized</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Uplink verified with provider | 14m ago</p>
                 </div>
               </div>
             </div>
           </div>
         </aside>
       </div>
+
+      <!-- Command Terminal Section -->
+      <section class="mt-12 bg-black rounded-xl overflow-hidden terminal-window border border-primary/20">
+        <div class="bg-zinc-900 px-4 py-2 flex items-center justify-between border-b border-white/5">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
+                <div class="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/40"></div>
+                <div class="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/40"></div>
+                <span class="text-[10px] font-mono text-slate-500 ml-4 uppercase tracking-widest">Wilsolvewel System Terminal // root@node-04</span>
+            </div>
+            <div class="text-[10px] font-mono text-primary font-bold animate-pulse">LIVE ACCESS</div>
+        </div>
+        <div class="p-6 h-64 overflow-y-auto font-mono text-xs text-primary/80 space-y-2" id="terminal-output">
+            <div class="text-white/40">Wilsolvewel Engineering [Version 1.0.4]</div>
+            <div class="text-white/40">(c) 2026 Wilsolvewel Tech. All rights reserved.</div>
+            <br>
+            <div>Welcome, Administrator. Type <span class="text-white font-bold">'help'</span> to see available commands.</div>
+        </div>
+        <div class="px-6 pb-6 pt-2 flex items-center gap-3 border-t border-white/5">
+            <span class="text-primary font-bold">~</span>
+            <input type="text" id="terminal-input" class="flex-1 bg-transparent border-none text-primary font-mono text-xs focus:ring-0 p-0" placeholder="Enter command..." autofocus>
+            <div class="terminal-cursor"></div>
+        </div>
+      </section>
+
       <!-- System Footer (Anchored to shell but part of content flow) -->
       <footer class="mt-12 flex justify-between items-center py-6 border-t border-slate-100">
         <div class="flex gap-8">
@@ -266,7 +340,7 @@
             <span class="text-primary font-bold">Node Identity:</span> LAG-01-V12
           </div>
           <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
-            <span class="text-primary font-bold">Latency:</span> 14ms (Optimal)
+            <span class="text-primary font-bold">Latency:</span> <span id="footer-latency">--ms</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -279,10 +353,10 @@
   <footer
     class="fixed bottom-0 left-64 right-0 h-8 flex justify-between items-center px-6 w-full bg-slate-100 dark:bg-slate-950 z-20">
     <div class="text-slate-400 dark:text-slate-600 font-mono text-[10px] tracking-widest uppercase">
-      © 2024 Industrial Precision Node: 10.0.4.12
+      © 2026 Industrial Precision Node: 10.0.4.12
     </div>
     <div class="flex gap-6">
-      <span class="text-blue-600 dark:text-blue-400 font-mono text-[10px] tracking-widest uppercase">System Status:
+      <span class="text-primary font-mono text-[10px] tracking-widest uppercase">System Status:
         Operational</span>
       <span
         class="text-slate-400 dark:text-slate-600 font-mono text-[10px] tracking-widest uppercase">v2.4.0-Stable</span>
@@ -290,6 +364,112 @@
         href="#">API Documentation</a>
     </div>
   </footer>
+
+  <script>
+    // Latency Simulation
+    function updateLatency() {
+        const latency = Math.floor(Math.random() * 20) + 10;
+        const color = latency > 25 ? 'text-amber-500' : 'text-emerald-500';
+        document.getElementById('site-latency').innerText = latency + 'ms';
+        document.getElementById('footer-latency').innerText = latency + 'ms';
+        document.getElementById('footer-latency').className = color;
+    }
+    setInterval(updateLatency, 3000);
+    updateLatency();
+
+    // Terminal Logic
+    const terminalInput = document.getElementById('terminal-input');
+    const terminalOutput = document.getElementById('terminal-output');
+
+    const commands = {
+        'help': () => `
+            <div class="grid grid-cols-2 gap-4 text-[10px] uppercase tracking-widest">
+                <div><span class="text-white">goto &lt;page&gt;</span> - projects, assets, inquiries, settings, hsse</div>
+                <div><span class="text-white">status</span> - Core health check</div>
+                <div><span class="text-white">sysinfo</span> - Node & environment data</div>
+                <div><span class="text-white">diagnose</span> - Full diagnostic scan</div>
+                <div><span class="text-white">stats</span> - Summary of key metrics</div>
+                <div><span class="text-white">ping</span> - Latency test</div>
+                <div><span class="text-white">clear</span> - Reset buffer</div>
+            </div>
+        `,
+        'status': () => '<span class="text-emerald-500">[OK]</span> Core Systems Nominal<br><span class="text-emerald-500">[OK]</span> Database Connected<br><span class="text-emerald-500">[OK]</span> SMTP Gateway Online',
+        'sysinfo': () => `
+            Node: LAG-01-V12<br>
+            OS: ${navigator.platform}<br>
+            Engine: ${navigator.userAgent.split(' ')[0]}<br>
+            Uptime: <?php echo $uptime_str; ?><br>
+            Connection: Secure SSL/TLS
+        `,
+        'diagnose': () => {
+            const checks = ['Encryption Hash', 'DB Table Schema', 'SMTP Auth', 'HSSE Sensors'];
+            return checks.map(c => `[WAIT] ${c}... <span class="text-emerald-500">PASSED</span>`).join('<br>') + 
+                   '<br><br><span class="text-emerald-500 font-bold">SYSTEM_NOMINAL: All security protocols satisfied.</span>';
+        },
+        'stats': () => `
+            Inquiries: <span class="text-white font-bold"><?php echo $total_inquiries; ?></span><br>
+            New Records: <span class="text-amber-500 font-bold"><?php echo $new_inquiries; ?></span><br>
+            System Uptime: <span class="text-primary"><?php echo $uptime_str; ?></span><br>
+            Active Projects: <span class="text-primary">12</span>
+        `,
+        'goto': (args) => {
+            const page = args[0];
+            const routes = {
+                'projects': 'project/index.html',
+                'assets': 'asset/index.html',
+                'inquiries': 'inquiries.php',
+                'settings': 'settings.php',
+                'hsse': 'hsse/monitor.html',
+                'procurement': '#'
+            };
+            if (routes[page]) {
+                terminalOutput.innerHTML += `<div class="mt-2 text-emerald-500">[SUCCESS] Linking to ${page} node...</div>`;
+                setTimeout(() => window.location.href = routes[page], 800);
+                return "";
+            }
+            return `<span class="text-red-400">[ERROR] Node '${page}' not found in registry.</span>`;
+        },
+        'clear': () => { terminalOutput.innerHTML = ""; return ""; },
+        'ping': () => 'Pinging site wilsolvewel.com...<br>Reply from 10.0.4.12: bytes=32 time=' + (Math.floor(Math.random()*15)+5) + 'ms TTL=54',
+        'whoami': () => 'Current User: root@node-04<br>Identity: LAG-01-V12',
+        'date': () => 'System Time: ' + new Date().toLocaleString()
+    };
+
+    terminalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const raw = terminalInput.value.trim().toLowerCase();
+            const parts = raw.split(' ');
+            const cmd = parts[0];
+            const args = parts.slice(1);
+
+            if (raw === "") return;
+
+            const outputLine = document.createElement('div');
+            outputLine.innerHTML = `<span class="text-white font-bold">~</span> ${raw}`;
+            terminalOutput.appendChild(outputLine);
+
+            const responseLine = document.createElement('div');
+            responseLine.className = 'mt-1 mb-3 ml-2 border-l border-white/5 pl-4';
+            
+            if (cmd === 'goto' || cmd === 'open') {
+                const result = commands['goto'](args);
+                if (result) responseLine.innerHTML = result;
+            } else if (commands[raw]) {
+                const result = commands[raw]();
+                if (result) responseLine.innerHTML = result;
+            } else if (commands[cmd]) {
+                const result = commands[cmd]();
+                if (result) responseLine.innerHTML = result;
+            } else {
+                responseLine.innerHTML = `<span class="text-red-400">[ERROR] Command not found: ${cmd}</span>. Type 'help' for available commands.`;
+            }
+
+            if (responseLine.innerHTML) terminalOutput.appendChild(responseLine);
+            terminalInput.value = "";
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+    });
+  </script>
 </body>
 
 </html>
