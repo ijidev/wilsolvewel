@@ -289,24 +289,27 @@ if (isset($_GET['ajax_action'])) {
             <div class="flex-1 space-y-8">
                 <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
                     <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
-                    <div class="flex items-center justify-between mb-8 relative z-10">
-                        <div>
-                            <h2 class="text-2xl font-bold font-headline text-slate-900"><?php echo htmlspecialchars($proj['name']); ?></h2>
-                            <div class="flex items-center gap-3 mt-1">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Project ID: #PRJ-<?php echo $proj['id']; ?></p>
-                                <span class="w-1 h-1 rounded-full bg-slate-200"></span>
-                                <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-widest <?php echo $proj['status']=='Active'?'bg-emerald-50 text-emerald-600':($proj['status']=='Planning'?'bg-amber-50 text-amber-600':'bg-slate-100 text-slate-500'); ?>">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 relative z-10">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <div class="shrink-0">
+                                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.1em] <?php echo $proj['status']=='Active'?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
                                     <?php echo $proj['status']; ?>
                                 </span>
                             </div>
+                            <div class="min-w-0">
+                                <h2 class="text-3xl font-bold font-headline text-slate-900 leading-tight truncate"><?php echo htmlspecialchars($proj['name']); ?></h2>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 opacity-60">ID: #PRJ-<?php echo $proj['id']; ?></p>
+                            </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="px-4 py-2 bg-white border border-slate-200 text-slate-500 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2">
-                                <span class="material-symbols-outlined text-xs"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
-                                <?php echo $proj['status'] == 'On Hold' ? 'Resume' : 'Put on Hold'; ?>
-                            </button>
-                            <button onclick="editProject(<?php echo $id; ?>)" class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shadow-sm">
-                                <span class="material-symbols-outlined text-sm">settings</span>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <?php if ($proj['status'] == 'Active' || $proj['status'] == 'On Hold'): ?>
+                                <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="h-11 px-5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
+                                    <span class="material-symbols-outlined text-sm"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
+                                    <?php echo $proj['status'] == 'On Hold' ? 'Resume Project' : 'Put on Hold'; ?>
+                                </button>
+                            <?php endif; ?>
+                            <button onclick="editProject(<?php echo $id; ?>)" class="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+                                <span class="material-symbols-outlined text-lg">settings</span>
                             </button>
                         </div>
                     </div>
@@ -809,6 +812,8 @@ window.onload = () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if (id) loadProject(id);
+    
+    initMilestoneLogic();
 };
 
 async function toggleProjectHold(id, current) {
@@ -823,17 +828,26 @@ async function toggleProjectHold(id, current) {
     }
 }
 
-document.getElementById('milestoneForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const res = await fetch('?ajax_action=save_milestone', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.status === 'success') {
-        showToast('Milestone saved');
-        closeMilestoneModal();
-        loadProject(currentProjectId);
-    }
-};
+// Consolidated Milestone Form logic
+function initMilestoneLogic() {
+    const form = document.getElementById('milestoneForm');
+    if (!form) return;
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const pid = fd.get('project_id') || currentProjectId;
+        const res = await fetch('?ajax_action=save_milestone', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast('Milestone saved');
+            closeMilestoneModal();
+            loadProject(pid);
+        } else {
+            showToast(data.message, 'error');
+        }
+    };
+}
+
 
 async function updateMilestoneStatus(id, pid, status) {
     const fd = new FormData();
@@ -933,27 +947,7 @@ document.getElementById('msChatForm').onsubmit = async (e) => {
     openMilestoneChat(msId, document.getElementById('msChatTitle').innerText);
 };
 
-document.getElementById('projectForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('projectSaveBtn');
-    btn.disabled = true; btn.textContent = 'Saving...';
-    try {
-        const fd = new FormData(this);
-        const res = await fetch('?ajax_action=save_project', { method: 'POST', body: fd });
-        const result = await res.json();
-        if (result.status === 'success') {
-            closeProjectModal();
-            showToast(result.message);
-            setTimeout(() => location.reload(), 1200);
-        } else {
-            showToast(result.message, 'error');
-        }
-    } catch(e) {
-        showToast('Error', 'error');
-    } finally {
-        btn.disabled = false; btn.textContent = 'Save Project';
-    }
-};
+// Project Form consolidated logic is already handled by addEventListener at line 756
 
 async function deleteProject(id) {
     if (!confirm('Delete this project? All associated reports will be lost.')) return;
@@ -1010,19 +1004,7 @@ async function removeAsset(projectId, assetId) {
 
     function closeMilestoneModal() { document.getElementById('milestoneModal').classList.remove('open'); }
 
-    document.getElementById('milestoneForm').onsubmit = async function(e) {
-        e.preventDefault();
-        const fd = new FormData(this);
-        const pid = fd.get('project_id') || currentProjectId;
-        const res = await fetch('?ajax_action=save_milestone', { method: 'POST', body: fd });
-        const result = await res.json();
-        if (result.status === 'success') {
-            closeMilestoneModal();
-            loadProject(pid);
-        } else {
-            alert(result.message);
-        }
-    };
+    // Milestone Form logic moved to consolidated section
 
     async function updateMilestoneStatus(msId, projectId, status) {
         const fd = new FormData();

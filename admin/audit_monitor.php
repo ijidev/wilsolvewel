@@ -9,7 +9,7 @@ $admin_id = $_SESSION['admin_id'] ?? 1;
 $permissions = get_admin_permissions($admin_id);
 
 // Check if Admin has read/write permission (e.g., Director)
-$can_view_details = ($permissions['role'] === 'Director' || isset($permissions['manage_audit']));
+$can_view_details = (($permissions['role'] ?? '') === 'Director' || isset($permissions['manage_audit']));
 
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] == 'get_details') {
     header('Content-Type: application/json');
