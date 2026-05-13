@@ -164,7 +164,7 @@
     <!-- Top Navigation Shell -->
     <nav id="main-header" class="fixed top-0 w-full z-[100] glass-nav h-16 flex items-center shadow-sm transition-all duration-500 ease-in-out">
         <div class="max-w-7xl mx-auto w-full px-6 flex justify-between items-center h-full">
-            <a href="${rootPath}index.html" class="flex items-center gap-3 group">
+            <a href="${rootPath}index.php" class="flex items-center gap-3 group">
                 <div class="h-10 w-16 overflow-hidden rounded shadow-sm border border-outline-variant/20 bg-white">
                     <img src="${rootPath}assets/WSW logo.jpg" class="w-full h-full object-contain" alt="WSW Logo">
                 </div>
@@ -176,7 +176,7 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <a href="${rootPath}login.html" class="hidden md:flex anodized-gradient text-on-primary px-5 py-2 rounded-lg font-headline font-bold text-xs uppercase tracking-widest hover:shadow-lg transition-all active:scale-95">
+                <a href="${rootPath}client/login.php" class="hidden md:inline-flex items-center justify-center anodized-gradient text-on-primary px-5 py-2.5 rounded-xl font-headline font-bold text-[10px] uppercase tracking-[0.15em] hover:shadow-lg transition-all active:scale-95 shadow-md shadow-primary/20">
                     Terminal
                 </a>
                 
@@ -205,7 +205,7 @@
             </div>
             
             <div class="mt-auto pt-8">
-                <a href="${rootPath}login.html" class="flex w-full items-center justify-center anodized-gradient text-on-primary py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest">
+                <a href="${rootPath}client/login.php" class="flex w-full items-center justify-center anodized-gradient text-on-primary py-4 rounded-xl font-headline font-bold text-sm uppercase tracking-widest">
                     Access Terminal
                 </a>
             </div>

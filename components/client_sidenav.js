@@ -14,46 +14,46 @@
 <p class="text-[10px] text-slate-400 uppercase tracking-widest">Precision Maintenance</p>
 </div>
 <nav class="flex flex-col gap-1 mt-4" id="client-sidenav-links">
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/index.html" data-href="client/index.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/index.php" data-href="client/index.php">
 <span class="material-symbols-outlined">dashboard</span>
                 Dashboard
             </a>
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/project.html" data-href="client/project.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/projects.php" data-href="client/projects.php">
 <span class="material-symbols-outlined">engineering</span>
                 Projects
             </a>
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/propose_project.html" data-href="client/propose_project.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/propose_project.php" data-href="client/propose_project.php">
 <span class="material-symbols-outlined">add_task</span>
                 Propose Project
             </a>
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/procurement.html" data-href="client/procurement.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/procurement.php" data-href="client/procurement.php">
 <span class="material-symbols-outlined">local_shipping</span>
                 Procurement
             </a>
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/ticket.html" data-href="client/ticket.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/tickets.php" data-href="client/tickets.php">
 <span class="material-symbols-outlined">confirmation_number</span>
                 Tickets
             </a>
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/hsse.html" data-href="client/hsse.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/hsse.php" data-href="client/hsse.php">
 <span class="material-symbols-outlined">health_and_safety</span>
                 HSSE
             </a>
-<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/settings.html" data-href="client/settings.html">
+<a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl hover:translate-x-1 transition-transform duration-200" href="${rootPath}client/settings.php" data-href="client/settings.php">
 <span class="material-symbols-outlined">settings</span>
                 Settings
             </a>
 </nav>
 <div class="mt-auto flex flex-col gap-1">
-<a href="${rootPath}index.html" class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-error text-white rounded-xl font-bold text-xs uppercase tracking-tighter hover:bg-red-700 transition-colors active:scale-[0.98]">
+<a href="${rootPath}client/logout.php" class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-error text-white rounded-xl font-bold text-xs uppercase tracking-tighter hover:bg-red-700 transition-colors active:scale-[0.98]">
 <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">logout</span>
                 Logout
             </a>
 <div class="mt-4 pt-4 border-t border-slate-200/50">
-<a class="flex items-center gap-3 px-4 py-2 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-400 hover:text-slate-600 transition-colors" href="${rootPath}documentation.php">
 <span class="material-symbols-outlined text-base">description</span>
                     Documentation
                 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-400 hover:text-slate-600 transition-colors" href="${rootPath}client/tickets.php">
 <span class="material-symbols-outlined text-base">help_center</span>
                     Support
                 </a>

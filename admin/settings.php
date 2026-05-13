@@ -1,23 +1,68 @@
 <?php
 include '../config.php';
-
 $conn = get_db_connection();
 
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
-    set_setting('smtp_host', $_POST['smtp_host']);
-    set_setting('smtp_port', $_POST['smtp_port']);
-    set_setting('smtp_user', $_POST['smtp_user']);
-    if (!empty($_POST['smtp_pass'])) {
-        set_setting('smtp_pass', $_POST['smtp_pass']);
+if (session_status() === PHP_SESSION_NONE) session_start();
+$admin_id = $_SESSION['admin_id'] ?? 1;
+$permissions = get_admin_permissions($admin_id);
+
+$success_msg = '';
+$error_msg = '';
+
+// Handle Global Settings Update
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_global'])) {
+    if ($permissions['role'] !== 'Director') {
+        $error_msg = "Permission denied.";
+    } else {
+        $fields = ['site_name', 'seo_description', 'currency', 'timezone'];
+        foreach ($fields as $f) {
+            if (isset($_POST[$f])) {
+                $v = $conn->real_escape_string($_POST[$f]);
+                $conn->query("INSERT INTO global_settings (setting_key, setting_value) VALUES ('$f', '$v') ON DUPLICATE KEY UPDATE setting_value='$v'");
+            }
+        }
+        log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated Global Settings");
+        $success_msg = "Global settings updated.";
     }
-    set_setting('smtp_encryption', $_POST['smtp_encryption']);
-    set_setting('smtp_from_email', $_POST['smtp_from_email']);
-    set_setting('smtp_from_name', $_POST['smtp_from_name']);
-    $success_msg = "SMTP settings updated successfully.";
 }
 
-// Fetch current settings
+// Handle SMTP Update
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
+    if ($permissions['role'] !== 'Director') {
+        $error_msg = "Permission denied.";
+    } else {
+        set_setting('smtp_host', $_POST['smtp_host']);
+        set_setting('smtp_port', $_POST['smtp_port']);
+        set_setting('smtp_user', $_POST['smtp_user']);
+        if (!empty($_POST['smtp_pass'])) {
+            set_setting('smtp_pass', $_POST['smtp_pass']);
+        }
+        set_setting('smtp_encryption', $_POST['smtp_encryption']);
+        set_setting('smtp_from_email', $_POST['smtp_from_email']);
+        set_setting('smtp_from_name', $_POST['smtp_from_name']);
+        
+        log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated SMTP Configuration");
+        $success_msg = "SMTP settings updated.";
+    }
+}
+
+// Fetch Global Settings
+$globals = [];
+$res = $conn->query("SELECT setting_key, setting_value FROM global_settings");
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        $globals[$row['setting_key']] = $row['setting_value'];
+    }
+}
+
+// Fetch Error Logs
+$error_logs = [];
+$res = $conn->query("SELECT * FROM system_errors ORDER BY created_at DESC LIMIT 100");
+if ($res) {
+    while ($row = $res->fetch_assoc()) $error_logs[] = $row;
+}
+
+// SMTP variables
 $smtp_host = get_setting('smtp_host');
 $smtp_port = get_setting('smtp_port');
 $smtp_user = get_setting('smtp_user');
@@ -25,182 +70,211 @@ $smtp_encryption = get_setting('smtp_encryption');
 $smtp_from_email = get_setting('smtp_from_email');
 $smtp_from_name = get_setting('smtp_from_name');
 
+$active_tab = $_GET['tab'] ?? 'global';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Wilsovlewel Terminal - System Settings</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>System Settings | Terminal</title>
+    <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#EAB308",
-                        "on-primary": "#000000",
-                        "primary-container": "#FEF9C3",
-                        "on-primary-container": "#422006",
-                        "secondary": "#1A1A1A",
-                        "on-secondary": "#FFFFFF",
-                        "surface": "#FDFDFD",
-                        "on-surface": "#1A1A1A",
-                        "surface-variant": "#F5F5F5",
-                        "on-surface-variant": "#4A4A4A",
-                        "outline": "#79747E",
-                        "outline-variant": "#CAC4D0",
-                        "error": "#B00020",
-                        "surface-container-lowest": "#FFFFFF",
-                        "surface-container-low": "#F7F7F7",
-                        "surface-container": "#F3F3F3",
-                        "surface-container-high": "#EFEFEF",
-                        "surface-container-highest": "#EBEBEB",
-                    },
-                    fontFamily: {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "label": ["Space Grotesk"]
-                    }
-                },
-            },
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#EAB308","on-primary":"#000000",surface:"#F8FAFC","on-surface":"#0F172A"},fontFamily:{headline:["Space Grotesk"],body:["Manrope"]}}}}</script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .technical-grid {
-            background-image: radial-gradient(circle, #EAB308 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.05;
-        }
-        .anodized-gradient {
-            background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
-        }
-        .site-gradient-bg {
-            background: radial-gradient(circle at 0% 0%, rgba(234, 179, 8, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.05) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
+        .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
+        .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
     </style>
 </head>
+<body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
 
-<body class="bg-surface font-body text-on-surface selection:bg-primary selection:text-on-primary site-gradient-bg">
-    <!-- SideNavBar -->
-    <script src="../components/admin_sidenav.js" data-root="../"></script>
-    <script src="../components/effects.js"></script>
-    
-    <div class="ml-64 min-h-screen flex flex-col relative">
-        <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
-        
-        <!-- TopNavBar -->
-        <script src="../components/admin_topnav.js" data-root="../"></script>
-        
-        <main class="flex-1 p-8 relative z-10">
-            <div class="max-w-6xl mx-auto space-y-8 relative">
-                <?php if (isset($success_msg)): ?>
-                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg flex items-center gap-3">
-                        <span class="material-symbols-outlined">check_circle</span>
-                        <span class="text-sm font-bold"><?php echo $success_msg; ?></span>
+<script src="../components/admin_sidenav.js" data-root="../"></script>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-6 right-6 z-[400] transform <?php echo ($success_msg || $error_msg) ? 'translate-x-0' : 'translate-x-[150%]'; ?> transition-transform duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[280px]">
+        <span class="material-symbols-outlined <?php echo $error_msg ? 'text-red-500' : 'text-primary'; ?>"><?php echo $error_msg ? 'error' : 'check_circle'; ?></span>
+        <p class="text-xs font-bold"><?php echo htmlspecialchars($success_msg ?: $error_msg); ?></p>
+    </div>
+</div>
+<?php if ($success_msg || $error_msg): ?>
+<script>setTimeout(() => document.getElementById('toast').style.transform = 'translateX(150%)', 4000);</script>
+<?php endif; ?>
+
+<div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
+        <div>
+            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">System Settings</h1>
+            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Configuration & Logs</p>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Settings Nav Sidebar -->
+        <div class="w-full md:w-64 bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar shrink-0 hidden md:block">
+            <nav class="p-4 space-y-1">
+                <a href="?tab=global" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='global' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
+                    <span class="material-symbols-outlined text-lg">language</span>
+                    <span class="text-sm">Global Settings</span>
+                </a>
+                <a href="?tab=smtp" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='smtp' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
+                    <span class="material-symbols-outlined text-lg">mail</span>
+                    <span class="text-sm">SMTP Setup</span>
+                </a>
+                <a href="?tab=errors" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='errors' ? 'bg-red-50 text-red-600 font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
+                    <span class="material-symbols-outlined text-lg">bug_report</span>
+                    <span class="text-sm">System Errors</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content Pane -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 relative">
+            <div class="max-w-3xl mx-auto">
+
+                <?php if ($active_tab === 'global'): ?>
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <h2 class="text-xl font-bold font-headline text-slate-900">Global Configuration</h2>
+                        <p class="text-xs text-slate-500 mt-1">Manage core platform identity and localization.</p>
                     </div>
-                <?php endif; ?>
+                    <form method="POST" class="p-8 space-y-6">
+                        <input type="hidden" name="save_global" value="1">
+                        
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Platform Name</label>
+                            <input type="text" name="site_name" value="<?php echo htmlspecialchars($globals['site_name'] ?? 'Wilsolvewel Engineering'); ?>" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                        </div>
+                        
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">SEO Description / Meta</label>
+                            <textarea name="seo_description" rows="3" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary custom-scrollbar"><?php echo htmlspecialchars($globals['seo_description'] ?? ''); ?></textarea>
+                        </div>
 
-                <div class="grid grid-cols-12 gap-8">
-                    <!-- Left Sidebar Info (Profile Summary) -->
-                    <div class="col-span-12 lg:col-span-4 space-y-6">
-                        <section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/10">
-                            <div class="flex flex-col items-center text-center mb-8">
-                                <div class="relative mb-4">
-                                    <div class="w-32 h-32 rounded-2xl overflow-hidden border-4 border-surface-container-low shadow-sm bg-primary/10 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-5xl text-primary">person</span>
-                                    </div>
-                                </div>
-                                <h3 class="font-headline text-xl font-bold">Terminal Admin</h3>
-                                <p class="font-label text-[10px] uppercase tracking-widest text-primary font-bold">Master Control Node</p>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Default Currency</label>
+                                <select name="currency" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <option value="USD" <?php echo ($globals['currency']??'')=='USD'?'selected':''; ?>>USD ($)</option>
+                                    <option value="EUR" <?php echo ($globals['currency']??'')=='EUR'?'selected':''; ?>>EUR (€)</option>
+                                    <option value="GBP" <?php echo ($globals['currency']??'')=='GBP'?'selected':''; ?>>GBP (£)</option>
+                                    <option value="NGN" <?php echo ($globals['currency']??'')=='NGN'?'selected':''; ?>>NGN (₦)</option>
+                                </select>
                             </div>
-                            <nav class="space-y-1">
-                                <a href="settings.php" class="w-full flex items-center justify-between p-3 bg-primary/10 rounded-lg text-primary font-bold transition-all">
-                                    <div class="flex items-center gap-3">
-                                        <span class="material-symbols-outlined text-lg">settings</span>
-                                        <span class="text-sm">System Settings</span>
-                                    </div>
-                                    <span class="material-symbols-outlined text-sm">chevron_right</span>
-                                </a>
-                                <a href="inquiries.php" class="w-full flex items-center justify-between p-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-all">
-                                    <div class="flex items-center gap-3">
-                                        <span class="material-symbols-outlined text-lg">mail</span>
-                                        <span class="text-sm">Inquiries Log</span>
-                                    </div>
-                                    <span class="material-symbols-outlined text-sm">chevron_right</span>
-                                </a>
-                            </nav>
-                        </section>
-                    </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Timezone</label>
+                                <select name="timezone" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <option value="UTC" <?php echo ($globals['timezone']??'')=='UTC'?'selected':''; ?>>UTC</option>
+                                    <option value="America/New_York" <?php echo ($globals['timezone']??'')=='America/New_York'?'selected':''; ?>>Eastern Time (US)</option>
+                                    <option value="Europe/London" <?php echo ($globals['timezone']??'')=='Europe/London'?'selected':''; ?>>London</option>
+                                    <option value="Africa/Lagos" <?php echo ($globals['timezone']??'')=='Africa/Lagos'?'selected':''; ?>>West Africa (Lagos)</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <!-- Right Main Content -->
-                    <div class="col-span-12 lg:col-span-8 space-y-8">
-                        <!-- SMTP Configuration Section -->
-                        <div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm border border-outline-variant/10">
-                            <div class="flex justify-between items-end mb-8">
-                                <div>
-                                    <h4 class="font-headline text-2xl font-bold tracking-tight">SMTP Gateway</h4>
-                                    <p class="text-on-surface-variant text-sm mt-1 opacity-70">Configure your outgoing mail server for inquiries and alerts.</p>
-                                </div>
+                        <div class="pt-4 border-t border-slate-100 flex justify-end">
+                            <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Configuration</button>
+                        </div>
+                    </form>
+                </div>
+
+                <?php elseif ($active_tab === 'smtp'): ?>
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <h2 class="text-xl font-bold font-headline text-slate-900">SMTP Server</h2>
+                        <p class="text-xs text-slate-500 mt-1">Configure outbound email delivery for notifications.</p>
+                    </div>
+                    <form method="POST" class="p-8 space-y-6">
+                        <input type="hidden" name="save_smtp" value="1">
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">SMTP Host</label>
+                                <input type="text" name="smtp_host" value="<?php echo htmlspecialchars($smtp_host); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">SMTP Port</label>
+                                <input type="number" name="smtp_port" value="<?php echo htmlspecialchars($smtp_port); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                             </div>
                             
-                            <form method="POST" class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="space-y-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">SMTP Host</label>
-                                        <input name="smtp_host" type="text" value="<?php echo htmlspecialchars($smtp_host); ?>" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="smtp.gmail.com" />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">SMTP Port</label>
-                                        <input name="smtp_port" type="text" value="<?php echo htmlspecialchars($smtp_port); ?>" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="587" />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">SMTP Username</label>
-                                        <input name="smtp_user" type="text" value="<?php echo htmlspecialchars($smtp_user); ?>" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="your-email@gmail.com" />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">SMTP Password</label>
-                                        <input name="smtp_pass" type="password" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="••••••••••••" />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">Encryption</label>
-                                        <select name="smtp_encryption" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium">
-                                            <option value="tls" <?php echo $smtp_encryption == 'tls' ? 'selected' : ''; ?>>TLS / STARTTLS</option>
-                                            <option value="ssl" <?php echo $smtp_encryption == 'ssl' ? 'selected' : ''; ?>>SSL</option>
-                                            <option value="none" <?php echo $smtp_encryption == 'none' ? 'selected' : ''; ?>>None</option>
-                                        </select>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">From Email</label>
-                                        <input name="smtp_from_email" type="email" value="<?php echo htmlspecialchars($smtp_from_email); ?>" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="noreply@wilsolvewel.com" />
-                                    </div>
-                                    <div class="space-y-2 md:col-span-2">
-                                        <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-1">Sender Name</label>
-                                        <input name="smtp_from_name" type="text" value="<?php echo htmlspecialchars($smtp_from_name); ?>" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="Wilsolvewel Engineering Notifications" />
-                                    </div>
-                                </div>
-                                <button type="submit" name="save_smtp" class="w-full md:w-fit bg-primary text-on-primary px-8 py-3 rounded-lg font-label font-bold text-[10px] uppercase tracking-widest shadow-lg hover:shadow-primary/20 transition-all active:scale-95">
-                                    Save Gateway Config
-                                </button>
-                            </form>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Username</label>
+                                <input type="text" name="smtp_user" value="<?php echo htmlspecialchars($smtp_user); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                                <input type="password" name="smtp_pass" placeholder="Leave blank to keep current" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Encryption</label>
+                                <select name="smtp_encryption" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <option value="none" <?php echo $smtp_encryption=='none'?'selected':''; ?>>None</option>
+                                    <option value="tls" <?php echo $smtp_encryption=='tls'?'selected':''; ?>>TLS</option>
+                                    <option value="ssl" <?php echo $smtp_encryption=='ssl'?'selected':''; ?>>SSL</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="grid grid-cols-2 gap-6 pt-6 border-t border-slate-100">
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">From Email</label>
+                                <input type="email" name="smtp_from_email" value="<?php echo htmlspecialchars($smtp_from_email); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">From Name</label>
+                                <input type="text" name="smtp_from_name" value="<?php echo htmlspecialchars($smtp_from_name); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex justify-end">
+                            <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Configuration</button>
+                        </div>
+                    </form>
                 </div>
+
+                <?php elseif ($active_tab === 'errors'): ?>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold font-headline text-slate-900">System Exceptions</h2>
+                        <span class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase tracking-widest"><?php echo count($error_logs); ?> Logs</span>
+                    </div>
+
+                    <?php if (empty($error_logs)): ?>
+                        <div class="bg-white border border-slate-100 rounded-[2rem] p-12 text-center shadow-sm">
+                            <span class="material-symbols-outlined text-6xl text-emerald-300 mb-4">check_circle</span>
+                            <h3 class="font-bold text-slate-900 text-lg font-headline">All Systems Nominal</h3>
+                            <p class="text-xs text-slate-400 mt-1">No system errors have been recorded.</p>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($error_logs as $e): ?>
+                        <div class="bg-white rounded-2xl p-5 border border-red-100 shadow-sm relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-red-400"></div>
+                            <div class="pl-3">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="px-2.5 py-1 bg-red-50 text-red-600 rounded-md text-[9px] font-bold uppercase tracking-widest"><?php echo htmlspecialchars($e['module']); ?></span>
+                                    <span class="text-[10px] font-bold text-slate-400 tracking-widest"><?php echo date('M j, Y h:i A', strtotime($e['created_at'])); ?></span>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900 leading-relaxed mb-2"><?php echo htmlspecialchars($e['error_message']); ?></p>
+                                
+                                <?php if (!empty($e['context'])): ?>
+                                    <div class="mt-4 bg-slate-900 rounded-xl p-4 overflow-x-auto custom-scrollbar">
+                                        <pre class="text-[10px] text-slate-300 font-mono"><?php echo htmlspecialchars(json_encode(json_decode($e['context']), JSON_PRETTY_PRINT)); ?></pre>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+
             </div>
         </main>
-        
-        <footer class="mt-auto px-8 py-6 border-t border-surface-container-low text-[10px] font-label uppercase tracking-widest text-on-surface-variant opacity-50 text-center">
-            © 2026 Wilsovlewel Engineering Systems | Internal Terminal
-        </footer>
     </div>
+</div>
+
 </body>
 </html>

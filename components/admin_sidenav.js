@@ -1,120 +1,181 @@
-(function () {
-    let currentScript = document.currentScript;
-    let rootPath = './';
-    if (currentScript && currentScript.getAttribute('data-root')) {
-        rootPath = currentScript.getAttribute('data-root');
-    }
+const SIDEBAR_HTML = `
+<!-- Mobile overlay -->
+<div id="mobile-overlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
 
-    // Permission check helper
-    const hasAccess = (moduleName) => {
-        if (!window.WILSOLVEWEL_PERMISSIONS) return true; // Full access for super admins
-        const perms = window.WILSOLVEWEL_PERMISSIONS[moduleName];
-        if (!perms) return false;
-        return perms.read || perms.write;
-    };
-
-    const sidenavHTML = `
-<!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-white border-r border-slate-100 flex flex-col py-6 px-4 z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0">
-    <style>
-        .sidenav-scrollbar::-webkit-scrollbar { width: 3px; }
-        .sidenav-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .sidenav-scrollbar::-webkit-scrollbar-thumb { background: #F1F5F9; border-radius: 10px; }
-        .sidenav-scrollbar:hover::-webkit-scrollbar-thumb { background: #E2E8F0; }
-    </style>
-    
-    <div class="mb-8 px-2 shrink-0">
-        <a href="${rootPath}admin/index.php" class="block group">
-            <h1 class="text-xl font-bold font-headline tracking-tighter text-slate-900 group-hover:text-primary transition-colors">Wilsolvewel</h1>
-            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-primary mt-1">Terminal v1.0.4</p>
-        </a>
+<!-- Sidebar -->
+<aside id="sidebar" class="fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-100 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+    <!-- Header/Logo -->
+    <div class="h-20 flex items-center px-8 border-b border-slate-50 shrink-0">
+        <div>
+            <h1 class="text-xl font-bold font-headline tracking-tight text-slate-900">Wilsolvewel</h1>
+            <p class="text-[8px] font-bold tracking-[0.2em] text-primary uppercase mt-0.5">Terminal</p>
+        </div>
     </div>
 
-    <nav class="flex-1 space-y-1 overflow-y-auto sidenav-scrollbar pr-1" id="admin-sidenav-links">
-        ${hasAccess('Dashboard') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/index.php" data-href="admin/index.php">
-            <span class="material-symbols-outlined text-xl">dashboard</span> 
-            <span class="text-xs">Dashboard</span>
-        </a>` : ''}
-        
-        ${hasAccess('Projects') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/project/index.html" data-href="admin/project">
-            <span class="material-symbols-outlined text-xl">folder_special</span> 
-            <span class="text-xs">Projects</span>
-        </a>` : ''}
+    <!-- Navigation -->
+    <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-8 custom-scrollbar">
+        <!-- Dashboard -->
+        <div>
+            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Overview</p>
+            <div class="space-y-1">
+                <a href="${window.ADMIN_ROOT || ''}index.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span> Dashboard
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}audit_monitor.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_staff">
+                    <span class="material-symbols-outlined text-[20px]">history_toggle_off</span> Audit Monitor
+                </a>
+            </div>
+        </div>
 
-        ${hasAccess('Assets') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/asset/index.html" data-href="admin/asset">
-            <span class="material-symbols-outlined text-xl">inventory_2</span> 
-            <span class="text-xs">Assets</span>
-        </a>` : ''}
+        <!-- Communications -->
+        <div>
+            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Communications</p>
+            <div class="space-y-1">
+                <a href="${window.ADMIN_ROOT || ''}inquiries.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="view_inquiries">
+                    <span class="material-symbols-outlined text-[20px]">inbox</span> Inquiries
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}tickets.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="view_inquiries">
+                    <span class="material-symbols-outlined text-[20px]">forum</span> Support Tickets
+                </a>
+            </div>
+        </div>
 
-        ${hasAccess('Procurement') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/procurement/order.html" data-href="admin/procurement">
-            <span class="material-symbols-outlined text-xl">shopping_cart</span> 
-            <span class="text-xs">Procurement</span>
-        </a>` : ''}
+        <!-- CRM & Projects -->
+        <div>
+            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Operations</p>
+            <div class="space-y-1">
+                <a href="${window.ADMIN_ROOT || ''}clients.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_clients">
+                    <span class="material-symbols-outlined text-[20px]">person</span> CRM & Clients
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}projects.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_projects">
+                    <span class="material-symbols-outlined text-[20px]">folder_special</span> Projects
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}assets.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_projects">
+                    <span class="material-symbols-outlined text-[20px]">inventory_2</span> Asset Register
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}procurement/index.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_procurement">
+                    <span class="material-symbols-outlined text-[20px]">local_shipping</span> Procurement
+                </a>
+            </div>
+        </div>
 
-        ${hasAccess('Inquiries') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/inquiries.php" data-href="admin/inquiries.php">
-            <span class="material-symbols-outlined text-xl">forum</span> 
-            <span class="text-xs">Inquiries</span>
-        </a>` : ''}
+        <!-- Admin -->
+        <div>
+            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Administration</p>
+            <div class="space-y-1">
+                <a href="${window.ADMIN_ROOT || ''}staff.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_staff">
+                    <span class="material-symbols-outlined text-[20px]">badge</span> Staff
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}departments.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_staff">
+                    <span class="material-symbols-outlined text-[20px]">domain</span> Departments
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}privileges.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_staff">
+                    <span class="material-symbols-outlined text-[20px]">admin_panel_settings</span> Access Control
+                </a>
+            </div>
+        </div>
 
-        ${hasAccess('HSSE') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/hsse/monitor.html" data-href="admin/hsse">
-            <span class="material-symbols-outlined text-xl">health_and_safety</span> 
-            <span class="text-xs">HSSE</span>
-        </a>` : ''}
-
-        ${hasAccess('Departments') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/departments.php" data-href="admin/departments.php">
-            <span class="material-symbols-outlined text-xl">corporate_fare</span> 
-            <span class="text-xs">Departments</span>
-        </a>` : ''}
-
-        ${hasAccess('Privileges') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/privileges.php" data-href="admin/privileges.php">
-            <span class="material-symbols-outlined text-xl">admin_panel_settings</span> 
-            <span class="text-xs">Privileges</span>
-        </a>` : ''}
-
-        ${hasAccess('Settings') ? `
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/settings.php" data-href="admin/settings.php">
-            <span class="material-symbols-outlined text-xl">settings</span> 
-            <span class="text-xs">Settings</span>
-        </a>` : ''}
-        
-        <a class="nav-link flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all rounded-xl font-headline font-medium" href="${rootPath}admin/documentation.php" data-href="admin/documentation.php">
-            <span class="material-symbols-outlined text-xl">menu_book</span> 
-            <span class="text-xs">Documentation</span>
-        </a>
+        <!-- Help -->
+        <div>
+            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">System</p>
+            <div class="space-y-1">
+                <a href="${window.ADMIN_ROOT || ''}settings.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_settings">
+                    <span class="material-symbols-outlined text-[20px]">settings</span> Settings
+                </a>
+                <a href="${window.ADMIN_ROOT || ''}documentation.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all">
+                    <span class="material-symbols-outlined text-[20px]">help</span> Help Guide
+                </a>
+            </div>
+        </div>
     </nav>
 
-    <div class="mt-4 px-2 flex items-center gap-3 pt-4 border-t border-slate-50 shrink-0">
-        <img alt="User profile" class="w-10 h-10 rounded-xl object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlbzr9Im1MftxEP8s0zGaTLmPwd94SgOCIb85vP9kseD6ilwirY_O9quGTp_x8iVFHNPShp_BVjwmJkQENcmUKp54IYNcQy1JdDMqmxyxqRkmLwdofi3YNK0RwNTcROa1wpy66hGNPm_8WxYrpeQD3cnUB120jekXBqKuP_LXz4nhNPVrRwY3ygyV8-DeWAn2YikQCw-gBoRyTzfMc0T_yS4TwomKFykAzglmTjng2tJdV2rHMoIEzKfmh1Vs2S-2e95bAP0sETXE2"/>
-        <div class="min-w-0">
-            <p class="text-xs font-bold text-slate-900 truncate">M. Sterling</p>
-            <p class="text-[9px] font-bold text-slate-400 uppercase truncate tracking-wider">Director</p>
-        </div>
-        <a href="${rootPath}index.html" class="ml-auto w-8 h-8 flex items-center justify-center text-slate-300 hover:text-red-500 transition-colors" title="Exit Terminal">
-            <span class="material-symbols-outlined text-xl">logout</span>
+    <!-- Bottom User Area -->
+    <div class="p-4 border-t border-slate-50 shrink-0">
+        <a href="${window.ADMIN_ROOT || ''}profile.php" class="nav-link flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer group">
+            <div id="sidebar-avatar-container" class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:bg-primary group-hover:text-on-primary transition-colors overflow-hidden">
+                <span class="material-symbols-outlined text-lg">person</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-slate-900 truncate">My Profile</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">Manage Account</p>
+            </div>
+        </a>
+        <a href="${window.ADMIN_ROOT || ''}logout.php" class="mt-2 flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 text-xs font-bold text-slate-500 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all uppercase tracking-widest">
+            <span class="material-symbols-outlined text-[16px]">logout</span> Log Out
         </a>
     </div>
 </aside>
-    `;
-    document.write(sidenavHTML);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const links = document.querySelectorAll('#admin-sidenav-links .nav-link');
-        const currentUrl = window.location.href;
+<!-- Mobile Menu Toggle Button (Rendered on pages) -->
+<button onclick="toggleSidebar()" class="fixed bottom-6 left-6 w-12 h-12 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center justify-center lg:hidden z-30 hover:bg-primary hover:text-on-primary transition-colors">
+    <span class="material-symbols-outlined">grid_view</span>
+</button>
+`;
 
-        links.forEach(link => {
-            const dataHref = link.getAttribute('data-href');
-            if (dataHref && currentUrl.includes(dataHref)) {
-                link.classList.remove('text-slate-500', 'hover:bg-slate-50');
-                link.classList.add('bg-primary', 'text-on-primary', 'font-bold');
+// Determine root path based on script data attribute
+const scriptTag = document.currentScript;
+if (scriptTag && scriptTag.hasAttribute('data-root')) {
+    window.ADMIN_ROOT = scriptTag.getAttribute('data-root');
+} else {
+    window.ADMIN_ROOT = '';
+}
+
+// Inject HTML
+document.write(SIDEBAR_HTML);
+
+// Highlight Active Link & Apply Permissions
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Highlight Active link
+    const currentPath = window.location.pathname;
+    const links = document.querySelectorAll('.nav-link');
+    
+    links.forEach(link => {
+        const linkPath = new URL(link.href).pathname;
+        if (currentPath === linkPath || (currentPath.endsWith('/') && linkPath.endsWith('index.php'))) {
+            link.classList.add('bg-primary/10', 'text-slate-900');
+            link.classList.remove('text-slate-600', 'hover:bg-slate-50');
+            
+            // Add active indicator bar
+            const indicator = document.createElement('div');
+            indicator.className = 'absolute left-0 w-1 h-8 bg-primary rounded-r-full';
+            link.classList.add('relative');
+            link.appendChild(indicator);
+        }
+    });
+
+    // 2. Set Avatar if exists
+    if (window.WILSOLVEWEL_AVATAR) {
+        const avatarContainer = document.getElementById('sidebar-avatar-container');
+        if (avatarContainer) {
+            avatarContainer.innerHTML = `<img src="${window.ADMIN_ROOT || ''}${window.WILSOLVEWEL_AVATAR}" class="w-full h-full object-cover" alt="Profile" />`;
+            avatarContainer.classList.remove('p-2'); // remove padding if needed
+        }
+    }
+
+    // 3. Apply RBAC Permissions
+    if (window.WILSOLVEWEL_PERMISSIONS) {
+        const perms = window.WILSOLVEWEL_PERMISSIONS;
+        document.querySelectorAll('[data-perm]').forEach(el => {
+            const requiredPerm = el.getAttribute('data-perm');
+            // If they have NO access
+            if (!perms[requiredPerm] || (perms[requiredPerm].read === false && perms[requiredPerm].write === false)) {
+                el.style.display = 'none';
             }
         });
-    });
-})();
+    }
+});
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    
+    if (sidebar.classList.contains('-translate-x-full')) {
+        // Open
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    } else {
+        // Close
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    }
+}

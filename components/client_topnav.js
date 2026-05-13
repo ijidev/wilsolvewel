@@ -9,9 +9,9 @@
 </button>
 <span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 font-['Space_Grotesk']">WILSOVLEWEL</span>
 <div class="hidden md:flex items-center gap-6 font-['Space_Grotesk'] tracking-tight">
-<a class="text-blue-700 dark:text-blue-400 font-bold border-b-2 border-blue-700 transition-colors" href="#">Terminal</a>
-<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="#">Insights</a>
-<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="#">Reports</a>
+<a class="text-blue-700 dark:text-blue-400 font-bold border-b-2 border-blue-700 transition-colors" href="index.php">Terminal</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="insights.php">Insights</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="reports.php">Reports</a>
 </div>
 </div>
 <div class="flex items-center gap-4">

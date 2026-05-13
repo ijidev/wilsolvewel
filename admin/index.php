@@ -2,474 +2,224 @@
 include '../config.php';
 $conn = get_db_connection();
 
-// Fetch inquiry counts
-$total_inquiries = $conn->query("SELECT COUNT(*) as total FROM inquiries")->fetch_assoc()['total'];
-$new_inquiries = $conn->query("SELECT COUNT(*) as total FROM inquiries WHERE status = 'New'")->fetch_assoc()['total'];
+if (session_status() === PHP_SESSION_NONE) session_start();
+$admin_id = $_SESSION['admin_id'] ?? 1;
+$permissions = get_admin_permissions($admin_id);
 
-// Calculate uptime (simulated based on a fixed start date or just use a dynamic value)
-$uptime_start = strtotime('2024-01-01');
-$diff = time() - $uptime_start;
-$days = floor($diff / (60 * 60 * 24));
-$hours = floor(($diff % (60 * 60 * 24)) / (60 * 60));
-$mins = floor(($diff % (60 * 60)) / 60);
-$secs = $diff % 60;
-$uptime_str = sprintf("%d:%02d:%02d:%02d", $days, $hours, $mins, $secs);
+// --- Fetch Dashboard Statistics ---
+
+// Inquiries
+$inq_stats = $conn->query("SELECT 
+    COUNT(*) as total, 
+    SUM(IF(status = 'New', 1, 0)) as pending 
+    FROM inquiries")->fetch_assoc();
+
+// Tickets
+$ticket_stats = $conn->query("SELECT 
+    COUNT(*) as total, 
+    SUM(IF(status = 'Open' OR status = 'In Progress', 1, 0)) as active,
+    SUM(IF(priority = 'Urgent' AND status != 'Closed' AND status != 'Resolved', 1, 0)) as urgent
+    FROM tickets")->fetch_assoc();
+
+// Projects
+$proj_stats = $conn->query("SELECT 
+    COUNT(*) as total, 
+    SUM(IF(status = 'Active' OR status = 'Planning', 1, 0)) as ongoing,
+    SUM(budget) as total_budget
+    FROM projects")->fetch_assoc();
+
+// Assets
+$asset_stats = $conn->query("SELECT 
+    COUNT(*) as total, 
+    SUM(value) as total_value 
+    FROM assets")->fetch_assoc();
+
+// Recent Activity (Audit Logs)
+$recent_logs = [];
+$res = $conn->query("
+    SELECT al.action_type, al.module, al.description, al.created_at, 
+           IFNULL(a.name, 'System') as actor_name
+    FROM audit_logs al
+    LEFT JOIN admins a ON al.actor_id = a.id AND al.actor_type = 'Admin'
+    ORDER BY al.created_at DESC LIMIT 5
+");
+while ($row = $res->fetch_assoc()) $recent_logs[] = $row;
+
+// Recent Tickets
+$recent_tickets = [];
+$res = $conn->query("
+    SELECT t.subject, t.status, t.priority, t.created_at, c.name as client_name
+    FROM tickets t
+    JOIN clients c ON t.client_id = c.id
+    ORDER BY t.created_at DESC LIMIT 4
+");
+while ($row = $res->fetch_assoc()) $recent_tickets[] = $row;
+
 ?>
 <!DOCTYPE html>
-
 <html class="light" lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "primary": "#EAB308",
-            "on-primary": "#000000",
-            "primary-container": "#FEF9C3",
-            "on-primary-container": "#422006",
-            "secondary": "#1A1A1A",
-            "on-secondary": "#FFFFFF",
-            "surface": "#FDFDFD",
-            "on-surface": "#1A1A1A",
-            "surface-container-lowest": "#FFFFFF",
-            "surface-container-low": "#F7F7F7",
-            "surface-container": "#F3F3F3",
-            "outline-variant": "#CAC4D0",
-            "error": "#B00020"
-          },
-          "fontSize": {
-            "xs": ["0.65rem", { "lineHeight": "1rem" }],
-            "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-            "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-            "lg": ["1rem", { "lineHeight": "1.5rem" }],
-            "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-            "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-            "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-            "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-            "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-            "6xl": ["3rem", { "lineHeight": "1" }],
-            "7xl": ["3.75rem", { "lineHeight": "1" }]
-          }
-        },
-      },
-    }
-  </script>
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-
-    .technical-grid {
-      background-image: radial-gradient(circle, #EAB308 1px, transparent 1px);
-      background-size: 24px 24px;
-      opacity: 0.05;
-    }
-
-    .anodized-gradient {
-      background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
-    }
-
-    .site-gradient-bg {
-      background: radial-gradient(circle at 0% 0%, rgba(234, 179, 8, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.05) 0%, transparent 50%);
-      background-attachment: fixed;
-    }
-    
-    .terminal-window {
-        background: #0D0D0D;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        border: 1px solid #333;
-    }
-    
-    .terminal-cursor {
-        display: inline-block;
-        width: 8px;
-        height: 15px;
-        background: #EAB308;
-        animation: blink 1s step-end infinite;
-        vertical-align: middle;
-    }
-    
-    @keyframes blink {
-        from, to { opacity: 1; }
-        50% { opacity: 0; }
-    }
-  </style>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Dashboard Overview | Terminal</title>
+    <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#EAB308","on-primary":"#000000",surface:"#F8FAFC","on-surface":"#0F172A"},fontFamily:{headline:["Space Grotesk"],body:["Manrope"]}}}}</script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
+        .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
+    </style>
 </head>
+<body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
 
-<body
-  class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
-  <!-- SideNavBar Shell -->
-  <script src="../components/admin_sidenav.js" data-root="../"></script>
-  <!-- TopNavBar Shell -->
-  <script src="../components/admin_topnav.js" data-root="../"></script>
-  <script src="../components/effects.js"></script>
-  <main class="lg:ml-64 relative pt-16">
-    <!-- Technical Grid Overlay Background -->
-    <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
-    <div class="p-8 relative z-10">
-      <!-- Header Section -->
-      <header class="mb-10 flex justify-between items-end">
+<script src="../components/admin_sidenav.js" data-root="../"></script>
+
+<div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    <header class="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-8 shrink-0 z-20">
         <div>
-          <p class="text-[10px] font-label uppercase tracking-[0.2em] text-primary font-bold mb-1">
-            OPERATIONAL OVERVIEW // LAGOS HUB</p>
-          <h2 class="text-3xl font-bold font-headline tracking-tight text-on-surface">Wilsolvewel Control Node</h2>
+            <h1 class="text-2xl font-bold font-headline text-slate-900 leading-tight">Dashboard Overview</h1>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Welcome back, <?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?></p>
         </div>
-        <div class="flex gap-4 pb-1">
-          <div class="px-4 py-2 bg-surface-container-lowest rounded-DEFAULT shadow-sm flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-            <span class="text-[10px] font-label uppercase tracking-widest font-bold">System Status: Nominal</span>
-          </div>
-          <div class="px-4 py-2 bg-surface-container-lowest rounded-DEFAULT shadow-sm flex items-center gap-3">
-            <span class="text-[10px] font-label uppercase tracking-widest text-slate-400">Node: 10.0.4.12</span>
-          </div>
+        <div class="hidden md:flex gap-4">
+            <a href="inquiries.php" class="bg-slate-50 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-primary/10 hover:text-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-sm">inbox</span> Inquiries
+                <?php if($inq_stats['pending'] > 0): ?><span class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center text-[9px]"><?php echo $inq_stats['pending']; ?></span><?php endif; ?>
+            </a>
+            <a href="tickets.php" class="bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all">
+                <span class="material-symbols-outlined text-sm">confirmation_number</span> Support Tickets
+                <?php if($ticket_stats['active'] > 0): ?><span class="bg-primary text-on-primary px-1.5 rounded-md text-[9px]"><?php echo $ticket_stats['active']; ?></span><?php endif; ?>
+            </a>
         </div>
-      </header>
-      <!-- Bento Grid Layout -->
-      <div class="grid grid-cols-12 gap-6 items-start">
-        <!-- 1. Operational Telemetry Modules -->
-        <section class="col-span-12 lg:col-span-8 grid grid-cols-3 gap-6">
-          <!-- Stat 1 -->
-          <div
-            class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)] relative overflow-hidden">
-            <div class="flex justify-between items-start mb-6">
-              <span class="material-symbols-outlined text-primary" data-icon="speed">speed</span>
-              <span
-                class="text-[10px] font-label text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">STABLE</span>
-            </div>
-            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Active Site Latency</p>
-            <h3 class="text-3xl font-bold font-headline tracking-tighter" id="site-latency">--ms</h3>
-            <div class="mt-4 flex gap-1 h-1">
-              <div class="flex-1 bg-primary rounded-full"></div>
-              <div class="flex-1 bg-primary rounded-full"></div>
-              <div class="flex-1 bg-primary rounded-full"></div>
-              <div class="flex-1 bg-primary/20 rounded-full"></div>
-              <div class="flex-1 bg-primary/20 rounded-full"></div>
-            </div>
-          </div>
-          <!-- Stat 2 -->
-          <div
-            class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
-            <div class="flex justify-between items-start mb-6">
-              <span class="material-symbols-outlined text-primary" data-icon="update">update</span>
-            </div>
-            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">System Uptime</p>
-            <h3 class="text-3xl font-bold font-headline tracking-tighter"><?php echo $uptime_str; ?></h3>
-            <p class="text-[9px] font-mono text-slate-400 mt-1 uppercase">Continuous Sync Active</p>
-          </div>
-          <!-- Stat 3 -->
-          <div
-            class="col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
-            <div class="flex justify-between items-start mb-6">
-              <span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
-              <span
-                class="text-[10px] font-label text-primary-container bg-secondary-container px-2 py-0.5 rounded-full font-bold">+12
-                New</span>
-            </div>
-            <p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mb-1">Total Inquiries</p>
-            <h3 class="text-3xl font-bold font-headline tracking-tighter"><?php echo $total_inquiries; ?></h3>
-            <div class="mt-4 h-1 bg-surface-container rounded-full overflow-hidden">
-              <div class="w-[<?php echo min(100, $total_inquiries); ?>%] h-full bg-primary"></div>
-            </div>
-          </div>
-          <!-- Core Projects Map View -->
-          <div
-            class="col-span-3 bg-surface-container-lowest rounded-lg overflow-hidden shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)] h-96 relative">
-            <div
-              class="absolute top-6 left-6 z-10 bg-white/80 backdrop-blur-md p-4 rounded-DEFAULT shadow-sm border border-white/50">
-              <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-3">Deployment Heatmap</h4>
-              <div class="space-y-2">
-                <div class="flex items-center gap-2">
-                  <div class="w-2 h-2 rounded-full bg-primary"></div>
-                  <span class="text-[10px] font-label uppercase text-slate-600">Lagos Terminal (Alpha)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                  <span class="text-[10px] font-label uppercase text-slate-600">Port Harcourt Node</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <div class="w-2 h-2 rounded-full bg-amber-500"></div>
-                  <span class="text-[10px] font-label uppercase text-slate-600">Abuja Central Grid</span>
-                </div>
-              </div>
-            </div>
-            <div class="w-full h-full grayscale-[0.5] opacity-80" data-location="Nigeria">
-              <img class="w-full h-full object-cover"
-                data-alt="clean minimal satellite topography map of Nigeria with technical digital overlay lines and data points"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtx1_TdTaLXkO3rynEYv1wvis1VRaa8bViRgiIhFFyso7cO6WJxv9oRCTTGp1jyQiPOobVi_uCHx0R5Z2AK21t1hGVN5Pr9BU-oSgs1SnbEZFMAyc6fBSw3KDMjNzmht8bekdgbDonKWmts4sxQFOoP4ofeH2pkQcnk7iQjoFhzftgmpLOTImV91q2k_tFkanu_iYigXuZf7SH7eWSDBTcrDVbB70vNxkCZx066AWjPpxmSmBfvfwEA94EK90UOLiKnzQn1oPPfE_i" />
-            </div>
-            <div class="absolute bottom-6 right-6 flex gap-2">
-              <button
-                class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors">
-                <span class="material-symbols-outlined" data-icon="add">add</span>
-              </button>
-              <button
-                class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors">
-                <span class="material-symbols-outlined" data-icon="remove">remove</span>
-              </button>
-            </div>
-          </div>
-        </section>
-        <!-- 2. Side Panel: Asset Health & Security Logs -->
-        <aside class="col-span-12 lg:col-span-4 space-y-6">
-          <!-- Asset Health Monitoring -->
-          <div class="bg-surface-container-low rounded-lg p-6">
-            <div class="flex justify-between items-center mb-6">
-              <h4 class="text-xs font-bold font-headline uppercase tracking-widest">Asset Health Monitoring</h4>
-              <span class="material-symbols-outlined text-slate-400 text-lg" data-icon="more_vert">more_vert</span>
-            </div>
-            <div class="space-y-4">
-              <!-- Asset Card 1 -->
-              <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-emerald-500">
-                <div class="flex justify-between items-start mb-2">
-                  <h5 class="text-sm font-bold font-headline">Turbine G-104</h5>
-                  <span
-                    class="text-[9px] font-label uppercase bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Optimal</span>
-                </div>
-                <p class="text-[10px] text-slate-500 mb-3">Load: 84% | Temp: 42°C</p>
-                <div class="w-full h-1 bg-surface-container rounded-full">
-                  <div class="w-[84%] h-full bg-emerald-500"></div>
-                </div>
-              </div>
-              <!-- Asset Card 2 -->
-              <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-amber-500">
-                <div class="flex justify-between items-start mb-2">
-                  <h5 class="text-sm font-bold font-headline">Compressor Node B</h5>
-                  <span
-                    class="text-[9px] font-label uppercase bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Warning</span>
-                </div>
-                <p class="text-[10px] text-slate-500 mb-3">Vibration Anomaly detected</p>
-                <div class="w-full h-1 bg-surface-container rounded-full">
-                  <div class="w-[62%] h-full bg-amber-500"></div>
-                </div>
-              </div>
-              <!-- Asset Card 3 -->
-              <div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm border-l-4 border-error">
-                <div class="flex justify-between items-start mb-2">
-                  <h5 class="text-sm font-bold font-headline">Main Power Plant 01</h5>
-                  <span
-                    class="text-[9px] font-label uppercase bg-error-container text-on-error-container px-2 py-0.5 rounded-full">Critical</span>
-                </div>
-                <p class="text-[10px] text-slate-500 mb-3">Pressure threshold exceeded</p>
-                <div class="w-full h-1 bg-surface-container rounded-full">
-                  <div class="w-[98%] h-full bg-error"></div>
-                </div>
-              </div>
-            </div>
-            <button
-              class="w-full mt-6 py-2 border border-slate-200 rounded-DEFAULT text-[10px] font-label uppercase tracking-widest text-slate-500 hover:bg-white hover:text-primary transition-all">
-              Full Inventory Report
-            </button>
-          </div>
-          <!-- Recent Security Logs -->
-          <div class="bg-surface-container-lowest rounded-lg p-6 shadow-[40px_40px_60px_-15px_rgba(25,28,32,0.04)]">
-            <h4 class="text-xs font-bold font-headline uppercase tracking-widest mb-6">Recent Security Logs</h4>
-            <div class="space-y-4">
-              <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
-                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-emerald-600 text-sm" data-icon="check_circle">check_circle</span>
-                </div>
-                <div>
-                  <p class="text-xs font-medium text-on-surface">DB Schema Integrity Verified</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5">Self-healing check completed | Just now</p>
-                </div>
-              </div>
-              <div class="flex gap-4 items-start pb-4 border-b border-slate-50">
-                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-primary text-sm" data-icon="lock_open">lock_open</span>
-                </div>
-                <div>
-                  <p class="text-xs font-medium text-on-surface">Auth Success: Admin_Node_04</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5">Terminal 04: Session Active | 2m ago</p>
-                </div>
-              </div>
-              <div class="flex gap-4 items-start">
-                <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-amber-600 text-sm" data-icon="encrypted">encrypted</span>
-                </div>
-                <div>
-                  <p class="text-xs font-medium text-on-surface">SMTP Gateway Synchronized</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5">Uplink verified with provider | 14m ago</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-      </div>
+    </header>
 
-      <!-- Command Terminal Section -->
-      <section class="mt-12 bg-black rounded-xl overflow-hidden terminal-window border border-primary/20">
-        <div class="bg-zinc-900 px-4 py-2 flex items-center justify-between border-b border-white/5">
-            <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
-                <div class="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/40"></div>
-                <div class="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/40"></div>
-                <span class="text-[10px] font-mono text-slate-500 ml-4 uppercase tracking-widest">Wilsolvewel System Terminal // root@node-04</span>
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10">
+        
+        <!-- Top Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <!-- Projects -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-24 h-24 bg-blue-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+                <div class="relative z-10 flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center"><span class="material-symbols-outlined text-xl">folder_special</span></div>
+                    <span class="text-3xl font-black font-headline text-slate-900"><?php echo $proj_stats['ongoing']; ?></span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-900">Active Projects</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Out of <?php echo $proj_stats['total']; ?> Total</p>
+                </div>
             </div>
-            <div class="text-[10px] font-mono text-primary font-bold animate-pulse">LIVE ACCESS</div>
+
+            <!-- Tickets -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-24 h-24 bg-amber-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+                <div class="relative z-10 flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center"><span class="material-symbols-outlined text-xl">forum</span></div>
+                    <span class="text-3xl font-black font-headline text-slate-900"><?php echo $ticket_stats['active']; ?></span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-900">Open Tickets</p>
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1"><?php echo $ticket_stats['urgent']; ?> Urgent</p>
+                </div>
+            </div>
+
+            <!-- Assets -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+                <div class="relative z-10 flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><span class="material-symbols-outlined text-xl">inventory_2</span></div>
+                    <span class="text-3xl font-black font-headline text-slate-900"><?php echo $asset_stats['total']; ?></span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-900">Company Assets</p>
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">$<?php echo number_format($asset_stats['total_value']??0, 2); ?> Total Value</p>
+                </div>
+            </div>
+
+            <!-- Inquiries -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-24 h-24 bg-purple-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+                <div class="relative z-10 flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center"><span class="material-symbols-outlined text-xl">mark_email_unread</span></div>
+                    <span class="text-3xl font-black font-headline text-slate-900"><?php echo $inq_stats['pending']; ?></span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-900">Pending Inquiries</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1"><?php echo $inq_stats['total']; ?> All Time</p>
+                </div>
+            </div>
         </div>
-        <div class="p-6 h-64 overflow-y-auto font-mono text-xs text-primary/80 space-y-2" id="terminal-output">
-            <div class="text-white/40">Wilsolvewel Engineering [Version 1.0.4]</div>
-            <div class="text-white/40">(c) 2026 Wilsolvewel Tech. All rights reserved.</div>
-            <br>
-            <div>Welcome, Administrator. Type <span class="text-white font-bold">'help'</span> to see available commands.</div>
-        </div>
-        <div class="px-6 pb-6 pt-2 flex items-center gap-3 border-t border-white/5">
-            <span class="text-primary font-bold">~</span>
-            <input type="text" id="terminal-input" class="flex-1 bg-transparent border-none text-primary font-mono text-xs focus:ring-0 p-0" placeholder="Enter command..." autofocus>
-            <div class="terminal-cursor"></div>
-        </div>
-      </section>
 
-      <!-- System Footer (Anchored to shell but part of content flow) -->
-      <footer class="mt-12 flex justify-between items-center py-6 border-t border-slate-100">
-        <div class="flex gap-8">
-          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
-            <span class="text-primary font-bold">Node Identity:</span> LAG-01-V12
-          </div>
-          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
-            <span class="text-primary font-bold">Latency:</span> <span id="footer-latency">--ms</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span class="text-[10px] font-label uppercase tracking-widest text-slate-500">Live Telemetry Active</span>
-        </div>
-      </footer>
-  </main>
-  <!-- Shared Footer Shell Component -->
-  <footer
-    class="fixed bottom-0 left-64 right-0 h-8 flex justify-between items-center px-6 w-full bg-slate-100 dark:bg-slate-950 z-20">
-    <div class="text-slate-400 dark:text-slate-600 font-mono text-[10px] tracking-widest uppercase">
-      © 2026 Industrial Precision Node: 10.0.4.12
-    </div>
-    <div class="flex gap-6">
-      <span class="text-primary font-mono text-[10px] tracking-widest uppercase">System Status:
-        Operational</span>
-      <span
-        class="text-slate-400 dark:text-slate-600 font-mono text-[10px] tracking-widest uppercase">v2.4.0-Stable</span>
-      <a class="text-slate-400 dark:text-slate-600 hover:text-slate-900 font-mono text-[10px] tracking-widest uppercase transition-colors"
-        href="#">API Documentation</a>
-    </div>
-  </footer>
-
-  <script>
-    // Latency Simulation
-    function updateLatency() {
-        const latency = Math.floor(Math.random() * 20) + 10;
-        const color = latency > 25 ? 'text-amber-500' : 'text-emerald-500';
-        document.getElementById('site-latency').innerText = latency + 'ms';
-        document.getElementById('footer-latency').innerText = latency + 'ms';
-        document.getElementById('footer-latency').className = color;
-    }
-    setInterval(updateLatency, 3000);
-    updateLatency();
-
-    // Terminal Logic
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalOutput = document.getElementById('terminal-output');
-
-    const commands = {
-        'help': () => `
-            <div class="grid grid-cols-2 gap-4 text-[10px] uppercase tracking-widest">
-                <div><span class="text-white">goto &lt;page&gt;</span> - projects, assets, inquiries, settings, hsse</div>
-                <div><span class="text-white">status</span> - Core health check</div>
-                <div><span class="text-white">sysinfo</span> - Node & environment data</div>
-                <div><span class="text-white">diagnose</span> - Full diagnostic scan</div>
-                <div><span class="text-white">stats</span> - Summary of key metrics</div>
-                <div><span class="text-white">ping</span> - Latency test</div>
-                <div><span class="text-white">clear</span> - Reset buffer</div>
-            </div>
-        `,
-        'status': () => '<span class="text-emerald-500">[OK]</span> Core Systems Nominal<br><span class="text-emerald-500">[OK]</span> Database Connected<br><span class="text-emerald-500">[OK]</span> SMTP Gateway Online',
-        'sysinfo': () => `
-            Node: LAG-01-V12<br>
-            OS: ${navigator.platform}<br>
-            Engine: ${navigator.userAgent.split(' ')[0]}<br>
-            Uptime: <?php echo $uptime_str; ?><br>
-            Connection: Secure SSL/TLS
-        `,
-        'diagnose': () => {
-            const checks = ['Encryption Hash', 'DB Table Schema', 'SMTP Auth', 'HSSE Sensors'];
-            return checks.map(c => `[WAIT] ${c}... <span class="text-emerald-500">PASSED</span>`).join('<br>') + 
-                   '<br><br><span class="text-emerald-500 font-bold">SYSTEM_NOMINAL: All security protocols satisfied.</span>';
-        },
-        'stats': () => `
-            Inquiries: <span class="text-white font-bold"><?php echo $total_inquiries; ?></span><br>
-            New Records: <span class="text-amber-500 font-bold"><?php echo $new_inquiries; ?></span><br>
-            System Uptime: <span class="text-primary"><?php echo $uptime_str; ?></span><br>
-            Active Projects: <span class="text-primary">12</span>
-        `,
-        'goto': (args) => {
-            const page = args[0];
-            const routes = {
-                'projects': 'project/index.html',
-                'assets': 'asset/index.html',
-                'inquiries': 'inquiries.php',
-                'settings': 'settings.php',
-                'hsse': 'hsse/monitor.html',
-                'procurement': '#'
-            };
-            if (routes[page]) {
-                terminalOutput.innerHTML += `<div class="mt-2 text-emerald-500">[SUCCESS] Linking to ${page} node...</div>`;
-                setTimeout(() => window.location.href = routes[page], 800);
-                return "";
-            }
-            return `<span class="text-red-400">[ERROR] Node '${page}' not found in registry.</span>`;
-        },
-        'clear': () => { terminalOutput.innerHTML = ""; return ""; },
-        'ping': () => 'Pinging site wilsolvewel.com...<br>Reply from 10.0.4.12: bytes=32 time=' + (Math.floor(Math.random()*15)+5) + 'ms TTL=54',
-        'whoami': () => 'Current User: root@node-04<br>Identity: LAG-01-V12',
-        'date': () => 'System Time: ' + new Date().toLocaleString()
-    };
-
-    terminalInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const raw = terminalInput.value.trim().toLowerCase();
-            const parts = raw.split(' ');
-            const cmd = parts[0];
-            const args = parts.slice(1);
-
-            if (raw === "") return;
-
-            const outputLine = document.createElement('div');
-            outputLine.innerHTML = `<span class="text-white font-bold">~</span> ${raw}`;
-            terminalOutput.appendChild(outputLine);
-
-            const responseLine = document.createElement('div');
-            responseLine.className = 'mt-1 mb-3 ml-2 border-l border-white/5 pl-4';
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            if (cmd === 'goto' || cmd === 'open') {
-                const result = commands['goto'](args);
-                if (result) responseLine.innerHTML = result;
-            } else if (commands[raw]) {
-                const result = commands[raw]();
-                if (result) responseLine.innerHTML = result;
-            } else if (commands[cmd]) {
-                const result = commands[cmd]();
-                if (result) responseLine.innerHTML = result;
-            } else {
-                responseLine.innerHTML = `<span class="text-red-400">[ERROR] Command not found: ${cmd}</span>. Type 'help' for available commands.`;
-            }
+            <!-- Recent Support Tickets -->
+            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-8">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-lg font-bold font-headline text-slate-900">Recent Support Tickets</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Client Requests & Issues</p>
+                    </div>
+                    <a href="tickets.php" class="text-[10px] font-bold text-primary hover:text-slate-900 uppercase tracking-widest transition-colors flex items-center gap-1">View All <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+                </div>
+                
+                <div class="space-y-4">
+                    <?php if (empty($recent_tickets)): ?>
+                        <div class="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No active tickets</p></div>
+                    <?php endif; ?>
+                    <?php foreach($recent_tickets as $t): ?>
+                        <div class="p-4 rounded-2xl border border-slate-100 hover:border-primary/30 transition-colors flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0"><span class="material-symbols-outlined">forum</span></div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-sm font-bold text-slate-900 truncate mb-1"><?php echo htmlspecialchars($t['subject']); ?></h3>
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate"><?php echo htmlspecialchars($t['client_name']); ?></p>
+                            </div>
+                            <div class="flex flex-col items-end shrink-0 gap-2">
+                                <span class="text-[9px] font-bold text-slate-400"><?php echo date('M j', strtotime($t['created_at'])); ?></span>
+                                <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest <?php echo $t['status']=='Open'?'bg-amber-50 text-amber-600':($t['status']=='In Progress'?'bg-blue-50 text-blue-600':($t['status']=='Resolved'?'bg-emerald-50 text-emerald-600':'bg-slate-100 text-slate-500')); ?>"><?php echo $t['status']; ?></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
 
-            if (responseLine.innerHTML) terminalOutput.appendChild(responseLine);
-            terminalInput.value = "";
-            terminalOutput.scrollTop = terminalOutput.scrollHeight;
-        }
-    });
-  </script>
+            <!-- Global Activity Feed -->
+            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-8">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-lg font-bold font-headline text-slate-900">Live Activity Feed</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Latest Global Events</p>
+                    </div>
+                    <a href="audit_monitor.php" class="text-[10px] font-bold text-primary hover:text-slate-900 uppercase tracking-widest transition-colors flex items-center gap-1">Full Log <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+                </div>
+                
+                <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[15px] before:-translate-x-px before:h-full before:w-0.5 before:bg-slate-100">
+                    <?php if (empty($recent_logs)): ?>
+                        <div class="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200 relative z-10"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No activity logged</p></div>
+                    <?php endif; ?>
+                    <?php foreach($recent_logs as $log): 
+                        $color = 'bg-slate-200';
+                        if ($log['action_type'] === 'Create') $color = 'bg-emerald-400';
+                        elseif ($log['action_type'] === 'Update') $color = 'bg-amber-400';
+                        elseif ($log['action_type'] === 'Delete') $color = 'bg-red-400';
+                    ?>
+                        <div class="relative flex items-start gap-4 group">
+                            <div class="w-[30px] h-[30px] rounded-full border-4 border-white <?php echo $color; ?> shadow-sm shrink-0 z-10"></div>
+                            <div class="flex-1 min-w-0 pt-0.5">
+                                <p class="text-sm text-slate-700 leading-snug"><span class="font-bold text-slate-900"><?php echo htmlspecialchars($log['actor_name']); ?></span> <?php echo htmlspecialchars($log['description']); ?></p>
+                                <div class="flex items-center gap-2 mt-1.5">
+                                    <span class="text-[9px] font-bold text-primary uppercase tracking-widest"><?php echo htmlspecialchars($log['module']); ?></span>
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">&bull; <?php echo date('M j, h:i A', strtotime($log['created_at'])); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
 </body>
-
 </html>
