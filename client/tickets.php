@@ -18,8 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || 
     $project_id = (int)($_POST['project_id'] ?? 0);
     $order_id = (int)($_POST['order_id'] ?? 0);
 
-    $sql = "INSERT INTO tickets (client_id, project_id, order_id, subject, priority, description, status) 
-            VALUES ($client_id, " . ($project_id ?: "NULL") . ", " . ($order_id ?: "NULL") . ", '$subject', '$priority', '$description', 'Open')";
+    // Auto-Routing Logic
+    $dept_id = get_auto_assigned_department($conn, 'ticket', $subject . ' ' . $description);
+
+    $sql = "INSERT INTO tickets (client_id, project_id, order_id, department_id, subject, priority, description, status) 
+            VALUES ($client_id, " . ($project_id ?: "NULL") . ", " . ($order_id ?: "NULL") . ", " . ($dept_id ?: "NULL") . ", '$subject', '$priority', '$description', 'Open')";
     
     if ($conn->query($sql)) {
         if (isset($_POST['ajax_ticket'])) {
@@ -39,9 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || 
 
 // Fetch Tickets
 $tickets_res = $conn->query("
-    SELECT t.*, p.name as project_name 
+    SELECT t.*, p.name as project_name, d.name as department_name
     FROM tickets t 
     LEFT JOIN projects p ON t.project_id = p.id 
+    LEFT JOIN departments d ON t.department_id = d.id
     WHERE t.client_id = $client_id 
     ORDER BY t.created_at DESC
 ");
@@ -80,16 +84,15 @@ $tickets_res = $conn->query("
         .site-gradient-bg { background: radial-gradient(circle at 0% 0%, rgba(234, 179, 8, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.05) 0%, transparent 50%); background-attachment: fixed; }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface site-gradient-bg">
+    <body class="bg-surface font-body text-on-surface site-gradient-bg">
+    <!-- TopNavBar -->
+    <script src="../components/client_topnav.js" data-root="../"></script>
     <!-- SideNavBar -->
     <script src="../components/client_sidenav.js" data-root="../"></script>
     <script src="../components/effects.js"></script>
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
 
-    <main class="lg:ml-64 pt-20 pb-8 px-6 relative z-10">
-        <!-- TopNavBar -->
-        <script src="../components/client_topnav.js" data-root="../"></script>
-        
+    <main class="pt-20 pb-8 px-6 relative z-10">
         <div class="max-w-7xl mx-auto">
             <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
@@ -135,7 +138,7 @@ $tickets_res = $conn->query("
                         <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-50">
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-slate-400 font-headline uppercase">Assigned To:</span>
-                                <span class="text-sm font-bold"><?= htmlspecialchars($t['department'] ?: 'Unassigned') ?></span>
+                                <span class="text-sm font-bold"><?= htmlspecialchars($t['department_name'] ?? 'Unassigned') ?></span>
                             </div>
                             <div class="flex items-center gap-8">
                                 <button class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">

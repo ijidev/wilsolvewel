@@ -18,8 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $technical_json = $conn->real_escape_string(json_encode($technical_data));
     
-    $sql = "INSERT INTO inquiries (name, email, type, message, technical_data) 
-            VALUES ('$name', '$email', '$type', '$message', '$technical_json')";
+    // Auto-Routing Logic
+    $dept_id = get_auto_assigned_department($conn, 'inquiry', $type . ' ' . $message);
+
+    $sql = "INSERT INTO inquiries (name, email, type, message, technical_data, department_id) 
+            VALUES ('$name', '$email', '$type', '$message', '$technical_json', " . ($dept_id ?: "NULL") . ")";
     
     if ($conn->query($sql) === TRUE) {
         // Prepare Email

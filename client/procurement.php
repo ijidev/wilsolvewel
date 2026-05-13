@@ -70,7 +70,7 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
     
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
 
-    <main class="lg:ml-64 pt-20 pb-8 relative z-10">
+    <main class="pt-20 pb-8 relative z-10 max-w-6xl mx-auto">
         <div class="max-w-6xl mx-auto px-6">
             <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div class="space-y-1">

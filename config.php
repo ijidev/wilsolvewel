@@ -208,24 +208,29 @@ function get_db_connection() {
     $conn->query("CREATE TABLE IF NOT EXISTS projects (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
         client_id INT(11) NOT NULL,
+        department_id INT(11) NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT NULL,
         status VARCHAR(50) DEFAULT 'Planning',
-        start_date DATE NULL,
-        end_date DATE NULL,
         budget DECIMAL(15,2) DEFAULT 0.00,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    ensure_column_exists($conn, 'projects', 'department_id', "INT(11) NULL");
 
-    $conn->query("CREATE TABLE IF NOT EXISTS project_reports (
+    $conn->query("CREATE TABLE IF NOT EXISTS inquiries (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
-        project_id INT(11) NOT NULL,
-        admin_id INT(11) NOT NULL,
-        report_date DATE NOT NULL,
-        content TEXT NOT NULL,
-        client_comment TEXT NULL,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        type VARCHAR(100) NOT NULL,
+        message TEXT NOT NULL,
+        technical_data JSON NULL,
+        department_id INT(11) NULL,
+        status VARCHAR(50) DEFAULT 'New',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    ensure_column_exists($conn, 'inquiries', 'department_id', "INT(11) NULL");
+    ensure_column_exists($conn, 'inquiries', 'type', "VARCHAR(100) NOT NULL DEFAULT 'General'");
+    ensure_column_exists($conn, 'inquiries', 'technical_data', "JSON NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS assets (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -289,6 +294,14 @@ function get_db_connection() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )");
 
+    $conn->query("CREATE TABLE IF NOT EXISTS routing_rules (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        source_type VARCHAR(50) NOT NULL,
+        match_keyword VARCHAR(100) NULL,
+        department_id INT(11) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
     // Seed default admin
     $admin_check = $conn->query("SELECT COUNT(*) as total FROM admins");
     if ($admin_check) {
@@ -319,6 +332,30 @@ function set_setting($key, $value) {
     $key = $conn->real_escape_string($key);
     $value = $conn->real_escape_string($value);
     $conn->query("INSERT INTO settings (setting_key, setting_value) VALUES ('$key', '$value') ON DUPLICATE KEY UPDATE setting_value = '$value'");
+}
+
+/**
+ * Intelligent Auto-Routing
+ * Finds the best department based on source type and keyword matching
+ */
+function get_auto_assigned_department($conn, $source_type, $content = '') {
+    // 1. Try keyword matching first (most specific)
+    if (!empty($content)) {
+        $rules = $conn->query("SELECT department_id, match_keyword FROM routing_rules WHERE source_type = '$source_type' AND match_keyword != '' AND match_keyword IS NOT NULL");
+        while ($rule = $rules->fetch_assoc()) {
+            if (stripos($content, $rule['match_keyword']) !== false) {
+                return $rule['department_id'];
+            }
+        }
+    }
+
+    // 2. Try general type matching (no keyword)
+    $res = $conn->query("SELECT department_id FROM routing_rules WHERE source_type = '$source_type' AND (match_keyword = '' OR match_keyword IS NULL) LIMIT 1");
+    if ($row = $res->fetch_assoc()) {
+        return $row['department_id'];
+    }
+
+    return null; // Unassigned
 }
 
 function get_admin_permissions($admin_id) {

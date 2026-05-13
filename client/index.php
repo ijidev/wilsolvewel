@@ -135,7 +135,7 @@ $procurement_res = $conn->query("
     <script src="../components/client_sidenav.js" data-root="../"></script>
     <script src="../components/effects.js"></script>
 
-    <main class="lg:ml-64 pt-20 pb-8 relative min-h-screen">
+    <main class="pt-20 pb-8 relative min-h-screen">
         <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
         <div class="max-w-6xl mx-auto px-6 relative z-10">
             <!-- Header Section -->

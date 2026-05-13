@@ -91,7 +91,7 @@ $total_projects = $projects_list_res->num_rows;
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
 
     <!-- Main Content Canvas -->
-    <main class="lg:ml-64 pt-20 pb-8 px-6 relative z-10">
+    <main class="pt-20 pb-8 px-6 relative z-10 max-w-7xl mx-auto">
         <!-- TopNavBar -->
         <script src="../components/client_topnav.js" data-root="../"></script>
 

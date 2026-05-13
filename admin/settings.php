@@ -46,6 +46,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
     }
 }
 
+// Handle Routing Rules CRUD
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_rule'])) {
+    $source_type = $conn->real_escape_string($_POST['source_type']);
+    $keyword = $conn->real_escape_string($_POST['match_keyword']);
+    $dept_id = (int)$_POST['department_id'];
+    $conn->query("INSERT INTO routing_rules (source_type, match_keyword, department_id) VALUES ('$source_type', '$keyword', $dept_id)");
+    log_audit($conn, 'Create', 'RoutingRule', 'Admin', $admin_id, "Added rule for $source_type");
+    $success_msg = "Routing rule added.";
+}
+
+if (isset($_GET['delete_rule'])) {
+    $id = (int)$_GET['delete_rule'];
+    $conn->query("DELETE FROM routing_rules WHERE id = $id");
+    log_audit($conn, 'Delete', 'RoutingRule', 'Admin', $admin_id, "Deleted rule #$id");
+    $success_msg = "Routing rule deleted.";
+}
+
 // Fetch Global Settings
 $globals = [];
 $res = $conn->query("SELECT setting_key, setting_value FROM global_settings");
@@ -69,6 +86,16 @@ $smtp_user = get_setting('smtp_user');
 $smtp_encryption = get_setting('smtp_encryption');
 $smtp_from_email = get_setting('smtp_from_email');
 $smtp_from_name = get_setting('smtp_from_name');
+
+// Fetch Departments for Rules
+$depts_res = $conn->query("SELECT id, name FROM departments ORDER BY name ASC");
+$departments = [];
+while ($row = $depts_res->fetch_assoc()) $departments[] = $row;
+
+// Fetch Routing Rules
+$rules_res = $conn->query("SELECT r.*, d.name as department_name FROM routing_rules r LEFT JOIN departments d ON r.department_id = d.id ORDER BY r.source_type ASC");
+$routing_rules = [];
+while ($row = $rules_res->fetch_assoc()) $routing_rules[] = $row;
 
 $active_tab = $_GET['tab'] ?? 'global';
 ?>
@@ -122,6 +149,10 @@ $active_tab = $_GET['tab'] ?? 'global';
                 <a href="?tab=smtp" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='smtp' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
                     <span class="material-symbols-outlined text-lg">mail</span>
                     <span class="text-sm">SMTP Setup</span>
+                </a>
+                <a href="?tab=rules" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='rules' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
+                    <span class="material-symbols-outlined text-lg">alt_route</span>
+                    <span class="text-sm">Routing Rules</span>
                 </a>
                 <a href="?tab=errors" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='errors' ? 'bg-red-50 text-red-600 font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
                     <span class="material-symbols-outlined text-lg">bug_report</span>
@@ -233,6 +264,82 @@ $active_tab = $_GET['tab'] ?? 'global';
                             <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Configuration</button>
                         </div>
                     </form>
+                </div>
+
+                <?php elseif ($active_tab === 'rules'): ?>
+                <div class="space-y-6">
+                    <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                            <div>
+                                <h2 class="text-xl font-bold font-headline text-slate-900">Auto-Routing Rules</h2>
+                                <p class="text-xs text-slate-500 mt-1">Define how incoming requests are assigned to departments.</p>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <form method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                <input type="hidden" name="add_rule" value="1">
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Request Type</label>
+                                    <select name="source_type" required class="w-full bg-white border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                        <option value="ticket">Support Ticket</option>
+                                        <option value="project_proposal">Project Proposal</option>
+                                        <option value="inquiry">General Inquiry</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Keyword (Optional)</label>
+                                    <input type="text" name="match_keyword" placeholder="e.g. 'Electrical'" class="w-full bg-white border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Assign To</label>
+                                    <div class="flex gap-2">
+                                        <select name="department_id" required class="w-full bg-white border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                            <?php foreach ($departments as $d): ?>
+                                            <option value="<?= $d['id'] ?>"><?= htmlspecialchars($d['name']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <button type="submit" class="bg-primary text-on-primary px-4 rounded-xl hover:shadow-md transition-all">
+                                            <span class="material-symbols-outlined">add</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="space-y-3">
+                                <?php if (empty($routing_rules)): ?>
+                                    <p class="text-center py-10 text-slate-400 text-xs italic">No routing rules defined yet.</p>
+                                <?php else: ?>
+                                    <?php foreach ($routing_rules as $rule): ?>
+                                    <div class="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl hover:border-primary/30 transition-all group">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                                                <span class="material-symbols-outlined text-sm">
+                                                    <?php 
+                                                        if($rule['source_type'] == 'ticket') echo 'confirmation_number';
+                                                        elseif($rule['source_type'] == 'project_proposal') echo 'add_task';
+                                                        else echo 'chat';
+                                                    ?>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs font-bold text-slate-900 uppercase tracking-tight"><?= str_replace('_', ' ', $rule['source_type']) ?></span>
+                                                    <?php if($rule['match_keyword']): ?>
+                                                    <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">Matches: "<?= htmlspecialchars($rule['match_keyword']) ?>"</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <p class="text-[10px] text-slate-500 mt-0.5 font-medium">Assigned to: <span class="text-primary font-bold"><?= htmlspecialchars($rule['department_name']) ?></span></p>
+                                            </div>
+                                        </div>
+                                        <a href="?tab=rules&delete_rule=<?= $rule['id'] ?>" class="p-2 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" onclick="return confirm('Delete this rule?')">
+                                            <span class="material-symbols-outlined text-sm">delete</span>
+                                        </a>
+                                    </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <?php elseif ($active_tab === 'errors'): ?>

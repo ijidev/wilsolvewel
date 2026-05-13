@@ -15,8 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $service_type = $conn->real_escape_string($_POST['service_type']);
     $location = $conn->real_escape_string($_POST['location']);
 
-    $sql = "INSERT INTO projects (client_id, name, description, status, budget, created_at) 
-            VALUES ($client_id, '$title', '$description', 'Diagnostic', 0, NOW())";
+    // Auto-Routing Logic
+    $dept_id = get_auto_assigned_department($conn, 'project_proposal', $title . ' ' . $description);
+
+    $sql = "INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) 
+            VALUES ($client_id, " . ($dept_id ?: "NULL") . ", '$title', '$description', 'Diagnostic', 0, NOW())";
     
     if ($conn->query($sql)) {
         $project_id = $conn->insert_id;
@@ -66,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="../components/effects.js"></script>
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
 
-    <main class="lg:ml-64 pt-24 pb-12 px-8 relative z-10">
+    <main class="pt-20 pb-8 px-6 relative z-10 max-w-7xl mx-auto">
         <!-- TopNavBar -->
         <script src="../components/client_topnav.js" data-root="../"></script>
         

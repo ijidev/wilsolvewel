@@ -110,7 +110,7 @@ $client = $client_res->fetch_assoc();
     <script src="../components/effects.js"></script>
     <div class="fixed inset-0 technical-grid pointer-events-none z-0"></div>
 
-    <main class="lg:ml-64 pt-20 px-6 pb-8 max-w-[1400px] relative z-10">
+    <main class="pt-20 px-6 pb-8 max-w-[1400px] relative z-10 mx-auto">
         <div class="mb-8 space-y-1">
             <h1 class="text-2xl font-bold font-headline tracking-tight text-on-surface">Account Settings</h1>
             <p class="text-slate-500 font-body text-xs">Update your company profile and security credentials.</p>
