@@ -129,122 +129,178 @@ $total_projects = $projects_list_res->num_rows;
                 </div>
             </header>
 
-            <?php if ($project_id > 0): ?>
+            <?php if ($project_id > 0): 
+                // Fetch Milestones
+                $milestones = [];
+                $res = $conn->query("SELECT * FROM project_milestones WHERE project_id = $project_id ORDER BY order_index ASC, created_at ASC");
+                while ($row = $res->fetch_assoc()) {
+                    $ms_id = $row['id'];
+                    $subs = [];
+                    $sub_res = $conn->query("SELECT * FROM project_sub_milestones WHERE milestone_id = $ms_id ORDER BY created_at ASC");
+                    while ($s = $sub_res->fetch_assoc()) $subs[] = $s;
+                    $row['sub_milestones'] = $subs;
+                    $milestones[] = $row;
+                }
+
+                $completed_count = 0;
+                foreach ($milestones as $m) if ($m['status'] == 'Completed') $completed_count++;
+                $progress = count($milestones) > 0 ? round(($completed_count / count($milestones)) * 100) : 0;
+
+                // Assets
+                $assigned_assets = [];
+                $res = $conn->query("SELECT a.* FROM assets a JOIN project_assets pa ON a.id = pa.asset_id WHERE pa.project_id = $project_id");
+                while ($row = $res->fetch_assoc()) $assigned_assets[] = $row;
+            ?>
                 <!-- Single Project View -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <!-- Left: Details & Progress -->
+                    <!-- Left: Details & Roadmap -->
                     <div class="lg:col-span-8 space-y-8">
                         <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-8 opacity-5">
-                                <span class="material-symbols-outlined text-8xl">engineering</span>
-                            </div>
-                            <h3 class="font-headline text-xl font-bold mb-6">Status Overview</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="flex items-center justify-between mb-8">
                                 <div>
-                                    <span class="block text-[10px] uppercase tracking-widest text-slate-400 font-bold">Current Stage</span>
-                                    <span class="block font-bold text-sm text-primary uppercase"><?= htmlspecialchars($project['status']) ?></span>
+                                    <h3 class="font-headline text-xl font-bold">Project Roadmap</h3>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Strategic milestones & execution timeline</p>
                                 </div>
-                                <div>
-                                    <span class="block text-[10px] uppercase tracking-widest text-slate-400 font-bold">Start Date</span>
-                                    <span class="block font-bold text-sm"><?= date('M d, Y', strtotime($project['created_at'])) ?></span>
-                                </div>
-                                <div>
-                                    <span class="block text-[10px] uppercase tracking-widest text-slate-400 font-bold">Est. Completion</span>
-                                    <span class="block font-bold text-sm"><?= htmlspecialchars($project['end_date'] ?: 'TBD') ?></span>
-                                </div>
-                                <div>
-                                    <span class="block text-[10px] uppercase tracking-widest text-slate-400 font-bold">Total Budget</span>
-                                    <span class="block font-bold text-sm">$<?= number_format($project['budget'], 2) ?></span>
+                                <div class="text-right">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Overall Progress</p>
+                                    <span class="text-xl font-bold text-primary"><?php echo $progress; ?>%</span>
                                 </div>
                             </div>
                             
-                            <div class="mt-8">
-                                <div class="flex justify-between items-end mb-2">
-                                    <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Project Completion</span>
-                                    <span class="text-sm font-bold text-primary">65%</span>
+                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden mb-12">
+                                <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: <?php echo $progress; ?>%"></div>
+                            </div>
+
+                            <div class="space-y-12 relative">
+                                <!-- Timeline Line -->
+                                <div class="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-100"></div>
+
+                                <?php foreach ($milestones as $m): 
+                                    $isDone = $m['status'] == 'Completed';
+                                    $isActive = $m['status'] == 'In Progress';
+                                ?>
+                                <div class="relative pl-14">
+                                    <!-- Timeline Dot -->
+                                    <div class="absolute left-0 top-0 w-10 h-10 rounded-full border-4 <?php echo $isDone ? 'bg-primary border-primary' : ($isActive ? 'bg-white border-primary' : 'bg-white border-slate-100'); ?> flex items-center justify-center z-10">
+                                        <?php if ($isDone): ?>
+                                            <span class="material-symbols-outlined text-on-primary text-sm font-bold">check</span>
+                                        <?php else: ?>
+                                            <span class="text-[10px] font-bold <?php echo $isActive ? 'text-primary' : 'text-slate-300'; ?>"><?php echo $m['order_index'] + 1; ?></span>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
+                                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                                            <div>
+                                                <h4 class="font-bold text-slate-900"><?php echo htmlspecialchars($m['title']); ?></h4>
+                                                <?php if ($m['due_date']): ?>
+                                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Target: <?php echo date('M d, Y', strtotime($m['due_date'])); ?></p>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <?php if ($m['approval_status'] == 'Pending'): ?>
+                                                    <button onclick="approveMilestone(<?php echo $m['id']; ?>, 'Approved')" class="px-4 py-1.5 bg-primary text-on-primary rounded-lg text-[9px] font-bold uppercase tracking-widest hover:shadow-lg transition-all">Approve</button>
+                                                    <button onclick="approveMilestone(<?php echo $m['id']; ?>, 'Rejected')" class="px-4 py-1.5 bg-white border border-slate-200 text-slate-400 rounded-lg text-[9px] font-bold uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all">Reject</button>
+                                                <?php else: ?>
+                                                    <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $m['approval_status'] == 'Approved' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'; ?>">
+                                                        <?php echo $m['approval_status']; ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+
+                                        <p class="text-xs text-slate-600 leading-relaxed mb-6"><?php echo nl2br(htmlspecialchars($m['description'])); ?></p>
+
+                                        <?php if (!empty($m['sub_milestones'])): ?>
+                                        <div class="space-y-2 mb-6">
+                                            <?php foreach ($m['sub_milestones'] as $sm): ?>
+                                            <div class="flex items-center gap-3">
+                                                <span class="material-symbols-outlined text-sm <?php echo $sm['is_completed'] ? 'text-primary' : 'text-slate-200'; ?>">
+                                                    <?php echo $sm['is_completed'] ? 'check_circle' : 'radio_button_unchecked'; ?>
+                                                </span>
+                                                <span class="text-[11px] <?php echo $sm['is_completed'] ? 'text-slate-400 line-through' : 'text-slate-600 font-medium'; ?>"><?php echo htmlspecialchars($sm['title']); ?></span>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <?php endif; ?>
+
+                                        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                                            <button onclick="openMilestoneChat(<?php echo $m['id']; ?>, '<?php echo addslashes($m['title']); ?>')" class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 hover:text-primary transition-colors">
+                                                <span class="material-symbols-outlined text-sm">forum</span> View Communications
+                                            </button>
+                                            <span class="text-[9px] font-bold uppercase tracking-widest <?php echo $isDone ? 'text-emerald-500' : ($isActive ? 'text-amber-500' : 'text-slate-300'); ?>">
+                                                <?php echo $m['status']; ?>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary" style="width: 65%;"></div>
-                                </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
 
-                        <!-- Project Reports / Timeline -->
+                        <!-- Project Chat -->
                         <div class="space-y-6">
                             <h3 class="font-headline text-xl font-bold flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">history</span>
-                                Maintenance Reports
+                                <span class="material-symbols-outlined text-primary">forum</span>
+                                Project Communication Log
                             </h3>
-                            
-                            <div class="space-y-6 relative before:content-[''] before:absolute before:left-[19px] before:top-4 before:bottom-0 before:w-0.5 before:bg-slate-100">
-                                <?php if ($reports_res->num_rows > 0): 
-                                    while($rep = $reports_res->fetch_assoc()):
-                                ?>
-                                <div class="relative pl-12 group">
-                                    <div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-white border-4 border-slate-50 flex items-center justify-center z-10 shadow-sm group-hover:border-primary/20 transition-all">
-                                        <span class="material-symbols-outlined text-primary text-sm">edit_note</span>
+                            <div id="projectChat" class="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar p-6 bg-slate-50/50 rounded-3xl border border-slate-100">
+                                <?php if (empty($reports)): ?>
+                                    <div class="text-center py-10">
+                                        <span class="material-symbols-outlined text-4xl text-slate-200">history_edu</span>
+                                        <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No activity recorded yet</p>
                                     </div>
-                                    <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm group-hover:border-primary/20 transition-all">
-                                        <div class="flex justify-between items-start mb-4">
-                                            <div>
-                                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest"><?= date('M d, Y @ H:i', strtotime($rep['created_at'])) ?></span>
-                                                <span class="text-xs font-bold text-primary uppercase">By <?= htmlspecialchars($rep['author_name'] ?: 'System Admin') ?></span>
+                                <?php else: ?>
+                                    <?php foreach ($reports as $r): 
+                                        $isClient = ($r['sender_type'] === 'Client'); ?>
+                                        <div class="flex flex-col <?php echo $isClient ? 'items-end' : 'items-start'; ?> w-full">
+                                            <div class="max-w-[85%]">
+                                                <div class="flex items-center gap-2 mb-1 <?php echo $isClient ? 'justify-end' : ''; ?>">
+                                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"><?php echo $isClient ? 'YOU' : htmlspecialchars($r['author_name']); ?></span>
+                                                    <span class="text-[9px] text-slate-300"><?php echo date('H:i', strtotime($r['created_at'])); ?></span>
+                                                </div>
+                                                <div class="<?php echo $isClient ? 'bg-primary text-on-primary rounded-tr-none shadow-lg shadow-primary/10' : 'bg-white text-slate-700 rounded-tl-none border border-slate-100 shadow-sm'; ?> px-5 py-3 rounded-2xl">
+                                                    <p class="text-xs leading-relaxed font-medium whitespace-pre-wrap"><?php echo htmlspecialchars($r['content']); ?></p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <p class="text-sm text-slate-600 leading-relaxed"><?= nl2br(htmlspecialchars($rep['content'])) ?></p>
-                                    </div>
-                                </div>
-                                <?php endwhile; else: ?>
-                                <div class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                                    <p class="text-sm text-slate-400 italic">No reports generated for this project yet.</p>
-                                </div>
+                                    <?php endforeach; ?>
                                 <?php endif; ?>
                             </div>
+                            <form id="projectReplyForm" class="relative group">
+                                <input type="hidden" id="replyProjectId" value="<?= $project_id ?>">
+                                <textarea id="replyContent" required placeholder="Send a message..." class="w-full bg-white border-slate-100 rounded-2xl px-6 py-5 text-sm focus:ring-2 focus:ring-primary/20 min-h-[100px] custom-scrollbar shadow-sm resize-none pr-16"></textarea>
+                                <button type="submit" id="replyBtn" class="absolute right-4 bottom-4 w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shadow-lg active:scale-95">
+                                    <span class="material-symbols-outlined">send</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- Right Sidebar -->
-                    <div class="lg:col-span-4 space-y-6">
-                        <!-- Associated Assets -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                            <h4 class="text-sm font-bold font-headline uppercase tracking-widest mb-4">Linked Assets</h4>
-                            <div class="space-y-4">
-                                <?php
-                                $assets_res = $conn->query("SELECT * FROM assets WHERE project_id = $project_id");
-                                if ($assets_res->num_rows > 0):
-                                    while($a = $assets_res->fetch_assoc()):
-                                ?>
-                                <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                                    <div class="w-10 h-10 rounded bg-white flex items-center justify-center border border-slate-200 text-primary">
-                                        <span class="material-symbols-outlined">inventory_2</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-xs font-bold"><?= htmlspecialchars($a['name']) ?></span>
-                                        <span class="block text-[10px] text-slate-400 uppercase font-bold"><?= htmlspecialchars($a['status']) ?></span>
-                                    </div>
-                                </div>
-                                <?php endwhile; else: ?>
-                                <p class="text-xs text-slate-400 italic">No assets assigned to this project.</p>
-                                <?php endif; ?>
-                            </div>
                         </div>
 
-                        <!-- Procurement Updates -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                            <h4 class="text-sm font-bold font-headline uppercase tracking-widest mb-4">Logistics Status</h4>
+                        <!-- Logistics Update -->
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
+                            <div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none">
+                                <span class="material-symbols-outlined text-8xl">local_shipping</span>
+                            </div>
+                            <h4 class="text-xs font-bold font-headline uppercase tracking-[0.2em] mb-4 text-slate-400">Logistics Status</h4>
                             <div class="space-y-4">
                                 <?php
                                 $po_res = $conn->query("SELECT * FROM procurement_orders WHERE project_id = $project_id ORDER BY updated_at DESC LIMIT 3");
                                 if ($po_res->num_rows > 0):
                                     while($po = $po_res->fetch_assoc()):
                                 ?>
-                                <div class="p-3 bg-slate-50 rounded-lg border-l-2 border-primary">
-                                    <span class="block text-xs font-bold"><?= htmlspecialchars($po['item_name']) ?></span>
-                                    <span class="block text-[10px] text-primary uppercase font-bold"><?= htmlspecialchars($po['status']) ?></span>
-                                    <p class="text-[10px] text-slate-400 mt-1"><?= htmlspecialchars($po['current_location'] ?: 'Warehouse') ?></p>
+                                <div class="p-4 bg-slate-50 rounded-xl border-l-4 border-primary shadow-sm">
+                                    <span class="block text-xs font-bold text-slate-900"><?= htmlspecialchars($po['item_name']) ?></span>
+                                    <span class="inline-block mt-1 px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-bold uppercase tracking-widest rounded-md"><?= htmlspecialchars($po['status']) ?></span>
+                                    <p class="text-[9px] text-slate-400 font-medium mt-2 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[10px]">location_on</span>
+                                        <?= htmlspecialchars($po['current_location'] ?: 'Warehouse Origin') ?>
+                                    </p>
                                 </div>
                                 <?php endwhile; else: ?>
-                                <p class="text-xs text-slate-400 italic">No procurement orders tracked.</p>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">No active shipments</p>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -327,5 +383,130 @@ $total_projects = $projects_list_res->num_rows;
             <?php endif; ?>
         </div>
     </main>
+    <!-- Milestone Chat Modal -->
+    <div id="msChatModal" class="modal-overlay fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-in fade-in zoom-in duration-300">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
+                <div>
+                    <h3 class="font-bold font-headline text-slate-900" id="msChatTitle">Milestone Logs</h3>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Communication Timeline</p>
+                </div>
+                <button onclick="closeMsChat()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-sm">close</span></button>
+            </div>
+            <div id="msChatContent" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-slate-50/30">
+                <!-- Loaded via AJAX -->
+            </div>
+            <div class="p-6 border-t border-slate-100 bg-white shrink-0">
+                <form id="msChatForm" class="relative group">
+                    <input type="hidden" id="msChatId">
+                    <textarea id="msChatInput" required placeholder="Send a message regarding this milestone..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-xs focus:ring-2 focus:ring-primary/20 min-h-[60px] max-h-[120px] custom-scrollbar resize-none pr-12 transition-all"></textarea>
+                    <button type="submit" class="absolute right-3 bottom-3 w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shadow-lg active:scale-95">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectId = <?php echo $project_id; ?>;
+
+        async function approveMilestone(id, status) {
+            if (!confirm(`Are you sure you want to mark this milestone as ${status}?`)) return;
+            const fd = new FormData();
+            fd.append('id', id);
+            fd.append('status', status);
+            
+            // Reusing add_project_message logic but for approval
+            const res = await fetch(`add_project_message.php?action=approve_milestone`, {
+                method: 'POST',
+                body: fd
+            });
+            const data = await res.json();
+            if (data.status === 'success') location.reload();
+            else alert(data.message);
+        }
+
+        async function openMilestoneChat(msId, title) {
+            document.getElementById('msChatId').value = msId;
+            document.getElementById('msChatTitle').innerText = title;
+            document.getElementById('msChatContent').innerHTML = '<div class="text-center py-10 animate-pulse text-slate-300 uppercase text-[10px] font-bold tracking-widest">Loading logs...</div>';
+            document.getElementById('msChatModal').classList.remove('hidden');
+            
+            const res = await fetch(`add_project_message.php?action=get_milestone_reports&milestone_id=${msId}`);
+            const reports = await res.json();
+            renderMsChat(reports);
+        }
+
+        function renderMsChat(reports) {
+            const cont = document.getElementById('msChatContent');
+            if (reports.length === 0) {
+                cont.innerHTML = '<div class="text-center py-20 text-slate-300 italic text-xs">No entries for this milestone.</div>';
+                return;
+            }
+            cont.innerHTML = reports.map(r => `
+                <div class="flex flex-col ${r.sender_type === 'Client' ? 'items-end' : 'items-start'}">
+                    <div class="flex items-center gap-2 mb-1 px-1">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${r.sender_type === 'Client' ? 'YOU' : r.sender_name}</span>
+                        <span class="text-[8px] text-slate-300 font-medium">${new Date(r.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                    <div class="${r.sender_type === 'Client' ? 'bg-primary text-on-primary rounded-tr-none' : 'bg-white text-slate-600 rounded-tl-none border border-slate-100'} px-4 py-2.5 rounded-2xl shadow-sm text-xs leading-relaxed font-medium">
+                        ${r.content.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `).join('');
+            cont.scrollTop = cont.scrollHeight;
+        }
+
+        function closeMsChat() { document.getElementById('msChatModal').classList.add('hidden'); }
+
+        document.getElementById('msChatForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('msChatInput');
+            const msId = document.getElementById('msChatId').value;
+            const fd = new FormData();
+            fd.append('milestone_id', msId);
+            fd.append('project_id', projectId);
+            fd.append('content', input.value);
+            
+            const res = await fetch('add_project_message.php?action=add_milestone_report', { method: 'POST', body: fd });
+            input.value = '';
+            openMilestoneChat(msId, document.getElementById('msChatTitle').innerText);
+        };
+
+        const replyForm = document.getElementById('projectReplyForm');
+        if (replyForm) {
+            replyForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('replyBtn');
+                const input = document.getElementById('replyContent');
+                const pId = document.getElementById('replyProjectId').value;
+                const content = input.value;
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span>';
+
+                const fd = new FormData();
+                fd.append('project_id', pId);
+                fd.append('content', content);
+
+                try {
+                    const res = await fetch('add_project_message.php', { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (data.status === 'success') {
+                        input.value = '';
+                        const chat = document.getElementById('projectChat');
+                        if (chat.querySelector('.text-center')) chat.innerHTML = '';
+                        chat.insertAdjacentHTML('beforeend', data.html);
+                        chat.scrollTop = chat.scrollHeight;
+                    } else { alert(data.message); }
+                } catch(err) { alert('Network error'); }
+                finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined">send</span>';
+                }
+            };
+        }
+    </script>
 </body>
 </html>

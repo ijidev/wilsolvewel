@@ -35,29 +35,55 @@ if (isset($_GET['ajax_action'])) {
     if ($_GET['ajax_action'] == 'add_reply') {
         $ticket_id = (int)$_POST['ticket_id'];
         $message = $conn->real_escape_string(trim($_POST['message']));
+        $attachment = null;
+
+        if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] == 0) {
+            $ext = pathinfo($_FILES['attachment']['name'], PATHINFO_EXTENSION);
+            $filename = uniqid('ticket_') . '.' . $ext;
+            $upload_path = '../uploads/tickets/' . $filename;
+            if (move_uploaded_file($_FILES['attachment']['tmp_name'], $upload_path)) {
+                $attachment = $filename;
+            }
+        }
         
-        if (empty($message)) {
+        if (empty($message) && !$attachment) {
             echo json_encode(['status' => 'error', 'message' => 'Reply cannot be empty.']); exit;
         }
 
-        $conn->query("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message) VALUES ($ticket_id, 'Admin', $admin_id, '$message')");
+        $attach_sql = $attachment ? "'$attachment'" : "NULL";
+        $conn->query("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message, attachment) VALUES ($ticket_id, 'Admin', $admin_id, '$message', $attach_sql)");
         $new_reply_id = $conn->insert_id;
         
         // Also update ticket status to In Progress if it was Open
         $conn->query("UPDATE tickets SET status='In Progress' WHERE id=$ticket_id AND status='Open'");
         
-        log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Replied to ticket ID: $ticket_id");
+        log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Replied to ticket ID: $ticket_id" . ($attachment ? " with attachment" : ""));
         
         $res = $conn->query("SELECT tr.*, a.name as admin_name FROM ticket_replies tr JOIN admins a ON tr.sender_id = a.id WHERE tr.id = $new_reply_id");
         $reply = $res->fetch_assoc();
         
+        // Attachment HTML
+        $attach_html = '';
+        if ($reply['attachment']) {
+            $path = '../uploads/tickets/' . $reply['attachment'];
+            $is_img = in_array(strtolower(pathinfo($reply['attachment'], PATHINFO_EXTENSION)), ['jpg','jpeg','png','gif','webp']);
+            if ($is_img) {
+                $attach_html = '<a href="'.$path.'" target="_blank" class="block mt-2 rounded-lg overflow-hidden border border-white/20"><img src="'.$path.'" class="max-w-xs h-auto" /></a>';
+            } else {
+                $attach_html = '<a href="'.$path.'" target="_blank" class="flex items-center gap-2 mt-2 p-2 rounded-lg bg-black/10 text-[10px] font-bold uppercase"><span class="material-symbols-outlined text-sm">description</span> View Attachment</a>';
+            }
+        }
+
         $html = '<div class="flex flex-col items-end mb-6 animate-in slide-in-from-right-4 duration-300">';
         $html .= '<div class="flex items-center gap-2 mb-1">';
         $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($reply['created_at'])) . '</span>';
         $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($reply['admin_name']) . '</span>';
         $html .= '</div>';
         $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
-        $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($reply['message']) . '</p>';
+        if (!empty($reply['message'])) {
+            $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($reply['message']) . '</p>';
+        }
+        $html .= $attach_html;
         $html .= '</div></div>';
 
         echo json_encode(['status' => 'success', 'html' => $html, 'reply_id' => $new_reply_id]);
@@ -80,6 +106,17 @@ if (isset($_GET['ajax_action'])) {
         
         $replies = [];
         while ($r = $res->fetch_assoc()) {
+            $attach_html = '';
+            if ($r['attachment']) {
+                $path = '../uploads/tickets/' . $r['attachment'];
+                $is_img = in_array(strtolower(pathinfo($r['attachment'], PATHINFO_EXTENSION)), ['jpg','jpeg','png','gif','webp']);
+                if ($is_img) {
+                    $attach_html = '<a href="'.$path.'" target="_blank" class="block mt-2 rounded-lg overflow-hidden border border-white/20"><img src="'.$path.'" class="max-w-xs h-auto" /></a>';
+                } else {
+                    $attach_html = '<a href="'.$path.'" target="_blank" class="flex items-center gap-2 mt-2 p-2 rounded-lg bg-black/10 text-[10px] font-bold uppercase"><span class="material-symbols-outlined text-sm">description</span> View Attachment</a>';
+                }
+            }
+
             $html = '';
             if ($r['sender_type'] === 'Admin') {
                 $html .= '<div class="flex flex-col items-end mb-6 animate-in slide-in-from-right-4 duration-300">';
@@ -88,7 +125,10 @@ if (isset($_GET['ajax_action'])) {
                 $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($r['sender_name']) . '</span>';
                 $html .= '</div>';
                 $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
-                $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($r['message']) . '</p>';
+                if (!empty($r['message'])) {
+                    $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($r['message']) . '</p>';
+                }
+                $html .= $attach_html;
                 $html .= '</div></div>';
             } else {
                 $html .= '<div class="flex flex-col items-start mb-6 animate-in slide-in-from-left-4 duration-300">';
@@ -97,7 +137,10 @@ if (isset($_GET['ajax_action'])) {
                 $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
                 $html .= '</div>';
                 $html .= '<div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">';
-                $html .= '<p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">' . htmlspecialchars($r['message']) . '</p>';
+                if (!empty($r['message'])) {
+                    $html .= '<p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">' . htmlspecialchars($r['message']) . '</p>';
+                }
+                $html .= str_replace('bg-black/10', 'bg-slate-50', $attach_html); // slight style diff for client attachment
                 $html .= '</div></div>';
             }
             $replies[] = ['id' => $r['id'], 'html' => $html];
@@ -195,6 +238,18 @@ if (isset($_GET['ajax_action'])) {
         <!-- Replies Thread -->
         <div id="replyThread" class="space-y-6 mb-8">
             <?php foreach ($replies as $r): ?>
+                <?php 
+                $attach_html = '';
+                if (!empty($r['attachment'])) {
+                    $path = '../uploads/tickets/' . $r['attachment'];
+                    $is_img = in_array(strtolower(pathinfo($r['attachment'], PATHINFO_EXTENSION)), ['jpg','jpeg','png','gif','webp']);
+                    if ($is_img) {
+                        $attach_html = '<a href="'.$path.'" target="_blank" class="block mt-2 rounded-lg overflow-hidden border border-white/20"><img src="'.$path.'" class="max-w-xs h-auto" /></a>';
+                    } else {
+                        $attach_html = '<a href="'.$path.'" target="_blank" class="flex items-center gap-2 mt-2 p-2 rounded-lg bg-black/10 text-[10px] font-bold uppercase"><span class="material-symbols-outlined text-sm">description</span> View Attachment</a>';
+                    }
+                }
+                ?>
                 <?php if ($r['sender_type'] === 'Admin'): ?>
                     <!-- Admin Reply (Right) -->
                     <div class="flex flex-col items-end">
@@ -203,7 +258,10 @@ if (isset($_GET['ajax_action'])) {
                             <span class="text-xs font-bold text-slate-900"><?php echo htmlspecialchars($r['sender_name']); ?></span>
                         </div>
                         <div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-sm">
-                            <p class="text-sm leading-relaxed whitespace-pre-wrap font-medium"><?php echo htmlspecialchars($r['message']); ?></p>
+                            <?php if (!empty($r['message'])): ?>
+                                <p class="text-sm leading-relaxed whitespace-pre-wrap font-medium"><?php echo htmlspecialchars($r['message']); ?></p>
+                            <?php endif; ?>
+                            <?php echo $attach_html; ?>
                         </div>
                     </div>
                 <?php else: ?>
@@ -214,7 +272,10 @@ if (isset($_GET['ajax_action'])) {
                             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($r['created_at'])); ?></span>
                         </div>
                         <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">
-                            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap"><?php echo htmlspecialchars($r['message']); ?></p>
+                            <?php if (!empty($r['message'])): ?>
+                                <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap"><?php echo htmlspecialchars($r['message']); ?></p>
+                            <?php endif; ?>
+                            <?php echo str_replace('bg-black/10', 'bg-slate-50', $attach_html); ?>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -223,13 +284,22 @@ if (isset($_GET['ajax_action'])) {
 
         <!-- Reply Box -->
         <?php if ($ticket['status'] !== 'Closed'): ?>
-        <form onsubmit="addReply(event, <?php echo $id; ?>)" class="bg-white rounded-3xl p-4 flex gap-4 items-end border border-slate-100 shadow-sm relative bottom-0">
-            <div class="flex-1">
-                <textarea id="replyMessage" rows="2" placeholder="Type your reply to the client..." required class="w-full border-0 focus:ring-0 p-2 text-sm text-slate-700 custom-scrollbar resize-none bg-transparent"></textarea>
+        <form id="replyForm" onsubmit="addReply(event, <?php echo $id; ?>)" class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm relative bottom-0">
+            <div class="flex gap-4 items-end">
+                <div class="flex-1">
+                    <textarea id="replyMessage" rows="2" placeholder="Type your reply to the client..." required class="w-full border-0 focus:ring-0 p-2 text-sm text-slate-700 custom-scrollbar resize-none bg-transparent"></textarea>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="file" id="replyAttachment" class="hidden" onchange="updateFileLabel(this)" />
+                    <button type="button" onclick="document.getElementById('replyAttachment').click()" class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 transition-colors">
+                        <span class="material-symbols-outlined text-sm">attach_file</span>
+                    </button>
+                    <button type="submit" id="replyBtn" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shrink-0">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
             </div>
-            <button type="submit" id="replyBtn" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shrink-0">
-                <span class="material-symbols-outlined">send</span>
-            </button>
+            <div id="fileLabel" class="mt-2 text-[10px] text-slate-400 font-bold hidden px-2"></div>
         </form>
         <?php else: ?>
         <div class="text-center py-6 bg-slate-50 rounded-2xl border border-slate-100">
@@ -285,7 +355,7 @@ $permissions = get_admin_permissions($admin_id);
     </div>
 </div>
 
-<div class="lg:pl-64 min-h-screen flex flex-col">
+<div class="lg:ml-64 min-h-screen flex flex-col bg-[#F8FAFC]">
     <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20 sticky top-0">
         <div>
             <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Support Tickets</h1>
@@ -300,18 +370,17 @@ $permissions = get_admin_permissions($admin_id);
                 <div class="text-center py-10"><span class="material-symbols-outlined text-4xl text-slate-200">mark_email_read</span><p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No Support Tickets</p></div>
             <?php endif; ?>
             <?php foreach ($tickets as $t): ?>
-                <div class="group relative bg-white border border-slate-100 rounded-2xl p-4 cursor-pointer hover:border-primary/50 transition-all hover:shadow-sm" onclick="loadTicket(<?php echo $t['id']; ?>, this)">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest <?php echo $t['status']=='Open'?'bg-amber-50 text-amber-600':($t['status']=='In Progress'?'bg-blue-50 text-blue-600':($t['status']=='Resolved'?'bg-emerald-50 text-emerald-600':'bg-slate-100 text-slate-500')); ?>"><?php echo $t['status']; ?></span>
-                        <span class="text-[9px] font-bold text-slate-300"><?php echo date('M j', strtotime($t['created_at'])); ?></span>
+                <div class="group relative bg-white border border-slate-100 rounded-xl p-3 cursor-pointer hover:border-primary/50 transition-all hover:shadow-sm" onclick="loadTicket(<?php echo $t['id']; ?>, this)">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-tighter <?php echo $t['status']=='Open'?'bg-amber-50 text-amber-600':($t['status']=='In Progress'?'bg-blue-50 text-blue-600':($t['status']=='Resolved'?'bg-emerald-50 text-emerald-600':'bg-slate-100 text-slate-500')); ?>"><?php echo $t['status']; ?></span>
+                        <span class="text-[8px] font-bold text-slate-300"><?php echo date('M j', strtotime($t['created_at'])); ?></span>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-sm leading-tight mb-1 truncate"><?php echo htmlspecialchars($t['subject']); ?></h3>
-                    <p class="text-[10px] font-bold text-primary uppercase tracking-widest truncate mb-2"><?php echo htmlspecialchars($t['client_name']); ?></p>
+                    <h3 class="font-bold text-slate-900 text-[13px] leading-none mb-1 truncate"><?php echo htmlspecialchars($t['subject']); ?></h3>
+                    <p class="text-[9px] font-bold text-primary uppercase tracking-widest truncate mb-2"><?php echo htmlspecialchars($t['client_name']); ?></p>
                     
-                    <div class="flex flex-wrap gap-1">
-                        <?php if($t['priority']=='Urgent'): ?><span class="px-1.5 py-0.5 rounded bg-red-50 text-red-500 text-[8px] font-bold uppercase">Urgent</span><?php endif; ?>
-                        <?php if($t['dept_name']): ?><span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[8px] font-bold uppercase"><span class="material-symbols-outlined text-[8px] align-middle">domain</span> <?php echo htmlspecialchars($t['dept_name']); ?></span><?php endif; ?>
-                        <?php if($t['admin_name']): ?><span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[8px] font-bold uppercase"><span class="material-symbols-outlined text-[8px] align-middle">person</span> <?php echo htmlspecialchars($t['admin_name']); ?></span><?php endif; ?>
+                    <div class="flex flex-wrap gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <?php if($t['priority']=='Urgent'): ?><span class="px-1 py-0.5 rounded bg-red-50 text-red-500 text-[7px] font-bold uppercase">Urgent</span><?php endif; ?>
+                        <?php if($t['dept_name']): ?><span class="px-1 py-0.5 rounded bg-slate-50 text-slate-500 text-[7px] font-bold uppercase"><?php echo htmlspecialchars($d_name = (strlen($t['dept_name']) > 15 ? substr($t['dept_name'],0,12).'...' : $t['dept_name'])); ?></span><?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -437,10 +506,21 @@ function showToast(msg, type = 'success') {
         }
     }
 
+    function updateFileLabel(input) {
+        const label = document.getElementById('fileLabel');
+        if (input.files && input.files[0]) {
+            label.innerText = 'Attached: ' + input.files[0].name;
+            label.classList.remove('hidden');
+        } else {
+            label.classList.add('hidden');
+        }
+    }
+
     async function addReply(e, ticketId) {
         e.preventDefault();
         const btn = document.getElementById('replyBtn');
         const input = document.getElementById('replyMessage');
+        const fileInput = document.getElementById('replyAttachment');
         const message = input.value;
         
         btn.disabled = true;
@@ -448,12 +528,16 @@ function showToast(msg, type = 'success') {
         const fd = new FormData();
         fd.append('ticket_id', ticketId);
         fd.append('message', message);
-        
+        if (fileInput.files[0]) {
+            fd.append('attachment', fileInput.files[0]);
+        }
         try {
             const res = await fetch('?ajax_action=add_reply', { method: 'POST', body: fd });
             const result = await res.json();
             if (result.status === 'success') {
                 input.value = '';
+                fileInput.value = '';
+                document.getElementById('fileLabel').classList.add('hidden');
                 document.getElementById('replyThread').insertAdjacentHTML('beforeend', result.html);
                 lastReplyId = Math.max(lastReplyId, result.reply_id);
                 // scroll to bottom
@@ -468,7 +552,6 @@ function showToast(msg, type = 'success') {
             btn.disabled = false;
         }
     }
-</script>
 </script>
 </body>
 </html>

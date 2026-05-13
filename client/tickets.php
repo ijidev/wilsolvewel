@@ -121,30 +121,24 @@ $tickets_res = $conn->query("
                         while($t = $tickets_res->fetch_assoc()):
                             $priority_class = ($t['priority'] == 'Critical') ? 'bg-error-container text-on-error-container border-error' : (($t['priority'] == 'High') ? 'bg-orange-100 text-orange-700 border-orange-500' : 'bg-blue-100 text-blue-700 border-blue-500');
                     ?>
-                    <div class="group bg-white rounded-2xl p-6 shadow-sm border-l-4 <?= ($t['priority'] == 'Critical' ? 'border-error' : ($t['priority'] == 'High' ? 'border-orange-500' : 'border-blue-500')) ?> hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <div class="flex items-center gap-3 mb-1">
-                                    <span class="font-headline text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full <?= $priority_class ?>"><?= $t['priority'] ?></span>
-                                    <span class="text-xs text-slate-400 font-headline">#TK-<?= $t['id'] ?></span>
+                    <div class="group bg-white rounded-2xl p-4 shadow-sm border-l-4 <?= ($t['priority'] == 'Critical' ? 'border-error' : ($t['priority'] == 'High' ? 'border-orange-500' : 'border-blue-500')) ?> hover:shadow-md transition-shadow relative overflow-hidden">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded <?= $priority_class ?>"><?= $t['priority'] ?></span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">#TK-<?= $t['id'] ?></span>
+                                    <span class="text-[9px] text-primary font-bold uppercase tracking-widest"><?= htmlspecialchars($t['project_name'] ?: 'Global Support') ?></span>
                                 </div>
-                                <h3 class="text-xl font-bold text-on-surface font-headline"><?= htmlspecialchars($t['subject']) ?></h3>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase mt-1"><?= htmlspecialchars($t['project_name'] ?: 'Global Support') ?></p>
+                                <h3 class="text-sm font-bold text-on-surface font-headline truncate mb-1"><?= htmlspecialchars($t['subject']) ?></h3>
+                                <p class="text-slate-500 text-xs truncate opacity-70"><?= htmlspecialchars($t['description']) ?></p>
                             </div>
-                            <div class="text-right">
-                                <span class="text-xs text-slate-400 font-headline uppercase block">Status</span>
-                                <span class="text-sm font-bold <?= $t['status'] == 'Resolved' ? 'text-emerald-500' : 'text-primary' ?>"><?= strtoupper($t['status']) ?></span>
-                            </div>
-                        </div>
-                        <p class="text-slate-600 text-sm mb-6 max-w-2xl leading-relaxed"><?= nl2br(htmlspecialchars($t['description'])) ?></p>
-                        <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-50">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs text-slate-400 font-headline uppercase">Assigned To:</span>
-                                <span class="text-sm font-bold"><?= htmlspecialchars($t['department_name'] ?? 'Unassigned') ?></span>
-                            </div>
-                            <div class="flex items-center gap-8">
-                                <button onclick="openThread(<?= $t['id'] ?>)" class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
-                                    View Thread <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            <div class="flex items-center gap-6 shrink-0">
+                                <div class="text-right">
+                                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Status</p>
+                                    <p class="text-[10px] font-bold <?= $t['status'] == 'Resolved' ? 'text-emerald-500' : 'text-primary' ?>"><?= strtoupper($t['status']) ?></p>
+                                </div>
+                                <button onclick="openThread(<?= $t['id'] ?>)" class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all group/btn">
+                                    <span class="material-symbols-outlined text-lg">forum</span>
                                 </button>
                             </div>
                         </div>
@@ -210,14 +204,23 @@ $tickets_res = $conn->query("
 
         <!-- Reply Area -->
         <div id="threadReplyArea" class="p-6 border-t border-slate-100 bg-white shrink-0">
-            <form id="threadReplyForm" class="flex gap-4 items-end">
+            <form id="threadReplyForm" class="space-y-4">
                 <input type="hidden" id="replyTicketId">
-                <div class="flex-1">
-                    <textarea id="replyMessage" rows="2" placeholder="Type your message..." required class="w-full bg-slate-50 border-none rounded-2xl p-4 text-xs focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"></textarea>
+                <div class="flex gap-4 items-end">
+                    <div class="flex-1">
+                        <textarea id="replyMessage" rows="2" placeholder="Type your message..." required class="w-full bg-slate-50 border-none rounded-2xl p-4 text-xs focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"></textarea>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="file" id="replyAttachment" class="hidden" onchange="updateFileLabel(this)" />
+                        <button type="button" onclick="document.getElementById('replyAttachment').click()" class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 transition-colors">
+                            <span class="material-symbols-outlined text-sm">attach_file</span>
+                        </button>
+                        <button type="submit" id="sendReplyBtn" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shrink-0 shadow-lg shadow-slate-200">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
                 </div>
-                <button type="submit" id="sendReplyBtn" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shrink-0 shadow-lg shadow-slate-200">
-                    <span class="material-symbols-outlined">send</span>
-                </button>
+                <div id="fileLabel" class="text-[10px] text-slate-400 font-bold hidden px-2"></div>
             </form>
         </div>
     </div>
@@ -303,6 +306,16 @@ $tickets_res = $conn->query("
             }
         }
 
+        function updateFileLabel(input) {
+            const label = document.getElementById('fileLabel');
+            if (input.files && input.files[0]) {
+                label.innerText = 'Attached: ' + input.files[0].name;
+                label.classList.remove('hidden');
+            } else {
+                label.classList.add('hidden');
+            }
+        }
+
         function closeThread() {
             const overlay = document.getElementById('threadOverlay');
             const panel = document.getElementById('threadPanel');
@@ -332,6 +345,18 @@ $tickets_res = $conn->query("
             
             replies.forEach(r => {
                 const isAdmin = r.sender_type === 'Admin';
+                let attachHtml = '';
+                if (r.attachment) {
+                    const path = '../uploads/tickets/' + r.attachment;
+                    const ext = r.attachment.split('.').pop().toLowerCase();
+                    const isImg = ['jpg','jpeg','png','gif','webp'].includes(ext);
+                    if (isImg) {
+                        attachHtml = `<a href="${path}" target="_blank" class="block mt-2 rounded-lg overflow-hidden border border-slate-100"><img src="${path}" class="max-w-xs h-auto" /></a>`;
+                    } else {
+                        attachHtml = `<a href="${path}" target="_blank" class="flex items-center gap-2 mt-2 p-2 rounded-lg bg-slate-50 text-[10px] font-bold uppercase text-slate-500"><span class="material-symbols-outlined text-sm">description</span> View Attachment</a>`;
+                    }
+                }
+
                 html += `
                     <div class="flex flex-col ${isAdmin ? 'items-start' : 'items-end'} mb-6">
                         <div class="flex items-center gap-2 mb-1">
@@ -340,7 +365,8 @@ $tickets_res = $conn->query("
                             ${!isAdmin ? `<span class="text-xs font-bold text-slate-900">You</span>` : ''}
                         </div>
                         <div class="${isAdmin ? 'bg-white border border-slate-100 rounded-tl-none' : 'bg-primary text-on-primary rounded-tr-none shadow-lg shadow-primary/10'} rounded-2xl p-4 max-w-[85%]">
-                            <p class="text-sm leading-relaxed whitespace-pre-wrap ${isAdmin ? 'text-slate-700' : 'font-medium'}">${r.message}</p>
+                            ${r.message ? `<p class="text-sm leading-relaxed whitespace-pre-wrap ${isAdmin ? 'text-slate-700' : 'font-medium'}">${r.message}</p>` : ''}
+                            ${attachHtml}
                         </div>
                     </div>
                 `;
@@ -371,6 +397,10 @@ $tickets_res = $conn->query("
             const fd = new FormData();
             fd.append('ticket_id', currentTicketId);
             fd.append('message', message);
+            const fileInput = document.getElementById('replyAttachment');
+            if (fileInput.files[0]) {
+                fd.append('attachment', fileInput.files[0]);
+            }
             
             try {
                 const res = await fetch('add_ticket_reply.php', { method: 'POST', body: fd });
@@ -378,6 +408,9 @@ $tickets_res = $conn->query("
                 
                 if (data.status === 'success') {
                     msgInput.value = '';
+                    const fileInput = document.getElementById('replyAttachment');
+                    fileInput.value = '';
+                    document.getElementById('fileLabel').classList.add('hidden');
                     refreshThread();
                 }
             } catch(err) {

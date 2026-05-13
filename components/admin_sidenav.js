@@ -121,7 +121,11 @@ if (scriptTag && scriptTag.hasAttribute('data-root')) {
 }
 
 // Inject HTML
-document.write(SIDEBAR_HTML);
+if (document.readyState === 'loading') {
+    document.write(SIDEBAR_HTML);
+} else {
+    document.body.insertAdjacentHTML('afterbegin', SIDEBAR_HTML);
+}
 
 // Highlight Active Link & Apply Permissions
 document.addEventListener("DOMContentLoaded", () => {

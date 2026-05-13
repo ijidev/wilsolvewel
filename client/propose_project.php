@@ -95,13 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="space-y-2">
                             <label class="text-[11px] uppercase tracking-wider text-slate-400 font-bold ml-4">Machine Model</label>
                             <div class="relative">
-                                <select name="asset_model" required class="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 appearance-none text-on-surface">
-                                    <option value="">Select Asset Class...</option>
-                                    <option>Caterpillar D11 Bulldozer</option>
-                                    <option>Komatsu PC2000 Excavator</option>
-                                    <option>Liebherr LTM 11200 Crane</option>
-                                    <option>Volvo A60H Articulated Hauler</option>
-                                </select>
+                                <input list="asset_models" name="asset_model" required placeholder="e.g. Caterpillar D11" class="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 text-on-surface" />
+                                <datalist id="asset_models">
+                                    <option value="Caterpillar D11 Bulldozer">
+                                    <option value="Komatsu PC2000 Excavator">
+                                    <option value="Liebherr LTM 11200 Crane">
+                                    <option value="Volvo A60H Articulated Hauler">
+                                </datalist>
                             </div>
                         </div>
                         <div class="space-y-2">
@@ -110,13 +110,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] uppercase tracking-wider text-slate-400 font-bold ml-4">Type of Service</label>
-                            <select name="service_type" required class="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 appearance-none text-on-surface">
-                                <option value="">Select Service Type...</option>
-                                <option>Major Overhaul (Level 4)</option>
-                                <option>Component Repair</option>
-                                <option>Preventive Maintenance</option>
-                                <option>Emergency Breakdown</option>
-                            </select>
+                            <input list="service_types" name="service_type" required placeholder="e.g. Major Overhaul" class="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 text-on-surface" />
+                            <datalist id="service_types">
+                                <option value="Major Overhaul (Level 4)">
+                                <option value="Component Repair">
+                                <option value="Preventive Maintenance">
+                                <option value="Emergency Breakdown">
+                                <option value="Technical Inspection">
+                            </datalist>
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] uppercase tracking-wider text-slate-400 font-bold ml-4">Asset Location</label>
