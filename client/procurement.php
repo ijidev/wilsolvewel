@@ -10,19 +10,19 @@ if ($client_id === 0) {
 
 $conn = get_db_connection();
 
-// Fetch orders linked to client's projects
+// Fetch orders linked to client or their projects
 $orders_res = $conn->query("
     SELECT po.*, p.name as project_name 
     FROM procurement_orders po 
     LEFT JOIN projects p ON po.project_id = p.id 
-    WHERE (p.client_id = $client_id OR po.requested_by = $client_id)
+    WHERE (p.client_id = $client_id OR po.client_id = $client_id)
     ORDER BY po.created_at DESC
 ");
 
 // Stats
-$active_orders = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = $client_id OR po.requested_by = $client_id) AND po.status != 'Delivered'")->fetch_row()[0];
-$in_transit = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = $client_id OR po.requested_by = $client_id) AND po.status = 'In Transit'")->fetch_row()[0];
-$held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = $client_id OR po.requested_by = $client_id) AND po.status = 'Held by Customs'")->fetch_row()[0];
+$active_orders = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = $client_id OR po.client_id = $client_id) AND po.status != 'Delivered'")->fetch_row()[0];
+$in_transit = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = $client_id OR po.client_id = $client_id) AND po.status = 'In Transit'")->fetch_row()[0];
+$held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = $client_id OR po.client_id = $client_id) AND po.status = 'Held by Customs'")->fetch_row()[0];
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">

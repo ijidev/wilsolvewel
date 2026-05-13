@@ -12,16 +12,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['initiate_order'])) {
     $unit_price = (float)$_POST['unit_price'];
     $total_price = $quantity * $unit_price;
     $supplier = $conn->real_escape_string($_POST['supplier']);
+    $client_id = (int)($_POST['client_id'] ?? 0);
+    $project_id = (int)($_POST['project_id'] ?? 0);
     $order_num = 'ORD-' . strtoupper(substr(uniqid(), -6));
     
-    $sql = "INSERT INTO procurement_orders (order_number, item_name, quantity, unit_price, total_price, supplier, requested_by) 
-            VALUES ('$order_num', '$item_name', $quantity, $unit_price, $total_price, '$supplier', $admin_id)";
+    $sql = "INSERT INTO procurement_orders (order_number, item_name, quantity, unit_price, total_price, supplier, requested_by, client_id, project_id) 
+            VALUES ('$order_num', '$item_name', $quantity, $unit_price, $total_price, '$supplier', $admin_id, " . ($client_id ?: "NULL") . ", " . ($project_id ?: "NULL") . ")";
     
     if ($conn->query($sql)) {
         header("Location: index.php");
         exit;
     }
 }
+
+// Fetch Clients & Projects
+$clients = $conn->query("SELECT id, name FROM clients ORDER BY name ASC");
+$projects = $conn->query("SELECT id, name, client_id FROM projects ORDER BY name ASC");
 
 $permissions = get_admin_permissions($admin_id);
 ?>
@@ -106,6 +112,30 @@ $permissions = get_admin_permissions($admin_id);
                             </div>
 
                             <div class="col-span-2 space-y-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Assign to Client</label>
+                                <select name="client_id" id="clientSelect" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 focus:ring-1 focus:ring-primary">
+                                    <option value="">Select Client Ownership</option>
+                                    <?php while($c = $clients->fetch_assoc()): ?>
+                                        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="col-span-2 space-y-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Project Link (Optional)</label>
+                                <select name="project_id" id="projectSelect" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 focus:ring-1 focus:ring-primary">
+                                    <option value="">Maintenance Independent</option>
+                                    <?php 
+                                    $projects_arr = [];
+                                    while($p = $projects->fetch_assoc()) {
+                                        $projects_arr[] = $p;
+                                        echo "<option value='{$p['id']}' data-client='{$p['client_id']}'>".htmlspecialchars($p['name'])."</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div class="col-span-2 space-y-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Preferred Supplier</label>
                                 <input type="text" name="supplier" placeholder="e.g. Caterpillar Strategic Logistics" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-base font-bold text-slate-900 focus:ring-1 focus:ring-primary">
                             </div>
@@ -171,6 +201,26 @@ $permissions = get_admin_permissions($admin_id);
 
         qty.addEventListener('input', update);
         price.addEventListener('input', update);
+
+        // Client -> Project filtering
+        const clientSelect = document.getElementById('clientSelect');
+        const projectSelect = document.getElementById('projectSelect');
+        const originalProjectOptions = Array.from(projectSelect.options);
+
+        clientSelect.addEventListener('change', function() {
+            const clientId = this.value;
+            projectSelect.innerHTML = '';
+            
+            // Re-add "Maintenance Independent"
+            projectSelect.appendChild(originalProjectOptions[0]);
+
+            originalProjectOptions.forEach((opt, idx) => {
+                if (idx === 0) return;
+                if (opt.getAttribute('data-client') === clientId || !clientId) {
+                    projectSelect.appendChild(opt);
+                }
+            });
+        });
     </script>
 </body>
 </html>

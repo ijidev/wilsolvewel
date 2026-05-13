@@ -28,7 +28,7 @@ try {
         SELECT po.id 
         FROM procurement_orders po 
         LEFT JOIN projects p ON po.project_id = p.id 
-        WHERE po.id = $order_id AND (p.client_id = $client_id OR po.requested_by = $client_id)
+        WHERE po.id = $order_id AND (p.client_id = $client_id OR po.client_id = $client_id)
     ");
 
     if ($verify_res && $verify_res->num_rows > 0) {

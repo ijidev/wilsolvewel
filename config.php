@@ -183,11 +183,13 @@ function get_db_connection() {
         supplier VARCHAR(255),
         status VARCHAR(50) DEFAULT 'Pending',
         current_location VARCHAR(255) NULL,
+        client_id INT(11) NULL,
         requested_by INT(11),
         project_id INT(11) NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
+    ensure_column_exists($conn, 'procurement_orders', 'client_id', "INT(11) NULL");
     ensure_column_exists($conn, 'procurement_orders', 'tracking_id', "VARCHAR(100) NULL");
     ensure_column_exists($conn, 'procurement_orders', 'current_location', "VARCHAR(255) NULL");
     ensure_column_exists($conn, 'procurement_orders', 'project_id', "INT(11) NULL");
