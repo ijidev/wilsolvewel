@@ -286,32 +286,33 @@ if (isset($_GET['ajax_action'])) {
         ?>
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Main Column (Milestones & Comms) -->
-            <div class="flex-1 space-y-8">
+            <div class="flex-1 space-y-8 min-w-0">
                 <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
                     <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 relative z-10">
-                        <div class="flex items-center gap-4 min-w-0">
-                            <div class="shrink-0">
-                                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.1em] <?php echo $proj['status']=='Active'?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
-                                    <?php echo $proj['status']; ?>
-                                </span>
-                            </div>
-                            <div class="min-w-0">
-                                <h2 class="text-3xl font-bold font-headline text-slate-900 leading-tight truncate"><?php echo htmlspecialchars($proj['name']); ?></h2>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 opacity-60">ID: #PRJ-<?php echo $proj['id']; ?></p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 shrink-0">
-                            <?php if ($proj['status'] == 'Active' || $proj['status'] == 'On Hold'): ?>
-                                <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="h-11 px-5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
-                                    <span class="material-symbols-outlined text-sm"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
-                                    <?php echo $proj['status'] == 'On Hold' ? 'Resume Project' : 'Put on Hold'; ?>
+                    <div class="mb-10 relative z-10">
+                        <!-- Row 1: Status & Small Actions -->
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo $proj['status']=='Active'?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
+                                <?php echo $proj['status']; ?>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <?php if ($proj['status'] == 'Active' || $proj['status'] == 'On Hold'): ?>
+                                    <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="h-8 px-3 bg-white border border-slate-200 text-slate-500 rounded-xl text-[8px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-sm">
+                                        <span class="material-symbols-outlined text-[14px]"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
+                                        <?php echo $proj['status'] == 'On Hold' ? 'Resume' : 'Hold'; ?>
+                                    </button>
+                                <?php endif; ?>
+                                <button onclick="editProject(<?php echo $id; ?>)" class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+                                    <span class="material-symbols-outlined text-sm">settings</span>
                                 </button>
-                            <?php endif; ?>
-                            <button onclick="editProject(<?php echo $id; ?>)" class="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg active:scale-95">
-                                <span class="material-symbols-outlined text-lg">settings</span>
-                            </button>
+                            </div>
                         </div>
+
+                        <!-- Row 2: Title -->
+                        <h2 class="text-3xl font-bold font-headline text-slate-900 leading-tight mb-1 truncate"><?php echo htmlspecialchars($proj['name']); ?></h2>
+                        
+                        <!-- Row 3: ID -->
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] opacity-60">ID: #PRJ-<?php echo $proj['id']; ?></p>
                     </div>
 
                     <div class="p-6 rounded-2xl bg-emerald-50/50 border border-emerald-100 relative z-10">
@@ -327,11 +328,13 @@ if (isset($_GET['ajax_action'])) {
 
                 <!-- Milestone Roadmap -->
                 <div class="space-y-6">
-                    <div class="flex items-center justify-between px-2">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">route</span> Strategic Milestones
-                        </h3>
-                        <div class="flex gap-2">
+                    <div class="space-y-4">
+                        <div class="px-2">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">route</span> Strategic Milestones
+                            </h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2 px-2">
                             <?php if ($proj['status'] == 'Planning'): ?>
                                 <?php 
                                     $all_approved = true;
@@ -339,21 +342,21 @@ if (isset($_GET['ajax_action'])) {
                                     foreach ($milestones as $m) if ($m['approval_status'] != 'Approved') $all_approved = false;
                                 ?>
                                 <?php if ($all_approved): ?>
-                                    <button onclick="confirmProjectActive(<?php echo $id; ?>)" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-[9px] font-bold uppercase tracking-widest hover:shadow-lg transition-all flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-xs">rocket_launch</span> Activate Project
+                                    <button onclick="confirmProjectActive(<?php echo $id; ?>)" class="px-3 py-1.5 bg-primary text-on-primary rounded-lg text-[8px] font-bold uppercase tracking-widest hover:shadow-lg transition-all flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[14px]">rocket_launch</span> Activate
                                     </button>
                                 <?php else: ?>
-                                    <div class="px-3 py-2 bg-slate-50 text-slate-400 rounded-xl text-[8px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-2" title="All milestones must be approved by client">
-                                        <span class="material-symbols-outlined text-xs">info</span> Awaiting Approval
+                                    <div class="px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-[7px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-1.5" title="All milestones must be approved by client">
+                                        <span class="material-symbols-outlined text-[12px]">info</span> Awaiting Approval
                                     </div>
                                 <?php endif; ?>
 
-                                <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-xs">add</span> Add Milestone
+                                <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[8px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[14px]">add</span> Add Milestone
                                 </button>
                             <?php else: ?>
-                                <div class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[9px] font-bold uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-xs">lock</span> Roadmap Locked
+                                <div class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-bold uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[14px]">lock</span> Roadmap Locked
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -635,8 +638,8 @@ $permissions = get_admin_permissions($admin_id);
         </div>
 
         <!-- Detail View -->
-        <div class="flex-1 bg-[#F8FAFC] overflow-y-auto custom-scrollbar relative">
-            <div id="detailPane" class="p-8 lg:p-12 max-w-4xl mx-auto hidden">
+        <div class="flex-1 bg-[#F8FAFC] overflow-y-auto custom-scrollbar relative overflow-x-hidden">
+            <div id="detailPane" class="p-8 lg:p-12 xl:max-w-6xl mx-auto hidden">
                 <!-- Content loaded via AJAX -->
             </div>
             <div id="emptyPane" class="absolute inset-0 flex flex-col items-center justify-center text-slate-300">
