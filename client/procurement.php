@@ -259,14 +259,18 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                     <h4 class="font-bold text-on-surface font-headline">Need assistance with this order?</h4>
                     <p class="text-xs text-slate-500 mt-2">Open a priority ticket and our logistics team will respond within 24 engineering hours.</p>
                 </div>
-                <form action="tickets.php" method="POST" class="space-y-4">
+                <div id="ticket-success" class="hidden p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-bold text-center">
+                    Ticket submitted successfully! Our team will review it.
+                </div>
+                <form id="support-form" class="space-y-4">
                     <input type="hidden" name="order_id" id="support-order-id">
                     <input type="hidden" name="subject" id="support-subject">
+                    <input type="hidden" name="ajax_ticket" value="1">
                     <div class="space-y-1">
                         <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-headline">Message to Logistics</label>
-                        <textarea name="description" class="w-full bg-white border border-slate-200 rounded-xl p-4 text-xs focus:ring-2 focus:ring-primary/20 transition-all outline-none" rows="5" placeholder="Detail your inquiry..."></textarea>
+                        <textarea name="description" id="support-description" required class="w-full bg-white border border-slate-200 rounded-xl p-4 text-xs focus:ring-2 focus:ring-primary/20 transition-all outline-none" rows="5" placeholder="Detail your inquiry..."></textarea>
                     </div>
-                    <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">
+                    <button type="submit" id="support-submit-btn" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">
                         Submit Priority Ticket
                     </button>
                 </form>
@@ -290,8 +294,9 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
             document.getElementById('detail-location').innerText = order.current_location || 'Tracking initiated';
             document.getElementById('detail-updated').innerText = order.updated_at || order.created_at;
             
-            document.getElementById('support-order-id').value = order.id;
-            document.getElementById('support-subject').value = "Procurement Inquiry: " + order.item_name + " (#" + order.order_number + ")";
+            document.getElementById('ticket-success').classList.add('hidden');
+            document.getElementById('support-form').classList.remove('hidden');
+            document.getElementById('support-description').value = '';
 
             // Fetch History
             fetchTrackingHistory(order.id);
@@ -350,8 +355,39 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                             timeline.appendChild(item);
                         });
                     }
+                })
+                .catch(err => {
+                    timeline.innerHTML = '<p class="text-xs text-red-500 italic">Error fetching logistical data. Terminal offline.</p>';
+                    console.error(err);
                 });
         }
+
+        // Handle Support Ticket AJAX
+        document.getElementById('support-form').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('support-submit-btn');
+            const form = document.getElementById('support-form');
+            const success = document.getElementById('ticket-success');
+            
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+            
+            const formData = new FormData(form);
+            fetch('tickets.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.text())
+            .then(text => {
+                form.classList.add('hidden');
+                success.classList.remove('hidden');
+            })
+            .catch(err => {
+                alert("Critical system error during ticket submission.");
+                btn.disabled = false;
+                btn.innerText = "Retry Submission";
+            });
+        };
     </script>
 </body>
 </html>

@@ -11,9 +11,9 @@ $conn = get_db_connection();
 
 // Handle New Ticket Submission
 $message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_ticket'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || isset($_POST['ajax_ticket']))) {
     $subject = $conn->real_escape_string($_POST['subject']);
-    $priority = $conn->real_escape_string($_POST['priority']);
+    $priority = $conn->real_escape_string($_POST['priority'] ?? 'Normal');
     $description = $conn->real_escape_string($_POST['description']);
     $project_id = (int)($_POST['project_id'] ?? 0);
 
@@ -21,8 +21,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_ticket'])) {
             VALUES ($client_id, " . ($project_id ?: "NULL") . ", '$subject', '$priority', '$description', 'Open')";
     
     if ($conn->query($sql)) {
+        if (isset($_POST['ajax_ticket'])) {
+            echo json_encode(['status' => 'success']);
+            exit;
+        }
         $message = "Ticket created successfully.";
     } else {
+        if (isset($_POST['ajax_ticket'])) {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => $conn->error]);
+            exit;
+        }
         $message = "Error creating ticket: " . $conn->error;
     }
 }
