@@ -41,6 +41,7 @@ try {
     $tickets = [];
     if ($tickets_res) {
         while($row = $tickets_res->fetch_assoc()) {
+            $row['created_at'] = date('M d, Y H:i', strtotime($row['created_at']));
             $tickets[] = $row;
         }
     }

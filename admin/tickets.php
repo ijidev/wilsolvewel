@@ -41,25 +41,68 @@ if (isset($_GET['ajax_action'])) {
         }
 
         $conn->query("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message) VALUES ($ticket_id, 'Admin', $admin_id, '$message')");
+        $new_reply_id = $conn->insert_id;
+        
         // Also update ticket status to In Progress if it was Open
         $conn->query("UPDATE tickets SET status='In Progress' WHERE id=$ticket_id AND status='Open'");
         
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Replied to ticket ID: $ticket_id");
         
-        $new_id = $conn->insert_id;
-        $res = $conn->query("SELECT tr.*, a.name as admin_name FROM ticket_replies tr JOIN admins a ON tr.sender_id = a.id WHERE tr.id = $new_id");
+        $res = $conn->query("SELECT tr.*, a.name as admin_name FROM ticket_replies tr JOIN admins a ON tr.sender_id = a.id WHERE tr.id = $new_reply_id");
         $reply = $res->fetch_assoc();
         
-        $html = '<div class="flex flex-col items-end mb-6">';
+        $html = '<div class="flex flex-col items-end mb-6 animate-in slide-in-from-right-4 duration-300">';
         $html .= '<div class="flex items-center gap-2 mb-1">';
         $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($reply['created_at'])) . '</span>';
         $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($reply['admin_name']) . '</span>';
         $html .= '</div>';
-        $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%]">';
+        $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
         $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($reply['message']) . '</p>';
         $html .= '</div></div>';
 
-        echo json_encode(['status' => 'success', 'html' => $html]);
+        echo json_encode(['status' => 'success', 'html' => $html, 'reply_id' => $new_reply_id]);
+        exit;
+    }
+
+    if ($_GET['ajax_action'] == 'poll_replies') {
+        $ticket_id = (int)$_GET['ticket_id'];
+        $last_id = (int)$_GET['last_id'];
+        
+        $res = $conn->query("
+            SELECT tr.*, 
+                   IF(tr.sender_type='Admin', a.name, c.name) as sender_name 
+            FROM ticket_replies tr 
+            LEFT JOIN admins a ON (tr.sender_type = 'Admin' AND tr.sender_id = a.id)
+            LEFT JOIN clients c ON (tr.sender_type = 'Client' AND tr.sender_id = c.id)
+            WHERE tr.ticket_id = $ticket_id AND tr.id > $last_id 
+            ORDER BY tr.created_at ASC
+        ");
+        
+        $replies = [];
+        while ($r = $res->fetch_assoc()) {
+            $html = '';
+            if ($r['sender_type'] === 'Admin') {
+                $html .= '<div class="flex flex-col items-end mb-6 animate-in slide-in-from-right-4 duration-300">';
+                $html .= '<div class="flex items-center gap-2 mb-1">';
+                $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
+                $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($r['sender_name']) . '</span>';
+                $html .= '</div>';
+                $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
+                $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($r['message']) . '</p>';
+                $html .= '</div></div>';
+            } else {
+                $html .= '<div class="flex flex-col items-start mb-6 animate-in slide-in-from-left-4 duration-300">';
+                $html .= '<div class="flex items-center gap-2 mb-1">';
+                $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($r['sender_name']) . '</span>';
+                $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
+                $html .= '</div>';
+                $html .= '<div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">';
+                $html .= '<p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">' . htmlspecialchars($r['message']) . '</p>';
+                $html .= '</div></div>';
+            }
+            $replies[] = ['id' => $r['id'], 'html' => $html];
+        }
+        echo json_encode(['status' => 'success', 'replies' => $replies]);
         exit;
     }
 
@@ -92,15 +135,18 @@ if (isset($_GET['ajax_action'])) {
         ob_start();
         ?>
         <!-- Header & Meta -->
-        <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm mb-6">
-            <div class="flex items-start justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($ticket['subject']); ?></h2>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1"><span class="material-symbols-outlined text-sm">person</span> <?php echo htmlspecialchars($ticket['client_name']); ?> (<?php echo htmlspecialchars($ticket['client_email']); ?>)</p>
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mb-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="flex-1">
+                    <h2 class="text-xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($ticket['subject']); ?></h2>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm text-slate-400">person</span>
+                        <p class="text-xs font-bold text-slate-600"><?php echo htmlspecialchars($ticket['client_name']); ?> <span class="text-slate-300 font-normal ml-1">(<?php echo htmlspecialchars($ticket['client_email']); ?>)</span></p>
+                    </div>
                 </div>
-                <div class="flex flex-col items-end gap-2">
-                    <span class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest <?php echo $ticket['status']=='Open'?'bg-amber-50 text-amber-600':($ticket['status']=='In Progress'?'bg-blue-50 text-blue-600':($ticket['status']=='Resolved'?'bg-emerald-50 text-emerald-600':'bg-slate-100 text-slate-500')); ?>"><?php echo $ticket['status']; ?></span>
-                    <span class="px-2 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest border border-slate-100 <?php echo $ticket['priority']=='Urgent'?'text-red-500':($ticket['priority']=='High'?'text-orange-500':'text-slate-500'); ?>"><?php echo $ticket['priority']; ?> Priority</span>
+                <div class="flex flex-col items-end gap-2 shrink-0">
+                    <span class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest <?php echo $ticket['status']=='Open'?'bg-amber-100 text-amber-700':($ticket['status']=='In Progress'?'bg-blue-100 text-blue-700':($ticket['status']=='Resolved'?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-600')); ?>"><?php echo $ticket['status']; ?></span>
+                    <span class="px-2 py-0.5 rounded bg-slate-50 text-slate-400 text-[9px] font-bold uppercase tracking-tighter"><?php echo $ticket['priority']; ?> Priority</span>
                 </div>
             </div>
             
@@ -193,7 +239,9 @@ if (isset($_GET['ajax_action'])) {
         <?php endif; ?>
         
         <?php
-        echo json_encode(['html' => ob_get_clean()]);
+        $html = ob_get_clean();
+        $last_reply_id = !empty($replies) ? end($replies)['id'] : 0;
+        echo json_encode(['html' => $html, 'last_reply_id' => $last_reply_id]);
         exit;
     }
 }
@@ -226,7 +274,7 @@ $permissions = get_admin_permissions($admin_id);
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
     </style>
 </head>
-<body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
+<body class="bg-[#F8FAFC] font-body text-on-surface min-h-screen">
 
 <script src="../components/admin_sidenav.js" data-root="../"></script>
 
@@ -237,17 +285,17 @@ $permissions = get_admin_permissions($admin_id);
     </div>
 </div>
 
-<div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
+<div class="lg:pl-64 min-h-screen flex flex-col">
+    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20 sticky top-0">
         <div>
             <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Support Tickets</h1>
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Client Requests & Issues</p>
         </div>
     </header>
 
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
         <!-- Master List -->
-        <div class="w-full md:w-80 lg:w-96 bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar flex flex-col shrink-0 p-4 space-y-3">
+        <div class="w-full md:w-64 lg:w-80 bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar flex flex-col shrink-0 p-4 space-y-3">
             <?php if (empty($tickets)): ?>
                 <div class="text-center py-10"><span class="material-symbols-outlined text-4xl text-slate-200">mark_email_read</span><p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No Support Tickets</p></div>
             <?php endif; ?>
@@ -271,7 +319,7 @@ $permissions = get_admin_permissions($admin_id);
 
         <!-- Detail View -->
         <div class="flex-1 bg-[#F8FAFC] overflow-y-auto custom-scrollbar relative flex flex-col">
-            <div id="detailPane" class="flex-1 p-6 lg:p-10 max-w-4xl mx-auto w-full hidden flex flex-col">
+            <div id="detailPane" class="flex-1 p-4 lg:p-6 w-full hidden flex flex-col">
                 <!-- Content loaded via AJAX -->
             </div>
             <div id="emptyPane" class="absolute inset-0 flex flex-col items-center justify-center text-slate-300">
@@ -292,89 +340,135 @@ function showToast(msg, type = 'success') {
     setTimeout(() => t.style.transform = 'translateX(150%)', 4000);
 }
 
-async function loadTicket(id, cardEl) {
-    document.querySelectorAll('.group').forEach(el => el.classList.remove('ring-2', 'ring-primary', 'border-transparent'));
-    if (cardEl) cardEl.classList.add('ring-2', 'ring-primary', 'border-transparent');
-    
-    document.getElementById('emptyPane').classList.add('hidden');
-    const pane = document.getElementById('detailPane');
-    pane.classList.remove('hidden');
-    pane.innerHTML = '<div class="text-center py-20 flex-1"><span class="material-symbols-outlined text-primary text-4xl animate-spin">sync</span></div>';
-    
-    const res = await fetch(`?ajax_action=load_details&id=${id}`);
-    const data = await res.json();
-    pane.innerHTML = data.html;
-    
-    // scroll to bottom
-    const detailContainer = pane.parentElement;
-    detailContainer.scrollTop = detailContainer.scrollHeight;
-}
+    let currentTicketId = null;
+    let lastReplyId = 0;
+    let pollInterval = null;
 
-async function updateAssignment(ticketId) {
-    const deptId = document.getElementById('deptSelect').value;
-    const adminId = document.getElementById('staffSelect').value;
-    
-    const fd = new FormData();
-    fd.append('ticket_id', ticketId);
-    fd.append('department_id', deptId);
-    fd.append('assigned_admin_id', adminId);
-    
-    try {
-        const res = await fetch('?ajax_action=update_assignment', { method: 'POST', body: fd });
-        const result = await res.json();
-        if (result.status === 'success') showToast('Assignment updated');
-    } catch(err) {
-        showToast('Network error', 'error');
+    async function loadTicket(id, cardEl) {
+        currentTicketId = id;
+        document.querySelectorAll('.group').forEach(el => el.classList.remove('ring-2', 'ring-primary', 'border-transparent', 'bg-slate-50'));
+        if (cardEl) cardEl.classList.add('ring-2', 'ring-primary', 'border-transparent', 'bg-slate-50');
+        
+        document.getElementById('emptyPane').classList.add('hidden');
+        const pane = document.getElementById('detailPane');
+        pane.classList.remove('hidden');
+        pane.innerHTML = '<div class="text-center py-20 flex-1 flex flex-col items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl animate-spin mb-4">sync</span><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Loading Conversation...</p></div>';
+        
+        const res = await fetch(`?ajax_action=load_details&id=${id}`);
+        const data = await res.json();
+        pane.innerHTML = data.html;
+        
+        lastReplyId = data.last_reply_id;
+        
+        // scroll to bottom
+        const detailContainer = pane.parentElement;
+        detailContainer.scrollTop = detailContainer.scrollHeight;
+
+        // Reset polling
+        if (pollInterval) clearInterval(pollInterval);
+        pollInterval = setInterval(pollNewReplies, 15000);
     }
-}
 
-async function updateStatus(ticketId, status) {
-    const fd = new FormData();
-    fd.append('ticket_id', ticketId);
-    fd.append('status', status);
-    
-    try {
-        const res = await fetch('?ajax_action=update_status', { method: 'POST', body: fd });
-        const result = await res.json();
-        if (result.status === 'success') {
-            showToast('Status updated');
-            // Option to refresh the sidebar silently
-        }
-    } catch(err) {
-        showToast('Network error', 'error');
+    function updateLastReplyId() {
+        // This is a bit hacky but works: find the last reply ID in the DOM if possible, 
+        // or just rely on the server giving us everything. 
+        // Actually, better to pass it in the load_details JSON.
+        // For now, let's just use the server side count or similar.
     }
-}
 
-async function addReply(e, ticketId) {
-    e.preventDefault();
-    const btn = document.getElementById('replyBtn');
-    const input = document.getElementById('replyMessage');
-    const message = input.value;
-    
-    btn.disabled = true;
-    
-    const fd = new FormData();
-    fd.append('ticket_id', ticketId);
-    fd.append('message', message);
-    
-    try {
-        const res = await fetch('?ajax_action=add_reply', { method: 'POST', body: fd });
-        const result = await res.json();
-        if (result.status === 'success') {
-            input.value = '';
-            document.getElementById('replyThread').insertAdjacentHTML('beforeend', result.html);
+    async function pollNewReplies() {
+        if (!currentTicketId) return;
+        
+        const res = await fetch(`?ajax_action=poll_replies&ticket_id=${currentTicketId}&last_id=${lastReplyId}`);
+        const data = await res.json();
+        
+        if (data.status === 'success' && data.replies.length > 0) {
+            const thread = document.getElementById('replyThread');
+            data.replies.forEach(r => {
+                thread.insertAdjacentHTML('beforeend', r.html);
+                lastReplyId = Math.max(lastReplyId, r.id);
+            });
             // scroll to bottom
             const detailContainer = document.getElementById('detailPane').parentElement;
             detailContainer.scrollTop = detailContainer.scrollHeight;
-        } else {
-            showToast(result.message, 'error');
         }
-    } catch(err) {
-        showToast('Network error', 'error');
-    } finally {
-        btn.disabled = false;
     }
-}
+
+    async function updateAssignment(ticketId) {
+        const deptId = document.getElementById('deptSelect').value;
+        const adminId = document.getElementById('staffSelect').value;
+        
+        const fd = new FormData();
+        fd.append('ticket_id', ticketId);
+        fd.append('department_id', deptId);
+        fd.append('assigned_admin_id', adminId);
+        
+        try {
+            const res = await fetch('?ajax_action=update_assignment', { method: 'POST', body: fd });
+            const result = await res.json();
+            if (result.status === 'success') showToast('Assignment updated');
+        } catch(err) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    async function updateStatus(ticketId, status) {
+        const fd = new FormData();
+        fd.append('ticket_id', ticketId);
+        fd.append('status', status);
+        
+        try {
+            const res = await fetch('?ajax_action=update_status', { method: 'POST', body: fd });
+            const result = await res.json();
+            if (result.status === 'success') {
+                showToast('Status updated');
+                // Refresh sidebar list item status
+                const activeCard = document.querySelector('.ring-2.ring-primary');
+                if (activeCard) {
+                    const badge = activeCard.querySelector('span[class*="rounded"]');
+                    if (badge) {
+                        badge.innerText = status;
+                        // update colors if needed
+                    }
+                }
+            }
+        } catch(err) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    async function addReply(e, ticketId) {
+        e.preventDefault();
+        const btn = document.getElementById('replyBtn');
+        const input = document.getElementById('replyMessage');
+        const message = input.value;
+        
+        btn.disabled = true;
+        
+        const fd = new FormData();
+        fd.append('ticket_id', ticketId);
+        fd.append('message', message);
+        
+        try {
+            const res = await fetch('?ajax_action=add_reply', { method: 'POST', body: fd });
+            const result = await res.json();
+            if (result.status === 'success') {
+                input.value = '';
+                document.getElementById('replyThread').insertAdjacentHTML('beforeend', result.html);
+                lastReplyId = Math.max(lastReplyId, result.reply_id);
+                // scroll to bottom
+                const detailContainer = document.getElementById('detailPane').parentElement;
+                detailContainer.scrollTop = detailContainer.scrollHeight;
+            } else {
+                showToast(result.message, 'error');
+            }
+        } catch(err) {
+            showToast('Network error', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+</script>
 </script>
 </body>
 </html>

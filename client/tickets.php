@@ -26,12 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || 
     
     if ($conn->query($sql)) {
         if (isset($_POST['ajax_ticket'])) {
-            echo json_encode(['status' => 'success']);
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'success', 'order_id' => $order_id]);
             exit;
         }
         $message = "Ticket created successfully.";
     } else {
         if (isset($_POST['ajax_ticket'])) {
+            header('Content-Type: application/json');
             http_response_code(500);
             echo json_encode(['status' => 'error', 'message' => $conn->error]);
             exit;
@@ -141,7 +143,7 @@ $tickets_res = $conn->query("
                                 <span class="text-sm font-bold"><?= htmlspecialchars($t['department_name'] ?? 'Unassigned') ?></span>
                             </div>
                             <div class="flex items-center gap-8">
-                                <button class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
+                                <button onclick="openThread(<?= $t['id'] ?>)" class="text-primary hover:underline text-sm font-headline font-bold flex items-center gap-1">
                                     View Thread <span class="material-symbols-outlined text-sm">arrow_forward</span>
                                 </button>
                             </div>
@@ -187,6 +189,39 @@ $tickets_res = $conn->query("
         </div>
     </main>
 
+    <!-- Thread Sliding Panel -->
+    <div id="threadOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[70] hidden transition-opacity duration-300 opacity-0" onclick="closeThread()"></div>
+    <div id="threadPanel" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white z-[80] shadow-2xl transform translate-x-full transition-transform duration-500 ease-out flex flex-col">
+        <!-- Panel Header -->
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
+            <div>
+                <span id="threadIdBadge" class="text-[10px] font-bold text-primary font-headline uppercase tracking-widest">#TK-000</span>
+                <h2 id="threadSubject" class="text-xl font-bold font-headline text-slate-900 line-clamp-1">Ticket Subject</h2>
+            </div>
+            <button onclick="closeThread()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Panel Content (Chat Area) -->
+        <div id="threadContent" class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-slate-50/50">
+            <!-- Messages load here -->
+        </div>
+
+        <!-- Reply Area -->
+        <div id="threadReplyArea" class="p-6 border-t border-slate-100 bg-white shrink-0">
+            <form id="threadReplyForm" class="flex gap-4 items-end">
+                <input type="hidden" id="replyTicketId">
+                <div class="flex-1">
+                    <textarea id="replyMessage" rows="2" placeholder="Type your message..." required class="w-full bg-slate-50 border-none rounded-2xl p-4 text-xs focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"></textarea>
+                </div>
+                <button type="submit" id="sendReplyBtn" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shrink-0 shadow-lg shadow-slate-200">
+                    <span class="material-symbols-outlined">send</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- New Ticket Modal -->
     <div id="newTicketModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 hidden">
         <div class="bg-white rounded-2xl p-8 w-full max-w-xl mx-4">
@@ -205,7 +240,7 @@ $tickets_res = $conn->query("
                         <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">Priority</label>
                         <select name="priority" class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20">
                             <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
+                            <option value="Medium" selected>Medium</option>
                             <option value="High">High</option>
                             <option value="Critical">Critical</option>
                         </select>
@@ -225,11 +260,133 @@ $tickets_res = $conn->query("
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">Description</label>
-                    <textarea name="description" rows="4" required class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20"></textarea>
+                    <textarea name="description" rows="4" required class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20" placeholder="Please provide details about your issue..."></textarea>
                 </div>
-                <button type="submit" class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-primary/90 transition-all">Submit Ticket</button>
+                <button type="submit" class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">Submit Ticket</button>
             </form>
         </div>
     </div>
+
+    <script>
+        let currentTicketId = null;
+        let pollInterval = null;
+
+        async function openThread(id) {
+            currentTicketId = id;
+            document.getElementById('replyTicketId').value = id;
+            
+            const overlay = document.getElementById('threadOverlay');
+            const panel = document.getElementById('threadPanel');
+            const content = document.getElementById('threadContent');
+            
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.replace('opacity-0', 'opacity-100'), 10);
+            panel.classList.remove('translate-x-full');
+            
+            content.innerHTML = '<div class="h-full flex flex-col items-center justify-center space-y-4"><span class="material-symbols-outlined text-4xl text-primary animate-spin">sync</span><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fetching Conversation...</p></div>';
+            
+            try {
+                const res = await fetch(`fetch_ticket_thread.php?id=${id}`);
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('threadIdBadge').innerText = `#TK-${data.ticket.id}`;
+                    document.getElementById('threadSubject').innerText = data.ticket.subject;
+                    
+                    renderThread(data.ticket, data.replies);
+                    
+                    if (pollInterval) clearInterval(pollInterval);
+                    pollInterval = setInterval(refreshThread, 15000);
+                }
+            } catch(err) {
+                content.innerHTML = '<div class="text-center p-12"><p class="text-red-500 font-bold">Failed to load conversation.</p></div>';
+            }
+        }
+
+        function closeThread() {
+            const overlay = document.getElementById('threadOverlay');
+            const panel = document.getElementById('threadPanel');
+            
+            overlay.classList.replace('opacity-100', 'opacity-0');
+            panel.classList.add('translate-x-full');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+            
+            if (pollInterval) clearInterval(pollInterval);
+            currentTicketId = null;
+        }
+
+        function renderThread(ticket, replies) {
+            const content = document.getElementById('threadContent');
+            let html = `
+                <!-- Initial Message -->
+                <div class="flex flex-col items-start mb-8">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-bold text-slate-900">You</span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${ticket.created_at}</span>
+                    </div>
+                    <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[85%] shadow-sm">
+                        <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${ticket.description}</p>
+                    </div>
+                </div>
+            `;
+            
+            replies.forEach(r => {
+                const isAdmin = r.sender_type === 'Admin';
+                html += `
+                    <div class="flex flex-col ${isAdmin ? 'items-start' : 'items-end'} mb-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            ${isAdmin ? `<span class="text-xs font-bold text-slate-900">${r.sender_name}</span>` : ''}
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${r.created_at}</span>
+                            ${!isAdmin ? `<span class="text-xs font-bold text-slate-900">You</span>` : ''}
+                        </div>
+                        <div class="${isAdmin ? 'bg-white border border-slate-100 rounded-tl-none' : 'bg-primary text-on-primary rounded-tr-none shadow-lg shadow-primary/10'} rounded-2xl p-4 max-w-[85%]">
+                            <p class="text-sm leading-relaxed whitespace-pre-wrap ${isAdmin ? 'text-slate-700' : 'font-medium'}">${r.message}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = html;
+            content.scrollTop = content.scrollHeight;
+        }
+
+        async function refreshThread() {
+            if (!currentTicketId) return;
+            const res = await fetch(`fetch_ticket_thread.php?id=${currentTicketId}`);
+            const data = await res.json();
+            if (data.status === 'success') {
+                renderThread(data.ticket, data.replies);
+            }
+        }
+
+        document.getElementById('threadReplyForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const msgInput = document.getElementById('replyMessage');
+            const btn = document.getElementById('sendReplyBtn');
+            const message = msgInput.value;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span>';
+            
+            const fd = new FormData();
+            fd.append('ticket_id', currentTicketId);
+            fd.append('message', message);
+            
+            try {
+                const res = await fetch('add_ticket_reply.php', { method: 'POST', body: fd });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    msgInput.value = '';
+                    refreshThread();
+                }
+            } catch(err) {
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">send</span>';
+            }
+        };
+    </script>
 </body>
 </html>

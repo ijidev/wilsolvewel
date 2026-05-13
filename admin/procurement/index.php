@@ -18,16 +18,21 @@ if (isset($_GET['ajax_action'])) {
         exit;
     }
 
-    if ($_GET['ajax_action'] == 'save_update') {
+    if ($_GET['ajax_action'] == 'update_status') {
         $order_id = (int)$_POST['order_id'];
         $status = $conn->real_escape_string($_POST['status']);
         $location = $conn->real_escape_string($_POST['location']);
         $tracking_id = $conn->real_escape_string($_POST['tracking_id']);
-        $notes = $conn->real_escape_string($_POST['notes']);
+        $note = $conn->real_escape_string($_POST['note']);
 
-        $conn->query("INSERT INTO procurement_history (order_id, admin_id, status, location, tracking_id, notes) 
-                      VALUES ($order_id, $admin_id, '$status', '$location', '$tracking_id', '$notes')");
-        $conn->query("UPDATE procurement_orders SET status='$status' WHERE id=$order_id");
+        $conn->query("INSERT INTO procurement_history (order_id, updated_by, status, location, note) 
+                      VALUES ($order_id, $admin_id, '$status', '$location', '$note')");
+        
+        $conn->query("UPDATE procurement_orders SET 
+                      status='$status', 
+                      current_location='$location', 
+                      tracking_id='$tracking_id' 
+                      WHERE id=$order_id");
         
         log_audit($conn, 'Update', 'Procurement', 'Admin', $admin_id, "Logged status update '$status' for order ID: $order_id");
         

@@ -178,7 +178,7 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
     </main>
 
     <!-- Detail Sliding Panel -->
-    <div id="detail-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] hidden transition-opacity" onclick="closeDetail()"></div>
+    <div id="detail-overlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-[60] hidden transition-opacity" onclick="closeDetail()"></div>
     <div id="detail-panel" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-2xl z-[70] hidden-panel flex flex-col">
         <header class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <div>
@@ -258,7 +258,7 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                     <!-- Tickets will be loaded here -->
                 </div>
 
-                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                <div id="support-help-box" class="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center">
                     <span class="material-symbols-outlined text-4xl text-slate-300 mb-4">support_agent</span>
                     <h4 class="font-bold text-on-surface font-headline">Need assistance with this order?</h4>
                     <p class="text-xs text-slate-500 mt-2">Open a priority ticket and our logistics team will respond within 24 engineering hours.</p>
@@ -299,8 +299,13 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
             document.getElementById('detail-updated').innerText = order.updated_at || order.created_at;
             
             document.getElementById('ticket-success').classList.add('hidden');
-            document.getElementById('support-form').classList.remove('hidden');
+            document.getElementById('support-form').classList.add('hidden');
+            document.getElementById('support-help-box').classList.add('hidden');
             document.getElementById('support-description').value = '';
+            
+            // Link support to current order
+            document.getElementById('support-order-id').value = order.id;
+            document.getElementById('support-subject').value = 'Inquiry regarding Order #' + order.order_number;
 
             // Fetch History & Tickets
             fetchTrackingHistory(order.id);
@@ -369,6 +374,9 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
 
         function fetchOrderTickets(orderId) {
             const list = document.getElementById('order-tickets-list');
+            const form = document.getElementById('support-form');
+            const helpBox = document.getElementById('support-help-box');
+            
             list.innerHTML = '<p class="text-[10px] text-slate-400 italic">Syncing active inquiries...</p>';
             
             fetch(`fetch_order_tickets.php?order_id=${orderId}`)
@@ -376,24 +384,47 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                 .then(data => {
                     list.innerHTML = '';
                     if (data.length > 0) {
+                        // Show existing tickets
                         const title = document.createElement('h4');
                         title.className = 'text-[10px] font-bold text-slate-400 uppercase tracking-widest font-headline mb-3';
-                        title.innerText = 'Active Tickets for this Order';
+                        title.innerText = 'Tickets for this Order';
                         list.appendChild(title);
                         
                         data.forEach(t => {
+                            const statusColors = {
+                                'Open': 'bg-amber-100 text-amber-700',
+                                'In Progress': 'bg-blue-100 text-blue-700',
+                                'Resolved': 'bg-emerald-100 text-emerald-700',
+                                'Closed': 'bg-slate-100 text-slate-500'
+                            };
+                            const statusClass = statusColors[t.status] || 'bg-slate-100 text-slate-600';
+                            
                             const item = document.createElement('div');
-                            item.className = 'p-3 bg-white border border-slate-100 rounded-xl shadow-sm flex justify-between items-center';
+                            item.className = 'p-4 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer';
                             item.innerHTML = `
-                                <div>
-                                    <span class="block text-[10px] font-bold text-primary font-headline">#TK-${t.id}</span>
-                                    <span class="block text-xs font-bold text-on-surface line-clamp-1">${t.subject}</span>
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] font-bold text-primary font-headline">#TK-${t.id}</span>
+                                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${statusClass} uppercase tracking-wider">${t.status}</span>
                                 </div>
-                                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600 uppercase tracking-wider">${t.status}</span>
+                                <p class="text-xs font-bold text-on-surface line-clamp-1">${t.subject || 'Support Inquiry'}</p>
+                                <p class="text-[10px] text-slate-400 mt-1">${t.created_at || ''}</p>
                             `;
+                            item.onclick = () => window.open('tickets.php', '_self');
                             list.appendChild(item);
                         });
+
+                        // Change help box text when tickets exist
+                        helpBox.querySelector('h4').innerText = 'Need further assistance?';
+                        helpBox.querySelector('p').innerText = 'You can open another ticket for this order if you have a separate inquiry.';
+                    } else {
+                        // Default help text for no tickets
+                        helpBox.querySelector('h4').innerText = 'Need assistance with this order?';
+                        helpBox.querySelector('p').innerText = 'Open a priority ticket and our logistics team will respond within 24 engineering hours.';
                     }
+                    
+                    // Always show help box and form
+                    helpBox.classList.remove('hidden');
+                    form.classList.remove('hidden');
                 })
                 .catch(err => console.error(err));
         }

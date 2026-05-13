@@ -7,10 +7,10 @@
 
     const clientSidenavHTML = `
 <!-- Sidenav Overlay -->
-<div id="sidenav-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[55] opacity-0 pointer-events-none transition-all duration-500"></div>
+<div id="sidenav-overlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-[55] opacity-0 pointer-events-none transition-all duration-500"></div>
 
 <!-- Floating SideNavBar -->
-<aside id="client-sidenav" class="fixed left-[50px] top-[50px] bottom-[50px] z-[60] w-96 bg-white/95 dark:bg-slate-900/98 backdrop-blur-xl border border-white/20 dark:border-slate-800/50 flex flex-col p-6 gap-2 font-['Manrope'] text-sm font-medium transition-all cubic-bezier(0.4, 0, 0.2, 1) duration-700 -translate-x-[calc(100%+100px)] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] rounded-[3rem] overflow-hidden group ring-1 ring-black/5 dark:ring-white/10">
+<aside id="client-sidenav" class="fixed left-[50px] top-[50px] bottom-[50px] z-[60] w-96 bg-white/95 dark:bg-slate-900/98 backdrop-blur-md border border-white/20 dark:border-slate-800/50 flex flex-col p-6 gap-2 font-['Manrope'] text-sm font-medium transition-all cubic-bezier(0.4, 0, 0.2, 1) duration-700 -translate-x-[calc(100%+100px)] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] rounded-[3rem] overflow-hidden group ring-1 ring-black/5 dark:ring-white/10">
     <!-- Close Button -->
     <button id="close-sidenav" class="absolute top-8 right-8 p-2 text-slate-400 hover:text-primary transition-all active:scale-90 z-30">
         <span class="material-symbols-outlined text-2xl">close</span>
@@ -77,8 +77,8 @@
         pointer-events: auto;
     }
     body.sidenav-active main {
-        filter: blur(5px) brightness(0.9);
-        transform: scale(0.98) translateX(10px);
+        filter: blur(1px) brightness(0.98);
+        transform: scale(0.995) translateX(2px);
         transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: none;
         border-radius: 2rem;
