@@ -252,6 +252,7 @@ function get_db_connection() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     ensure_column_exists($conn, 'tickets', 'project_id', "INT(11) NULL");
+    ensure_column_exists($conn, 'tickets', 'order_id', "INT(11) NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS ticket_replies (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,

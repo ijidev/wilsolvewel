@@ -3,6 +3,7 @@ include '../config.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 header('Content-Type: application/json');
+ob_start();
 
 $client_id = $_SESSION['client_id'] ?? 0;
 if ($client_id === 0) {
@@ -45,11 +46,14 @@ try {
                 $history[] = $row;
             }
         }
+        ob_clean();
         echo json_encode($history);
     } else {
+        ob_clean();
         echo json_encode([]);
     }
 } catch (Exception $e) {
+    ob_clean();
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }

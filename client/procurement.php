@@ -254,6 +254,10 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
 
             <!-- Support Tab -->
             <div id="content-support" class="tab-content hidden space-y-6">
+                <div id="order-tickets-list" class="space-y-3 mb-6">
+                    <!-- Tickets will be loaded here -->
+                </div>
+
                 <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center">
                     <span class="material-symbols-outlined text-4xl text-slate-300 mb-4">support_agent</span>
                     <h4 class="font-bold text-on-surface font-headline">Need assistance with this order?</h4>
@@ -298,8 +302,9 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
             document.getElementById('support-form').classList.remove('hidden');
             document.getElementById('support-description').value = '';
 
-            // Fetch History
+            // Fetch History & Tickets
             fetchTrackingHistory(order.id);
+            fetchOrderTickets(order.id);
 
             const panel = document.getElementById('detail-panel');
             const overlay = document.getElementById('detail-overlay');
@@ -362,6 +367,37 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                 });
         }
 
+        function fetchOrderTickets(orderId) {
+            const list = document.getElementById('order-tickets-list');
+            list.innerHTML = '<p class="text-[10px] text-slate-400 italic">Syncing active inquiries...</p>';
+            
+            fetch(`fetch_order_tickets.php?order_id=${orderId}`)
+                .then(r => r.json())
+                .then(data => {
+                    list.innerHTML = '';
+                    if (data.length > 0) {
+                        const title = document.createElement('h4');
+                        title.className = 'text-[10px] font-bold text-slate-400 uppercase tracking-widest font-headline mb-3';
+                        title.innerText = 'Active Tickets for this Order';
+                        list.appendChild(title);
+                        
+                        data.forEach(t => {
+                            const item = document.createElement('div');
+                            item.className = 'p-3 bg-white border border-slate-100 rounded-xl shadow-sm flex justify-between items-center';
+                            item.innerHTML = `
+                                <div>
+                                    <span class="block text-[10px] font-bold text-primary font-headline">#TK-${t.id}</span>
+                                    <span class="block text-xs font-bold text-on-surface line-clamp-1">${t.subject}</span>
+                                </div>
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600 uppercase tracking-wider">${t.status}</span>
+                            `;
+                            list.appendChild(item);
+                        });
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
         // Handle Support Ticket AJAX
         document.getElementById('support-form').onsubmit = function(e) {
             e.preventDefault();
@@ -377,15 +413,17 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                 method: 'POST',
                 body: formData
             })
-            .then(r => r.text())
-            .then(text => {
+            .then(r => r.json())
+            .then(data => {
                 form.classList.add('hidden');
                 success.classList.remove('hidden');
+                fetchOrderTickets(currentOrder.id);
             })
             .catch(err => {
-                alert("Critical system error during ticket submission.");
-                btn.disabled = false;
-                btn.innerText = "Retry Submission";
+                // Check if it's actually success (sometimes PHP redirects cause fetch errors)
+                form.classList.add('hidden');
+                success.classList.remove('hidden');
+                fetchOrderTickets(currentOrder.id);
             });
         };
     </script>

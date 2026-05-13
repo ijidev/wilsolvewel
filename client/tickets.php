@@ -16,9 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || 
     $priority = $conn->real_escape_string($_POST['priority'] ?? 'Normal');
     $description = $conn->real_escape_string($_POST['description']);
     $project_id = (int)($_POST['project_id'] ?? 0);
+    $order_id = (int)($_POST['order_id'] ?? 0);
 
-    $sql = "INSERT INTO tickets (client_id, project_id, subject, priority, description, status) 
-            VALUES ($client_id, " . ($project_id ?: "NULL") . ", '$subject', '$priority', '$description', 'Open')";
+    $sql = "INSERT INTO tickets (client_id, project_id, order_id, subject, priority, description, status) 
+            VALUES ($client_id, " . ($project_id ?: "NULL") . ", " . ($order_id ?: "NULL") . ", '$subject', '$priority', '$description', 'Open')";
     
     if ($conn->query($sql)) {
         if (isset($_POST['ajax_ticket'])) {
