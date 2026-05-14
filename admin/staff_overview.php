@@ -93,69 +93,109 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
             </div>
 
             <!-- Virtual ID Card Section -->
-            <div class="flex flex-col items-center">
+            <div class="flex flex-col items-center col-span-1 lg:col-span-2 xl:col-span-1">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Staff Virtual ID Card</span>
                 
-                <!-- ID Card Visual -->
-                <div id="id-card-capture" class="w-[350px] h-[520px] id-card-gradient rounded-3xl shadow-2xl relative overflow-hidden p-8 flex flex-col items-center text-white border-4 border-slate-800">
-                    <!-- Background Design -->
-                    <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-                    <div class="absolute -left-20 bottom-20 w-48 h-48 bg-primary/5 rounded-full blur-2xl"></div>
+                <div class="flex flex-col sm:flex-row gap-8 items-center" id="id-card-capture-container">
                     
-                    <!-- Header -->
-                    <div class="w-full flex justify-between items-start mb-8 z-10">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-black tracking-widest uppercase text-primary"><?php echo $site_name; ?></span>
-                            <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Engineering Personnel</span>
+                    <!-- FRONT VIEW -->
+                    <div id="id-card-capture-front" class="w-[350px] h-[520px] id-card-gradient rounded-3xl shadow-2xl relative overflow-hidden p-8 flex flex-col items-center text-white border-4 border-slate-800 shrink-0">
+                        <!-- Background Design -->
+                        <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+                        <div class="absolute -left-20 bottom-20 w-48 h-48 bg-primary/5 rounded-full blur-2xl"></div>
+                        
+                        <!-- Header -->
+                        <div class="w-full flex justify-between items-start mb-8 z-10">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black tracking-widest uppercase text-primary"><?php echo $site_name; ?></span>
+                                <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Engineering Personnel</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-slate-500 text-lg opacity-60">contactless</span>
+                                <div class="id-card-chip"></div>
+                            </div>
                         </div>
-                        <div class="id-card-chip"></div>
+
+                        <!-- Photo -->
+                        <div class="w-40 h-40 rounded-3xl bg-slate-800 border-4 border-slate-700 overflow-hidden mb-6 z-10 shadow-lg flex items-center justify-center">
+                            <?php if(!empty($staff['profile_pic'])): ?>
+                                <img src="../<?php echo htmlspecialchars($staff['profile_pic']); ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <span class="text-5xl font-black text-slate-600 font-headline uppercase"><?php echo substr($staff['name'], 0, 2); ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Name & Info -->
+                        <div class="text-center z-10 w-full">
+                            <h3 class="text-2xl font-black font-headline uppercase tracking-tight mb-1 truncate"><?php echo htmlspecialchars($staff['name']); ?></h3>
+                            <div class="px-4 py-1 bg-primary text-on-primary rounded-full text-[10px] font-black uppercase tracking-widest mb-8 inline-block"><?php echo htmlspecialchars($staff['role'] ?: 'Staff'); ?></div>
+                        </div>
+
+                        <!-- Data Grid -->
+                        <div class="w-full grid grid-cols-2 gap-4 mt-auto z-10 border-t border-slate-800 pt-6">
+                            <div>
+                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">ID NUMBER</span>
+                                <span class="text-xs font-black font-headline text-slate-200">WLV-<?php echo str_pad($staff['id'], 5, '0', STR_PAD_LEFT); ?></span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">DEPT</span>
+                                <span class="text-xs font-black font-headline text-slate-200"><?php echo strtoupper(htmlspecialchars($staff['dept_name'] ?: 'GEN')); ?></span>
+                            </div>
+                            <div>
+                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">JOIN DATE</span>
+                                <span class="text-xs font-black font-headline text-slate-200"><?php echo date('M Y', strtotime($staff['created_at'])); ?></span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">CLEARANCE</span>
+                                <span class="text-xs font-black font-headline text-primary">L-4 AUTH</span>
+                            </div>
+                        </div>
+
+                        <!-- Footer / QR Placeholder -->
+                        <div class="mt-6 flex justify-between items-center w-full z-10 opacity-30">
+                            <div class="flex flex-col gap-0.5">
+                                <div class="w-24 h-1 bg-slate-600 rounded"></div>
+                                <div class="w-16 h-1 bg-slate-600 rounded"></div>
+                            </div>
+                            <div class="w-8 h-8 border-2 border-slate-600 rounded p-1">
+                                <div class="w-full h-full bg-slate-600 rounded-sm"></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Photo -->
-                    <div class="w-40 h-40 rounded-3xl bg-slate-800 border-4 border-slate-700 overflow-hidden mb-6 z-10 shadow-lg">
-                        <img src="../<?php echo $staff['profile_pic'] ?: 'assets/default-avatar.png'; ?>" class="w-full h-full object-cover">
-                    </div>
-
-                    <!-- Name & Info -->
-                    <div class="text-center z-10">
-                        <h3 class="text-2xl font-black font-headline uppercase tracking-tight mb-1"><?php echo htmlspecialchars($staff['name']); ?></h3>
-                        <div class="px-4 py-1 bg-primary text-on-primary rounded-full text-[10px] font-black uppercase tracking-widest mb-8 inline-block"><?php echo htmlspecialchars($staff['role'] ?: 'Staff'); ?></div>
-                    </div>
-
-                    <!-- Data Grid -->
-                    <div class="w-full grid grid-cols-2 gap-4 mt-auto z-10 border-t border-slate-800 pt-6">
-                        <div>
-                            <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">ID NUMBER</span>
-                            <span class="text-xs font-black font-headline text-slate-200">WLV-<?php echo str_pad($staff['id'], 5, '0', STR_PAD_LEFT); ?></span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">DEPT</span>
-                            <span class="text-xs font-black font-headline text-slate-200"><?php echo strtoupper(htmlspecialchars($staff['dept_name'] ?: 'GEN')); ?></span>
-                        </div>
-                        <div>
-                            <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">JOIN DATE</span>
-                            <span class="text-xs font-black font-headline text-slate-200"><?php echo date('M Y', strtotime($staff['created_at'])); ?></span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">CLEARANCE</span>
-                            <span class="text-xs font-black font-headline text-primary">L-4 AUTH</span>
+                    <!-- BACK VIEW -->
+                    <div id="id-card-capture-back" class="w-[350px] h-[520px] id-card-gradient rounded-3xl shadow-2xl relative overflow-hidden text-white border-4 border-slate-800 shrink-0">
+                        <div class="w-full h-16 bg-slate-900 mt-8 shadow-inner"></div>
+                        <div class="p-8 flex flex-col h-full">
+                            <div class="w-full h-12 bg-white/10 rounded-md mb-6"></div>
+                            <p class="text-[9px] text-slate-400 mb-4 leading-relaxed font-bold tracking-wide">
+                                This card is the property of <span class="text-slate-200"><?php echo $site_name; ?></span>. It must be surrendered upon request or termination of employment.
+                            </p>
+                            <p class="text-[9px] text-slate-400 mb-8 leading-relaxed tracking-wide">
+                                If found, please return to:<br>
+                                <span class="text-slate-200 font-bold">Security Department</span><br>
+                                Wilsolvewel Engineering HQ
+                            </p>
+                            
+                            <div class="mt-auto border-t border-slate-800 pt-6">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <span class="material-symbols-outlined text-primary text-3xl">policy</span>
+                                    <div>
+                                        <span class="text-[10px] font-black uppercase text-primary tracking-widest block">Level 4 Clearance</span>
+                                        <span class="text-[8px] text-slate-500 uppercase tracking-widest">Authorized Access Only</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full mt-6 bg-white/5 h-12 flex items-center justify-center rounded border border-white/10">
+                                <span class="font-barcode text-3xl tracking-[0.5em] opacity-50">||||||||||||||||||||</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Footer / QR Placeholder -->
-                    <div class="mt-8 flex justify-between items-center w-full z-10 opacity-30">
-                        <div class="flex flex-col gap-0.5">
-                            <div class="w-24 h-1 bg-slate-600 rounded"></div>
-                            <div class="w-16 h-1 bg-slate-600 rounded"></div>
-                        </div>
-                        <div class="w-10 h-10 border-2 border-slate-600 rounded p-1">
-                            <div class="w-full h-full bg-slate-600 rounded-sm"></div>
-                        </div>
-                    </div>
                 </div>
 
-                <p class="mt-8 text-xs text-slate-400 max-w-xs text-center italic">Digital ID cards are valid for on-site terminal identification and HSSE clearance verification.</p>
+                <p class="mt-8 text-xs text-slate-400 max-w-sm text-center italic">Digital ID cards are valid for on-site terminal identification and HSSE clearance verification. Use the button above to generate a high-resolution printable PDF of both sides.</p>
             </div>
         </div>
     </main>
@@ -163,25 +203,43 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
 
 <script>
 async function downloadIDCard() {
-    const element = document.getElementById('id-card-capture');
+    const frontEl = document.getElementById('id-card-capture-front');
+    const backEl = document.getElementById('id-card-capture-back');
     const name = "<?php echo addslashes($staff['name']); ?>".replace(/ /g, '_');
     
-    const canvas = await html2canvas(element, {
-        scale: 3, // High quality
+    // Capture Front
+    const canvasFront = await html2canvas(frontEl, {
+        scale: 3,
         useCORS: true,
         backgroundColor: null
     });
-    
-    const imgData = canvas.toDataURL('image/png');
+    const imgDataFront = canvasFront.toDataURL('image/png');
+
+    // Capture Back
+    const canvasBack = await html2canvas(backEl, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null
+    });
+    const imgDataBack = canvasBack.toDataURL('image/png');
+
     const { jsPDF } = window.jspdf;
     
+    // Create PDF with dimensions that fit both cards side-by-side or stacked
+    // Here we'll make a 2-page PDF
     const pdf = new jsPDF({
         orientation: 'p',
         unit: 'px',
-        format: [canvas.width / 3, canvas.height / 3]
+        format: [canvasFront.width / 3, canvasFront.height / 3]
     });
     
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 3, canvas.height / 3);
+    // Page 1: Front
+    pdf.addImage(imgDataFront, 'PNG', 0, 0, canvasFront.width / 3, canvasFront.height / 3);
+    
+    // Page 2: Back
+    pdf.addPage();
+    pdf.addImage(imgDataBack, 'PNG', 0, 0, canvasBack.width / 3, canvasBack.height / 3);
+
     pdf.save(`ID_CARD_${name}.pdf`);
 }
 </script>
