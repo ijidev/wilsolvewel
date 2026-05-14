@@ -94,101 +94,130 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
 
             <!-- Virtual ID Card Section -->
             <div class="flex flex-col items-center col-span-1 lg:col-span-2 xl:col-span-1">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Staff Virtual ID Card</span>
+                <div class="flex justify-between items-center w-full max-w-[520px] mb-6">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Virtual ID Card</span>
+                    <div class="flex bg-slate-100 p-1 rounded-xl shadow-sm border border-slate-200">
+                        <button onclick="toggleIDCard('front')" id="btn-front" class="px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest bg-white shadow-sm text-slate-900 transition-all">Front</button>
+                        <button onclick="toggleIDCard('back')" id="btn-back" class="px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all">Back</button>
+                    </div>
+                </div>
                 
-                <div class="flex flex-col sm:flex-row gap-8 items-center" id="id-card-capture-container">
+                <div class="flex flex-col gap-8 items-center relative w-[520px]" id="id-card-capture-container">
                     
                     <!-- FRONT VIEW -->
-                    <div id="id-card-capture-front" class="w-[350px] h-[520px] id-card-gradient rounded-3xl shadow-2xl relative overflow-hidden p-8 flex flex-col items-center text-white border-4 border-slate-800 shrink-0">
-                        <!-- Background Design -->
-                        <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-                        <div class="absolute -left-20 bottom-20 w-48 h-48 bg-primary/5 rounded-full blur-2xl"></div>
-                        
-                        <!-- Header -->
-                        <div class="w-full flex justify-between items-start mb-8 z-10">
-                            <div class="flex flex-col">
-                                <span class="text-[10px] font-black tracking-widest uppercase text-primary"><?php echo $site_name; ?></span>
-                                <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Engineering Personnel</span>
+                    <div id="id-card-capture-front" class="w-[520px] h-[328px] id-card-gradient rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border-4 border-slate-800 shrink-0">
+                        <!-- Left Section: Photo & Name -->
+                        <div class="w-2/5 border-r border-slate-800 p-6 flex flex-col items-center justify-center bg-slate-900/50 z-10 relative">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+                            <div class="w-28 h-28 rounded-3xl bg-slate-800 border-4 border-slate-700 overflow-hidden mb-4 shadow-lg flex items-center justify-center shrink-0">
+                                <?php if(!empty($staff['profile_pic'])): ?>
+                                    <img src="../<?php echo htmlspecialchars($staff['profile_pic']); ?>" class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <span class="text-4xl font-black text-slate-600 font-headline uppercase"><?php echo substr($staff['name'], 0, 2); ?></span>
+                                <?php endif; ?>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-slate-500 text-lg opacity-60">contactless</span>
-                                <div class="id-card-chip"></div>
-                            </div>
-                        </div>
-
-                        <!-- Photo -->
-                        <div class="w-40 h-40 rounded-3xl bg-slate-800 border-4 border-slate-700 overflow-hidden mb-6 z-10 shadow-lg flex items-center justify-center">
-                            <?php if(!empty($staff['profile_pic'])): ?>
-                                <img src="../<?php echo htmlspecialchars($staff['profile_pic']); ?>" class="w-full h-full object-cover">
-                            <?php else: ?>
-                                <span class="text-5xl font-black text-slate-600 font-headline uppercase"><?php echo substr($staff['name'], 0, 2); ?></span>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Name & Info -->
-                        <div class="text-center z-10 w-full">
-                            <h3 class="text-2xl font-black font-headline uppercase tracking-tight mb-1 truncate"><?php echo htmlspecialchars($staff['name']); ?></h3>
-                            <div class="px-4 py-1 bg-primary text-on-primary rounded-full text-[10px] font-black uppercase tracking-widest mb-8 inline-block"><?php echo htmlspecialchars($staff['role'] ?: 'Staff'); ?></div>
-                        </div>
-
-                        <!-- Data Grid -->
-                        <div class="w-full grid grid-cols-2 gap-4 mt-auto z-10 border-t border-slate-800 pt-6">
-                            <div>
-                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">ID NUMBER</span>
-                                <span class="text-xs font-black font-headline text-slate-200">WLV-<?php echo str_pad($staff['id'], 5, '0', STR_PAD_LEFT); ?></span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">DEPT</span>
-                                <span class="text-xs font-black font-headline text-slate-200"><?php echo strtoupper(htmlspecialchars($staff['dept_name'] ?: 'GEN')); ?></span>
-                            </div>
-                            <div>
-                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">JOIN DATE</span>
-                                <span class="text-xs font-black font-headline text-slate-200"><?php echo date('M Y', strtotime($staff['created_at'])); ?></span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[8px] font-bold text-slate-500 uppercase block tracking-widest">CLEARANCE</span>
-                                <span class="text-xs font-black font-headline text-primary">L-4 AUTH</span>
+                            <div class="text-center w-full">
+                                <h3 class="text-lg font-black font-headline uppercase tracking-tight mb-1 truncate"><?php echo htmlspecialchars($staff['name']); ?></h3>
+                                <div class="px-3 py-1 bg-primary text-on-primary rounded-full text-[8px] font-black uppercase tracking-widest inline-block truncate max-w-full"><?php echo htmlspecialchars($staff['role'] ?: 'Staff'); ?></div>
                             </div>
                         </div>
 
-                        <!-- Footer / QR Placeholder -->
-                        <div class="mt-6 flex justify-between items-center w-full z-10 opacity-30">
-                            <div class="flex flex-col gap-0.5">
-                                <div class="w-24 h-1 bg-slate-600 rounded"></div>
-                                <div class="w-16 h-1 bg-slate-600 rounded"></div>
+                        <!-- Right Section: Details -->
+                        <div class="w-3/5 p-6 flex flex-col z-10 relative bg-[#0F172A]">
+                            <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                            <div class="absolute -left-10 bottom-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl z-0 pointer-events-none"></div>
+                            
+                            <!-- Header -->
+                            <div class="flex justify-between items-start mb-6 z-10">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] font-black tracking-widest uppercase text-primary"><?php echo $site_name; ?></span>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase tracking-widest">Engineering Personnel</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-slate-500 text-base opacity-60">contactless</span>
+                                    <div class="id-card-chip scale-75 origin-right"></div>
+                                </div>
                             </div>
-                            <div class="w-8 h-8 border-2 border-slate-600 rounded p-1">
-                                <div class="w-full h-full bg-slate-600 rounded-sm"></div>
+
+                            <!-- Data Grid -->
+                            <div class="grid grid-cols-2 gap-y-4 gap-x-2 mt-auto z-10">
+                                <div>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">ID NUMBER</span>
+                                    <span class="text-[11px] font-black font-headline text-slate-200">WLV-<?php echo str_pad($staff['id'], 5, '0', STR_PAD_LEFT); ?></span>
+                                </div>
+                                <div>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">DEPT</span>
+                                    <span class="text-[11px] font-black font-headline text-slate-200"><?php echo strtoupper(htmlspecialchars($staff['dept_name'] ?: 'GEN')); ?></span>
+                                </div>
+                                <div>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">JOIN DATE</span>
+                                    <span class="text-[11px] font-black font-headline text-slate-200"><?php echo date('M Y', strtotime($staff['created_at'])); ?></span>
+                                </div>
+                                <div>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">CLEARANCE</span>
+                                    <span class="text-[11px] font-black font-headline text-primary">L-4 AUTH</span>
+                                </div>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="mt-6 flex justify-between items-center w-full z-10 opacity-30 border-t border-slate-800 pt-4">
+                                <div class="flex flex-col gap-0.5">
+                                    <div class="w-20 h-1 bg-slate-600 rounded"></div>
+                                    <div class="w-12 h-1 bg-slate-600 rounded"></div>
+                                </div>
+                                <div class="w-6 h-6 border-2 border-slate-600 rounded p-0.5">
+                                    <div class="w-full h-full bg-slate-600 rounded-sm"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- BACK VIEW -->
-                    <div id="id-card-capture-back" class="w-[350px] h-[520px] id-card-gradient rounded-3xl shadow-2xl relative overflow-hidden text-white border-4 border-slate-800 shrink-0">
-                        <div class="w-full h-16 bg-slate-900 mt-8 shadow-inner"></div>
-                        <div class="p-8 flex flex-col h-full">
-                            <div class="w-full h-12 bg-white/10 rounded-md mb-6"></div>
-                            <p class="text-[9px] text-slate-400 mb-4 leading-relaxed font-bold tracking-wide">
-                                This card is the property of <span class="text-slate-200"><?php echo $site_name; ?></span>. It must be surrendered upon request or termination of employment.
-                            </p>
-                            <p class="text-[9px] text-slate-400 mb-8 leading-relaxed tracking-wide">
-                                If found, please return to:<br>
-                                <span class="text-slate-200 font-bold">Security Department</span><br>
-                                Wilsolvewel Engineering HQ
-                            </p>
-                            
-                            <div class="mt-auto border-t border-slate-800 pt-6">
-                                <div class="flex items-center gap-4 mb-2">
-                                    <span class="material-symbols-outlined text-primary text-3xl">policy</span>
-                                    <div>
-                                        <span class="text-[10px] font-black uppercase text-primary tracking-widest block">Level 4 Clearance</span>
-                                        <span class="text-[8px] text-slate-500 uppercase tracking-widest">Authorized Access Only</span>
+                    <div id="id-card-capture-back" class="hidden w-[520px] h-[328px] id-card-gradient rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border-4 border-slate-800 shrink-0 flex-col">
+                        <div class="w-full h-12 bg-slate-900 mt-6 shadow-inner shrink-0"></div>
+                        <div class="p-6 flex flex-col h-full z-10">
+                            <div class="flex gap-4">
+                                <div class="flex-1">
+                                    <div class="w-full h-8 bg-white/10 rounded-sm mb-4"></div>
+                                    <p class="text-[8px] text-slate-400 mb-2 leading-relaxed font-bold tracking-wide">
+                                        This card is the property of <span class="text-slate-200"><?php echo $site_name; ?></span>. It must be surrendered upon request or termination of employment.
+                                    </p>
+                                    <p class="text-[8px] text-slate-400 leading-relaxed tracking-wide">
+                                        If found, please return to:<br>
+                                        <span class="text-slate-200 font-bold">Security Department</span><br>
+                                        Wilsolvewel Engineering HQ
+                                    </p>
+                                </div>
+                                <div class="w-20 shrink-0 flex flex-col items-center justify-center border-l border-slate-800 pl-4">
+                                    <div class="w-full bg-white/5 h-[100px] flex items-center justify-center rounded border border-white/10 overflow-hidden text-center relative">
+                                        <!-- Vertical Barcode placeholder -->
+                                        <div class="absolute inset-2 flex flex-col justify-between opacity-30">
+                                            <div class="w-full h-[2px] bg-white"></div>
+                                            <div class="w-full h-[4px] bg-white"></div>
+                                            <div class="w-full h-[1px] bg-white"></div>
+                                            <div class="w-full h-[3px] bg-white"></div>
+                                            <div class="w-full h-[1px] bg-white"></div>
+                                            <div class="w-full h-[4px] bg-white"></div>
+                                            <div class="w-full h-[2px] bg-white"></div>
+                                            <div class="w-full h-[1px] bg-white"></div>
+                                            <div class="w-full h-[5px] bg-white"></div>
+                                            <div class="w-full h-[2px] bg-white"></div>
+                                            <div class="w-full h-[1px] bg-white"></div>
+                                            <div class="w-full h-[3px] bg-white"></div>
+                                            <div class="w-full h-[2px] bg-white"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-full mt-6 bg-white/5 h-12 flex items-center justify-center rounded border border-white/10">
-                                <span class="font-barcode text-3xl tracking-[0.5em] opacity-50">||||||||||||||||||||</span>
+                            
+                            <div class="mt-auto border-t border-slate-800 pt-4 flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary text-2xl">policy</span>
+                                    <div>
+                                        <span class="text-[9px] font-black uppercase text-primary tracking-widest block">Level 4 Clearance</span>
+                                        <span class="text-[7px] text-slate-500 uppercase tracking-widest">Authorized Access Only</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -202,11 +231,40 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
 </div>
 
 <script>
+function toggleIDCard(view) {
+    const front = document.getElementById('id-card-capture-front');
+    const back = document.getElementById('id-card-capture-back');
+    const btnFront = document.getElementById('btn-front');
+    const btnBack = document.getElementById('btn-back');
+
+    if (view === 'front') {
+        front.classList.remove('hidden');
+        back.classList.add('hidden');
+        btnFront.className = "px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest bg-white shadow-sm text-slate-900 transition-all";
+        btnBack.className = "px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all";
+    } else {
+        front.classList.add('hidden');
+        back.classList.remove('hidden');
+        btnBack.className = "px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest bg-white shadow-sm text-slate-900 transition-all";
+        btnFront.className = "px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all";
+    }
+}
+
 async function downloadIDCard() {
     const frontEl = document.getElementById('id-card-capture-front');
     const backEl = document.getElementById('id-card-capture-back');
     const name = "<?php echo addslashes($staff['name']); ?>".replace(/ /g, '_');
     
+    // Temporarily show both to ensure html2canvas can capture them properly
+    const wasBackHidden = backEl.classList.contains('hidden');
+    const wasFrontHidden = frontEl.classList.contains('hidden');
+    
+    frontEl.classList.remove('hidden');
+    backEl.classList.remove('hidden');
+    
+    // Small delay to allow browser to render the unhidden elements
+    await new Promise(r => setTimeout(r, 50));
+
     // Capture Front
     const canvasFront = await html2canvas(frontEl, {
         scale: 3,
@@ -222,13 +280,17 @@ async function downloadIDCard() {
         backgroundColor: null
     });
     const imgDataBack = canvasBack.toDataURL('image/png');
+    
+    // Restore original visibility state
+    if(wasBackHidden) backEl.classList.add('hidden');
+    if(wasFrontHidden) frontEl.classList.add('hidden');
 
     const { jsPDF } = window.jspdf;
     
     // Create PDF with dimensions that fit both cards side-by-side or stacked
     // Here we'll make a 2-page PDF
     const pdf = new jsPDF({
-        orientation: 'p',
+        orientation: 'l', // Landscape page orientation for landscape cards
         unit: 'px',
         format: [canvasFront.width / 3, canvasFront.height / 3]
     });
