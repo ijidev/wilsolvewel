@@ -282,185 +282,55 @@ if (isset($_GET['ajax_action'])) {
         foreach ($milestones as $m) if ($m['status'] == 'Completed') $completed_count++;
         $progress = count($milestones) > 0 ? round(($completed_count / count($milestones)) * 100) : 0;
 
+        // $progress = $proj['total_ms'] > 0 ? round(($proj['completed_ms'] / $proj['total_ms']) * 100) : 0;
+        
         ob_start();
         ?>
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Main Column (Milestones & Comms) -->
-            <div class="flex-1 space-y-8 min-w-0">
-                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-                    <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
-                    <div class="mb-10 relative z-10">
-                        <!-- Row 1: Status & Small Actions -->
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo $proj['status']=='Active'?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
-                                <?php echo $proj['status']; ?>
-                            </span>
-                            <div class="flex items-center gap-2">
-                                <?php if ($proj['status'] == 'Active' || $proj['status'] == 'On Hold'): ?>
-                                    <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="h-8 px-3 bg-white border border-slate-200 text-slate-500 rounded-xl text-[8px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-sm">
-                                        <span class="material-symbols-outlined text-[14px]"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
-                                        <?php echo $proj['status'] == 'On Hold' ? 'Resume' : 'Hold'; ?>
-                                    </button>
-                                <?php endif; ?>
-                                <button onclick="editProject(<?php echo $id; ?>)" class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg active:scale-95">
-                                    <span class="material-symbols-outlined text-sm">settings</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Title -->
-                        <h2 class="text-3xl font-bold font-headline text-slate-900 leading-tight mb-1 truncate"><?php echo htmlspecialchars($proj['name']); ?></h2>
-                        
-                        <!-- Row 3: ID -->
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] opacity-60">ID: #PRJ-<?php echo $proj['id']; ?></p>
-                    </div>
-
-                    <div class="p-6 rounded-2xl bg-emerald-50/50 border border-emerald-100 relative z-10">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Aggregate Project Completion</p>
-                            <span class="text-xs font-bold text-emerald-600"><?php echo $progress; ?>%</span>
-                        </div>
-                        <div class="h-2 bg-emerald-200/50 rounded-full overflow-hidden">
-                            <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: <?php echo $progress; ?>%"></div>
-                        </div>
+        <!-- Canvas Header -->
+        <div class="p-8 border-b border-slate-100 bg-white relative overflow-hidden shrink-0">
+            <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo $proj['status']=='Active'?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
+                        <?php echo $proj['status']; ?>
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <?php if ($proj['status'] == 'Active' || $proj['status'] == 'On Hold'): ?>
+                            <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="h-8 px-3 bg-white border border-slate-200 text-slate-500 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
+                                <span class="material-symbols-outlined text-[14px]"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
+                                <?php echo $proj['status'] == 'On Hold' ? 'Resume' : 'Hold'; ?>
+                            </button>
+                        <?php endif; ?>
+                        <button onclick="editProject(<?php echo $id; ?>)" class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+                            <span class="material-symbols-outlined text-sm">settings</span>
+                        </button>
+                        <button onclick="closeProjectDetail()" class="w-8 h-8 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-slate-200 transition-all">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                        </button>
                     </div>
                 </div>
+                <h2 class="text-3xl font-extrabold font-headline text-slate-900 tracking-tight leading-none mb-1"><?php echo htmlspecialchars($proj['name']); ?></h2>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] opacity-60">PROJECT REFERENCE ID: #PRJ-<?php echo $proj['id']; ?></p>
+            </div>
+        </div>
+        <?php
+        $header_html = ob_get_clean();
 
-                <!-- Milestone Roadmap -->
-                <div class="space-y-6">
-                    <div class="space-y-4">
-                        <div class="px-2">
-                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">route</span> Strategic Milestones
-                            </h3>
-                        </div>
-                        <div class="flex flex-wrap gap-2 px-2">
-                            <?php if ($proj['status'] == 'Planning'): ?>
-                                <?php 
-                                    $all_approved = true;
-                                    if (empty($milestones)) $all_approved = false;
-                                    foreach ($milestones as $m) if ($m['approval_status'] != 'Approved') $all_approved = false;
-                                ?>
-                                <?php if ($all_approved): ?>
-                                    <button onclick="confirmProjectActive(<?php echo $id; ?>)" class="px-3 py-1.5 bg-primary text-on-primary rounded-lg text-[8px] font-bold uppercase tracking-widest hover:shadow-lg transition-all flex items-center gap-1.5">
-                                        <span class="material-symbols-outlined text-[14px]">rocket_launch</span> Activate
-                                    </button>
-                                <?php else: ?>
-                                    <div class="px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-[7px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-1.5" title="All milestones must be approved by client">
-                                        <span class="material-symbols-outlined text-[12px]">info</span> Awaiting Approval
-                                    </div>
-                                <?php endif; ?>
-
-                                <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[8px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-[14px]">add</span> Add Milestone
-                                </button>
-                            <?php else: ?>
-                                <div class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-bold uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-[14px]">lock</span> Roadmap Locked
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    
-                    <div id="milestoneList" class="space-y-4">
-                        <?php if (empty($milestones)): ?>
-                            <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
-                                <span class="material-symbols-outlined text-4xl text-slate-200">flag</span>
-                                <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No milestones defined yet</p>
-                            </div>
-                        <?php else: ?>
-                            <?php foreach ($milestones as $m): 
-                                $statusClass = $m['status'] == 'Completed' ? 'bg-emerald-500 border-emerald-500' : ($m['status'] == 'In Progress' ? 'bg-amber-500 border-amber-500' : 'bg-slate-100 border-slate-200');
-                                $approvalText = $m['approval_status'] == 'Approved' ? 'bg-emerald-50 text-emerald-600' : ($m['approval_status'] == 'Rejected' ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-500');
-                            ?>
-                            <div class="group bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden transition-all hover:border-primary/20">
-                                <div class="p-6 flex items-start gap-5">
-                                    <div class="w-10 h-10 rounded-full flex items-center justify-center border-4 <?php echo $statusClass; ?> transition-all">
-                                        <?php if ($m['status'] == 'Completed'): ?>
-                                            <span class="material-symbols-outlined text-white text-sm font-bold">check</span>
-                                        <?php else: ?>
-                                            <span class="text-[10px] font-bold <?php echo $m['status'] == 'In Progress' ? 'text-white' : 'text-slate-400'; ?>"><?php echo $m['order_index'] + 1; ?></span>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center justify-between mb-1">
-                                            <h4 class="font-bold text-slate-900 truncate"><?php echo htmlspecialchars($m['title']); ?></h4>
-                                            <div class="flex items-center gap-2">
-                                                <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest <?php echo $approvalText; ?>"><?php echo $m['approval_status']; ?></span>
-                                                <button onclick="toggleMilestoneActions(<?php echo $m['id']; ?>)" class="p-1 text-slate-300 hover:text-slate-600 transition-colors">
-                                                    <span class="material-symbols-outlined text-sm">more_vert</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <p class="text-xs text-slate-500 mb-4"><?php echo nl2br(htmlspecialchars($m['description'])); ?></p>
-                                        
-                                        <!-- Sub-Milestones -->
-                                        <div class="space-y-2 mb-4">
-                                            <?php foreach ($m['sub_milestones'] as $sm): ?>
-                                            <div class="flex items-center gap-3 group/sub">
-                                                <button onclick="toggleSubMilestone(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="w-4 h-4 rounded border <?php echo $sm['is_completed'] ? 'bg-primary border-primary text-on-primary' : 'border-slate-200 text-transparent'; ?> flex items-center justify-center transition-all">
-                                                    <span class="material-symbols-outlined text-[10px] font-bold">check</span>
-                                                </button>
-                                                <span class="text-[11px] font-medium <?php echo $sm['is_completed'] ? 'text-slate-400 line-through' : 'text-slate-600'; ?>"><?php echo htmlspecialchars($sm['title']); ?></span>
-                                                <button onclick="deleteSubMilestone(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="opacity-0 group-hover/sub:opacity-100 text-red-300 hover:text-red-500 transition-all">
-                                                    <span class="material-symbols-outlined text-xs">close</span>
-                                                </button>
-                                            </div>
-                                            <?php endforeach; ?>
-                                            <div class="flex-1">
-                                                <div class="flex items-center gap-3 pt-1">
-                                                    <?php if ($proj['status'] == 'Planning' || $proj['status'] == 'Active'): ?>
-                                                        <button onclick="showSubInput(<?php echo $m['id']; ?>)" class="text-[10px] font-bold text-primary flex items-center gap-1 hover:underline">
-                                                            <span class="material-symbols-outlined text-xs">add</span> Add Task
-                                                        </button>
-                                                        <div id="subInput_<?php echo $m['id']; ?>" class="hidden flex-1 flex gap-2">
-                                                            <input type="text" id="subText_<?php echo $m['id']; ?>" class="flex-1 bg-slate-50 border-none rounded-lg px-3 py-1 text-[10px] focus:ring-1 focus:ring-primary" placeholder="Task title...">
-                                                            <button onclick="saveSubMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="px-3 bg-primary text-on-primary rounded-lg text-[10px] font-bold">Save</button>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex items-center gap-4 pt-4 border-t border-slate-50">
-                                            <button onclick="openMilestoneChat(<?php echo $m['id']; ?>, '<?php echo addslashes($m['title']); ?>')" class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 hover:text-primary transition-colors">
-                                                <span class="material-symbols-outlined text-sm">forum</span> Milestone Logs
-                                            </button>
-                                            <div class="flex-1"></div>
-                                            <div class="flex items-center gap-2">
-                                                <?php if ($proj['status'] == 'Active'): ?>
-                                                    <?php if ($m['status'] != 'Completed'): ?>
-                                                        <button onclick="updateMilestoneStatus(<?php echo $m['id']; ?>, <?php echo $id; ?>, 'Completed')" class="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">Mark Done</button>
-                                                    <?php endif; ?>
-                                                    <?php if ($m['status'] == 'Pending'): ?>
-                                                        <button onclick="updateMilestoneStatus(<?php echo $m['id']; ?>, <?php echo $id; ?>, 'In Progress')" class="px-4 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all">Start</button>
-                                                    <?php endif; ?>
-                                                <?php else: ?>
-                                                    <span class="text-[9px] font-bold uppercase tracking-widest <?php echo $m['status']=='Completed'?'text-emerald-500':($m['status']=='In Progress'?'text-amber-500':'text-slate-300'); ?>">
-                                                        <?php echo $m['status']; ?>
-                                                    </span>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="milestoneActions_<?php echo $m['id']; ?>" class="hidden bg-slate-50 border-t border-slate-100 p-4 flex gap-4">
-                                     <?php if ($proj['status'] == 'Planning'): ?>
-                                         <button onclick="editMilestone(<?php echo $m['id']; ?>)" class="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-slate-600"><span class="material-symbols-outlined text-xs">edit</span> Edit</button>
-                                         <button onclick="deleteMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="text-[10px] font-bold text-red-400 flex items-center gap-1 hover:text-red-600"><span class="material-symbols-outlined text-xs">delete</span> Delete</button>
-                                     <?php else: ?>
-                                         <span class="text-[10px] font-bold text-slate-300 flex items-center gap-1 italic"><span class="material-symbols-outlined text-xs">lock</span> Milestone Immutable</span>
-                                     <?php endif; ?>
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
+        ob_start();
+        ?>
+        <div class="space-y-8">
+            <!-- Progress Tracking -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Aggregate Project Completion</p>
+                    <span class="text-xs font-bold text-emerald-600"><?php echo $progress; ?>%</span>
+                </div>
+                <div class="h-2 bg-emerald-50 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: <?php echo $progress; ?>%"></div>
                 </div>
             </div>
-
-            <!-- Sidebar Column (Settings & Assets) -->
-            <div class="w-full lg:w-72 space-y-6 shrink-0">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Status & Metadata -->
                 <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Project Settings</h3>
@@ -500,7 +370,7 @@ if (isset($_GET['ajax_action'])) {
                         <span class="text-[9px] font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md"><?php echo count($assigned_assets); ?></span>
                     </div>
 
-                    <div id="assignedAssets" class="space-y-2 mb-4">
+                    <div id="assignedAssets" class="space-y-2 mb-4 max-h-[120px] overflow-y-auto custom-scrollbar">
                         <?php if (empty($assigned_assets)): ?>
                             <p class="text-[10px] font-medium text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">No assets assigned</p>
                         <?php else: ?>
@@ -534,9 +404,144 @@ if (isset($_GET['ajax_action'])) {
                     </div>
                 </div>
             </div>
+
+            <!-- Milestone Roadmap -->
+            <div class="space-y-6">
+                <div class="space-y-4">
+                    <div class="px-2">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">route</span> Strategic Milestones
+                        </h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 px-2">
+                        <?php if ($proj['status'] == 'Planning'): ?>
+                            <?php 
+                                $all_approved = true;
+                                if (empty($milestones)) $all_approved = false;
+                                foreach ($milestones as $m) if ($m['approval_status'] != 'Approved') $all_approved = false;
+                            ?>
+                            <?php if ($all_approved): ?>
+                                <button onclick="confirmProjectActive(<?php echo $id; ?>)" class="px-3 py-1.5 bg-primary text-on-primary rounded-lg text-[8px] font-bold uppercase tracking-widest hover:shadow-lg transition-all flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[14px]">rocket_launch</span> Activate
+                                </button>
+                            <?php else: ?>
+                                <div class="px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-[7px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-1.5" title="All milestones must be approved by client">
+                                    <span class="material-symbols-outlined text-[12px]">info</span> Awaiting Approval
+                                </div>
+                            <?php endif; ?>
+
+                            <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[8px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px]">add</span> Add Milestone
+                            </button>
+                        <?php else: ?>
+                            <div class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-bold uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px]">lock</span> Roadmap Locked
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <div id="milestoneList" class="space-y-4">
+                    <?php if (empty($milestones)): ?>
+                        <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                            <span class="material-symbols-outlined text-4xl text-slate-200">flag</span>
+                            <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No milestones defined yet</p>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($milestones as $m): 
+                            $statusClass = $m['status'] == 'Completed' ? 'bg-emerald-500 border-emerald-500' : ($m['status'] == 'In Progress' ? 'bg-amber-500 border-amber-500' : 'bg-slate-100 border-slate-200');
+                            $approvalText = $m['approval_status'] == 'Approved' ? 'bg-emerald-50 text-emerald-600' : ($m['approval_status'] == 'Rejected' ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-500');
+                        ?>
+                        <div class="group bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden transition-all hover:border-primary/20">
+                            <div class="p-6 flex items-start gap-5">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center border-4 <?php echo $statusClass; ?> transition-all">
+                                    <?php if ($m['status'] == 'Completed'): ?>
+                                        <span class="material-symbols-outlined text-white text-sm font-bold">check</span>
+                                    <?php else: ?>
+                                        <span class="text-[10px] font-bold <?php echo $m['status'] == 'In Progress' ? 'text-white' : 'text-slate-400'; ?>"><?php echo $m['order_index'] + 1; ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-bold text-slate-900 truncate"><?php echo htmlspecialchars($m['title']); ?></h4>
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest <?php echo $approvalText; ?>"><?php echo $m['approval_status']; ?></span>
+                                            <button onclick="toggleMilestoneActions(<?php echo $m['id']; ?>)" class="p-1 text-slate-300 hover:text-slate-600 transition-colors">
+                                                <span class="material-symbols-outlined text-sm">more_vert</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mb-4"><?php echo nl2br(htmlspecialchars($m['description'])); ?></p>
+                                    
+                                    <!-- Sub-Milestones -->
+                                    <div class="space-y-2 mb-4">
+                                        <?php foreach ($m['sub_milestones'] as $sm): ?>
+                                        <div class="flex items-center gap-3 group/sub">
+                                            <button onclick="toggleSubMilestone(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="w-4 h-4 rounded border <?php echo $sm['is_completed'] ? 'bg-primary border-primary text-on-primary' : 'border-slate-200 text-transparent'; ?> flex items-center justify-center transition-all">
+                                                <span class="material-symbols-outlined text-[10px] font-bold">check</span>
+                                            </button>
+                                            <span class="text-[11px] font-medium <?php echo $sm['is_completed'] ? 'text-slate-400 line-through' : 'text-slate-600'; ?>"><?php echo htmlspecialchars($sm['title']); ?></span>
+                                            <button onclick="deleteSubMilestone(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="opacity-0 group-hover/sub:opacity-100 text-red-300 hover:text-red-500 transition-all">
+                                                <span class="material-symbols-outlined text-xs">close</span>
+                                            </button>
+                                        </div>
+                                        <?php endforeach; ?>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 pt-1">
+                                                <?php if ($proj['status'] == 'Planning' || $proj['status'] == 'Active'): ?>
+                                                    <button onclick="showSubInput(<?php echo $m['id']; ?>)" class="text-[10px] font-bold text-primary flex items-center gap-1 hover:underline">
+                                                        <span class="material-symbols-outlined text-xs">add</span> Add Task
+                                                    </button>
+                                                    <div id="subInput_<?php echo $m['id']; ?>" class="hidden flex-1 flex gap-2">
+                                                        <input type="text" id="subText_<?php echo $m['id']; ?>" class="flex-1 bg-slate-50 border-none rounded-lg px-3 py-1 text-[10px] focus:ring-1 focus:ring-primary" placeholder="Task title...">
+                                                        <button onclick="saveSubMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="px-3 bg-primary text-on-primary rounded-lg text-[10px] font-bold">Save</button>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4 pt-4 border-t border-slate-50">
+                                        <button onclick="openMilestoneChat(<?php echo $m['id']; ?>, '<?php echo addslashes($m['title']); ?>')" class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 hover:text-primary transition-colors">
+                                            <span class="material-symbols-outlined text-sm">forum</span> Milestone Logs
+                                        </button>
+                                        <div class="flex-1"></div>
+                                        <div class="flex items-center gap-2">
+                                            <?php if ($proj['status'] == 'Active'): ?>
+                                                <?php if ($m['status'] != 'Completed'): ?>
+                                                    <button onclick="updateMilestoneStatus(<?php echo $m['id']; ?>, <?php echo $id; ?>, 'Completed')" class="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">Mark Done</button>
+                                                <?php endif; ?>
+                                                <?php if ($m['status'] == 'Pending'): ?>
+                                                    <button onclick="updateMilestoneStatus(<?php echo $m['id']; ?>, <?php echo $id; ?>, 'In Progress')" class="px-4 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all">Start</button>
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <span class="text-[9px] font-bold uppercase tracking-widest <?php echo $m['status']=='Completed'?'text-emerald-500':($m['status']=='In Progress'?'text-amber-500':'text-slate-300'); ?>">
+                                                    <?php echo $m['status']; ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="milestoneActions_<?php echo $m['id']; ?>" class="hidden bg-slate-50 border-t border-slate-100 p-4 flex gap-4">
+                                    <?php if ($proj['status'] == 'Planning'): ?>
+                                        <button onclick="editMilestone(<?php echo $m['id']; ?>)" class="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-slate-600"><span class="material-symbols-outlined text-xs">edit</span> Edit</button>
+                                        <button onclick="deleteMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="text-[10px] font-bold text-red-400 flex items-center gap-1 hover:text-red-600"><span class="material-symbols-outlined text-xs">delete</span> Delete</button>
+                                    <?php else: ?>
+                                        <span class="text-[10px] font-bold text-slate-300 flex items-center gap-1 italic"><span class="material-symbols-outlined text-xs">lock</span> Milestone Immutable</span>
+                                    <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
         <?php
-        echo json_encode(['html' => ob_get_clean()]);
+        echo json_encode([
+            'header_html' => $header_html,
+            'body_html' => ob_get_clean()
+        ]);
         exit;
     }
 }
@@ -571,13 +576,13 @@ $permissions = get_admin_permissions($admin_id);
     <title>Project Operations | Terminal</title>
     <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
-    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#EAB308","on-primary":"#000000",surface:"#F8FAFC","on-surface":"#0F172A"},fontFamily:{headline:["Space Grotesk"],body:["Manrope"]}}}}</script>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#EAB308","on-primary":"#000000",surface:"#F8FAFC","on-surface":"#0F172A"},fontFamily:{headline:["Outfit", "Space Grotesk"],body:["Manrope"]}}}}</script>
     <style>
         .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
-        .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
+        .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
         .modal-overlay.open{display:flex}
     </style>
 </head>
@@ -606,8 +611,8 @@ $permissions = get_admin_permissions($admin_id);
 
     <div class="flex-1 flex overflow-hidden">
         <!-- Master List -->
-        <div class="w-full md:w-80 lg:w-96 bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar flex flex-col shrink-0">
-            <div class="p-6 space-y-4">
+        <div class="flex-1 bg-white overflow-y-auto custom-scrollbar flex flex-col min-w-0">
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                 <?php if (empty($projects)): ?>
                     <div class="text-center py-10"><span class="material-symbols-outlined text-4xl text-slate-200">folder_off</span><p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No Projects Found</p></div>
                 <?php endif; ?>
@@ -637,14 +642,16 @@ $permissions = get_admin_permissions($admin_id);
             </div>
         </div>
 
-        <!-- Detail View -->
-        <div class="flex-1 bg-[#F8FAFC] overflow-y-auto custom-scrollbar relative overflow-x-hidden">
-            <div id="detailPane" class="p-8 lg:p-12 xl:max-w-6xl mx-auto hidden">
-                <!-- Content loaded via AJAX -->
+        <!-- Detail Canvas Overlay -->
+        <div id="detailBackdrop" onclick="closeProjectDetail()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[300] opacity-0 pointer-events-none transition-all duration-500"></div>
+        <div id="detailCanvas" class="fixed top-0 right-0 h-full w-full lg:w-[680px] bg-white z-[301] translate-x-full transition-transform duration-500 ease-in-out shadow-2xl flex flex-col">
+            <div id="canvasHeader" class="shrink-0">
+                <!-- Loaded via AJAX -->
             </div>
-            <div id="emptyPane" class="absolute inset-0 flex flex-col items-center justify-center text-slate-300">
-                <span class="material-symbols-outlined text-6xl mb-4">folder_special</span>
-                <p class="text-sm font-bold uppercase tracking-widest">Select a project to view reports</p>
+            <div id="canvasBody" class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-slate-50/30">
+                <div id="detailPane" class="space-y-8">
+                    <!-- Content loaded via AJAX -->
+                </div>
             </div>
         </div>
     </div>
@@ -788,7 +795,6 @@ document.getElementById('projectForm').addEventListener('submit', async function
 
 async function loadProject(id, cardEl) {
     currentProjectId = id;
-    // Persist to URL
     const url = new URL(window.location);
     url.searchParams.set('id', id);
     window.history.pushState({}, '', url);
@@ -796,19 +802,28 @@ async function loadProject(id, cardEl) {
     document.querySelectorAll('.group').forEach(el => el.classList.remove('ring-2', 'ring-primary', 'border-transparent'));
     if (cardEl) cardEl.classList.add('ring-2', 'ring-primary', 'border-transparent');
     else {
-        // Find card by ID if cardEl not provided (e.g. from URL load)
-        const target = document.querySelector(`[onclick*="loadProject(${id}"]`);
+        const target = document.querySelector(`[onclick*="loadProject(${id})"]`);
         if (target) target.classList.add('ring-2', 'ring-primary', 'border-transparent');
     }
-    
-    document.getElementById('emptyPane').classList.add('hidden');
-    const pane = document.getElementById('detailPane');
-    pane.classList.remove('hidden');
-    pane.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-primary text-4xl animate-spin">sync</span></div>';
-    
+
     const res = await fetch(`?ajax_action=load_details&id=${id}`);
     const data = await res.json();
-    pane.innerHTML = data.html;
+    
+    document.getElementById('canvasHeader').innerHTML = data.header_html;
+    document.getElementById('detailPane').innerHTML = data.body_html;
+    
+    // Open Canvas
+    document.getElementById('detailBackdrop').classList.remove('pointer-events-none', 'opacity-0');
+    document.getElementById('detailCanvas').classList.remove('translate-x-full');
+}
+
+function closeProjectDetail() {
+    document.getElementById('detailBackdrop').classList.add('pointer-events-none', 'opacity-0');
+    document.getElementById('detailCanvas').classList.add('translate-x-full');
+    
+    const url = new URL(window.location);
+    url.searchParams.delete('id');
+    window.history.pushState({}, '', url);
 }
 
 window.onload = () => {
@@ -1009,98 +1024,6 @@ async function removeAsset(projectId, assetId) {
 
     // Milestone Form logic moved to consolidated section
 
-    async function updateMilestoneStatus(msId, projectId, status) {
-        const fd = new FormData();
-        fd.append('id', msId);
-        fd.append('status', status);
-        await fetch('?ajax_action=update_milestone_status', { method: 'POST', body: fd });
-        loadProject(projectId);
-    }
-
-    async function deleteMilestone(msId, projectId) {
-        if (!confirm('Delete this milestone and all its sub-tasks?')) return;
-        await fetch(`?ajax_action=delete_milestone&id=${msId}`);
-        loadProject(projectId);
-    }
-
-    async function saveSubMilestone(msId, projectId) {
-        const input = document.getElementById(`subText_${msId}`);
-        const fd = new FormData();
-        fd.append('milestone_id', msId);
-        fd.append('title', input.value);
-        await fetch('?ajax_action=save_sub_milestone', { method: 'POST', body: fd });
-        loadProject(projectId);
-    }
-
-    async function toggleSubMilestone(subId, projectId) {
-        await fetch(`?ajax_action=toggle_sub_milestone&id=${subId}`);
-        loadProject(projectId);
-    }
-
-    async function openMilestoneChat(msId, title) {
-        document.getElementById('msChatId').value = msId;
-        document.getElementById('msChatTitle').innerText = title;
-        document.getElementById('msChatContent').innerHTML = '<div class="text-center py-10 animate-pulse text-slate-300">Loading...</div>';
-        document.getElementById('msChatModal').classList.add('open');
-        
-        const res = await fetch(`?ajax_action=get_milestone_reports&milestone_id=${msId}`);
-        const reports = await res.json();
-        renderMsChat(reports);
-    }
-
-    function closeMsChat() { document.getElementById('msChatModal').classList.remove('open'); }
-
-    function renderMsChat(reports) {
-        const cont = document.getElementById('msChatContent');
-        if (reports.length === 0) {
-            cont.innerHTML = '<div class="text-center py-10 text-slate-300 italic text-xs">No logs for this milestone yet.</div>';
-            return;
-        }
-        cont.innerHTML = reports.map(r => `
-            <div class="flex flex-col ${r.sender_type === 'Admin' ? 'items-end' : 'items-start'}">
-                <div class="flex items-center gap-2 mb-1 px-1">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${r.sender_type === 'Admin' ? 'YOU' : r.sender_name}</span>
-                    <span class="text-[8px] text-slate-300">${new Date(r.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                </div>
-                <div class="${r.sender_type === 'Admin' ? 'bg-primary text-on-primary rounded-tr-none' : 'bg-white text-slate-600 rounded-tl-none border border-slate-100'} px-4 py-2.5 rounded-2xl shadow-sm text-xs leading-relaxed font-medium">
-                    ${r.content.replace(/\n/g, '<br>')}
-                </div>
-            </div>
-        `).join('');
-        cont.scrollTop = cont.scrollHeight;
-    }
-
-    document.getElementById('msChatForm').onsubmit = async function(e) {
-        e.preventDefault();
-        const input = document.getElementById('msChatInput');
-        const msId = document.getElementById('msChatId').value;
-        const fd = new FormData();
-        fd.append('milestone_id', msId);
-        fd.append('project_id', currentProjectId);
-        fd.append('content', input.value);
-        
-        await fetch('?ajax_action=add_milestone_report', { method: 'POST', body: fd });
-        input.value = '';
-        openMilestoneChat(msId, document.getElementById('msChatTitle').innerText);
-    };
-
-    async function editMilestone(id) {
-        const res = await fetch(`?ajax_action=get_milestone&id=${id}`);
-        const data = await res.json();
-        openMilestoneModal(data.project_id, data.id);
-        document.getElementById('msTitle').value = data.title;
-        document.getElementById('msDesc').value = data.description;
-        document.getElementById('msDue').value = data.due_date || '';
-    }
-
-    function showSubInput(id) {
-        document.getElementById(`subInput_${id}`).classList.toggle('hidden');
-        document.getElementById(`subText_${id}`).focus();
-    }
-
-    function toggleMilestoneActions(id) {
-        document.getElementById(`milestoneActions_${id}`).classList.toggle('hidden');
-    }
     </script>
 
     <!-- Milestone Modal -->
