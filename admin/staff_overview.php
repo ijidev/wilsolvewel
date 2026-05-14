@@ -51,7 +51,7 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
     </header>
 
     <main class="flex-1 overflow-y-auto p-6 md:p-12">
-        <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <!-- Details Section -->
             <div class="space-y-8">
                 <section>
@@ -105,117 +105,125 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                 <div class="flex flex-col gap-8 items-center relative w-[520px]" id="id-card-capture-container">
                     
                     <!-- FRONT VIEW -->
-                    <div id="id-card-capture-front" class="w-[520px] h-[328px] id-card-gradient rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border-4 border-slate-800 shrink-0">
+                    <div id="id-card-capture-front" class="w-[520px] h-[328px] bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border border-white/10 shrink-0 id-card-gradient">
                         <!-- Left Section: Photo & Name -->
-                        <div class="w-2/5 border-r border-slate-800 p-6 flex flex-col items-center justify-center bg-slate-900/50 z-10 relative">
-                            <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-                            <div class="w-28 h-28 rounded-3xl bg-slate-800 border-4 border-slate-700 overflow-hidden mb-4 shadow-lg flex items-center justify-center shrink-0">
-                                <?php if(!empty($staff['profile_pic'])): ?>
-                                    <img src="../<?php echo htmlspecialchars($staff['profile_pic']); ?>" class="w-full h-full object-cover">
-                                <?php else: ?>
-                                    <span class="text-4xl font-black text-slate-600 font-headline uppercase"><?php echo substr($staff['name'], 0, 2); ?></span>
-                                <?php endif; ?>
+                        <div class="w-2/5 border-r border-white/5 p-6 flex flex-col items-center justify-center bg-black/20 z-10 relative backdrop-blur-sm">
+                            <div class="w-28 h-28 rounded-full bg-slate-800 border border-white/10 overflow-hidden mb-5 shadow-2xl flex items-center justify-center shrink-0 p-1">
+                                <div class="w-full h-full rounded-full overflow-hidden bg-slate-700 flex items-center justify-center">
+                                    <?php if(!empty($staff['profile_pic'])): ?>
+                                        <img src="../<?php echo htmlspecialchars($staff['profile_pic']); ?>" class="w-full h-full object-cover">
+                                    <?php else: ?>
+                                        <span class="text-4xl font-black text-slate-500 font-headline uppercase"><?php echo substr($staff['name'], 0, 2); ?></span>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             <div class="text-center w-full">
-                                <h3 class="text-lg font-black font-headline uppercase tracking-tight mb-1 truncate"><?php echo htmlspecialchars($staff['name']); ?></h3>
-                                <div class="px-3 py-1 bg-primary text-on-primary rounded-full text-[8px] font-black uppercase tracking-widest inline-block truncate max-w-full"><?php echo htmlspecialchars($staff['role'] ?: 'Staff'); ?></div>
+                                <h3 class="text-lg font-black font-headline uppercase tracking-tight mb-2 text-slate-100 truncate"><?php echo htmlspecialchars($staff['name']); ?></h3>
+                                <div class="px-3 py-1 bg-white/5 border border-white/10 text-slate-300 rounded-full text-[8px] font-bold uppercase tracking-[0.2em] inline-block truncate max-w-full"><?php echo htmlspecialchars($staff['role'] ?: 'Staff'); ?></div>
                             </div>
                         </div>
 
                         <!-- Right Section: Details -->
-                        <div class="w-3/5 p-6 flex flex-col z-10 relative bg-[#0F172A]">
-                            <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
-                            <div class="absolute -left-10 bottom-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl z-0 pointer-events-none"></div>
+                        <div class="w-3/5 p-8 flex flex-col z-10 relative bg-gradient-to-br from-slate-900 to-slate-950">
+                            <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl z-0 pointer-events-none mix-blend-screen"></div>
                             
                             <!-- Header -->
-                            <div class="flex justify-between items-start mb-6 z-10">
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] font-black tracking-widest uppercase text-primary"><?php echo $site_name; ?></span>
-                                    <span class="text-[7px] font-bold text-slate-500 uppercase tracking-widest">Engineering Personnel</span>
+                            <div class="flex justify-between items-start mb-8 z-10">
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-[11px] font-black tracking-widest uppercase text-primary"><?php echo $site_name; ?></span>
+                                    <span class="text-[7px] font-medium text-slate-400 uppercase tracking-widest opacity-80">Engineering Personnel</span>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-slate-500 text-base opacity-60">contactless</span>
-                                    <div class="id-card-chip scale-75 origin-right"></div>
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-slate-400 text-base opacity-50">contactless</span>
+                                    <div class="id-card-chip scale-75 origin-right opacity-80"></div>
                                 </div>
                             </div>
 
                             <!-- Data Grid -->
-                            <div class="grid grid-cols-2 gap-y-4 gap-x-2 mt-auto z-10">
+                            <div class="grid grid-cols-2 gap-y-5 gap-x-4 mt-auto z-10">
                                 <div>
-                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">ID NUMBER</span>
-                                    <span class="text-[11px] font-black font-headline text-slate-200">WLV-<?php echo str_pad($staff['id'], 5, '0', STR_PAD_LEFT); ?></span>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-[0.2em] mb-1">ID NUMBER</span>
+                                    <span class="text-[12px] font-black font-headline text-slate-200 tracking-wider">WLV-<?php echo str_pad($staff['id'], 5, '0', STR_PAD_LEFT); ?></span>
                                 </div>
                                 <div>
-                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">DEPT</span>
-                                    <span class="text-[11px] font-black font-headline text-slate-200"><?php echo strtoupper(htmlspecialchars($staff['dept_name'] ?: 'GEN')); ?></span>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-[0.2em] mb-1">DEPT</span>
+                                    <span class="text-[12px] font-black font-headline text-slate-200 tracking-wider"><?php echo strtoupper(htmlspecialchars($staff['dept_name'] ?: 'GEN')); ?></span>
                                 </div>
                                 <div>
-                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">JOIN DATE</span>
-                                    <span class="text-[11px] font-black font-headline text-slate-200"><?php echo date('M Y', strtotime($staff['created_at'])); ?></span>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-[0.2em] mb-1">JOIN DATE</span>
+                                    <span class="text-[12px] font-black font-headline text-slate-200 tracking-wider"><?php echo date('M Y', strtotime($staff['created_at'])); ?></span>
                                 </div>
                                 <div>
-                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-widest">CLEARANCE</span>
-                                    <span class="text-[11px] font-black font-headline text-primary">L-4 AUTH</span>
+                                    <span class="text-[7px] font-bold text-slate-500 uppercase block tracking-[0.2em] mb-1">CLEARANCE</span>
+                                    <span class="text-[12px] font-black font-headline text-primary tracking-wider flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div> L-4 AUTH</span>
                                 </div>
                             </div>
 
                             <!-- Footer -->
-                            <div class="mt-6 flex justify-between items-center w-full z-10 opacity-30 border-t border-slate-800 pt-4">
-                                <div class="flex flex-col gap-0.5">
-                                    <div class="w-20 h-1 bg-slate-600 rounded"></div>
-                                    <div class="w-12 h-1 bg-slate-600 rounded"></div>
+                            <div class="mt-8 flex justify-between items-center w-full z-10 opacity-40 border-t border-white/5 pt-4">
+                                <div class="flex flex-col gap-1">
+                                    <div class="w-16 h-[2px] bg-slate-500 rounded-full"></div>
+                                    <div class="w-10 h-[2px] bg-slate-500 rounded-full"></div>
                                 </div>
-                                <div class="w-6 h-6 border-2 border-slate-600 rounded p-0.5">
-                                    <div class="w-full h-full bg-slate-600 rounded-sm"></div>
+                                <div class="w-6 h-6 border border-slate-500 rounded flex items-center justify-center p-0.5 opacity-50">
+                                    <div class="w-full h-full bg-slate-500 rounded-sm"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- BACK VIEW -->
-                    <div id="id-card-capture-back" class="hidden w-[520px] h-[328px] id-card-gradient rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border-4 border-slate-800 shrink-0 flex-col">
-                        <div class="w-full h-12 bg-slate-900 mt-6 shadow-inner shrink-0"></div>
-                        <div class="p-6 flex flex-col h-full z-10">
-                            <div class="flex gap-4">
+                    <div id="id-card-capture-back" class="hidden w-[520px] h-[328px] bg-slate-950 rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border border-white/10 shrink-0 flex-col">
+                        <div class="w-full h-14 bg-black mt-6 shadow-inner shrink-0 border-y border-white/5 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 translate-x-full"></div>
+                        </div>
+                        <div class="p-8 flex flex-col h-full z-10 relative">
+                            <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl z-0 pointer-events-none mix-blend-screen"></div>
+                            
+                            <div class="flex gap-6 relative z-10">
                                 <div class="flex-1">
-                                    <div class="w-full h-8 bg-white/10 rounded-sm mb-4"></div>
-                                    <p class="text-[8px] text-slate-400 mb-2 leading-relaxed font-bold tracking-wide">
-                                        This card is the property of <span class="text-slate-200"><?php echo $site_name; ?></span>. It must be surrendered upon request or termination of employment.
+                                    <div class="w-3/4 h-8 bg-white/5 rounded border border-white/5 mb-5 flex items-center px-3">
+                                        <span class="text-[7px] text-slate-500 uppercase tracking-widest font-bold opacity-50">Authorized Signature</span>
+                                    </div>
+                                    <p class="text-[8px] text-slate-400 mb-3 leading-loose font-medium tracking-wide">
+                                        This card is the property of <strong class="text-slate-200"><?php echo $site_name; ?></strong>. It must be surrendered upon request or termination of employment. Non-transferable.
                                     </p>
-                                    <p class="text-[8px] text-slate-400 leading-relaxed tracking-wide">
+                                    <p class="text-[8px] text-slate-400 leading-loose tracking-wide">
                                         If found, please return to:<br>
-                                        <span class="text-slate-200 font-bold">Security Department</span><br>
+                                        <strong class="text-slate-200">Security Department</strong><br>
                                         Wilsolvewel Engineering HQ
                                     </p>
                                 </div>
-                                <div class="w-20 shrink-0 flex flex-col items-center justify-center border-l border-slate-800 pl-4">
-                                    <div class="w-full bg-white/5 h-[100px] flex items-center justify-center rounded border border-white/10 overflow-hidden text-center relative">
+                                <div class="w-20 shrink-0 flex flex-col items-center justify-center border-l border-white/5 pl-6">
+                                    <div class="w-full bg-black/40 h-[110px] flex items-center justify-center rounded border border-white/5 overflow-hidden text-center relative shadow-inner">
                                         <!-- Vertical Barcode placeholder -->
-                                        <div class="absolute inset-2 flex flex-col justify-between opacity-30">
-                                            <div class="w-full h-[2px] bg-white"></div>
-                                            <div class="w-full h-[4px] bg-white"></div>
-                                            <div class="w-full h-[1px] bg-white"></div>
-                                            <div class="w-full h-[3px] bg-white"></div>
-                                            <div class="w-full h-[1px] bg-white"></div>
-                                            <div class="w-full h-[4px] bg-white"></div>
-                                            <div class="w-full h-[2px] bg-white"></div>
-                                            <div class="w-full h-[1px] bg-white"></div>
-                                            <div class="w-full h-[5px] bg-white"></div>
-                                            <div class="w-full h-[2px] bg-white"></div>
-                                            <div class="w-full h-[1px] bg-white"></div>
-                                            <div class="w-full h-[3px] bg-white"></div>
-                                            <div class="w-full h-[2px] bg-white"></div>
+                                        <div class="absolute inset-3 flex flex-col justify-between opacity-40">
+                                            <div class="w-full h-[2px] bg-slate-300"></div>
+                                            <div class="w-full h-[4px] bg-slate-300"></div>
+                                            <div class="w-full h-[1px] bg-slate-300"></div>
+                                            <div class="w-full h-[3px] bg-slate-300"></div>
+                                            <div class="w-full h-[1px] bg-slate-300"></div>
+                                            <div class="w-full h-[5px] bg-slate-300"></div>
+                                            <div class="w-full h-[2px] bg-slate-300"></div>
+                                            <div class="w-full h-[1px] bg-slate-300"></div>
+                                            <div class="w-full h-[4px] bg-slate-300"></div>
+                                            <div class="w-full h-[2px] bg-slate-300"></div>
+                                            <div class="w-full h-[1px] bg-slate-300"></div>
+                                            <div class="w-full h-[3px] bg-slate-300"></div>
+                                            <div class="w-full h-[2px] bg-slate-300"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mt-auto border-t border-slate-800 pt-4 flex justify-between items-center">
-                                <div class="flex items-center gap-3">
-                                    <span class="material-symbols-outlined text-primary text-2xl">policy</span>
+                            <div class="mt-auto border-t border-white/5 pt-5 flex justify-between items-center relative z-10">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-sm">policy</span>
+                                    </div>
                                     <div>
-                                        <span class="text-[9px] font-black uppercase text-primary tracking-widest block">Level 4 Clearance</span>
-                                        <span class="text-[7px] text-slate-500 uppercase tracking-widest">Authorized Access Only</span>
+                                        <span class="text-[9px] font-black uppercase text-slate-200 tracking-widest block mb-0.5">Level 4 Clearance</span>
+                                        <span class="text-[7px] text-primary uppercase tracking-[0.2em] font-bold">Authorized Access Only</span>
                                     </div>
                                 </div>
                             </div>
