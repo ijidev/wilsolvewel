@@ -270,15 +270,29 @@ function get_db_connection() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
-    $conn->query("CREATE TABLE IF NOT EXISTS audit_logs (
-        id INT(11) AUTO_INCREMENT PRIMARY KEY,
-        action_type VARCHAR(50) NOT NULL,
-        module VARCHAR(50) NOT NULL,
-        actor_type VARCHAR(20) NOT NULL,
-        actor_id INT(11) NOT NULL,
-        description TEXT NOT NULL,
-        details JSON NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS hsse_observations (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        type VARCHAR(100) DEFAULT 'Routine',
+        severity VARCHAR(50) DEFAULT 'Low',
+        location VARCHAR(255) NULL,
+        description TEXT,
+        inspector_id INT(11) NULL,
+        status VARCHAR(50) DEFAULT 'Open',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS maintenance_logs (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        asset_id INT(11) NOT NULL,
+        admin_id INT(11) NOT NULL,
+        action_taken TEXT,
+        status VARCHAR(50) DEFAULT 'Completed',
+        logged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
     )");
 
     $conn->query("CREATE TABLE IF NOT EXISTS system_errors (

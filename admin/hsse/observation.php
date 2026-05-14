@@ -1,3 +1,29 @@
+<?php
+include '../../config.php';
+if (session_status() === PHP_SESSION_NONE) session_start();
+$conn = get_db_connection();
+$admin_id = $_SESSION['admin_id'] ?? 1;
+
+// --- Handle Form Submission ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $conn->real_escape_string($_POST['title'] ?? '');
+    $type = $conn->real_escape_string($_POST['type'] ?? 'Routine');
+    $severity = $conn->real_escape_string($_POST['severity'] ?? 'Low');
+    $location = $conn->real_escape_string($_POST['location'] ?? '');
+    $description = $conn->real_escape_string($_POST['description'] ?? '');
+    
+    $sql = "INSERT INTO hsse_observations (title, type, severity, location, description, inspector_id, status) 
+            VALUES ('$title', '$type', '$severity', '$location', '$description', $admin_id, 'Open')";
+    
+    if ($conn->query($sql)) {
+        header("Location: monitor.php?success=1");
+        exit;
+    }
+}
+
+// Fetch Projects for dropdown
+$projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en">
@@ -80,50 +106,48 @@
                         All reports are timestamped and logged directly into the Terminal node ledger.</p>
                 </section>
                 <!-- Form Section -->
-                <div
-                    class="bg-surface-container-lowest rounded-md p-8 shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)] space-y-12">
+                <form method="POST" action="" class="bg-surface-container-lowest rounded-md p-8 shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)] space-y-12">
                     <!-- Observation Type Selection -->
                     <div class="space-y-6">
-                        <label class="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500">01. Observation
-                            Type</label>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <button
-                                class="flex flex-col items-start p-6 rounded-md bg-white border-2 border-primary ring-4 ring-primary/5 transition-all text-left">
-                                <span class="material-symbols-outlined text-primary mb-4"
-                                    style="font-variation-settings: 'FILL' 1;">warning</span>
-                                <span class="font-headline font-bold text-lg text-on-surface">Near Miss</span>
-                                <span class="text-xs text-on-surface-variant mt-1">Incident without injury</span>
-                            </button>
-                            <button
-                                class="flex flex-col items-start p-6 rounded-md bg-surface-container-low hover:bg-surface-container-high transition-all text-left group">
-                                <span
-                                    class="material-symbols-outlined text-slate-400 group-hover:text-tertiary transition-colors mb-4">nearby</span>
-                                <span class="font-headline font-bold text-lg text-on-surface">Hazard</span>
-                                <span class="text-xs text-on-surface-variant mt-1">Unsafe condition detected</span>
-                            </button>
-                            <button
-                                class="flex flex-col items-start p-6 rounded-md bg-surface-container-low hover:bg-surface-container-high transition-all text-left group">
-                                <span
-                                    class="material-symbols-outlined text-slate-400 group-hover:text-secondary transition-colors mb-4">task_alt</span>
-                                <span class="font-headline font-bold text-lg text-on-surface">Routine</span>
-                                <span class="text-xs text-on-surface-variant mt-1">Standard safety check</span>
-                            </button>
+                        <label class="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500">01. Observation Type & Severity</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <span class="text-sm font-medium text-on-surface">Type</span>
+                                <select name="type" class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 font-body text-sm focus:ring-2 focus:ring-primary/20">
+                                    <option value="Routine">Routine Check</option>
+                                    <option value="Hazard">Hazard Detection</option>
+                                    <option value="Incident">Near Miss / Incident</option>
+                                    <option value="Audit">Safety Audit</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-sm font-medium text-on-surface">Severity</span>
+                                <select name="severity" class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 font-body text-sm focus:ring-2 focus:ring-primary/20">
+                                    <option value="Low">Low (Routine)</option>
+                                    <option value="Medium">Medium (Attention Required)</option>
+                                    <option value="High">High (Immediate Action)</option>
+                                    <option value="Critical">Critical (Emergency)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <!-- Details Section -->
-                    <div class="space-y-8">
-                        <label class="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500">02. Operational
-                            Context</label>
+                        <div class="space-y-2">
+                            <span class="text-sm font-medium text-on-surface">Observation Title</span>
+                            <input name="title" required
+                                class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 font-body text-sm focus:ring-2 focus:ring-primary/20"
+                                placeholder="Brief summary of the observation..." type="text" />
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-2">
-                                <span class="text-sm font-medium text-on-surface">Machinery Involved</span>
+                                <span class="text-sm font-medium text-on-surface">Project Context</span>
                                 <div class="relative">
-                                    <select
+                                    <select name="project_id"
                                         class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 font-body text-sm appearance-none focus:ring-2 focus:ring-primary/20">
-                                        <option>Bulldozer Operation (B-402)</option>
-                                        <option>Excavator (E-101)</option>
-                                        <option>Crane Lifting Area</option>
-                                        <option>Conveyor System Alpha</option>
+                                        <option value="">General Site / No Project</option>
+                                        <?php while($p = $projects_res->fetch_assoc()): ?>
+                                        <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['name']) ?></option>
+                                        <?php endwhile; ?>
                                     </select>
                                     <span
                                         class="material-symbols-outlined absolute right-4 top-3 text-slate-400 pointer-events-none">expand_more</span>
@@ -131,14 +155,14 @@
                             </div>
                             <div class="space-y-2">
                                 <span class="text-sm font-medium text-on-surface">Precision Location</span>
-                                <input
+                                <input name="location"
                                     class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 font-body text-sm focus:ring-2 focus:ring-primary/20"
                                     placeholder="e.g., Sector 7G, North Wall" type="text" />
                             </div>
                         </div>
                         <div class="space-y-2">
                             <span class="text-sm font-medium text-on-surface">Event Description</span>
-                            <textarea
+                            <textarea name="description" required
                                 class="w-full bg-surface-container-low border-none rounded-sm px-4 py-3 font-body text-sm focus:ring-2 focus:ring-primary/20"
                                 placeholder="Detail the specific sequence of events..." rows="4"></textarea>
                         </div>
@@ -179,14 +203,12 @@
                     </div>
                     <!-- Footer Actions -->
                     <div class="flex items-center justify-end gap-4 pt-8 border-t border-outline-variant/10">
-                        <button
-                            class="px-8 py-3 text-slate-500 font-headline font-bold hover:bg-slate-50 transition-colors">Save
-                            as Draft</button>
-                        <button
-                            class="px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold rounded-md shadow-lg shadow-primary/20 active:scale-95 transition-all">Submit
-                            Observation</button>
+                        <button type="button" onclick="window.location.href='monitor.php'"
+                            class="px-8 py-3 text-slate-500 font-headline font-bold hover:bg-slate-50 transition-colors">Cancel</button>
+                        <button type="submit"
+                            class="px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold rounded-md shadow-lg shadow-primary/20 active:scale-95 transition-all">Submit Observation</button>
                     </div>
-                </div>
+                </form>
             </div>
             <!-- Right Column: Contextual Sidebar -->
             <div class="w-full md:w-80 space-y-6">

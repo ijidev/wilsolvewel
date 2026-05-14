@@ -2,8 +2,34 @@
 include '../config.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-$client_id = $_SESSION['client_id'] ?? 1;
+$client_id = $_SESSION['client_id'] ?? 0;
+if ($client_id === 0) {
+    header("Location: ../client-login.php");
+    exit();
+}
 $conn = get_db_connection();
+
+// --- Fetch Statistics ---
+// 1. Safe Days (Using global setting for now)
+$safe_days = get_setting('hsse_safe_days', 412);
+
+// 2. Compliance Index (Global for now)
+$compliance_index = get_setting('hsse_compliance_index', 98.4);
+
+// 3. Recent Observations (Specific to client's projects)
+$observations_res = $conn->query("
+    SELECT o.*, p.name as project_name 
+    FROM hsse_observations o 
+    JOIN projects p ON o.location LIKE CONCAT('%', p.name, '%') OR o.description LIKE CONCAT('%', p.name, '%')
+    WHERE p.client_id = $client_id 
+    ORDER BY o.created_at DESC 
+    LIMIT 5
+");
+
+// Fallback to general observations if none found for client projects specifically (for demo/UI completeness)
+if ($observations_res->num_rows === 0) {
+    $observations_res = $conn->query("SELECT * FROM hsse_observations ORDER BY created_at DESC LIMIT 3");
+}
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -59,7 +85,7 @@ $conn = get_db_connection();
                         <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between">
                             <div>
                                 <span class="font-headline text-[10px] uppercase tracking-wider text-slate-400 font-bold">Incidence-Free Period</span>
-                                <h3 class="font-headline text-6xl font-black text-primary mt-2">142</h3>
+                                <h3 class="font-headline text-6xl font-black text-primary mt-2"><?= $safe_days ?></h3>
                                 <p class="font-body text-sm font-bold text-on-surface mt-1">SAFE DAYS RECORDED</p>
                             </div>
                             <div class="mt-8 flex items-center gap-4">
@@ -74,7 +100,7 @@ $conn = get_db_connection();
                             <div>
                                 <span class="font-headline text-[10px] uppercase tracking-wider text-slate-400 font-bold">Compliance Index</span>
                                 <div class="flex items-baseline gap-2 mt-2">
-                                    <h3 class="font-headline text-6xl font-black text-slate-900">98.4</h3>
+                                    <h3 class="font-headline text-6xl font-black text-slate-900"><?= $compliance_index ?></h3>
                                     <span class="text-xl font-bold text-white bg-slate-900 px-2 rounded">%</span>
                                 </div>
                                 <p class="font-body text-sm text-slate-500 mt-2">Tier 1 Safety Certification Maintained</p>
@@ -88,25 +114,29 @@ $conn = get_db_connection();
                         <div class="md:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
                             <div class="flex items-center gap-4 mb-6">
                                 <div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
-                                <h3 class="font-headline text-lg font-bold">Live Hazard Feed</h3>
+                                <h3 class="font-headline text-lg font-bold">Hazard & Incident Stream</h3>
                             </div>
                             <div class="space-y-4">
-                                <div class="flex items-start gap-4 p-4 bg-error/5 border-l-4 border-error rounded-r-xl">
-                                    <span class="material-symbols-outlined text-error">priority_high</span>
+                                <?php if ($observations_res && $observations_res->num_rows > 0): 
+                                    while($obs = $observations_res->fetch_assoc()):
+                                        $type_class = ($obs['severity'] == 'High' || $obs['type'] == 'Incident') ? 'border-error bg-error/5' : 'border-slate-300 bg-slate-50';
+                                        $icon = ($obs['severity'] == 'High') ? 'priority_high' : 'info';
+                                        $icon_class = ($obs['severity'] == 'High') ? 'text-error' : 'text-slate-400';
+                                ?>
+                                <div class="flex items-start gap-4 p-4 border-l-4 rounded-r-xl <?= $type_class ?>">
+                                    <span class="material-symbols-outlined <?= $icon_class ?>"><?= $icon ?></span>
                                     <div>
-                                        <p class="font-body font-bold text-sm text-on-surface">Weather Alert: High Wind Velocity</p>
-                                        <p class="text-xs text-slate-500">Zone 4 Cranes ordered to stow position. Current speed: 42 knots.</p>
+                                        <p class="font-body font-bold text-sm text-on-surface"><?= htmlspecialchars($obs['title']) ?></p>
+                                        <p class="text-xs text-slate-500"><?= htmlspecialchars($obs['description']) ?></p>
+                                        <?php if(isset($obs['project_name'])): ?>
+                                        <p class="text-[9px] font-bold text-primary uppercase mt-1 tracking-widest">PROJECT: <?= htmlspecialchars($obs['project_name']) ?></p>
+                                        <?php endif; ?>
                                     </div>
-                                    <span class="ml-auto text-[10px] font-headline text-slate-400 uppercase">02m AGO</span>
+                                    <span class="ml-auto text-[10px] font-headline text-slate-400 uppercase"><?= date('H:i', strtotime($obs['created_at'])) ?></span>
                                 </div>
-                                <div class="flex items-start gap-4 p-4 bg-slate-50 border-l-4 border-slate-300 rounded-r-xl">
-                                    <span class="material-symbols-outlined text-slate-400">info</span>
-                                    <div>
-                                        <p class="font-body font-bold text-sm text-on-surface">Perimeter Inspection Complete</p>
-                                        <p class="text-xs text-slate-500">Gate 2 sensor recalibrated by HSSE Team Delta.</p>
-                                    </div>
-                                    <span class="ml-auto text-[10px] font-headline text-slate-400 uppercase">45m AGO</span>
-                                </div>
+                                <?php endwhile; else: ?>
+                                <p class="text-xs text-slate-400 italic">No recent safety reports for your projects.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

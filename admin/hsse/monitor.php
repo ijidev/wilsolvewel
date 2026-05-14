@@ -1,3 +1,29 @@
+<?php
+include '../../config.php';
+if (session_status() === PHP_SESSION_NONE) session_start();
+$conn = get_db_connection();
+
+// --- Fetch Statistics ---
+// 1. Safe Days Since LTI (Mocked for now, but linked to a hypothetical LTI table or setting)
+$safe_days = get_setting('hsse_safe_days', 412);
+
+// 2. Compliance Index (Average of recent audit scores or static setting)
+$compliance_index = get_setting('hsse_compliance_index', 94.2);
+
+// 3. Recent Observations Count
+$critical_count = 0;
+$critical_res = $conn->query("SELECT COUNT(*) as count FROM hsse_observations WHERE severity = 'High' AND status != 'Resolved'");
+if ($critical_res) $critical_count = $critical_res->fetch_assoc()['count'];
+
+// 4. Recent Observations List
+$observations_res = $conn->query("
+    SELECT o.*, a.name as inspector_name, a.avatar as inspector_avatar 
+    FROM hsse_observations o 
+    LEFT JOIN admins a ON o.inspector_id = a.id 
+    ORDER BY o.created_at DESC 
+    LIMIT 10
+");
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en"><head>
@@ -94,7 +120,7 @@
 <h3 class="font-headline text-xl font-bold mt-2">Zero-Harm Target</h3>
 </div>
 <div class="text-center py-4">
-<span class="text-7xl font-headline font-extrabold tracking-tighter text-on-surface">412</span>
+<span class="text-7xl font-headline font-extrabold tracking-tighter text-on-surface"><?= $safe_days ?></span>
 <p class="font-label uppercase text-[12px] tracking-widest text-outline mt-2">Safe Days Since LTI</p>
 </div>
 <div class="flex gap-1">
@@ -117,8 +143,8 @@
 <circle class="text-primary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.6" stroke-dashoffset="29.1" stroke-width="12"></circle>
 </svg>
 <div class="absolute flex flex-col items-center">
-<span class="text-4xl font-headline font-bold">94.2%</span>
-<span class="font-label text-[10px] text-outline tracking-wider">+1.4% vs Q3</span>
+<span class="text-4xl font-headline font-bold"><?= $compliance_index ?>%</span>
+<span class="font-label text-[10px] text-outline tracking-wider">Operational Health</span>
 </div>
 </div>
 </div>
@@ -161,62 +187,45 @@
 <h3 class="font-headline text-2xl font-bold">Recent Observations</h3>
 <div class="flex gap-2">
 <span class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold rounded-full">ALL</span>
-<span class="px-3 py-1 bg-error-container text-on-error-container text-[10px] font-label font-bold rounded-full">CRITICAL (2)</span>
+<?php if ($critical_count > 0): ?>
+<span class="px-3 py-1 bg-error-container text-on-error-container text-[10px] font-label font-bold rounded-full">CRITICAL (<?= $critical_count ?>)</span>
+<?php endif; ?>
 </div>
 </div>
 <div class="space-y-1">
-<!-- Observation Item -->
+<?php 
+if ($observations_res && $observations_res->num_rows > 0):
+    while ($obs = $observations_res->fetch_assoc()):
+        $severity_color = 'bg-primary';
+        if ($obs['severity'] == 'High') $severity_color = 'bg-error';
+        elseif ($obs['severity'] == 'Low') $severity_color = 'bg-secondary-container';
+?>
 <div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/10">
-<div class="w-2 h-10 bg-error rounded-full"></div>
+<div class="w-2 h-10 <?= $severity_color ?> rounded-full"></div>
 <div class="flex-1">
 <div class="flex items-center gap-2 mb-1">
-<span class="text-sm font-bold text-on-surface">Oil Spill - Pier 04</span>
-<span class="text-[10px] font-label font-bold uppercase px-2 py-0.5 bg-error/10 text-error rounded">Incident</span>
+<span class="text-sm font-bold text-on-surface"><?= htmlspecialchars($obs['title']) ?></span>
+<span class="text-[10px] font-label font-bold uppercase px-2 py-0.5 bg-slate-100 text-slate-600 rounded"><?= htmlspecialchars($obs['type']) ?></span>
 </div>
-<p class="text-xs text-outline">Minor containment leak detected during vessel refueling. Remediation in progress.</p>
-</div>
-<div class="text-right flex flex-col gap-1 items-end">
-<span class="text-xs font-medium">14:22 PM</span>
-<div class="flex -space-x-2">
-<img alt="Inspector" class="w-6 h-6 rounded-full border-2 border-white" data-alt="close up headshot of a dock worker with safety helmet and glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXxhMJg5iRjbbbi75d-vW4VSEk3yu6GLF8YqgVfDwimED2pJYlhBgWdQsaKOb0d-M0sB_pMEP_THPtoKlU24J6gcVVNNWLy4QQEHizif7_AeDuDZFJgxnwZyXqmw-H_CoAifa288a1FEDcAJrAH-t9kSMCPrj3EPDrw60dT8zOJgBC4IRtv4DRDIHKI7gLOXtWNn2shPMCJ4bNXGuz_mtnFGve7DsLky7cMeE4Tde8jiVIian4Ahm0JH-Xw6PAfJ2pWev8pALZxH_y"/>
-<div class="w-6 h-6 rounded-full bg-surface-container text-[8px] flex items-center justify-center font-bold border-2 border-white">+1</div>
-</div>
-</div>
-</div>
-<!-- Observation Item -->
-<div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/10">
-<div class="w-2 h-10 bg-primary rounded-full"></div>
-<div class="flex-1">
-<div class="flex items-center gap-2 mb-1">
-<span class="text-sm font-bold text-on-surface">PPE Compliance Check</span>
-<span class="text-[10px] font-label font-bold uppercase px-2 py-0.5 bg-primary/10 text-primary rounded">Routine</span>
-</div>
-<p class="text-xs text-outline">Warehouse B staff fully compliant with new eye protection protocols.</p>
+<p class="text-xs text-outline"><?= htmlspecialchars($obs['description']) ?></p>
 </div>
 <div class="text-right flex flex-col gap-1 items-end">
-<span class="text-xs font-medium">09:15 AM</span>
+<span class="text-xs font-medium"><?= date('H:i A', strtotime($obs['created_at'])) ?></span>
 <div class="flex -space-x-2">
-<img alt="Inspector" class="w-6 h-6 rounded-full border-2 border-white" data-alt="close up headshot of a safety inspector with clipboard and high-vis vest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrTeh2mq1j-3_uRwNz2WpHBtthdsbaMAZVu2h_7nfmfxSa6tcm3M9vEO6wmu3kfJW_6HrG68whdN2RBXSxwnmIhix0AEJG6Q5WEi9nWVkRm6Qmyzf0FwjODFgXcSK-uzOLoFLzgH-346IBbem6Uj2_bJHXoayzJx5y43zDBckTxX43KOMbsGqJkRjd3ewPTFM9tLnPHNBF5aVn8lPglZXdUt9zfUa-Km7eE5O4mmnNrmRP_e5piE3ggvRzVtYIEaVk4wbAG6S3Y8lz"/>
+<?php if ($obs['inspector_avatar']): ?>
+<img alt="Inspector" class="w-6 h-6 rounded-full border-2 border-white" src="../../<?= htmlspecialchars($obs['inspector_avatar']) ?>"/>
+<?php else: ?>
+<div class="w-6 h-6 rounded-full bg-surface-container text-[8px] flex items-center justify-center font-bold border-2 border-white"><?= substr($obs['inspector_name'] ?: 'A', 0, 1) ?></div>
+<?php endif; ?>
 </div>
 </div>
 </div>
-<!-- Observation Item -->
-<div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
-<div class="w-2 h-10 bg-secondary-container rounded-full"></div>
-<div class="flex-1">
-<div class="flex items-center gap-2 mb-1">
-<span class="text-sm font-bold text-on-surface">Faulty Gantry Ladder</span>
-<span class="text-[10px] font-label font-bold uppercase px-2 py-0.5 bg-secondary/10 text-secondary rounded">Safety Hazard</span>
-</div>
-<p class="text-xs text-outline">Loose bolt identified on secondary access ladder of Gantry Crane 02.</p>
-</div>
-<div class="text-right flex flex-col gap-1 items-end">
-<span class="text-xs font-medium">Yesterday</span>
-<div class="flex -space-x-2">
-<img alt="Inspector" class="w-6 h-6 rounded-full border-2 border-white" data-alt="headshot of industrial worker in workshop environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASgztSIoV3QRQXF-nB_ZgV_jqzCUybDyX7ksACsr9f3fZnt0-ENweBLl3mCklTSvlOnJ_xY01S9RssUTz2RQtPNV0PL18ZdR3HD0V4qSAA3_AivuWOn5f6l7sdgAoTVDIiDYEjzxx5AOtP-rCbEfSbNexm7FNeVLUxENdeLDByCqba5oqep7hXgrADt-FKRwjb9zYkHV_stRbsl59qpf_wxlVMcGfeTFllfoeQmNcl2UWpCcX8YHnkTgsvx84VPEWBYpBuQBuiZSZB"/>
-</div>
-</div>
-</div>
+<?php 
+    endwhile;
+else:
+?>
+<p class="text-sm text-outline italic p-8 text-center">No recent observations logged.</p>
+<?php endif; ?>
 </div>
 </div>
 <!-- Hazard Heatmap -->

@@ -33,6 +33,8 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -82,7 +84,7 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                     <h1 class="text-3xl font-bold tracking-tight text-on-surface font-headline">Order Tracking</h1>
                 </div>
                 <div class="flex gap-2">
-                    <button class="bg-white border border-slate-200 text-on-surface px-4 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm">
+                    <button onclick="exportManifest()" class="bg-white border border-slate-200 text-on-surface px-4 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm">
                         <span class="material-symbols-outlined text-sm">download</span> Export Manifest
                     </button>
                 </div>
@@ -457,6 +459,46 @@ $held_customs = $conn->query("SELECT COUNT(*) FROM procurement_orders po LEFT JO
                 fetchOrderTickets(currentOrder.id);
             });
         };
+
+        async function exportManifest() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const tableContainer = document.querySelector('.bg-white.rounded-2xl.shadow-sm.border.border-slate-100.overflow-hidden');
+            
+            if(!tableContainer) return;
+
+            const btn = document.querySelector('button[onclick="exportManifest()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> Exporting...';
+            btn.disabled = true;
+
+            try {
+                const canvas = await html2canvas(tableContainer, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+                
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                doc.setFontSize(16);
+                doc.text("Procurement Manifest", 10, 15);
+                doc.setFontSize(10);
+                doc.text("Generated: " + new Date().toLocaleString(), 10, 22);
+                
+                doc.addImage(imgData, 'JPEG', 10, 30, pdfWidth, pdfHeight);
+                doc.save('Procurement_Manifest.pdf');
+            } catch (err) {
+                console.error("Export failed:", err);
+                alert("Failed to export manifest.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
