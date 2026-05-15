@@ -34,6 +34,15 @@ $asset_stats = $conn->query("SELECT
     SUM(value) as total_value 
     FROM assets")->fetch_assoc();
 
+// HSSE Safe Days
+$last_lti = $conn->query("SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1")->fetch_assoc();
+$safe_days = 0;
+if ($last_lti) {
+    $safe_days = (new DateTime())->diff(new DateTime($last_lti['created_at']))->days;
+} else {
+    $safe_days = get_setting('hsse_base_safe_days', 412);
+}
+
 // Recent Activity (Audit Logs)
 $recent_logs = [];
 $res = $conn->query("
@@ -124,16 +133,16 @@ while ($row = $res->fetch_assoc()) $recent_tickets[] = $row;
                 </div>
             </div>
 
-            <!-- Assets -->
-            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+            <!-- HSSE Monitor -->
+            <div onclick="location.href='hsse.php'" class="bg-slate-900 p-6 rounded-3xl shadow-xl shadow-slate-200 relative overflow-hidden group cursor-pointer hover:scale-[1.02] transition-all">
+                <div class="absolute right-0 top-0 w-24 h-24 bg-primary/10 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
                 <div class="relative z-10 flex justify-between items-start mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><span class="material-symbols-outlined text-xl">inventory_2</span></div>
-                    <span class="text-3xl font-black font-headline text-slate-900"><?php echo $asset_stats['total']; ?></span>
+                    <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center"><span class="material-symbols-outlined text-xl">shield_with_heart</span></div>
+                    <span class="text-3xl font-black font-headline text-white"><?php echo $safe_days; ?></span>
                 </div>
                 <div class="relative z-10">
-                    <p class="text-sm font-bold text-slate-900">Company Assets</p>
-                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">$<?php echo number_format($asset_stats['total_value']??0, 2); ?> Total Value</p>
+                    <p class="text-sm font-bold text-white">Safe Days (HSSE)</p>
+                    <p class="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Zero-Harm Target</p>
                 </div>
             </div>
 

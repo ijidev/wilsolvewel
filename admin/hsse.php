@@ -49,19 +49,83 @@ if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_observation'
     }
     exit;
 }
-
-if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_audit') {
+if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'resolve_observation') {
     header('Content-Type: application/json');
-    $title = $conn->real_escape_string($_POST['title'] ?? '');
-    $type = $conn->real_escape_string($_POST['type'] ?? '');
-    $date = $conn->real_escape_string($_POST['audit_date'] ?? '');
-    $location = $conn->real_escape_string($_POST['location'] ?? '');
-
-    $sql = "INSERT INTO hsse_audits (title, type, audit_date, location, status) VALUES ('$title', '$type', '$date', '$location', 'Upcoming')";
+    $id = (int)$_POST['id'];
+    $sql = "UPDATE hsse_observations SET status = 'Resolved' WHERE id = $id";
     if ($conn->query($sql)) {
         echo json_encode(['status' => 'success']);
     } else {
         echo json_encode(['status' => 'error', 'message' => $conn->error]);
+    }
+    exit;
+}
+
+if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_audit') {
+    header('Content-Type: application/json');
+    $id = (int)($_POST['id'] ?? 0);
+    $title = $conn->real_escape_string($_POST['title'] ?? '');
+    $type = $conn->real_escape_string($_POST['type'] ?? '');
+    $audit_date = $conn->real_escape_string($_POST['audit_date'] ?? '');
+    $location = $conn->real_escape_string($_POST['location'] ?? '');
+    
+    if ($id > 0) {
+        $sql = "UPDATE hsse_audits SET title='$title', type='$type', audit_date='$audit_date', location='$location' WHERE id=$id";
+        $action = 'Updated';
+    } else {
+        $sql = "INSERT INTO hsse_audits (title, type, audit_date, location, status) VALUES ('$title', '$type', '$audit_date', '$location', 'Upcoming')";
+        $action = 'Scheduled';
+    }
+    
+    if ($conn->query($sql)) {
+        log_audit($conn, $id > 0 ? 'Update' : 'Create', 'HSSE_Audit', 'Admin', $admin_id, "$action audit: $title");
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+    }
+    exit;
+}
+
+if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'delete_audit') {
+    header('Content-Type: application/json');
+    $id = (int)$_POST['id'];
+    if ($conn->query("DELETE FROM hsse_audits WHERE id = $id")) {
+        log_audit($conn, 'Delete', 'HSSE_Audit', 'Admin', $admin_id, "Deleted audit ID: $id");
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+    }
+    exit;
+}
+
+if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'get_observation_replies') {
+    header('Content-Type: application/json');
+    $obs_id = (int)$_GET['observation_id'];
+    $res = $conn->query("
+        SELECT r.*, a.name as admin_name, a.avatar as admin_avatar 
+        FROM hsse_observation_replies r 
+        JOIN admins a ON r.admin_id = a.id 
+        WHERE r.observation_id = $obs_id 
+        ORDER BY r.created_at ASC
+    ");
+    $replies = [];
+    if ($res) {
+        while ($row = $res->fetch_assoc()) $replies[] = $row;
+    }
+    echo json_encode($replies);
+    exit;
+}
+
+if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'add_observation_reply') {
+    header('Content-Type: application/json');
+    $obs_id = (int)$_POST['observation_id'];
+    $message = $conn->real_escape_string(trim($_POST['message']));
+    if (!empty($message)) {
+        if ($conn->query("INSERT INTO hsse_observation_replies (observation_id, admin_id, message) VALUES ($obs_id, $admin_id, '$message')")) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        }
     }
     exit;
 }
@@ -89,15 +153,20 @@ $compliance_index = ($total_obs > 0) ? round(($resolved_obs / $total_obs) * 100,
 
 // 3. Footer Stats
 $near_misses = 0;
-$near_miss_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE type = 'Near Miss'");
+$near_miss_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE type = 'Incident'");
 if ($near_miss_res) $near_misses = $near_miss_res->fetch_assoc()['total'];
 
 $breaches = 0;
-$breach_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE severity = 'High'");
+$breach_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE severity = 'High' OR type = 'Hazard'");
 if ($breach_res) $breaches = $breach_res->fetch_assoc()['total'];
 
-$man_hours = get_setting('hsse_man_hours', '1.2M');
-$training_score = get_setting('hsse_training_score', '98.8%');
+// --- Fetch all for management ---
+$all_observations_res = $conn->query("
+    SELECT o.*, a.name as inspector_name 
+    FROM hsse_observations o 
+    LEFT JOIN admins a ON o.inspector_id = a.id 
+    ORDER BY o.created_at DESC
+");
 
 // --- Handle Inline Updates (For manual overrides if needed) ---
 if (isset($_POST['update_metric'])) {
@@ -249,7 +318,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                 <!-- Upcoming Audits -->
                 <div class="col-span-12 md:col-span-4 bg-slate-900 text-white p-6 rounded-[2rem] h-[280px] flex flex-col shadow-2xl">
                     <h3 class="font-headline text-xl font-bold mb-4">Upcoming Audits</h3>
-                    <div class="space-y-3">
+                    <div id="auditContainer" class="space-y-3">
                         <?php if ($audits_res && $audits_res->num_rows > 0): 
                             while ($audit = $audits_res->fetch_assoc()):
                         ?>
@@ -261,8 +330,18 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                                 <p class="text-xs font-bold truncate"><?= htmlspecialchars($audit['title']) ?></p>
                                 <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest"><?= htmlspecialchars($audit['type']) ?></p>
                             </div>
-                            <div class="text-right shrink-0">
-                                <p class="text-[9px] font-black text-primary uppercase"><?= date('M d', strtotime($audit['audit_date'])) ?></p>
+                            <div class="text-right shrink-0 flex items-center gap-3">
+                                <div>
+                                    <p class="text-[9px] font-black text-primary uppercase"><?= date('M d', strtotime($audit['audit_date'])) ?></p>
+                                </div>
+                                <div class="flex gap-1 opacity-0 group-hover/audit:opacity-100 transition-opacity">
+                                    <button onclick='openAuditModal(<?= json_encode($audit) ?>)' class="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">
+                                        <span class="material-symbols-outlined text-xs">edit</span>
+                                    </button>
+                                    <button onclick="deleteAudit(<?= $audit['id'] ?>)" class="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-xs">delete</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <?php endwhile; else: ?>
@@ -280,8 +359,8 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                 <div class="col-span-12 bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
                     <div class="flex justify-between items-center mb-8">
                         <h3 class="font-headline text-2xl font-black text-slate-900">Recent Observations</h3>
-                        <div class="flex gap-2">
-                            <span class="px-3 py-1 bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-slate-100">ALL REPORTS</span>
+                        <div class="flex gap-4 items-center">
+                            <button onclick="openManageModal()" class="px-3 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full hover:bg-primary hover:text-on-primary transition-all">MANAGE ALL</button>
                             <?php if ($critical_count > 0): ?>
                             <span class="px-3 py-1 bg-red-50 text-red-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-red-100">CRITICAL (<?= $critical_count ?>)</span>
                             <?php endif; ?>
@@ -295,7 +374,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                                 if ($obs['severity'] == 'High') $severity_bg = 'bg-red-50 text-red-600';
                                 elseif ($obs['severity'] == 'Medium') $severity_bg = 'bg-amber-50 text-amber-600';
                         ?>
-                        <div class="group flex items-center gap-4 p-5 rounded-3xl border border-slate-50 hover:border-primary/30 hover:bg-slate-50/50 transition-all cursor-pointer">
+                        <div class="group flex items-center gap-4 p-5 rounded-3xl border border-slate-50 hover:border-primary/30 hover:bg-slate-50/50 transition-all">
                             <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 <?= $severity_bg ?>">
                                 <span class="material-symbols-outlined"><?= $obs['severity'] == 'High' ? 'warning' : 'info' ?></span>
                             </div>
@@ -303,18 +382,31 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                                 <div class="flex items-center gap-2 mb-0.5">
                                     <span class="text-sm font-extrabold text-slate-900 truncate"><?= htmlspecialchars($obs['title']) ?></span>
                                     <span class="text-[8px] font-black uppercase px-2 py-0.5 bg-white border border-slate-100 text-slate-400 rounded-md shrink-0"><?= htmlspecialchars($obs['type']) ?></span>
+                                    <?php if($obs['status'] == 'Resolved'): ?>
+                                    <span class="text-[8px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-md shrink-0">RESOLVED</span>
+                                    <?php endif; ?>
                                 </div>
                                 <p class="text-xs text-slate-500 truncate"><?= htmlspecialchars($obs['description']) ?></p>
                             </div>
-                            <div class="text-right shrink-0">
-                                <p class="text-[9px] font-black text-slate-300 uppercase"><?= date('H:i', strtotime($obs['created_at'])) ?></p>
-                                <div class="mt-1">
-                                    <?php if ($obs['inspector_avatar']): ?>
-                                    <img alt="Inspector" class="w-6 h-6 rounded-lg border-2 border-white shadow-sm inline-block" src="../<?= htmlspecialchars($obs['inspector_avatar']) ?>"/>
-                                    <?php else: ?>
-                                    <div class="w-6 h-6 rounded-lg bg-slate-900 text-white text-[8px] inline-flex items-center justify-center font-bold border-2 border-white shadow-sm"><?= substr($obs['inspector_name'] ?: 'A', 0, 1) ?></div>
-                                    <?php endif; ?>
+                            <div class="flex items-center gap-4 shrink-0">
+                                <div class="text-right">
+                                    <p class="text-[9px] font-black text-slate-300 uppercase"><?= date('H:i', strtotime($obs['created_at'])) ?></p>
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <button onclick='openChatModal(<?= $obs['id'] ?>, "<?= addslashes($obs['title']) ?>")' class="w-7 h-7 bg-slate-50 text-slate-300 rounded-lg flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-all">
+                                            <span class="material-symbols-outlined text-sm">forum</span>
+                                        </button>
+                                        <?php if ($obs['inspector_avatar']): ?>
+                                        <img alt="Inspector" class="w-6 h-6 rounded-lg border-2 border-white shadow-sm inline-block" src="../<?= htmlspecialchars($obs['inspector_avatar']) ?>"/>
+                                        <?php else: ?>
+                                        <div class="w-6 h-6 rounded-lg bg-slate-900 text-white text-[8px] inline-flex items-center justify-center font-bold border-2 border-white shadow-sm"><?= substr($obs['inspector_name'] ?: 'A', 0, 1) ?></div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
+                                <?php if($obs['status'] != 'Resolved' && ($permissions['role'] === 'Director' || $permissions['HSSE']['write'])): ?>
+                                <button onclick="resolveObservation(<?= $obs['id'] ?>)" class="w-8 h-8 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-emerald-50 hover:text-emerald-600 transition-all">
+                                    <span class="material-symbols-outlined text-lg">check_circle</span>
+                                </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <?php 
@@ -332,34 +424,30 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
 
             <!-- Footer Metrics & Milestones -->
             <div class="mt-12 grid grid-cols-12 gap-8 items-start">
-                <div class="col-span-12 lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div onclick="openMetricEdit('hsse_man_hours', '<?= $man_hours ?>')" class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm cursor-pointer hover:bg-slate-50 transition-all group/metric">
-                        <div>
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">MAN HOURS</p>
-                            <p class="text-xl font-headline font-extrabold text-slate-900"><?= $man_hours ?></p>
+                <div class="col-span-12 lg:col-span-8 grid grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined">warning</span>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">NEAR MISSES</p>
+                                <p class="text-2xl font-headline font-black text-slate-900"><?= $near_misses ?></p>
+                            </div>
                         </div>
-                        <span class="material-symbols-outlined text-slate-200 group-hover/metric:text-primary transition-colors">timelapse</span>
+                        <span class="text-[8px] font-black text-emerald-500 uppercase tracking-tighter bg-emerald-50 px-2 py-1 rounded-md">LIVE LOG</span>
                     </div>
-                    <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
-                        <div>
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">NEAR MISSES</p>
-                            <p class="text-xl font-headline font-extrabold text-amber-600"><?= $near_misses ?></p>
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined">security</span>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">BREACHES</p>
+                                <p class="text-2xl font-headline font-black text-slate-900"><?= $breaches ?></p>
+                            </div>
                         </div>
-                        <span class="material-symbols-outlined text-amber-100">warning</span>
-                    </div>
-                    <div onclick="openMetricEdit('hsse_training_score', '<?= $training_score ?>')" class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm cursor-pointer hover:bg-slate-50 transition-all group/metric">
-                        <div>
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">TRAINING</p>
-                            <p class="text-xl font-headline font-extrabold text-slate-900"><?= $training_score ?></p>
-                        </div>
-                        <span class="material-symbols-outlined text-primary/30 group-hover/metric:text-primary transition-colors">school</span>
-                    </div>
-                    <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
-                        <div>
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">BREACHES</p>
-                            <p class="text-xl font-headline font-extrabold text-red-600"><?= $breaches ?></p>
-                        </div>
-                        <span class="material-symbols-outlined text-red-100">security</span>
+                        <span class="text-[8px] font-black text-red-500 uppercase tracking-tighter bg-red-50 px-2 py-1 rounded-md">CRITICAL</span>
                     </div>
                 </div>
 
@@ -467,30 +555,58 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
 <div id="auditModal" class="modal-overlay">
     <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden p-8">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="font-headline font-black text-xl text-slate-900">Schedule Audit</h3>
+            <h3 id="auditModalTitle" class="font-headline font-black text-xl text-slate-900">Schedule Audit</h3>
             <button onclick="closeAuditModal()" class="text-slate-400 hover:text-slate-900"><span class="material-symbols-outlined">close</span></button>
         </div>
         <form id="auditForm" class="space-y-4">
+            <input type="hidden" name="id" id="audit_id">
             <div class="space-y-1">
                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Audit Title</label>
-                <input type="text" name="title" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
+                <input type="text" name="title" id="audit_title" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Type</label>
-                    <input type="text" name="type" placeholder="e.g. Safety" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
+                    <input type="text" name="type" id="audit_type" placeholder="e.g. Safety" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
                 </div>
                 <div class="space-y-1">
                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Date</label>
-                    <input type="date" name="audit_date" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
+                    <input type="date" name="audit_date" id="audit_date" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
                 </div>
             </div>
             <div class="space-y-1">
                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Location</label>
-                <input type="text" name="location" class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
+                <input type="text" name="location" id="audit_location" class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
             </div>
             <button type="submit" id="auditSubmitBtn" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest mt-4">CONFIRM SCHEDULE</button>
         </form>
+    </div>
+</div>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="modal-overlay">
+    <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col h-[600px] border border-slate-100">
+        <div class="p-6 bg-slate-50 border-b border-slate-100 flex justify-between items-center shrink-0">
+            <div>
+                <h3 id="chatTitle" class="font-headline font-black text-lg text-slate-900 truncate max-w-[300px]">Observation Logs</h3>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Real-time Administrative Feed</p>
+            </div>
+            <button onclick="closeChatModal()" class="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div id="chatBody" class="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-50/30 flex flex-col gap-4">
+            <!-- Replies go here -->
+        </div>
+        <div class="p-6 bg-white border-t border-slate-100 shrink-0">
+            <form id="chatForm" class="flex gap-3">
+                <input type="hidden" id="chat_obs_id" name="observation_id">
+                <input type="text" name="message" required placeholder="Type a response or directive..." class="flex-1 bg-slate-50 border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
+                <button type="submit" class="w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                    <span class="material-symbols-outlined">send</span>
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -527,8 +643,70 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         </div>
     </div>
 </div>
+<!-- Manage Observations Modal -->
+<div id="manageModal" class="modal-overlay">
+    <div class="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col h-[80vh]">
+        <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+            <div>
+                <h3 class="font-headline font-black text-2xl text-slate-900">Observation Management</h3>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">System Audit & Lifecycle Control</p>
+            </div>
+            <button onclick="closeManageModal()" class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left">
+                        <th class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4 pl-4">Title / Inspector</th>
+                        <th class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4">Severity</th>
+                        <th class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4">Status</th>
+                        <th class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4">Date</th>
+                        <th class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4 text-right pr-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    <?php if ($all_observations_res && $all_observations_res->num_rows > 0): 
+                        while($row = $all_observations_res->fetch_assoc()):
+                            $sev_color = $row['severity'] == 'High' ? 'text-red-600 bg-red-50' : ($row['severity'] == 'Medium' ? 'text-amber-600 bg-amber-50' : 'text-slate-600 bg-slate-50');
+                            $stat_color = $row['status'] == 'Resolved' ? 'text-emerald-600 bg-emerald-50' : 'text-blue-600 bg-blue-50';
+                    ?>
+                    <tr class="group hover:bg-slate-50/50 transition-all">
+                        <td class="py-4 pl-4">
+                            <p class="text-xs font-bold text-slate-900"><?= htmlspecialchars($row['title']) ?></p>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">BY <?= htmlspecialchars($row['inspector_name'] ?: 'SYSTEM') ?></p>
+                        </td>
+                        <td class="py-4">
+                            <span class="text-[8px] font-black px-2 py-0.5 rounded-md uppercase <?= $sev_color ?>"><?= $row['severity'] ?></span>
+                        </td>
+                        <td class="py-4">
+                            <span class="text-[8px] font-black px-2 py-0.5 rounded-md uppercase <?= $stat_color ?>"><?= $row['status'] ?></span>
+                        </td>
+                        <td class="py-4">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase"><?= date('M d, Y', strtotime($row['created_at'])) ?></p>
+                        </td>
+                        <td class="py-4 text-right pr-4">
+                            <div class="flex justify-end gap-2">
+                                <?php if($row['status'] != 'Resolved'): ?>
+                                <button onclick="resolveObservation(<?= $row['id'] ?>)" class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all">
+                                    <span class="material-symbols-outlined text-sm">check</span>
+                                </button>
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endwhile; endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <script>
+    function openManageModal() { document.getElementById('manageModal').classList.add('open'); }
+    function closeManageModal() { document.getElementById('manageModal').classList.remove('open'); }
+
     function openMetricEdit(key, currentVal) {
         document.getElementById('modal_metric_key').value = key;
         document.getElementById('modal_metric_value').value = currentVal;
@@ -539,6 +717,17 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         document.getElementById('metricModal').classList.remove('open');
     }
 
+    function resolveObservation(id) {
+        if(!confirm('Mark this observation as resolved?')) return;
+        const formData = new FormData();
+        formData.append('id', id);
+        fetch('hsse.php?ajax_action=resolve_observation', { method: 'POST', body: formData })
+        .then(r => r.json()).then(data => {
+            if(data.status === 'success') window.location.reload();
+            else alert(data.message);
+        });
+    }
+
     function openObservationModal() {
         document.getElementById('observationModal').classList.add('open');
     }
@@ -546,18 +735,105 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         document.getElementById('observationModal').classList.remove('open');
     }
 
-    function openAuditModal() { document.getElementById('auditModal').classList.add('open'); }
+    function openAuditModal(data = null) {
+        const modal = document.getElementById('auditModal');
+        const title = document.getElementById('auditModalTitle');
+        const btn = document.getElementById('auditSubmitBtn');
+        const form = document.getElementById('auditForm');
+        
+        form.reset();
+        if (data) {
+            title.innerText = 'Edit Audit';
+            btn.innerText = 'UPDATE AUDIT';
+            document.getElementById('audit_id').value = data.id;
+            document.getElementById('audit_title').value = data.title;
+            document.getElementById('audit_type').value = data.type;
+            document.getElementById('audit_date').value = data.audit_date;
+            document.getElementById('audit_location').value = data.location;
+        } else {
+            title.innerText = 'Schedule Audit';
+            btn.innerText = 'CONFIRM SCHEDULE';
+            document.getElementById('audit_id').value = '';
+        }
+        modal.classList.add('open');
+    }
+    
     function closeAuditModal() { document.getElementById('auditModal').classList.remove('open'); }
+
+    function deleteAudit(id) {
+        if (!confirm('Are you sure you want to delete this audit?')) return;
+        fetch('hsse.php?ajax_action=delete_audit', {
+            method: 'POST',
+            body: new URLSearchParams({'id': id})
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'success') window.location.reload();
+            else alert(data.message);
+        });
+    }
 
     document.getElementById('auditForm').onsubmit = function(e) {
         e.preventDefault();
         const btn = document.getElementById('auditSubmitBtn');
-        btn.innerText = 'SCHEDULING...';
+        btn.innerText = 'PROCESSING...';
         btn.disabled = true;
         fetch('hsse.php?ajax_action=submit_audit', { method: 'POST', body: new FormData(this) })
         .then(r => r.json()).then(data => {
             if(data.status === 'success') window.location.reload();
             else { alert(data.message); btn.innerText = 'CONFIRM SCHEDULE'; btn.disabled = false; }
+        });
+    };
+
+    let chatInterval;
+    function openChatModal(id, title) {
+        document.getElementById('chatTitle').innerText = title;
+        document.getElementById('chat_obs_id').value = id;
+        document.getElementById('chatModal').classList.add('open');
+        loadChat(id);
+        chatInterval = setInterval(() => loadChat(id), 3000);
+    }
+
+    function closeChatModal() {
+        document.getElementById('chatModal').classList.remove('open');
+        clearInterval(chatInterval);
+    }
+
+    function loadChat(obs_id) {
+        fetch(`hsse.php?ajax_action=get_observation_replies&observation_id=${obs_id}`)
+        .then(r => r.json()).then(data => {
+            const body = document.getElementById('chatBody');
+            let html = '';
+            data.forEach(r => {
+                const isMe = r.admin_id == <?= $admin_id ?>;
+                html += `
+                    <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">${new Date(r.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            <span class="text-[10px] font-bold text-slate-900">${r.admin_name}</span>
+                        </div>
+                        <div class="${isMe ? 'bg-primary text-on-primary rounded-tr-none' : 'bg-white text-slate-600 rounded-tl-none border border-slate-100'} rounded-2xl px-4 py-2.5 max-w-[85%] shadow-sm">
+                            <p class="text-xs font-medium leading-relaxed">${r.message}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            const oldHtml = body.innerHTML;
+            body.innerHTML = html;
+            if (oldHtml !== html) body.scrollTop = body.scrollHeight;
+        });
+    }
+
+    document.getElementById('chatForm').onsubmit = function(e) {
+        e.preventDefault();
+        const form = this;
+        const obs_id = document.getElementById('chat_obs_id').value;
+        fetch('hsse.php?ajax_action=add_observation_reply', {
+            method: 'POST',
+            body: new FormData(this)
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'success') {
+                form.reset();
+                loadChat(obs_id);
+            }
         });
     };
 
