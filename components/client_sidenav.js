@@ -120,7 +120,8 @@
 
         links.forEach(link => {
             const dataHref = link.getAttribute('data-href');
-            if (dataHref && currentUrl.includes(dataHref)) {
+            // Check if current URL ends with or contains the data-href
+            if (dataHref && (currentUrl.endsWith(dataHref) || currentUrl.includes('/' + dataHref))) {
                 link.classList.remove('text-slate-900', 'dark:text-slate-100');
                 link.classList.add('bg-white', 'dark:bg-slate-950', 'text-primary', 'shadow-xl', 'shadow-primary/10', 'ring-1', 'ring-primary/10');
             }

@@ -20,5 +20,12 @@ This document is a step-by-step operational guide for administrators.
 1. **Email Setup**: If forwarding emails fail, go to "Settings" and ensure your SMTP details are correct.
 2. **Automatic Healing**: The system automatically fixes its own database structure—no technical maintenance required.
 
+## 4. HSSE Operations (Safety & Environment)
+**Goal**: Monitor real-time safety metrics and compliance.
+1. **Automated Safe Days**: The "Safe Days" counter tracks time since the last "High Severity" incident. It resets to zero automatically when a High Severity report is filed.
+2. **Milestone Archive**: When a reset happens, the system archives the previous record. You can view these in the **Milestone History** at the bottom of the HSSE page.
+3. **Audit Schedule**: View upcoming safety reviews on the dashboard. These are pulled live from the Audit Register.
+4. **Logging Reports**: Click "Log Observation", fill in the findings, and select a severity level. High severity triggers a safety reset.
+
 ---
-*Updated: 2026-05-12*
+*Updated: 2026-05-15*

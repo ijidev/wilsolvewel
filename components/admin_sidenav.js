@@ -53,7 +53,7 @@ const SIDEBAR_HTML = `
                 <a href="${window.ADMIN_ROOT || ''}assets.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_projects">
                     <span class="material-symbols-outlined text-[20px]">inventory_2</span> Asset Register
                 </a>
-                <a href="${window.ADMIN_ROOT || ''}hsse/monitor.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_projects">
+                <a href="${window.ADMIN_ROOT || ''}hsse.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="HSSE">
                     <span class="material-symbols-outlined text-[20px]">health_and_safety</span> HSSE Monitor
                 </a>
                 <a href="${window.ADMIN_ROOT || ''}procurement.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all" data-perm="manage_procurement">

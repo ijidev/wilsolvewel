@@ -43,6 +43,7 @@
                 <a href="#procurement" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">Logistics & Procurement</a>
                 <a href="#tickets" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">Support Tickets</a>
                 <a href="#inquiries" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">Inquiries</a>
+                <a href="#hsse" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">HSSE Operations</a>
                 <a href="#staff" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">Staff Management</a>
                 <a href="#departments" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">Departments</a>
                 <a href="#security" class="nav-link block px-4 py-2.5 rounded-r-xl text-sm font-bold text-slate-600 hover:text-primary transition-all">Security & Access</a>
@@ -220,6 +221,40 @@
                         <div class="flex gap-3"><div class="step-num">2</div><div><p class="text-sm font-bold text-slate-900">Read the message</p><p class="text-xs text-slate-500">Click any message card. The full details appear on the right: name, email, project type, and their message.</p></div></div>
                         <div class="flex gap-3"><div class="step-num">3</div><div><p class="text-sm font-bold text-slate-900">Reply or Forward</p><p class="text-xs text-slate-500">Use <strong>"Compose Response"</strong> to email them back. Or click the <strong>Forward arrow</strong> to send it to a colleague's email.</p></div></div>
                         <div class="flex gap-3"><div class="step-num">4</div><div><p class="text-sm font-bold text-slate-900">Archive when done</p><p class="text-xs text-slate-500">Click the <strong>Archive icon</strong> (box with arrow) to remove it from your active list. It stays in the database for records.</p></div></div>
+                    </div>
+                </section>
+
+                <!-- HSSE OPERATIONS -->
+                <section id="hsse" class="doc-section">
+                    <h2 class="text-3xl font-bold font-headline text-slate-900 mb-2">HSSE Operations</h2>
+                    <p class="text-slate-600 leading-relaxed mb-8">Monitor Health, Safety, and Environment metrics through an automated, real-time command center.</p>
+                    
+                    <div class="space-y-8">
+                        <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm border-l-4 border-l-emerald-500">
+                            <h3 class="text-xl font-bold font-headline text-slate-900 mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500">shield_with_heart</span> Automated Safety Metrics</h3>
+                            <ul class="space-y-4 text-slate-700 text-sm">
+                                <li>
+                                    <strong>Safe Days Counter:</strong> This resets automatically. Every time a "High Severity" observation is logged, the system recognizes a safety incident and resets the counter to zero.
+                                </li>
+                                <li>
+                                    <strong>Milestone Archive:</strong> When the counter resets, the system doesn't just erase the previous record—it archives it. You can see the "Last Record" in the Milestone History at the bottom of the page.
+                                </li>
+                                <li>
+                                    <strong>Compliance Index:</strong> Automatically calculated as (Resolved Safety Issues / Total Issues). This shows how active the team is in fixing safety hazards.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
+                            <h3 class="text-xl font-bold font-headline mb-4">Logging Observations</h3>
+                            <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm">
+                                <li>Click <strong>"LOG OBSERVATION"</strong> on the HSSE dashboard.</li>
+                                <li>Select the type (Routine, Hazard, Incident) and <strong>Severity</strong>.</li>
+                                <li><strong class="text-red-400">Caution:</strong> Setting severity to "High" will trigger an automatic reset of the Safe Days counter and archive a new milestone.</li>
+                                <li>Linked the observation to a specific Project if applicable.</li>
+                                <li>Describe the findings and click <strong>"Submit Report"</strong>.</li>
+                            </ol>
+                        </div>
                     </div>
                 </section>
 
