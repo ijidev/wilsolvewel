@@ -6,7 +6,16 @@ $conn = get_db_connection();
 $admin_id = $_SESSION['admin_id'] ?? 1;
 $admin_name = $_SESSION['admin_name'] ?? 'Admin';
 $admin_avatar = $_SESSION['admin_avatar'] ?? null;
-$permissions = get_admin_permissions($admin_id) ?: ['role' => 'Staff', 'HSSE' => ['read' => true, 'write' => false]];
+// If admin has no department/template, treat as Director (root admin)
+$permissions = get_admin_permissions($admin_id) ?: ['role' => 'Director'];
+
+// --- Page-level Access Guard ---
+$is_director = ($permissions['role'] ?? '') === 'Director';
+$has_hsse_access = $is_director
+    || !empty($permissions['HSSE']['read'])
+    || !empty($permissions['HSSE']['write']);
+$access_denied = !$has_hsse_access;
+
 
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_observation') {
     header('Content-Type: application/json');
@@ -253,6 +262,31 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
 
     <main class="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
         <div class="w-full relative z-10">
+
+<?php if ($access_denied): ?>
+        <!-- ACCESS DENIED SCREEN -->
+        <div class="min-h-[80vh] flex items-center justify-center">
+            <div class="text-center max-w-lg mx-auto">
+                <div class="w-24 h-24 bg-red-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-lg border border-red-100">
+                    <span class="material-symbols-outlined text-5xl text-red-500">gpp_bad</span>
+                </div>
+                <span class="inline-block px-4 py-1.5 bg-red-50 text-red-600 text-[9px] font-black uppercase tracking-[0.3em] rounded-full border border-red-100 mb-6">Unauthorized Access</span>
+                <h1 class="text-5xl font-headline font-black text-slate-900 leading-none mb-4">Access<br/>Restricted</h1>
+                <p class="text-slate-400 text-sm font-medium leading-relaxed mb-10">
+                    You do not have the clearance to access the <strong class="text-slate-600">HSSE Monitor</strong> module.<br/>
+                    Contact your system administrator to request access.
+                </p>
+                <div class="flex items-center justify-center gap-4">
+                    <a href="index.php" class="px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all shadow-lg flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">arrow_back</span> Go to Dashboard
+                    </a>
+                    <a href="mailto:admin@wilsolvewel.com" class="px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:border-red-200 hover:text-red-500 transition-all shadow-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">mail</span> Request Access
+                    </a>
+                </div>
+            </div>
+        </div>
+<?php else: ?>
             <!-- Header Section -->
             <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
