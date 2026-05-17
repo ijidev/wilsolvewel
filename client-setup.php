@@ -111,7 +111,7 @@ if ($step !== 'expired' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <h2 class="text-xl font-bold font-headline text-slate-900 mb-2">Account Ready</h2>
             <p class="text-xs text-slate-500 leading-relaxed mb-8">Your password has been set successfully. You can now log in to your account.</p>
-            <a href="/wilsovewel.com/client-login.php" class="block w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] hover:shadow-lg transition-all text-center">
+            <a href="/wilsovewel.com/client/login.php" class="block w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] hover:shadow-lg transition-all text-center">
                 GO TO LOGIN
             </a>
         </div>

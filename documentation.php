@@ -357,7 +357,7 @@
                             </div>
                             <div>
                                 <h4 class="font-bold text-slate-900">Login & Access</h4>
-                                <p class="text-xs text-slate-500">Clients log in via <code>/client-login.php</code> using the credentials you set up or they created.</p>
+                                <p class="text-xs text-slate-500">Clients log in via <code>/client/login.php</code> using the credentials you set up or they created.</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
