@@ -5,7 +5,7 @@ secure_session_start();
 // Fetch Client Data
 $client_id = $_SESSION['client_id'] ?? 0;
 if ($client_id === 0) {
-    header("Location: ../client-login.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -19,7 +19,7 @@ $client_res = $stmt->get_result();
 $stmt->close();
 if (!$client_res || $client_res->num_rows === 0) {
     session_destroy();
-    header("Location: ../client-login.php");
+    header("Location: login.php");
     exit;
 }
 $client = $client_res->fetch_assoc();

@@ -4,7 +4,7 @@ secure_session_start();
 
 $client_id = $_SESSION['client_id'] ?? 0;
 if ($client_id === 0) {
-    header("Location: ../client-login.php");
+    header("Location: login.php");
     exit();
 }
 
