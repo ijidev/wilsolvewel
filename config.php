@@ -219,10 +219,12 @@ function get_db_connection() {
     $conn->query("CREATE TABLE IF NOT EXISTS departments (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) UNIQUE NOT NULL,
+        leader_id INT(11) NULL,
         privilege_template_id INT(11) NULL,
         permissions JSON NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    ensure_column_exists($conn, 'departments', 'leader_id', "INT(11) NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS admins (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
