@@ -166,7 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="space-y-1.5">
                             <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Access Key (Password)</label>
-                            <input name="password" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" placeholder="••••••••••••" type="password" required />
+                            <div class="relative">
+                                <input id="loginPassword" name="password" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-3 pl-4 pr-11 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" placeholder="••••••••••••" type="password" required />
+                                <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface transition-colors">
+                                    <span id="passwordToggleIcon" class="material-symbols-outlined text-lg">visibility</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="flex items-center justify-between text-[10px] font-label uppercase tracking-widest font-bold">
                             <label class="flex items-center gap-2 cursor-pointer group">
@@ -193,5 +198,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+
+<script>
+function togglePassword() {
+    var p = document.getElementById('loginPassword');
+    var i = document.getElementById('passwordToggleIcon');
+    if (p.type === 'password') {
+        p.type = 'text';
+        i.textContent = 'visibility_off';
+    } else {
+        p.type = 'password';
+        i.textContent = 'visibility';
+    }
+}
+</script>
 </body>
 </html>
