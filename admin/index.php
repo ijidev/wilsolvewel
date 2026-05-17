@@ -33,12 +33,13 @@ $asset_stats = $conn->query("SELECT
     FROM assets")->fetch_assoc();
 
 // HSSE Safe Days
+$hsse_milestone = $conn->query("SELECT safe_days FROM hsse_milestones ORDER BY id DESC LIMIT 1")->fetch_assoc();
 $last_lti = $conn->query("SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1")->fetch_assoc();
 $safe_days = 0;
-if ($last_lti) {
+if ($hsse_milestone) {
+    $safe_days = (int)$hsse_milestone['safe_days'];
+} elseif ($last_lti) {
     $safe_days = (new DateTime())->diff(new DateTime($last_lti['created_at']))->days;
-} else {
-    $safe_days = get_setting('hsse_base_safe_days', 412);
 }
 
 // Recent Activity (Audit Logs)

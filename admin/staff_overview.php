@@ -104,10 +104,10 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                     </div>
                 </div>
                 
-                <div class="flex flex-col gap-8 items-center relative w-[520px]" id="id-card-capture-container">
+                <div class="flex flex-col gap-8 items-center relative w-full max-w-[520px]" id="id-card-capture-container">
                     
                     <!-- FRONT VIEW -->
-                    <div id="id-card-capture-front" class="w-[520px] h-[328px] bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border border-white/10 shrink-0 id-card-gradient">
+                    <div id="id-card-capture-front" class="w-full max-w-[520px] aspect-[520/328] bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border border-white/10 shrink-0 id-card-gradient">
                         <!-- Left Section: Photo & Name -->
                         <div class="w-2/5 border-r border-white/5 p-6 flex flex-col items-center justify-center bg-black/20 z-10 relative backdrop-blur-sm">
                             <div class="w-28 h-28 rounded-full bg-slate-800 border border-white/10 overflow-hidden mb-5 shadow-2xl flex items-center justify-center shrink-0 p-1">
@@ -175,7 +175,7 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                     </div>
 
                     <!-- BACK VIEW -->
-                    <div id="id-card-capture-back" class="hidden w-[520px] h-[328px] bg-slate-950 rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border border-white/10 shrink-0 flex-col">
+                    <div id="id-card-capture-back" class="hidden w-full max-w-[520px] aspect-[520/328] bg-slate-950 rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border border-white/10 shrink-0 flex-col">
                         <div class="w-full h-14 bg-black mt-6 shadow-inner shrink-0 border-y border-white/5 relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 translate-x-full"></div>
                         </div>
