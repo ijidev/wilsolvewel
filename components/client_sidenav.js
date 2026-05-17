@@ -10,7 +10,7 @@
 <div id="sidenav-overlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-[55] opacity-0 pointer-events-none transition-all duration-500"></div>
 
 <!-- Floating SideNavBar -->
-<aside id="client-sidenav" class="fixed left-[50px] top-[50px] bottom-[50px] z-[60] w-96 bg-white/95 dark:bg-slate-900/98 backdrop-blur-md border border-white/20 dark:border-slate-800/50 flex flex-col p-6 gap-2 font-['Manrope'] text-sm font-medium transition-all cubic-bezier(0.4, 0, 0.2, 1) duration-700 -translate-x-[calc(100%+100px)] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] rounded-[3rem] overflow-hidden group ring-1 ring-black/5 dark:ring-white/10">
+<aside id="client-sidenav" class="fixed inset-x-4 top-4 bottom-4 md:left-[50px] md:top-[50px] md:bottom-[50px] md:inset-x-auto z-[60] md:w-96 bg-white/95 dark:bg-slate-900/98 backdrop-blur-md border border-white/20 dark:border-slate-800/50 flex flex-col p-6 gap-2 font-['Manrope'] text-sm font-medium transition-all cubic-bezier(0.4, 0, 0.2, 1) duration-700 -translate-x-[calc(100%+100px)] md:-translate-x-[calc(100%+100px)] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden group ring-1 ring-black/5 dark:ring-white/10">
     <!-- Close Button -->
     <button id="close-sidenav" class="absolute top-8 right-8 p-2 text-slate-400 hover:text-primary transition-all active:scale-90 z-30">
         <span class="material-symbols-outlined text-2xl">close</span>
@@ -29,27 +29,27 @@
     </div>
 
     <nav class="flex flex-col gap-1 overflow-y-auto pr-2 custom-scrollbar flex-1 relative z-20" id="client-sidenav-links">
-        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-[1.2rem] transition-all duration-300 group/link" href="${rootPath}client/index.php" data-href="client/index.php">
+        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-xl transition-all duration-300 group/link" href="${rootPath}client/index.php" data-href="client/index.php">
             <span class="material-symbols-outlined text-xl group-hover/link:scale-110 transition-transform text-slate-400">dashboard</span>
             <span class="font-headline font-bold text-sm tracking-tight">Dashboard</span>
         </a>
-        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-[1.2rem] transition-all duration-300 group/link" href="${rootPath}client/projects.php" data-href="client/projects.php">
+        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-xl transition-all duration-300 group/link" href="${rootPath}client/projects.php" data-href="client/projects.php">
             <span class="material-symbols-outlined text-xl group-hover/link:scale-110 transition-transform text-slate-400">engineering</span>
             <span class="font-headline font-bold text-sm tracking-tight">Projects</span>
         </a>
-        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-[1.2rem] transition-all duration-300 group/link" href="${rootPath}client/propose_project.php" data-href="client/propose_project.php">
+        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-xl transition-all duration-300 group/link" href="${rootPath}client/propose_project.php" data-href="client/propose_project.php">
             <span class="material-symbols-outlined text-xl group-hover/link:scale-110 transition-transform text-slate-400">add_task</span>
             <span class="font-headline font-bold text-sm tracking-tight">Propose</span>
         </a>
-        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-[1.2rem] transition-all duration-300 group/link" href="${rootPath}client/procurement.php" data-href="client/procurement.php">
+        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-xl transition-all duration-300 group/link" href="${rootPath}client/procurement.php" data-href="client/procurement.php">
             <span class="material-symbols-outlined text-xl group-hover/link:scale-110 transition-transform text-slate-400">local_shipping</span>
             <span class="font-headline font-bold text-sm tracking-tight">Logistics</span>
         </a>
-        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-[1.2rem] transition-all duration-300 group/link" href="${rootPath}client/tickets.php" data-href="client/tickets.php">
+        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-xl transition-all duration-300 group/link" href="${rootPath}client/tickets.php" data-href="client/tickets.php">
             <span class="material-symbols-outlined text-xl group-hover/link:scale-110 transition-transform text-slate-400">confirmation_number</span>
             <span class="font-headline font-bold text-sm tracking-tight">Support</span>
         </a>
-        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-[1.2rem] transition-all duration-300 group/link" href="${rootPath}client/hsse.php" data-href="client/hsse.php">
+        <a class="nav-link flex items-center gap-4 px-5 py-3 text-slate-900 dark:text-slate-100 hover:bg-primary/10 rounded-xl transition-all duration-300 group/link" href="${rootPath}client/hsse.php" data-href="client/hsse.php">
             <span class="material-symbols-outlined text-xl group-hover/link:scale-110 transition-transform text-slate-400">health_and_safety</span>
             <span class="font-headline font-bold text-sm tracking-tight">HSSE</span>
         </a>
