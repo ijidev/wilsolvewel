@@ -107,7 +107,8 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                 <div class="flex flex-col gap-8 items-center relative w-full max-w-[520px]" id="id-card-capture-container">
                     
                     <!-- FRONT VIEW -->
-                    <div id="id-card-capture-front" class="w-full max-w-[520px] aspect-[520/328] bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border border-white/10 shrink-0 id-card-gradient">
+                    <div id="id-card-scale-front" class="w-full overflow-hidden" style="height: 328px;">
+                    <div id="id-card-capture-front" class="w-[520px] h-[328px] origin-top-left bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden flex text-white border border-white/10 shrink-0 id-card-gradient">
                         <!-- Left Section: Photo & Name -->
                         <div class="w-2/5 border-r border-white/5 p-6 flex flex-col items-center justify-center bg-black/20 z-10 relative backdrop-blur-sm">
                             <div class="w-28 h-28 rounded-full bg-slate-800 border border-white/10 overflow-hidden mb-5 shadow-2xl flex items-center justify-center shrink-0 p-1">
@@ -173,9 +174,11 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                             </div>
                         </div>
                     </div>
+                    </div>
 
                     <!-- BACK VIEW -->
-                    <div id="id-card-capture-back" class="hidden w-full max-w-[520px] aspect-[520/328] bg-slate-950 rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border border-white/10 shrink-0 flex-col">
+                    <div id="id-card-scale-back" class="w-full overflow-hidden hidden" style="height: 328px;">
+                    <div id="id-card-capture-back" class="w-[520px] h-[328px] origin-top-left bg-slate-950 rounded-[1.5rem] shadow-2xl relative overflow-hidden text-white border border-white/10 shrink-0 flex-col">
                         <div class="w-full h-14 bg-black mt-6 shadow-inner shrink-0 border-y border-white/5 relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 translate-x-full"></div>
                         </div>
@@ -231,6 +234,7 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                             </div>
                         </div>
                     </div>
+                    </div>
 
                 </div>
 
@@ -242,8 +246,8 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
 
 <script>
 function toggleIDCard(view) {
-    const front = document.getElementById('id-card-capture-front');
-    const back = document.getElementById('id-card-capture-back');
+    const front = document.getElementById('id-card-scale-front');
+    const back = document.getElementById('id-card-scale-back');
     const btnFront = document.getElementById('btn-front');
     const btnBack = document.getElementById('btn-back');
 
@@ -258,24 +262,52 @@ function toggleIDCard(view) {
         btnBack.className = "px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest bg-white shadow-sm text-slate-900 transition-all";
         btnFront.className = "px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all";
     }
+    requestAnimationFrame(scaleIDCard);
 }
+
+function scaleIDCard() {
+    const cards = [
+        { wrapper: document.getElementById('id-card-scale-front'), inner: document.getElementById('id-card-capture-front') },
+        { wrapper: document.getElementById('id-card-scale-back'), inner: document.getElementById('id-card-capture-back') }
+    ];
+    cards.forEach(function(c) {
+        if (!c.wrapper || !c.inner) return;
+        var w = c.wrapper.clientWidth;
+        if (w < 520) {
+            var s = w / 520;
+            c.inner.style.transform = 'scale(' + s + ')';
+            c.wrapper.style.height = (328 * s) + 'px';
+        } else {
+            c.inner.style.transform = '';
+            c.wrapper.style.height = '328px';
+        }
+    });
+}
+window.addEventListener('load', scaleIDCard);
+window.addEventListener('resize', scaleIDCard);
 
 async function downloadIDCard() {
     const frontEl = document.getElementById('id-card-capture-front');
     const backEl = document.getElementById('id-card-capture-back');
+    const frontWrapper = document.getElementById('id-card-scale-front');
+    const backWrapper = document.getElementById('id-card-scale-back');
     const name = "<?php echo addslashes($staff['name']); ?>".replace(/ /g, '_');
     
-    // Temporarily show both to ensure html2canvas can capture them properly
-    const wasBackHidden = backEl.classList.contains('hidden');
-    const wasFrontHidden = frontEl.classList.contains('hidden');
+    // Temporarily show both and reset transforms for full-res capture
+    const wasBackHidden = backWrapper.classList.contains('hidden');
+    const wasFrontHidden = frontWrapper.classList.contains('hidden');
+    const hadFrontTransform = frontEl.style.transform;
+    const hadBackTransform = backEl.style.transform;
     
-    frontEl.classList.remove('hidden');
-    backEl.classList.remove('hidden');
+    frontWrapper.classList.remove('hidden');
+    backWrapper.classList.remove('hidden');
+    frontEl.style.transform = '';
+    backEl.style.transform = '';
+    frontWrapper.style.height = '328px';
+    backWrapper.style.height = '328px';
     
-    // Small delay to allow browser to render the unhidden elements
     await new Promise(r => setTimeout(r, 50));
 
-    // Capture Front
     const canvasFront = await html2canvas(frontEl, {
         scale: 3,
         useCORS: true,
@@ -283,7 +315,6 @@ async function downloadIDCard() {
     });
     const imgDataFront = canvasFront.toDataURL('image/png');
 
-    // Capture Back
     const canvasBack = await html2canvas(backEl, {
         scale: 3,
         useCORS: true,
@@ -291,9 +322,12 @@ async function downloadIDCard() {
     });
     const imgDataBack = canvasBack.toDataURL('image/png');
     
-    // Restore original visibility state
-    if(wasBackHidden) backEl.classList.add('hidden');
-    if(wasFrontHidden) frontEl.classList.add('hidden');
+    // Restore visibility and transforms
+    if(wasBackHidden) backWrapper.classList.add('hidden');
+    if(wasFrontHidden) frontWrapper.classList.add('hidden');
+    frontEl.style.transform = hadFrontTransform;
+    backEl.style.transform = hadBackTransform;
+    scaleIDCard();
 
     const { jsPDF } = window.jspdf;
     
