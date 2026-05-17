@@ -1,9 +1,7 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 function send_staff_notification($to_email, $to_name, $is_new, $password = null) {
     $smtp_host = get_setting('smtp_host');
@@ -26,12 +24,18 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'save_staff') {
         $id = (int)($_POST['id'] ?? 0);
-        $name = $conn->real_escape_string(trim($_POST['name'] ?? ''));
-        $email = $conn->real_escape_string(trim($_POST['email'] ?? ''));
-        $role = $conn->real_escape_string(trim($_POST['role'] ?? 'Staff'));
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $role = trim($_POST['role'] ?? 'Staff');
         $dept_id = (int)($_POST['department_id'] ?? 0);
-        $status = $conn->real_escape_string($_POST['status'] ?? 'Active');
+        $status = $_POST['status'] ?? 'Active';
         $raw_pass = trim($_POST['password'] ?? '');
+
+        $csrf_token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($csrf_token)) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid or expired security token. Please reload the page.']);
+            exit;
+        }
 
         if (empty($name) || empty($email)) {
             echo json_encode(['status' => 'error', 'message' => 'Name and email are required.']); exit;
@@ -40,22 +44,27 @@ if (isset($_GET['ajax_action'])) {
         if ($id > 0) {
             if (!empty($raw_pass)) {
                 $pass = password_hash($raw_pass, PASSWORD_DEFAULT);
-                $sql = "UPDATE admins SET name='$name', email='$email', password='$pass', role='$role', department_id=$dept_id, status='$status' WHERE id=$id";
+                $stmt = $conn->prepare("UPDATE admins SET name=?, email=?, password=?, role=?, department_id=?, status=? WHERE id=?");
+                $stmt->bind_param("ssssiii", $name, $email, $pass, $role, $dept_id, $status, $id);
             } else {
-                $sql = "UPDATE admins SET name='$name', email='$email', role='$role', department_id=$dept_id, status='$status' WHERE id=$id";
+                $stmt = $conn->prepare("UPDATE admins SET name=?, email=?, role=?, department_id=?, status=? WHERE id=?");
+                $stmt->bind_param("sssiii", $name, $email, $role, $dept_id, $status, $id);
             }
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); exit; }
+            $stmt->close();
             send_staff_notification($email, $name, false);
             log_audit($conn, 'Update', 'Staff', 'Admin', $admin_id, "Updated staff member: $name (ID: $id)");
             echo json_encode(['status' => 'success', 'message' => 'Staff member updated.']);
         } else {
             $tmp_pass = !empty($raw_pass) ? $raw_pass : 'staff123';
             $hashed = password_hash($tmp_pass, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO admins (name, email, password, role, department_id, status) VALUES ('$name', '$email', '$hashed', '$role', $dept_id, '$status')";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
-            $new_id = $conn->insert_id;
+            $stmt = $conn->prepare("INSERT INTO admins (name, email, password, role, department_id, status) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssis", $name, $email, $hashed, $role, $dept_id, $status);
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); exit; }
+            $new_id = $stmt->insert_id;
+            $stmt->close();
             send_staff_notification($email, $name, true, $tmp_pass);
             log_audit($conn, 'Create', 'Staff', 'Admin', $admin_id, "Created new staff member: $name (ID: $new_id)");
             echo json_encode(['status' => 'success', 'message' => 'Staff member created and notified.']);
@@ -65,15 +74,26 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'get_staff') {
         $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT * FROM admins WHERE id = $id");
+        $stmt = $conn->prepare("SELECT * FROM admins WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         echo json_encode($res->fetch_assoc());
         exit;
     }
 
-    if ($_GET['ajax_action'] == 'delete_staff') {
-        $id = (int)$_GET['id'];
+    if ($_POST['ajax_action'] == 'delete_staff') {
+        $csrf_token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($csrf_token)) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid or expired security token.']);
+            exit;
+        }
+        $id = (int)$_POST['id'];
         if ($id == 1) { echo json_encode(['status' => 'error', 'message' => 'Cannot delete main administrator.']); exit; }
-        $conn->query("DELETE FROM admins WHERE id = $id");
+        $stmt = $conn->prepare("DELETE FROM admins WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         log_audit($conn, 'Delete', 'Staff', 'Admin', $admin_id, "Deleted staff member ID: $id");
         echo json_encode(['status' => 'success']);
         exit;
@@ -89,6 +109,7 @@ $res = $conn->query("SELECT a.*, d.name as dept_name FROM admins a LEFT JOIN dep
 while ($row = $res->fetch_assoc()) $staff[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
+$is_director = ($permissions['role'] ?? '') === 'Director';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -153,14 +174,25 @@ $permissions = get_admin_permissions($admin_id);
                             <?php echo strtoupper($s['status'] ?? 'ACTIVE'); ?>
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 relative z-10">
+                    <div class="grid grid-cols-4 gap-2 relative z-10">
                         <a href="staff_overview.php?id=<?php echo $s['id']; ?>" class="col-span-2 py-2.5 rounded-xl bg-slate-900 text-[10px] font-bold text-white uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-sm">visibility</span> Overview
                         </a>
                         <button onclick="editStaff(<?php echo $s['id']; ?>)" class="py-2.5 rounded-xl border border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:bg-slate-50 hover:text-slate-900 transition-all flex items-center justify-center">
                             <span class="material-symbols-outlined text-sm">edit</span>
                         </button>
-                        <button onclick="deleteStaff(<?php echo $s['id']; ?>)" class="col-span-3 py-2 rounded-xl bg-red-50 text-red-400 text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100">Delete Member</button>
+                        <?php if (isset($is_director) && $is_director && $s['id'] != $admin_id): ?>
+                        <form method="POST" action="login_as.php" class="inline">
+                            <input type="hidden" name="action" value="login_as">
+                            <input type="hidden" name="staff_id" value="<?php echo $s['id']; ?>">
+                            <button type="submit" title="Login As" class="w-full py-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center">
+                                <span class="material-symbols-outlined text-sm">login</span>
+                            </button>
+                        </form>
+                        <?php else: ?>
+                        <div></div>
+                        <?php endif; ?>
+                        <button onclick="deleteStaff(<?php echo $s['id']; ?>)" class="col-span-4 py-2 rounded-xl bg-red-50 text-red-400 text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100 mt-1">Delete Member</button>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -183,6 +215,7 @@ $permissions = get_admin_permissions($admin_id);
         </div>
         <div class="overflow-y-auto custom-scrollbar flex-1">
             <form id="staffForm" class="p-8 space-y-5">
+                <?= get_csrf_field() ?>
                 <input type="hidden" name="id" id="staffId">
                 <div class="grid grid-cols-2 gap-5">
                     <div class="space-y-1.5">
@@ -230,6 +263,8 @@ $permissions = get_admin_permissions($admin_id);
 </div>
 
 <script>
+const CSRF_TOKEN = '<?= generate_csrf_token() ?>';
+
 function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     document.getElementById('toastMessage').innerText = msg;
@@ -290,7 +325,11 @@ document.getElementById('staffForm').addEventListener('submit', async function(e
 
 async function deleteStaff(id) {
     if (!confirm('Delete staff member? This cannot be undone.')) return;
-    const res = await fetch(`?ajax_action=delete_staff&id=${id}`);
+    const fd = new FormData();
+    fd.append('ajax_action', 'delete_staff');
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('', { method: 'POST', body: fd });
     const result = await res.json();
     if (result.status === 'success') location.reload();
     else showToast(result.message, 'error');

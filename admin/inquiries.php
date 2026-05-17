@@ -1,103 +1,139 @@
 <?php
-include '../config.php';
-
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
 
 // Handle AJAX actions
 if (isset($_GET['ajax_action'])) {
     header('Content-Type: application/json');
     $id = (int)$_GET['id'];
-    
+
+    $requires_csrf = ['update_assignment', 'update_status', 'mark_viewed', 'forward', 'send_reply', 'delete'];
+    if (in_array($_GET['ajax_action'], $requires_csrf)) {
+        verify_csrf_token($_POST['csrf_token'] ?? '') || csrf_error_response();
+    }
+
     if ($_GET['ajax_action'] == 'update_assignment') {
-        $assigned_to = $conn->real_escape_string($_POST['assigned_to']);
-        $conn->query("UPDATE inquiries SET assigned_to = '$assigned_to' WHERE id = $id");
+        $stmt = $conn->prepare("UPDATE inquiries SET assigned_to = ? WHERE id = ?");
+        $stmt->bind_param("si", $_POST['assigned_to'], $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
-    
+
     if ($_GET['ajax_action'] == 'update_status') {
-        $status = $conn->real_escape_string($_POST['status']);
-        $conn->query("UPDATE inquiries SET status = '$status' WHERE id = $id");
+        $stmt = $conn->prepare("UPDATE inquiries SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $_POST['status'], $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'mark_viewed') {
-        $viewer = $conn->real_escape_string($_POST['viewer']);
-        $result = $conn->query("SELECT viewed_by FROM inquiries WHERE id = $id");
+        $stmt = $conn->prepare("SELECT viewed_by FROM inquiries WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+        $stmt->close();
         $viewers = json_decode($row['viewed_by'] ?? '[]', true);
+        $viewer = $_POST['viewer'];
         if (!in_array($viewer, $viewers)) {
             $viewers[] = $viewer;
             $v_json = json_encode($viewers);
-            $conn->query("UPDATE inquiries SET viewed_by = '$v_json' WHERE id = $id");
+            $stmt = $conn->prepare("UPDATE inquiries SET viewed_by = ? WHERE id = ?");
+            $stmt->bind_param("si", $v_json, $id);
+            $stmt->execute();
+            $stmt->close();
         }
         echo json_encode(['status' => 'success', 'viewers' => $viewers]);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'forward') {
-        $email = $conn->real_escape_string($_POST['email']);
         $smtp_status = test_smtp_connection();
         if (!$smtp_status['status']) {
             echo json_encode(['status' => 'error', 'message' => $smtp_status['message']]);
             exit;
         }
-        $conn->query("UPDATE inquiries SET forwarded_to = '$email' WHERE id = $id");
-        echo json_encode(['status' => 'success', 'message' => 'Forwarded successfully to ' . $email]);
+        $stmt = $conn->prepare("UPDATE inquiries SET forwarded_to = ? WHERE id = ?");
+        $stmt->bind_param("si", $_POST['email'], $id);
+        $stmt->execute();
+        $stmt->close();
+        echo json_encode(['status' => 'success', 'message' => 'Forwarded successfully to ' . $_POST['email']]);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'send_reply') {
-        $to = $conn->real_escape_string($_POST['to']);
         $smtp_status = test_smtp_connection();
         if (!$smtp_status['status']) {
             echo json_encode(['status' => 'error', 'message' => $smtp_status['message']]);
             exit;
         }
-        $conn->query("UPDATE inquiries SET status = 'Replied' WHERE id = $id");
-        echo json_encode(['status' => 'success', 'message' => 'Reply sent successfully to ' . $to]);
+        $stmt = $conn->prepare("UPDATE inquiries SET status = 'Replied' WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+        echo json_encode(['status' => 'success', 'message' => 'Reply sent successfully to ' . $_POST['to']]);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'delete') {
-        $conn->query("DELETE FROM inquiries WHERE id = $id");
+        $stmt = $conn->prepare("DELETE FROM inquiries WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 }
 
 // Fallback Action
-if (isset($_GET['action']) && isset($_GET['id'])) {
-    $id = (int)$_GET['id'];
-    $status = $conn->real_escape_string($_GET['status'] ?? 'New');
-    $conn->query("UPDATE inquiries SET status = '$status' WHERE id = $id");
+if (isset($_POST['action']) && isset($_POST['id'])) {
+    verify_csrf_token($_POST['csrf_token'] ?? '') || csrf_error_response();
+    $id = (int)$_POST['id'];
+    $stmt = $conn->prepare("UPDATE inquiries SET status = ? WHERE id = ?");
+    $status = $_POST['status'] ?? 'New';
+    $stmt->bind_param("si", $status, $id);
+    $stmt->execute();
+    $stmt->close();
     header("Location: inquiries.php");
     exit;
 }
 
 // Session & Permissions
-if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['admin_id'])) $_SESSION['admin_id'] = 1;
 $admin_id = $_SESSION['admin_id'];
 
-$admin_res = $conn->query("SELECT name FROM admins WHERE id = $admin_id");
+$stmt = $conn->prepare("SELECT name FROM admins WHERE id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$admin_res = $stmt->get_result();
 $current_admin_name = ($admin_res && $row = $admin_res->fetch_assoc()) ? $row['name'] : 'Admin';
+$stmt->close();
 $admin_initials = strtoupper(substr($current_admin_name, 0, 1) . (strpos($current_admin_name, ' ') ? substr($current_admin_name, strpos($current_admin_name, ' ')+1, 1) : ''));
 
 $permissions = get_admin_permissions($admin_id);
 
-$dept_res = $conn->query("SELECT name FROM departments ORDER BY name ASC");
+$stmt = $conn->prepare("SELECT name FROM departments ORDER BY name ASC");
+$stmt->execute();
+$dept_res = $stmt->get_result();
 $departments = [];
 while ($d = $dept_res->fetch_assoc()) $departments[] = $d['name'];
+$stmt->close();
 
 $status_filter = $_GET['filter'] ?? 'All';
-$query = "SELECT * FROM inquiries";
-if ($status_filter != 'All') $query .= " WHERE status = '".$conn->real_escape_string($status_filter)."'";
-$query .= " ORDER BY created_at DESC";
-$result = $conn->query($query);
+if ($status_filter != 'All') {
+    $stmt = $conn->prepare("SELECT * FROM inquiries WHERE status = ? ORDER BY created_at DESC");
+    $stmt->bind_param("s", $status_filter);
+} else {
+    $stmt = $conn->prepare("SELECT * FROM inquiries ORDER BY created_at DESC");
+}
+$stmt->execute();
+$result = $stmt->get_result();
 $inquiries = [];
 while ($row = $result->fetch_assoc()) $inquiries[] = $row;
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -105,7 +141,7 @@ while ($row = $result->fetch_assoc()) $inquiries[] = $row;
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Inquiry Hub | Terminal</title>
-    <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>; const CURRENT_ADMIN = '<?php echo $admin_initials; ?>';</script>
+    <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>; const CURRENT_ADMIN = '<?php echo $admin_initials; ?>'; const CSRF_TOKEN = '<?= generate_csrf_token() ?>';</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet" />
@@ -330,6 +366,7 @@ while ($row = $result->fetch_assoc()) $inquiries[] = $row;
                 <button onclick="closeReplyModal()" class="text-slate-400"><span class="material-symbols-outlined">close</span></button>
             </div>
             <form id="replyForm" class="p-6 space-y-4 overflow-y-auto custom-scrollbar">
+                <?= get_csrf_field() ?>
                 <div>
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">To</label>
                     <input type="text" id="replyTo" readonly class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold text-slate-500">
@@ -427,13 +464,13 @@ while ($row = $result->fetch_assoc()) $inquiries[] = $row;
         }
 
         async function updateAssignment(val) {
-            const fd = new FormData(); fd.append('assigned_to', val);
+            const fd = new FormData(); fd.append('assigned_to', val); fd.append('csrf_token', CSRF_TOKEN);
             const res = await fetch(`?ajax_action=update_assignment&id=${currentInquiryId}`, { method: 'POST', body: fd });
             if (res.ok) { document.getElementById('assignDisplay').innerText = val; showToast(`Assigned to ${val}`); }
         }
 
         async function updateQuickStatus(s) {
-            const fd = new FormData(); fd.append('status', s);
+            const fd = new FormData(); fd.append('status', s); fd.append('csrf_token', CSRF_TOKEN);
             const res = await fetch(`?ajax_action=update_status&id=${currentInquiryId}`, { method: 'POST', body: fd });
             if (res.ok) { showToast(`Status: ${s}`); setTimeout(() => location.reload(), 1000); }
         }
@@ -443,7 +480,7 @@ while ($row = $result->fetch_assoc()) $inquiries[] = $row;
             const email = document.getElementById('forwardEmail').value;
             if (!email || !currentInquiryId) return;
             showToast("Verifying SMTP connection...", "success");
-            const fd = new FormData(); fd.append('email', email);
+            const fd = new FormData(); fd.append('email', email); fd.append('csrf_token', CSRF_TOKEN);
             const res = await fetch(`?ajax_action=forward&id=${currentInquiryId}`, { method: 'POST', body: fd });
             const result = await res.json();
             showToast(result.message, result.status);
@@ -467,6 +504,7 @@ while ($row = $result->fetch_assoc()) $inquiries[] = $row;
             fd.append('to', document.getElementById('replyTo').value);
             fd.append('subject', document.getElementById('replySubject').value);
             fd.append('message', document.getElementById('replyMessage').value);
+            fd.append('csrf_token', CSRF_TOKEN);
             const res = await fetch(`?ajax_action=send_reply&id=${currentInquiryId}`, { method: 'POST', body: fd });
             const result = await res.json();
             showToast(result.message, result.status);
@@ -477,14 +515,14 @@ while ($row = $result->fetch_assoc()) $inquiries[] = $row;
 
         async function markViewed(v) {
             if (!currentInquiryId) return;
-            const fd = new FormData(); fd.append('viewer', v);
+            const fd = new FormData(); fd.append('viewer', v); fd.append('csrf_token', CSRF_TOKEN);
             const res = await fetch(`?ajax_action=mark_viewed&id=${currentInquiryId}`, { method: 'POST', body: fd });
             const result = await res.json();
             if (result.viewers) renderViewers(JSON.stringify(result.viewers));
         }
 
-        async function archiveCurrent() { if (currentInquiryId) location.href = `?action=update&id=${currentInquiryId}&status=Archived`; }
-        async function deleteCurrent() { if (currentInquiryId && confirm('Delete?')) { await fetch(`?ajax_action=delete&id=${currentInquiryId}`); location.reload(); } }
+        async function archiveCurrent() { if (currentInquiryId) { const fd = new FormData(); fd.append('action', 'update'); fd.append('id', currentInquiryId); fd.append('status', 'Archived'); fd.append('csrf_token', CSRF_TOKEN); await fetch(window.location.pathname, { method: 'POST', body: fd }); location.reload(); } }
+        async function deleteCurrent() { if (currentInquiryId && confirm('Delete?')) { const fd = new FormData(); fd.append('csrf_token', CSRF_TOKEN); await fetch(`?ajax_action=delete&id=${currentInquiryId}`, { method: 'POST', body: fd }); location.reload(); } }
 
         window.onload = () => { if (window.innerWidth >= 1024) document.querySelector('.inquiry-item')?.click(); }
     </script>

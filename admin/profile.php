@@ -1,21 +1,26 @@
 <?php
-include '../config.php';
-
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 // Handle profile update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
-    $name = $conn->real_escape_string($_POST['name']);
-    $email = $conn->real_escape_string($_POST['email']);
-    
-    $update_sql = "UPDATE admins SET name='$name', email='$email'";
-    
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
+    }
+
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+
+    $update_sql = "UPDATE admins SET name=?, email=?";
+    $types = "ss";
+    $params = [$name, $email];
+
     if (!empty($_POST['password'])) {
         $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $update_sql .= ", password='$pass'";
+        $update_sql .= ", password=?";
+        $types .= "s";
+        $params[] = $pass;
     }
 
     // Handle avatar upload
@@ -24,33 +29,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
-        
+
         $tmp_name = $_FILES['avatar']['tmp_name'];
         $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        
+
         if (in_array($ext, $allowed)) {
             $new_filename = 'admin_' . $admin_id . '_' . time() . '.' . $ext;
             if (move_uploaded_file($tmp_name, $upload_dir . $new_filename)) {
-                $avatar_path = 'uploads/avatars/' . $new_filename; // relative to root
-                $update_sql .= ", avatar='$avatar_path'";
+                $avatar_path = 'uploads/avatars/' . $new_filename;
+                $update_sql .= ", avatar=?";
+                $types .= "s";
+                $params[] = $avatar_path;
             }
         }
     }
 
-    $update_sql .= " WHERE id=$admin_id";
+    $update_sql .= " WHERE id=?";
+    $types .= "i";
+    $params[] = $admin_id;
 
-    if ($conn->query($update_sql)) {
-        log_audit($conn, 'Update', 'Profile', 'Admin', $admin_id, "Admin updated their own profile");
-        $success_msg = "Profile updated successfully.";
+    $stmt = $conn->prepare($update_sql);
+    if ($stmt) {
+        $stmt->bind_param($types, ...$params);
+        if ($stmt->execute()) {
+            log_audit($conn, 'Update', 'Profile', 'Admin', $admin_id, "Admin updated their own profile");
+            $success_msg = "Profile updated successfully.";
+        } else {
+            $error_msg = "Error updating profile: " . $stmt->error;
+        }
+        $stmt->close();
     } else {
-        $error_msg = "Error updating profile: " . $conn->error;
+        $error_msg = "Error preparing update: " . $conn->error;
     }
 }
 
 // Fetch current admin data
-$res = $conn->query("SELECT a.*, d.name as dept_name FROM admins a LEFT JOIN departments d ON a.department_id = d.id WHERE a.id = $admin_id");
+$stmt = $conn->prepare("SELECT a.*, d.name as dept_name FROM admins a LEFT JOIN departments d ON a.department_id = d.id WHERE a.id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$res = $stmt->get_result();
 $admin = $res->fetch_assoc();
+$stmt->close();
 $initials = strtoupper(substr($admin['name'], 0, 1) . (strpos($admin['name'], ' ') ? substr($admin['name'], strpos($admin['name'], ' ')+1, 1) : ''));
 $avatar_url = $admin['avatar'] ?? '';
 
@@ -136,6 +156,7 @@ $permissions = get_admin_permissions($admin_id);
                         <?php endif; ?>
 
                         <form method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+                            <?= get_csrf_field() ?>
                             
                             <!-- Avatar Upload Section -->
                             <div class="flex items-center gap-6 pb-6 border-b border-slate-50">

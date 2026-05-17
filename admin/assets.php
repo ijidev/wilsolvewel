@@ -1,40 +1,49 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 if (isset($_GET['ajax_action'])) {
     header('Content-Type: application/json');
 
     if ($_GET['ajax_action'] == 'save_asset') {
+        $token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($token)) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid or expired CSRF token.']); exit;
+        }
+
         $id = (int)($_POST['id'] ?? 0);
-        $name = $conn->real_escape_string(trim($_POST['name'] ?? ''));
-        $type = $conn->real_escape_string(trim($_POST['type'] ?? ''));
-        $status = $conn->real_escape_string($_POST['status'] ?? 'Active');
-        $location = $conn->real_escape_string($_POST['location'] ?? '');
+        $name = trim($_POST['name'] ?? '');
+        $type = trim($_POST['type'] ?? '');
+        $status = $_POST['status'] ?? 'Active';
+        $location = $_POST['location'] ?? '';
         $value = (float)($_POST['value'] ?? 0);
-        $purchase_date = $conn->real_escape_string($_POST['purchase_date'] ?? date('Y-m-d'));
+        $purchase_date = $_POST['purchase_date'] ?? date('Y-m-d');
         $project_id = (int)($_POST['project_id'] ?? 0);
 
         if (empty($name) || empty($type)) {
             echo json_encode(['status' => 'error', 'message' => 'Name and Type are required.']); exit;
         }
 
-        $proj_sql = $project_id > 0 ? $project_id : "NULL";
+        $project_id_val = $project_id > 0 ? $project_id : null;
 
         if ($id > 0) {
-            $sql = "UPDATE assets SET name='$name', type='$type', status='$status', location='$location', value=$value, purchase_date='$purchase_date', project_id=$proj_sql WHERE id=$id";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
+            $stmt = $conn->prepare("UPDATE assets SET name=?, type=?, status=?, location=?, value=?, purchase_date=?, project_id=? WHERE id=?");
+            if (!$stmt) { echo json_encode(['status'=>'error','message'=>'Database error.']); exit; }
+            $stmt->bind_param("ssssdssi", $name, $type, $status, $location, $value, $purchase_date, $project_id_val, $id);
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); $stmt->close(); exit; }
+            $stmt->close();
             log_audit($conn, 'Update', 'Asset', 'Admin', $admin_id, "Updated asset record: $name (ID: $id)");
             echo json_encode(['status' => 'success', 'message' => 'Asset updated.']);
         } else {
-            $sql = "INSERT INTO assets (name, type, status, location, value, purchase_date, project_id) VALUES ('$name', '$type', '$status', '$location', $value, '$purchase_date', $proj_sql)";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
-            $new_id = $conn->insert_id;
+            $stmt = $conn->prepare("INSERT INTO assets (name, type, status, location, value, purchase_date, project_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            if (!$stmt) { echo json_encode(['status'=>'error','message'=>'Database error.']); exit; }
+            $stmt->bind_param("ssssdss", $name, $type, $status, $location, $value, $purchase_date, $project_id_val);
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); $stmt->close(); exit; }
+            $new_id = $stmt->insert_id;
+            $stmt->close();
             log_audit($conn, 'Create', 'Asset', 'Admin', $admin_id, "Created new asset: $name (ID: $new_id)");
             echo json_encode(['status' => 'success', 'message' => 'Asset created.']);
         }
@@ -43,14 +52,25 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'get_asset') {
         $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT * FROM assets WHERE id = $id");
+        $stmt = $conn->prepare("SELECT * FROM assets WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         echo json_encode($res->fetch_assoc());
+        $stmt->close();
         exit;
     }
 
     if ($_GET['ajax_action'] == 'delete_asset') {
-        $id = (int)$_GET['id'];
-        $conn->query("DELETE FROM assets WHERE id = $id");
+        $id = (int)($_POST['id'] ?? 0);
+        $token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($token)) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid or expired CSRF token.']); exit;
+        }
+        $stmt = $conn->prepare("DELETE FROM assets WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         log_audit($conn, 'Delete', 'Asset', 'Admin', $admin_id, "Deleted asset ID: $id");
         echo json_encode(['status' => 'success']);
         exit;
@@ -76,6 +96,7 @@ $permissions = get_admin_permissions($admin_id);
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Asset Management | Terminal</title>
     <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
+    <script>window.CSRF_TOKEN = '<?= generate_csrf_token() ?>';</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
@@ -112,7 +133,8 @@ $permissions = get_admin_permissions($admin_id);
 
     <main class="flex-1 overflow-y-auto custom-scrollbar p-6">
         <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-            <table class="w-full text-left border-collapse">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50/50 border-b border-slate-100">
                         <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Asset Name</th>
@@ -160,6 +182,7 @@ $permissions = get_admin_permissions($admin_id);
                     <?php endforeach; ?>
                 </tbody>
             </table>
+                </div>
         </div>
     </main>
 </div>
@@ -177,6 +200,7 @@ $permissions = get_admin_permissions($admin_id);
         <div class="overflow-y-auto custom-scrollbar flex-1">
             <form id="assetForm" class="p-8 space-y-5">
                 <input type="hidden" name="id" id="assetId">
+                <?= get_csrf_field() ?>
                 <div class="grid grid-cols-2 gap-5">
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asset Name</label>
@@ -289,7 +313,10 @@ document.getElementById('assetForm').addEventListener('submit', async function(e
 
 async function deleteAsset(id) {
     if (!confirm('Delete this asset?')) return;
-    const res = await fetch(`?ajax_action=delete_asset&id=${id}`);
+    const fd = new FormData();
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=delete_asset', { method: 'POST', body: fd });
     const result = await res.json();
     if (result.status === 'success') location.reload();
     else showToast(result.message, 'error');

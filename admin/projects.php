@@ -1,45 +1,32 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 function check_project_permission($conn, $project_id, $admin_id) {
-    if (!$project_id) return true; // New projects
-    if ($admin_id == 1) return true; // Global admin bypass
-    
-    // Check if the admin is the leader of the project's department
-    $res = $conn->query("SELECT d.leader_id FROM projects p LEFT JOIN departments d ON p.department_id = d.id WHERE p.id = $project_id");
+    if (!$project_id) return true;
+    if ($admin_id == 1) return true;
+    $stmt = $conn->prepare("SELECT d.leader_id FROM projects p LEFT JOIN departments d ON p.department_id = d.id WHERE p.id = ?");
+    $stmt->bind_param("i", $project_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
     $proj = $res->fetch_assoc();
-    if (!$proj || !$proj['leader_id']) return true; // If no department or no leader, allow (or default to global admins, but for now we let it pass if unassigned)
-    
+    $stmt->close();
+    if (!$proj || !$proj['leader_id']) return true;
     return $proj['leader_id'] == $admin_id;
 }
 
 function check_task_permission($conn, $task_id, $admin_id) {
     if ($admin_id == 1) return true;
-    
-    $res = $conn->query("
-        SELECT sm.assigned_to_admin, sm.assigned_to_department, p.id as project_id, d.leader_id 
-        FROM project_sub_milestones sm 
-        JOIN project_milestones m ON sm.milestone_id = m.id 
-        JOIN projects p ON m.project_id = p.id 
-        LEFT JOIN departments d ON sm.assigned_to_department = d.id 
-        WHERE sm.id = $task_id
-    ");
+    $stmt = $conn->prepare("SELECT sm.assigned_to_admin, sm.assigned_to_department, p.id as project_id, d.leader_id FROM project_sub_milestones sm JOIN project_milestones m ON sm.milestone_id = m.id JOIN projects p ON m.project_id = p.id LEFT JOIN departments d ON sm.assigned_to_department = d.id WHERE sm.id = ?");
+    $stmt->bind_param("i", $task_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
     $task = $res->fetch_assoc();
+    $stmt->close();
     if (!$task) return false;
-    
-    // If they have full project permission, they can edit any task
     if (check_project_permission($conn, $task['project_id'], $admin_id)) return true;
-    
-    // If they are explicitly assigned to the task
     if ($task['assigned_to_admin'] == $admin_id) return true;
-    
-    // If their department is assigned to the task AND they are the leader of that department
-    // Wait, the rule says: "each teammate gets a read only permission and only gets a write permission when admin or leader assign task to them"
-    // So if assigned_to_admin = $admin_id, they can edit. If assigned to department, only leader can edit unless individual is assigned.
     return false;
 }
 
@@ -47,6 +34,10 @@ if (isset($_GET['ajax_action'])) {
     header('Content-Type: application/json');
 
     if ($_GET['ajax_action'] == 'save_project') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $id = (int)($_POST['id'] ?? 0);
         
         if (!check_project_permission($conn, $id, $admin_id)) {
@@ -54,11 +45,11 @@ if (isset($_GET['ajax_action'])) {
         }
 
         $client_id = (int)($_POST['client_id'] ?? 0);
-        $name = $conn->real_escape_string(trim($_POST['name'] ?? ''));
-        $description = $conn->real_escape_string(trim($_POST['description'] ?? ''));
-        $status = $conn->real_escape_string($_POST['status'] ?? 'Planning');
-        $start_date = $conn->real_escape_string($_POST['start_date'] ?? date('Y-m-d'));
-        $end_date = !empty($_POST['end_date']) ? "'" . $conn->real_escape_string($_POST['end_date']) . "'" : "NULL";
+        $name = trim($_POST['name'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $status = $_POST['status'] ?? 'Planning';
+        $start_date = $_POST['start_date'] ?? date('Y-m-d');
+        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
         $budget = (float)($_POST['budget'] ?? 0);
 
         if (empty($name) || $client_id <= 0) {
@@ -66,18 +57,22 @@ if (isset($_GET['ajax_action'])) {
         }
 
         if ($id > 0) {
-            $department_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : 'NULL';
-            $sql = "UPDATE projects SET client_id=$client_id, name='$name', description='$description', status='$status', start_date='$start_date', end_date=$end_date, budget=$budget, department_id=$department_id WHERE id=$id";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
+            $department_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
+            $stmt = $conn->prepare("UPDATE projects SET client_id=?, name=?, description=?, status=?, start_date=?, end_date=?, budget=?, department_id=? WHERE id=?");
+            $stmt->bind_param("isssssdii", $client_id, $name, $description, $status, $start_date, $end_date, $budget, $department_id, $id);
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); $stmt->close(); exit; }
+            $stmt->close();
             log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Updated project: $name (ID: $id)");
             echo json_encode(['status' => 'success', 'message' => 'Project updated.']);
         } else {
-            $department_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : 'NULL';
-            $sql = "INSERT INTO projects (client_id, name, description, status, start_date, end_date, budget, department_id) VALUES ($client_id, '$name', '$description', '$status', '$start_date', $end_date, $budget, $department_id)";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
+            $department_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
+            $stmt = $conn->prepare("INSERT INTO projects (client_id, name, description, status, start_date, end_date, budget, department_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("isssssdi", $client_id, $name, $description, $status, $start_date, $end_date, $budget, $department_id);
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); $stmt->close(); exit; }
             $new_id = $conn->insert_id;
+            $stmt->close();
             log_audit($conn, 'Create', 'Project', 'Admin', $admin_id, "Created new project: $name (ID: $new_id)");
             echo json_encode(['status' => 'success', 'message' => 'Project created.']);
         }
@@ -86,43 +81,63 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'get_project') {
         $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT * FROM projects WHERE id = $id");
+        $stmt = $conn->prepare("SELECT * FROM projects WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         echo json_encode($res->fetch_assoc());
+        $stmt->close();
         exit;
     }
 
     if ($_GET['ajax_action'] == 'delete_project') {
-        $id = (int)$_GET['id'];
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
+        $id = (int)$_POST['id'];
         
         if (!check_project_permission($conn, $id, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
 
-        $conn->query("DELETE FROM projects WHERE id = $id");
+        $stmt = $conn->prepare("DELETE FROM projects WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         log_audit($conn, 'Delete', 'Project', 'Admin', $admin_id, "Deleted project ID: $id");
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'add_report') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $project_id = (int)$_POST['project_id'];
-        $content = $conn->real_escape_string(trim($_POST['content'] ?? ''));
+        $content = trim($_POST['content'] ?? '');
 
         if (empty($content)) {
             echo json_encode(['status' => 'error', 'message' => 'Message cannot be empty.']); exit;
         }
 
-        $sql = "INSERT INTO project_reports (project_id, sender_type, sender_id, content) VALUES ($project_id, 'Admin', $admin_id, '$content')";
-        $conn->query($sql);
-        if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
+        $stmt = $conn->prepare("INSERT INTO project_reports (project_id, sender_type, sender_id, content) VALUES (?, 'Admin', ?, ?)");
+        $stmt->bind_param("iis", $project_id, $admin_id, $content);
+        $stmt->execute();
+        if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); $stmt->close(); exit; }
+        $stmt->close();
         
         log_audit($conn, 'Create', 'Project', 'Admin', $admin_id, "Sent a message in project ID: $project_id");
         
         $new_id = $conn->insert_id;
-        $res = $conn->query("SELECT pr.*, COALESCE(a.name, 'Unknown Admin') as sender_name FROM project_reports pr LEFT JOIN admins a ON pr.sender_id = a.id WHERE pr.id = $new_id");
+        $stmt = $conn->prepare("SELECT pr.*, COALESCE(a.name, 'Unknown Admin') as sender_name FROM project_reports pr LEFT JOIN admins a ON pr.sender_id = a.id WHERE pr.id = ?");
+        $stmt->bind_param("i", $new_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $report = $res->fetch_assoc();
+        $stmt->close();
         
-        // Chat bubble style
         $html = '<div class="flex flex-col items-end mb-4">';
         $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-4 py-2.5 max-w-[85%] shadow-sm">';
         $html .= '<p class="text-xs font-medium leading-relaxed whitespace-pre-wrap">' . htmlspecialchars($report['content']) . '</p>';
@@ -134,91 +149,136 @@ if (isset($_GET['ajax_action'])) {
     }
 
     if ($_GET['ajax_action'] == 'assign_asset') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $project_id = (int)$_POST['project_id'];
         $asset_id = (int)$_POST['asset_id'];
-        $conn->query("INSERT IGNORE INTO project_assets (project_id, asset_id) VALUES ($project_id, $asset_id)");
+        $stmt = $conn->prepare("INSERT IGNORE INTO project_assets (project_id, asset_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $project_id, $asset_id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'remove_asset') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $project_id = (int)$_POST['project_id'];
         $asset_id = (int)$_POST['asset_id'];
-        $conn->query("DELETE FROM project_assets WHERE project_id = $project_id AND asset_id = $asset_id");
+        $stmt = $conn->prepare("DELETE FROM project_assets WHERE project_id = ? AND asset_id = ?");
+        $stmt->bind_param("ii", $project_id, $asset_id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'assign_task') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $task_id = (int)$_POST['task_id'];
         
-        // Ensure user has project permission or is assigned to task (actually only project permission should assign tasks)
-        $res = $conn->query("SELECT p.id as project_id FROM project_sub_milestones sm JOIN project_milestones m ON sm.milestone_id = m.id JOIN projects p ON m.project_id = p.id WHERE sm.id = $task_id");
+        $stmt = $conn->prepare("SELECT p.id as project_id FROM project_sub_milestones sm JOIN project_milestones m ON sm.milestone_id = m.id JOIN projects p ON m.project_id = p.id WHERE sm.id = ?");
+        $stmt->bind_param("i", $task_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $proj_id = $res->fetch_assoc()['project_id'] ?? 0;
+        $stmt->close();
         if (!check_project_permission($conn, $proj_id, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
 
-        $admin_id_assign = !empty($_POST['admin_id']) ? (int)$_POST['admin_id'] : 'NULL';
-        $dept_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : 'NULL';
-        $conn->query("UPDATE project_sub_milestones SET assigned_to_admin = $admin_id_assign, assigned_to_department = $dept_id WHERE id = $task_id");
+        $admin_id_assign = !empty($_POST['admin_id']) ? (int)$_POST['admin_id'] : null;
+        $dept_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
+        $stmt = $conn->prepare("UPDATE project_sub_milestones SET assigned_to_admin = ?, assigned_to_department = ? WHERE id = ?");
+        $stmt->bind_param("iii", $admin_id_assign, $dept_id, $task_id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'assign_project_dept') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $project_id = (int)$_POST['project_id'];
-        $dept_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : 'NULL';
-        $conn->query("UPDATE projects SET department_id = $dept_id WHERE id = $project_id");
+        $dept_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
+        $stmt = $conn->prepare("UPDATE projects SET department_id = ? WHERE id = ?");
+        $stmt->bind_param("ii", $dept_id, $project_id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'confirm_project_active') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $id = (int)$_POST['id'];
-        $conn->query("UPDATE projects SET status = 'Active' WHERE id = $id");
+        $stmt = $conn->prepare("UPDATE projects SET status = 'Active' WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Project #$id transitioned to Active");
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'toggle_project_hold') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $id = (int)$_POST['id'];
         $current = $_POST['current_status'];
         
-        // If resuming, we need to know if it was Planning or Active.
-        // For simplicity, let's check if it has any milestones.
-        // Or better, let's just use a simple toggle.
-        // If resuming from Hold:
         if ($current == 'On Hold') {
-            // Check if it was confirmed active before? 
-            // We can check if status was ever Active in audit logs, 
-            // but for now let's just assume Active if it has approved milestones or just default to Active.
             $new = 'Active';
         } else {
             $new = 'On Hold';
         }
         
-        $conn->query("UPDATE projects SET status = '$new' WHERE id = $id");
+        $stmt = $conn->prepare("UPDATE projects SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $new, $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success', 'new_status' => $new]);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'save_milestone') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $id = (int)($_POST['id'] ?? 0);
         $project_id = (int)($_POST['project_id'] ?? 0);
         
         if (!check_project_permission($conn, $project_id, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
-        $title = $conn->real_escape_string(trim($_POST['title'] ?? ''));
-        $description = $conn->real_escape_string(trim($_POST['description'] ?? ''));
-        $due_date = !empty($_POST['due_date']) ? "'" . $conn->real_escape_string($_POST['due_date']) . "'" : "NULL";
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $due_date = !empty($_POST['due_date']) ? $_POST['due_date'] : null;
 
-        // Check project status - cannot add/edit milestones if Active or Completed
         if ($project_id > 0) {
-            $p_res = $conn->query("SELECT status FROM projects WHERE id = $project_id");
+            $stmt = $conn->prepare("SELECT status FROM projects WHERE id = ?");
+            $stmt->bind_param("i", $project_id);
+            $stmt->execute();
+            $p_res = $stmt->get_result();
             $p = $p_res->fetch_assoc();
+            $stmt->close();
             if ($p['status'] !== 'Planning') {
                 echo json_encode(['status' => 'error', 'message' => 'Cannot modify milestones once project is ' . $p['status']]);
                 exit;
@@ -226,62 +286,116 @@ if (isset($_GET['ajax_action'])) {
         }
 
         if ($id > 0) {
-            $conn->query("UPDATE project_milestones SET title='$title', description='$description', due_date=$due_date WHERE id=$id");
+            $stmt = $conn->prepare("UPDATE project_milestones SET title=?, description=?, due_date=? WHERE id=?");
+            $stmt->bind_param("sssi", $title, $description, $due_date, $id);
+            $stmt->execute();
+            $stmt->close();
         } else {
-            $res = $conn->query("SELECT MAX(order_index) as max_idx FROM project_milestones WHERE project_id = $project_id");
+            $stmt = $conn->prepare("SELECT MAX(order_index) as max_idx FROM project_milestones WHERE project_id = ?");
+            $stmt->bind_param("i", $project_id);
+            $stmt->execute();
+            $res = $stmt->get_result();
             $idx = (int)($res->fetch_assoc()['max_idx'] ?? -1) + 1;
-            $conn->query("INSERT INTO project_milestones (project_id, title, description, due_date, order_index) VALUES ($project_id, '$title', '$description', $due_date, $idx)");
+            $stmt->close();
+            $stmt = $conn->prepare("INSERT INTO project_milestones (project_id, title, description, due_date, order_index) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("isssi", $project_id, $title, $description, $due_date, $idx);
+            $stmt->execute();
+            $stmt->close();
         }
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'delete_milestone') {
-        $id = (int)$_GET['id'];
-        $conn->query("DELETE FROM project_milestones WHERE id = $id");
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
+        $id = (int)$_POST['id'];
+        $stmt = $conn->prepare("DELETE FROM project_milestones WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'get_milestone') {
         $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT * FROM project_milestones WHERE id = $id");
+        $stmt = $conn->prepare("SELECT * FROM project_milestones WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         echo json_encode($res->fetch_assoc());
+        $stmt->close();
         exit;
     }
 
     if ($_GET['ajax_action'] == 'update_milestone_status') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $id = (int)$_POST['id'];
         
-        $res = $conn->query("SELECT project_id FROM project_milestones WHERE id = $id");
+        $stmt = $conn->prepare("SELECT project_id FROM project_milestones WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $pid = $res->fetch_assoc()['project_id'] ?? 0;
+        $stmt->close();
         if (!check_project_permission($conn, $pid, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
 
-        $status = $conn->real_escape_string($_POST['status']);
+        $status = $_POST['status'];
         
-        $conn->query("UPDATE project_milestones SET status='$status' WHERE id=$id");
+        $stmt = $conn->prepare("UPDATE project_milestones SET status=? WHERE id=?");
+        $stmt->bind_param("si", $status, $id);
+        $stmt->execute();
+        $stmt->close();
         
-        // Auto-complete project check
-        $res = $conn->query("SELECT project_id FROM project_milestones WHERE id = $id");
+        $stmt = $conn->prepare("SELECT project_id FROM project_milestones WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $ms = $res->fetch_assoc();
+        $stmt->close();
         $pid = $ms['project_id'];
         
-        $res = $conn->query("SELECT COUNT(*) as total FROM project_milestones WHERE project_id = $pid");
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM project_milestones WHERE project_id = ?");
+        $stmt->bind_param("i", $pid);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $total = $res->fetch_assoc()['total'];
+        $stmt->close();
         
-        $res = $conn->query("SELECT COUNT(*) as done FROM project_milestones WHERE project_id = $pid AND status = 'Completed'");
+        $stmt = $conn->prepare("SELECT COUNT(*) as done FROM project_milestones WHERE project_id = ? AND status = 'Completed'");
+        $stmt->bind_param("i", $pid);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $done = $res->fetch_assoc()['done'];
+        $stmt->close();
         
         if ($total > 0 && $total == $done) {
-            $conn->query("UPDATE projects SET status = 'Completed' WHERE id = $pid");
+            $stmt = $conn->prepare("UPDATE projects SET status = 'Completed' WHERE id = ?");
+            $stmt->bind_param("i", $pid);
+            $stmt->execute();
+            $stmt->close();
             log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Project #$pid automatically marked Completed");
         } else if ($total > 0 && $done < $total) {
-            // If it was Completed but we added/undid something, move back to Active
-            $res = $conn->query("SELECT status FROM projects WHERE id = $pid");
+            $stmt = $conn->prepare("SELECT status FROM projects WHERE id = ?");
+            $stmt->bind_param("i", $pid);
+            $stmt->execute();
+            $res = $stmt->get_result();
             if ($res->fetch_assoc()['status'] == 'Completed') {
-                $conn->query("UPDATE projects SET status = 'Active' WHERE id = $pid");
+                $stmt->close();
+                $stmt = $conn->prepare("UPDATE projects SET status = 'Active' WHERE id = ?");
+                $stmt->bind_param("i", $pid);
+                $stmt->execute();
+                $stmt->close();
+            } else {
+                $stmt->close();
             }
         }
         
@@ -290,65 +404,94 @@ if (isset($_GET['ajax_action'])) {
     }
 
     if ($_GET['ajax_action'] == 'save_sub_milestone') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $milestone_id = (int)$_POST['milestone_id'];
         
-        $res = $conn->query("SELECT project_id FROM project_milestones WHERE id = $milestone_id");
+        $stmt = $conn->prepare("SELECT project_id FROM project_milestones WHERE id = ?");
+        $stmt->bind_param("i", $milestone_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $pid = $res->fetch_assoc()['project_id'] ?? 0;
+        $stmt->close();
         if (!check_project_permission($conn, $pid, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
 
-        $title = $conn->real_escape_string(trim($_POST['title']));
-        $conn->query("INSERT INTO project_sub_milestones (milestone_id, title) VALUES ($milestone_id, '$title')");
+        $title = trim($_POST['title']);
+        $stmt = $conn->prepare("INSERT INTO project_sub_milestones (milestone_id, title) VALUES (?, ?)");
+        $stmt->bind_param("is", $milestone_id, $title);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'toggle_sub_milestone') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $id = (int)$_POST['id'];
         
         if (!check_task_permission($conn, $id, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
 
-        $conn->query("UPDATE project_sub_milestones SET is_completed = NOT is_completed WHERE id = $id");
+        $stmt = $conn->prepare("UPDATE project_sub_milestones SET is_completed = NOT is_completed WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'delete_sub_milestone') {
-        $id = (int)$_GET['id'];
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
+        $id = (int)$_POST['id'];
         
         if (!check_task_permission($conn, $id, $admin_id)) {
             echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
         }
 
-        $conn->query("DELETE FROM project_sub_milestones WHERE id = $id");
+        $stmt = $conn->prepare("DELETE FROM project_sub_milestones WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'get_milestone_reports') {
         $milestone_id = (int)$_GET['milestone_id'];
-        $res = $conn->query("
-            SELECT pr.*, IF(pr.sender_type='Admin', a.name, c.name) as sender_name 
-            FROM project_reports pr 
-            LEFT JOIN admins a ON (pr.sender_type = 'Admin' AND pr.sender_id = a.id)
-            LEFT JOIN clients c ON (pr.sender_type = 'Client' AND pr.sender_id = c.id)
-            WHERE pr.milestone_id = $milestone_id ORDER BY pr.created_at ASC
-        ");
+        $stmt = $conn->prepare("SELECT pr.*, IF(pr.sender_type='Admin', a.name, c.name) as sender_name FROM project_reports pr LEFT JOIN admins a ON (pr.sender_type = 'Admin' AND pr.sender_id = a.id) LEFT JOIN clients c ON (pr.sender_type = 'Client' AND pr.sender_id = c.id) WHERE pr.milestone_id = ? ORDER BY pr.created_at ASC");
+        $stmt->bind_param("i", $milestone_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $reports = [];
         while ($row = $res->fetch_assoc()) $reports[] = $row;
+        $stmt->close();
         echo json_encode($reports);
         exit;
     }
 
     if ($_GET['ajax_action'] == 'add_milestone_report') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
+        }
+
         $milestone_id = (int)$_POST['milestone_id'];
         $project_id = (int)$_POST['project_id'];
-        $content = $conn->real_escape_string(trim($_POST['content']));
-        $sql = "INSERT INTO project_reports (project_id, milestone_id, sender_type, sender_id, content) VALUES ($project_id, $milestone_id, 'Admin', $admin_id, '$content')";
-        $conn->query($sql);
+        $content = trim($_POST['content']);
+        $stmt = $conn->prepare("INSERT INTO project_reports (project_id, milestone_id, sender_type, sender_id, content) VALUES (?, ?, 'Admin', ?, ?)");
+        $stmt->bind_param("iiis", $project_id, $milestone_id, $admin_id, $content);
+        $stmt->execute();
+        $stmt->close();
         echo json_encode(['status' => 'success']);
         exit;
     }
@@ -356,32 +499,44 @@ if (isset($_GET['ajax_action'])) {
     if ($_GET['ajax_action'] == 'load_details') {
         $id = (int)$_GET['id'];
         
-        // Project info with department
-        $res = $conn->query("SELECT p.*, COALESCE(c.name, 'Deleted Client') as client_name, c.email as client_email, d.name as dept_name FROM projects p LEFT JOIN clients c ON p.client_id = c.id LEFT JOIN departments d ON p.department_id = d.id WHERE p.id = $id");
+        $stmt = $conn->prepare("SELECT p.*, COALESCE(c.name, 'Deleted Client') as client_name, c.email as client_email, d.name as dept_name FROM projects p LEFT JOIN clients c ON p.client_id = c.id LEFT JOIN departments d ON p.department_id = d.id WHERE p.id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $proj = $res->fetch_assoc();
+        $stmt->close();
         
-        // Milestones with assignments
         $milestones = [];
-        $res = $conn->query("SELECT m.*, d.name as dept_name FROM project_milestones m LEFT JOIN departments d ON m.assigned_to_department = d.id WHERE m.project_id = $id ORDER BY m.order_index ASC, m.created_at ASC");
-        while ($row = $res->fetch_assoc()) {
+        $stmt = $conn->prepare("SELECT m.*, d.name as dept_name FROM project_milestones m LEFT JOIN departments d ON m.assigned_to_department = d.id WHERE m.project_id = ? ORDER BY m.order_index ASC, m.created_at ASC");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $ms_result = $stmt->get_result();
+        while ($row = $ms_result->fetch_assoc()) {
             $ms_id = $row['id'];
             $subs = [];
-            $sub_res = $conn->query("SELECT sm.*, a.name as assignee_name, dep.name as dept_name FROM project_sub_milestones sm LEFT JOIN admins a ON sm.assigned_to_admin = a.id LEFT JOIN departments dep ON sm.assigned_to_department = dep.id WHERE sm.milestone_id = $ms_id ORDER BY sm.created_at ASC");
-            while ($s = $sub_res->fetch_assoc()) $subs[] = $s;
+            $sub_stmt = $conn->prepare("SELECT sm.*, a.name as assignee_name, dep.name as dept_name FROM project_sub_milestones sm LEFT JOIN admins a ON sm.assigned_to_admin = a.id LEFT JOIN departments dep ON sm.assigned_to_department = dep.id WHERE sm.milestone_id = ? ORDER BY sm.created_at ASC");
+            $sub_stmt->bind_param("i", $ms_id);
+            $sub_stmt->execute();
+            $sub_result = $sub_stmt->get_result();
+            while ($s = $sub_result->fetch_assoc()) $subs[] = $s;
+            $sub_stmt->close();
             $row['sub_milestones'] = $subs;
             $milestones[] = $row;
         }
+        $stmt->close();
 
-        // Assets
         $assigned_assets = [];
-        $res = $conn->query("SELECT a.* FROM assets a JOIN project_assets pa ON a.id = pa.asset_id WHERE pa.project_id = $id");
+        $stmt = $conn->prepare("SELECT a.* FROM assets a JOIN project_assets pa ON a.id = pa.asset_id WHERE pa.project_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         while ($row = $res->fetch_assoc()) $assigned_assets[] = $row;
+        $stmt->close();
 
         $all_assets = [];
         $res = $conn->query("SELECT id, name, type FROM assets ORDER BY name ASC");
         while ($row = $res->fetch_assoc()) $all_assets[] = $row;
 
-        // Departments & admins for assignment
         $departments = [];
         $res = $conn->query("SELECT id, name FROM departments ORDER BY name ASC");
         while ($row = $res->fetch_assoc()) $departments[] = $row;
@@ -648,6 +803,7 @@ $permissions = get_admin_permissions($admin_id);
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Project Operations | Terminal</title>
     <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
+    <script>window.CSRF_TOKEN = '<?= generate_csrf_token() ?>';</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
@@ -743,6 +899,7 @@ $permissions = get_admin_permissions($admin_id);
         <div class="overflow-y-auto custom-scrollbar flex-1">
             <form id="projectForm" class="p-8 space-y-5">
                 <input type="hidden" name="id" id="projectId">
+                <?= get_csrf_field() ?>
                 
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Assign Client</label>
@@ -922,6 +1079,7 @@ async function toggleProjectHold(id, current) {
     const fd = new FormData();
     fd.append('id', id);
     fd.append('current_status', current);
+    fd.append('csrf_token', CSRF_TOKEN);
     const res = await fetch('?ajax_action=toggle_project_hold', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.status === 'success') {
@@ -955,6 +1113,7 @@ async function updateMilestoneStatus(id, pid, status) {
     const fd = new FormData();
     fd.append('id', id);
     fd.append('status', status);
+    fd.append('csrf_token', CSRF_TOKEN);
     const res = await fetch('?ajax_action=update_milestone_status', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.status === 'success') {
@@ -966,6 +1125,7 @@ async function updateMilestoneStatus(id, pid, status) {
 async function toggleSubMilestone(id, pid) {
     const fd = new FormData();
     fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
     const res = await fetch('?ajax_action=toggle_sub_milestone', { method: 'POST', body: fd });
     loadProject(pid);
 }
@@ -982,13 +1142,17 @@ async function saveSubMilestone(msId, pid) {
     const fd = new FormData();
     fd.append('milestone_id', msId);
     fd.append('title', title);
+    fd.append('csrf_token', CSRF_TOKEN);
     const res = await fetch('?ajax_action=save_sub_milestone', { method: 'POST', body: fd });
     loadProject(pid);
 }
 
 async function deleteSubMilestone(id, pid) {
     if (!confirm('Delete this task?')) return;
-    const res = await fetch(`?ajax_action=delete_sub_milestone&id=${id}`);
+    const fd = new FormData();
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=delete_sub_milestone', { method: 'POST', body: fd });
     loadProject(pid);
 }
 
@@ -998,7 +1162,10 @@ function toggleMilestoneActions(id) {
 
 async function deleteMilestone(id, pid) {
     if (!confirm('Delete milestone and all its tasks?')) return;
-    const res = await fetch(`?ajax_action=delete_milestone&id=${id}`);
+    const fd = new FormData();
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=delete_milestone', { method: 'POST', body: fd });
     loadProject(pid);
 }
 
@@ -1043,6 +1210,7 @@ document.getElementById('msChatForm').onsubmit = async (e) => {
     fd.append('milestone_id', msId);
     fd.append('project_id', currentProjectId);
     fd.append('content', input.value);
+    fd.append('csrf_token', CSRF_TOKEN);
     
     const res = await fetch('?ajax_action=add_milestone_report', { method: 'POST', body: fd });
     input.value = '';
@@ -1053,7 +1221,10 @@ document.getElementById('msChatForm').onsubmit = async (e) => {
 
 async function deleteProject(id) {
     if (!confirm('Delete this project? All associated reports will be lost.')) return;
-    const res = await fetch(`?ajax_action=delete_project&id=${id}`);
+    const fd = new FormData();
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=delete_project', { method: 'POST', body: fd });
     const result = await res.json();
     if (result.status === 'success') location.reload();
     else showToast(result.message, 'error');
@@ -1065,13 +1236,18 @@ async function assignAsset(projectId) {
     const fd = new FormData();
     fd.append('project_id', projectId);
     fd.append('asset_id', assetId);
+    fd.append('csrf_token', CSRF_TOKEN);
     const res = await fetch('?ajax_action=assign_asset', { method: 'POST', body: fd });
     loadProject(projectId);
 }
 
 async function removeAsset(projectId, assetId) {
     if (!confirm('Unlink this asset?')) return;
-    const res = await fetch(`?ajax_action=remove_asset&project_id=${projectId}&asset_id=${assetId}`);
+    const fd = new FormData();
+    fd.append('project_id', projectId);
+    fd.append('asset_id', assetId);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=remove_asset', { method: 'POST', body: fd });
     loadProject(projectId);
 }
 
@@ -1079,6 +1255,7 @@ async function removeAsset(projectId, assetId) {
         if (!confirm('Move project to Active stage? This will lock the milestone roadmap.')) return;
         const fd = new FormData();
         fd.append('id', id);
+        fd.append('csrf_token', CSRF_TOKEN);
         const res = await fetch('?ajax_action=confirm_project_active', { method: 'POST', body: fd });
         const data = await res.json();
         if (data.status === 'success') {
@@ -1091,6 +1268,7 @@ async function removeAsset(projectId, assetId) {
         const fd = new FormData();
         fd.append('id', id);
         fd.append(field, value);
+        fd.append('csrf_token', CSRF_TOKEN);
         const res = await fetch('?ajax_action=save_project', { method: 'POST', body: fd });
         showToast('Updated');
     }
@@ -1148,6 +1326,7 @@ async function removeAsset(projectId, assetId) {
             <form id="milestoneForm" class="p-6 space-y-4">
                 <input type="hidden" name="id" id="msId">
                 <input type="hidden" name="project_id" id="msProjectId">
+                <?= get_csrf_field() ?>
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Milestone Title</label>
                     <input type="text" name="title" id="msTitle" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
@@ -1184,6 +1363,7 @@ async function removeAsset(projectId, assetId) {
             <div class="p-6 border-t border-slate-100 bg-white shrink-0">
                 <form id="msChatForm" class="relative group">
                     <input type="hidden" id="msChatId">
+                    <?= get_csrf_field() ?>
                     <textarea id="msChatInput" required placeholder="Add a log entry or internal note..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-xs focus:ring-2 focus:ring-primary/20 min-h-[60px] max-h-[120px] custom-scrollbar resize-none pr-12 transition-all"></textarea>
                     <button type="submit" class="absolute right-3 bottom-3 w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shadow-lg active:scale-95">
                         <span class="material-symbols-outlined">send</span>
@@ -1203,6 +1383,7 @@ async function removeAsset(projectId, assetId) {
             <form id="assignTaskForm" class="p-6 space-y-4">
                 <input type="hidden" name="task_id" id="assignTaskId">
                 <input type="hidden" id="assignTaskProjectId">
+                <?= get_csrf_field() ?>
                 
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">To Department</label>

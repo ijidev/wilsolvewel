@@ -1,9 +1,7 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 // Only Main Admin (ID 1) or specific role should ideally see this, but we'll use RBAC.
 $permissions = get_admin_permissions($admin_id);
@@ -87,7 +85,7 @@ function getActionColor($action) {
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10">
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8">
         <div class="max-w-4xl mx-auto relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
             
             <?php if (empty($logs)): ?>

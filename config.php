@@ -30,9 +30,84 @@ define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_NAME', getenv('DB_NAME') ?: 'wilsolvewel_db');
 
-/**
- * Function to ensure a column exists in a table, adding it if missing
- */
+// ── Environment Configuration ───────────────────────────────────────────────
+define('APP_ENV', getenv('APP_ENV') ?: 'production');
+
+function is_dev() {
+    return APP_ENV === 'dev' || APP_ENV === 'development';
+}
+
+if (is_dev()) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+} else {
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+    ini_set('display_errors', '0');
+    ini_set('log_errors', '1');
+}
+
+// ── Session Security Configuration ──────────────────────────────────────────
+function secure_session_start() {
+    if (session_status() === PHP_SESSION_NONE) {
+        $cookieParams = session_get_cookie_params();
+        session_set_cookie_params([
+            'lifetime' => $cookieParams['lifetime'],
+            'path'     => $cookieParams['path'],
+            'domain'   => $cookieParams['domain'],
+            'secure'   => isset($_SERVER['HTTPS']),
+            'httponly' => true,
+            'samesite' => 'Strict'
+        ]);
+        session_start();
+    }
+}
+
+// ── CSRF Protection ─────────────────────────────────────────────────────────
+function generate_csrf_token() {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function get_csrf_field() {
+    return '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
+}
+
+function verify_csrf_token($token) {
+    if (empty($_SESSION['csrf_token']) || empty($token)) {
+        return false;
+    }
+    return hash_equals($_SESSION['csrf_token'], $token);
+}
+
+function csrf_error_response($die = true) {
+    if ($die) {
+        die('Invalid or expired CSRF token. Please reload the page and try again.');
+    }
+    return false;
+}
+
+// ── Safe Query Helper (Prepared Statements) ─────────────────────────────────
+function safe_query($conn, $sql, $types = '', $params = []) {
+    if (empty($types)) {
+        return $conn->query($sql);
+    }
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        error_log("safe_query prepare failed: " . $conn->error . " | SQL: " . $sql);
+        return false;
+    }
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    return $result;
+}
+
+// ── Schema Helpers ──────────────────────────────────────────────────────────
 function ensure_column_exists($conn, $table, $column, $definition) {
     $result = $conn->query("SHOW COLUMNS FROM `$table` LIKE '$column'");
     if ($result && $result->num_rows == 0) {
@@ -41,46 +116,60 @@ function ensure_column_exists($conn, $table, $column, $definition) {
 }
 
 function log_audit($conn, $action_type, $module, $actor_type, $actor_id, $description, $details = []) {
-    $details_json = empty($details) ? 'NULL' : "'" . $conn->real_escape_string(json_encode($details)) . "'";
-    $action_type = $conn->real_escape_string($action_type);
-    $module = $conn->real_escape_string($module);
-    $actor_type = $conn->real_escape_string($actor_type);
-    $actor_id = (int)$actor_id;
-    $description = $conn->real_escape_string($description);
-    
-    $sql = "INSERT INTO audit_logs (action_type, module, actor_type, actor_id, description, details) 
-            VALUES ('$action_type', '$module', '$actor_type', $actor_id, '$description', $details_json)";
-    $conn->query($sql);
+    $details_json = empty($details) ? null : json_encode($details);
+    $stmt = $conn->prepare("INSERT INTO audit_logs (action_type, module, actor_type, actor_id, description, details) VALUES (?, ?, ?, ?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("sssiss", $action_type, $module, $actor_type, $actor_id, $description, $details_json);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
 
 function log_error($conn, $module, $error_message, $context = null) {
-    $mod_safe = $conn->real_escape_string($module);
-    $msg_safe = $conn->real_escape_string($error_message);
-    $ctx_safe = $context ? "'" . $conn->real_escape_string(json_encode($context)) . "'" : "NULL";
-    
-    $conn->query("INSERT INTO system_errors (module, error_message, context) VALUES ('$mod_safe', '$msg_safe', $ctx_safe)");
+    $context_json = $context ? json_encode($context) : null;
+    $stmt = $conn->prepare("INSERT INTO system_errors (module, error_message, context) VALUES (?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("sss", $module, $error_message, $context_json);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
 
-// Custom Error and Exception Handlers to log to system_errors
+// Custom Error and Exception Handlers
+// In dev mode, errors display on screen. In production, they're silently logged.
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     if (!(error_reporting() & $errno)) {
         return false;
     }
-    $conn = get_db_connection();
-    if ($conn && !$conn->connect_error) {
-        log_error($conn, 'PHP Warning/Error', "[$errno] $errstr", ['file' => $errfile, 'line' => $errline]);
+    if (!is_dev()) {
+        $conn = @get_db_connection();
+        if ($conn && !$conn->connect_error) {
+            @log_error($conn, 'PHP Warning/Error', "[$errno] $errstr", ['file' => $errfile, 'line' => $errline]);
+        }
     }
-    return false; // let normal error handler also run
+    return false;
 });
 
 set_exception_handler(function($exception) {
-    $conn = get_db_connection();
-    if ($conn && !$conn->connect_error) {
-        log_error($conn, 'PHP Exception', $exception->getMessage(), [
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'trace' => $exception->getTraceAsString()
-        ]);
+    if (is_dev()) {
+        echo '<div style="background:#FEE2E2;border:2px solid #EF4444;color:#991B1B;padding:20px;margin:20px;border-radius:8px;font-family:monospace;font-size:14px;line-height:1.6;">';
+        echo '<strong style="font-size:16px;color:#DC2626;">🚨 Uncaught Exception</strong><br><br>';
+        echo '<strong>Message:</strong> ' . htmlspecialchars($exception->getMessage()) . '<br>';
+        echo '<strong>File:</strong> ' . htmlspecialchars($exception->getFile()) . ':' . $exception->getLine() . '<br>';
+        echo '<strong>Trace:</strong><br><pre style="margin-top:8px;background:#FEF2F2;padding:12px;border-radius:4px;overflow-x:auto;">' . htmlspecialchars($exception->getTraceAsString()) . '</pre>';
+        echo '</div>';
+    } else {
+        $conn = @get_db_connection();
+        if ($conn && !$conn->connect_error) {
+            @log_error($conn, 'PHP Exception', $exception->getMessage(), [
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => $exception->getTraceAsString()
+            ]);
+        }
+        if (ob_get_level()) ob_clean();
+        http_response_code(500);
+        include __DIR__ . '/errors/500.html';
     }
 });
 
@@ -116,6 +205,7 @@ function get_db_connection() {
         assigned_to VARCHAR(100) DEFAULT 'Unassigned',
         viewed_by JSON,
         forwarded_to VARCHAR(255),
+        department_id INT(11) NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
@@ -219,21 +309,6 @@ function get_db_connection() {
     )");
     ensure_column_exists($conn, 'projects', 'department_id', "INT(11) NULL");
 
-    $conn->query("CREATE TABLE IF NOT EXISTS inquiries (
-        id INT(11) AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(100) NOT NULL,
-        type VARCHAR(100) NOT NULL,
-        message TEXT NOT NULL,
-        technical_data JSON NULL,
-        department_id INT(11) NULL,
-        status VARCHAR(50) DEFAULT 'New',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )");
-    ensure_column_exists($conn, 'inquiries', 'department_id', "INT(11) NULL");
-    ensure_column_exists($conn, 'inquiries', 'type', "VARCHAR(100) NOT NULL DEFAULT 'General'");
-    ensure_column_exists($conn, 'inquiries', 'technical_data', "JSON NULL");
-
     $conn->query("CREATE TABLE IF NOT EXISTS assets (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
         project_id INT(11) NULL,
@@ -315,12 +390,167 @@ function get_db_connection() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
-    // Seed default admin
+    $conn->query("CREATE TABLE IF NOT EXISTS showcase_projects (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        category VARCHAR(100) NULL,
+        client_name VARCHAR(255) NULL,
+        year VARCHAR(20) NULL,
+        description TEXT NULL,
+        content LONGTEXT NULL,
+        image_url VARCHAR(500) NULL,
+        sort_order INT(11) DEFAULT 0,
+        status VARCHAR(20) DEFAULT 'Active',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    ensure_column_exists($conn, 'showcase_projects', 'content', "LONGTEXT NULL");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS faq_categories (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        slug VARCHAR(100) UNIQUE NOT NULL,
+        icon VARCHAR(50) DEFAULT 'help',
+        sort_order INT(11) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS faqs (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        category_id INT(11) NOT NULL,
+        question TEXT NOT NULL,
+        answer LONGTEXT NOT NULL,
+        sort_order INT(11) DEFAULT 0,
+        status VARCHAR(20) DEFAULT 'Active',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (category_id) REFERENCES faq_categories(id) ON DELETE CASCADE
+    )");
+    ensure_column_exists($conn, 'faqs', 'sort_order', "INT(11) DEFAULT 0");
+
+    // ── HSSE TABLES ──────────────────────────────────────────────────────────
+    ensure_column_exists($conn, 'hsse_observations', 'project_id', "INT(11) NULL");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS hsse_audits (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        type VARCHAR(100) NOT NULL,
+        location VARCHAR(255),
+        audit_date DATE NOT NULL,
+        status ENUM('Upcoming','Completed','Cancelled') DEFAULT 'Upcoming',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS hsse_milestones (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        observation_id INT(11) NULL,
+        safe_days INT(11) NOT NULL,
+        reset_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        reason VARCHAR(255)
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS hsse_observation_replies (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        observation_id INT(11) NOT NULL,
+        admin_id INT(11) NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (observation_id) REFERENCES hsse_observations(id) ON DELETE CASCADE
+    )");
+
+    // ── PROJECT MILESTONES ────────────────────────────────────────────────────
+    $conn->query("CREATE TABLE IF NOT EXISTS project_reports (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        project_id INT(11) NOT NULL,
+        admin_id INT(11) NULL,
+        sender_type ENUM('Admin','Client') DEFAULT 'Admin',
+        sender_id INT(11) NULL,
+        milestone_id INT(11) NULL,
+        content TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+    )");
+    ensure_column_exists($conn, 'project_reports', 'sender_type', "ENUM('Admin','Client') DEFAULT 'Admin'");
+    ensure_column_exists($conn, 'project_reports', 'sender_id', "INT(11) NULL");
+    ensure_column_exists($conn, 'project_reports', 'milestone_id', "INT(11) NULL");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS project_milestones (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        project_id INT(11) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        order_index INT DEFAULT 0,
+        status ENUM('Pending','In Progress','Completed') DEFAULT 'Pending',
+        approval_status ENUM('Pending','Approved','Rejected') DEFAULT 'Pending',
+        due_date DATE DEFAULT NULL,
+        completed_at TIMESTAMP NULL DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS project_sub_milestones (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        milestone_id INT(11) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        is_completed TINYINT(1) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (milestone_id) REFERENCES project_milestones(id) ON DELETE CASCADE
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS project_assets (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        project_id INT(11) NOT NULL,
+        asset_id INT(11) NOT NULL,
+        assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+    )");
+
+    // ── TICKETS ───────────────────────────────────────────────────────────────
+    ensure_column_exists($conn, 'ticket_replies', 'attachment', "VARCHAR(255) NULL");
+
+    // ── AUDIT LOGS ────────────────────────────────────────────────────────────
+    $conn->query("CREATE TABLE IF NOT EXISTS audit_logs (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        action_type VARCHAR(50) NOT NULL,
+        module VARCHAR(100) NOT NULL,
+        actor_type VARCHAR(50) DEFAULT 'Admin',
+        actor_id INT(11) NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    // ── ADMIN SESSIONS (for Login-As feature) ─────────────────────────────────
+    $conn->query("CREATE TABLE IF NOT EXISTS admin_sessions (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        admin_id INT(11) NOT NULL,
+        impersonating_staff_id INT(11) NULL,
+        session_token VARCHAR(128) UNIQUE NOT NULL,
+        expires_at DATETIME NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    // Prompt for initial admin password via env or setup
     $admin_check = $conn->query("SELECT COUNT(*) as total FROM admins");
     if ($admin_check) {
         $row = $admin_check->fetch_assoc();
         if ($row['total'] == 0) {
-            $conn->query("INSERT INTO admins (name, email, password, role, status) VALUES ('Main Admin', 'admin@wilsolvewel.com', '" . password_hash('admin123', PASSWORD_DEFAULT) . "', 'Director', 'Active')");
+            $setup_token = bin2hex(random_bytes(16));
+            $expires = date('Y-m-d H:i:s', strtotime('+48 hours'));
+            $_SESSION['setup_token'] = $setup_token;
+            $conn->query("CREATE TABLE IF NOT EXISTS admin_setup_tokens (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                token VARCHAR(64) UNIQUE NOT NULL,
+                expires_at DATETIME NOT NULL,
+                used TINYINT(1) DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )");
+            $stmt = $conn->prepare("INSERT INTO admin_setup_tokens (token, expires_at) VALUES (?, ?)");
+            $stmt->bind_param("ss", $setup_token, $expires);
+            $stmt->execute();
+            $stmt->close();
+            $setup_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . "/admin/setup.php?token=$setup_token";
+            echo '<div style="background:#FEF9C3;border:1px solid #EAB308;padding:16px;margin:20px 0;border-radius:8px;font-family:sans-serif;font-size:14px;">';
+            echo '<strong>First-time Setup Required:</strong> Visit <a href="' . htmlspecialchars($setup_url) . '" style="color:#1A1A1A;font-weight:bold;">' . htmlspecialchars($setup_url) . '</a> to create the initial admin password.';
+            echo '<br><small>This link expires in 48 hours.</small></div>';
         } else {
             $conn->query("UPDATE admins SET role = 'Director', status = 'Active' WHERE id = 1 AND (role IS NULL OR status IS NULL)");
         }
@@ -331,20 +561,28 @@ function get_db_connection() {
 
 function get_setting($key, $default = '') {
     $conn = get_db_connection();
-    $key = $conn->real_escape_string($key);
-    $result = $conn->query("SELECT setting_value FROM settings WHERE setting_key = '$key'");
+    $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
+    if (!$stmt) return $default;
+    $stmt->bind_param("s", $key);
+    $stmt->execute();
+    $result = $stmt->get_result();
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        $stmt->close();
         return $row['setting_value'];
     }
+    $stmt->close();
     return $default;
 }
 
 function set_setting($key, $value) {
     $conn = get_db_connection();
-    $key = $conn->real_escape_string($key);
-    $value = $conn->real_escape_string($value);
-    $conn->query("INSERT INTO settings (setting_key, setting_value) VALUES ('$key', '$value') ON DUPLICATE KEY UPDATE setting_value = '$value'");
+    $stmt = $conn->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+    if ($stmt) {
+        $stmt->bind_param("sss", $key, $value, $value);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
 
 /**
@@ -354,18 +592,32 @@ function set_setting($key, $value) {
 function get_auto_assigned_department($conn, $source_type, $content = '') {
     // 1. Try keyword matching first (most specific)
     if (!empty($content)) {
-        $rules = $conn->query("SELECT department_id, match_keyword FROM routing_rules WHERE source_type = '$source_type' AND match_keyword != '' AND match_keyword IS NOT NULL");
-        while ($rule = $rules->fetch_assoc()) {
-            if (stripos($content, $rule['match_keyword']) !== false) {
-                return $rule['department_id'];
+        $stmt = $conn->prepare("SELECT department_id, match_keyword FROM routing_rules WHERE source_type = ? AND match_keyword != '' AND match_keyword IS NOT NULL");
+        if ($stmt) {
+            $stmt->bind_param("s", $source_type);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($rule = $result->fetch_assoc()) {
+                if (stripos($content, $rule['match_keyword']) !== false) {
+                    $stmt->close();
+                    return $rule['department_id'];
+                }
             }
+            $stmt->close();
         }
     }
 
     // 2. Try general type matching (no keyword)
-    $res = $conn->query("SELECT department_id FROM routing_rules WHERE source_type = '$source_type' AND (match_keyword = '' OR match_keyword IS NULL) LIMIT 1");
-    if ($row = $res->fetch_assoc()) {
-        return $row['department_id'];
+    $stmt = $conn->prepare("SELECT department_id FROM routing_rules WHERE source_type = ? AND (match_keyword = '' OR match_keyword IS NULL) LIMIT 1");
+    if ($stmt) {
+        $stmt->bind_param("s", $source_type);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $stmt->close();
+            return $row['department_id'];
+        }
+        $stmt->close();
     }
 
     return null; // Unassigned
@@ -373,18 +625,23 @@ function get_auto_assigned_department($conn, $source_type, $content = '') {
 
 function get_admin_permissions($admin_id) {
     $conn = get_db_connection();
-    $admin_id = (int)$admin_id;
-    $sql = "SELECT a.*, d.permissions as dept_perms, t.permissions as template_perms 
+    $stmt = $conn->prepare("SELECT a.*, d.permissions as dept_perms, t.permissions as template_perms 
             FROM admins a
             LEFT JOIN departments d ON a.department_id = d.id
             LEFT JOIN privilege_templates t ON d.privilege_template_id = t.id
-            WHERE a.id = $admin_id";
-    $result = $conn->query($sql);
+            WHERE a.id = ?");
+    if (!$stmt) return null;
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
     if ($result && $result->num_rows > 0) {
         $admin = $result->fetch_assoc();
+        $stmt->close();
         $perms = $admin['template_perms'] ?: $admin['dept_perms'];
         if ($perms) return json_decode($perms, true);
+        return null;
     }
+    $stmt->close();
     return null; 
 }
 

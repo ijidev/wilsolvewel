@@ -1,9 +1,7 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 $permissions = get_admin_permissions($admin_id);
 
 // --- Fetch Dashboard Statistics ---

@@ -1,9 +1,7 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 if (!isset($_GET['id'])) {
     header("Location: clients.php");
@@ -11,7 +9,11 @@ if (!isset($_GET['id'])) {
 }
 
 $id = (int)$_GET['id'];
-$res = $conn->query("SELECT * FROM clients WHERE id = $id");
+$stmt = $conn->prepare("SELECT * FROM clients WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$res = $stmt->get_result();
+$stmt->close();
 $client = $res->fetch_assoc();
 
 if (!$client) {

@@ -1,14 +1,16 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 $id = (int)($_GET['id'] ?? 0);
 if (!$id) { header('Location: staff.php'); exit; }
 
-$res = $conn->query("SELECT a.*, d.name as dept_name FROM admins a LEFT JOIN departments d ON a.department_id = d.id WHERE a.id = $id");
+$stmt = $conn->prepare("SELECT a.*, d.name as dept_name FROM admins a LEFT JOIN departments d ON a.department_id = d.id WHERE a.id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$res = $stmt->get_result();
+$stmt->close();
 $staff = $res->fetch_assoc();
 if (!$staff) { header('Location: staff.php'); exit; }
 

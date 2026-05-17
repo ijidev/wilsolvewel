@@ -44,7 +44,7 @@
                 <div class="flex flex-col gap-3">
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}services.html">Services</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}industries.html">Industries</a>
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}projects.html">Projects</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}projects.php">Projects</a>
                 </div>
             </div>
             <div class="space-y-4">
@@ -52,15 +52,15 @@
                 <div class="flex flex-col gap-3">
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}about.html">About Us</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}career.html">Careers</a>
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}faq.html">FAQ</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}faq.php">FAQ</a>
                 </div>
             </div>
             <div class="space-y-4 col-span-2 sm:col-span-1">
                 <h4 class="text-[10px] font-bold font-headline uppercase tracking-[0.2em] text-primary">Support</h4>
                 <div class="flex flex-col gap-3">
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}contact.html">Contact</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}contact.php">Contact</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}hsse.html">HSSE Policy</a>
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}login.html">Terminal Access</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-[11px] font-bold uppercase tracking-widest" href="${rootPath}gateway">Terminal Access</a>
                 </div>
             </div>
         </div>

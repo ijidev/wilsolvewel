@@ -1,5 +1,6 @@
 <?php
-include 'config.php';
+require_once 'config.php';
+secure_session_start();
 $conn = get_db_connection();
 
 $token = trim($_GET['token'] ?? '');
@@ -9,10 +10,13 @@ $error = '';
 $client = null;
 
 if (!empty($token)) {
-    $t = $conn->real_escape_string($token);
-    $res = $conn->query("SELECT ct.*, c.name, c.email FROM client_password_tokens ct 
+    $stmt = $conn->prepare("SELECT ct.*, c.name, c.email FROM client_password_tokens ct 
                           JOIN clients c ON ct.client_id = c.id 
-                          WHERE ct.token='$t' AND ct.used=0 AND ct.expires_at > NOW()");
+                          WHERE ct.token = ? AND ct.used = 0 AND ct.expires_at > NOW()");
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $stmt->close();
     if ($res && $res->num_rows > 0) {
         $client = $res->fetch_assoc();
     } else {
@@ -21,6 +25,10 @@ if (!empty($token)) {
 }
 
 if ($step !== 'expired' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
+    }
+
     $action = $_POST['action'] ?? '';
 
     if ($action === 'setup' && $client) {
@@ -33,9 +41,17 @@ if ($step !== 'expired' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $hashed = password_hash($pass1, PASSWORD_DEFAULT);
             $cid = (int)$client['client_id'];
-            $t = $conn->real_escape_string($token);
-            $conn->query("UPDATE clients SET password='$hashed' WHERE id=$cid");
-            $conn->query("UPDATE client_password_tokens SET used=1 WHERE token='$t'");
+
+            $stmt = $conn->prepare("UPDATE clients SET password = ? WHERE id = ?");
+            $stmt->bind_param("si", $hashed, $cid);
+            $stmt->execute();
+            $stmt->close();
+
+            $stmt = $conn->prepare("UPDATE client_password_tokens SET used = 1 WHERE token = ?");
+            $stmt->bind_param("s", $token);
+            $stmt->execute();
+            $stmt->close();
+
             $step = 'done';
         }
     }
@@ -123,6 +139,7 @@ if ($step !== 'expired' && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
 
                 <form method="POST" class="space-y-5">
+                    <?= get_csrf_field() ?>
                     <input type="hidden" name="action" value="setup">
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">New Password</label>

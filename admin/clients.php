@@ -1,15 +1,16 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 function generate_setup_link($conn, $client_id) {
     $token = bin2hex(random_bytes(32));
     $expires = date('Y-m-d H:i:s', strtotime('+48 hours'));
-    $conn->query("INSERT INTO client_password_tokens (client_id, token, expires_at) VALUES ($client_id, '$token', '$expires')
-                  ON DUPLICATE KEY UPDATE token='$token', expires_at='$expires', used=0");
+    $stmt = $conn->prepare("INSERT INTO client_password_tokens (client_id, token, expires_at) VALUES (?, ?, ?)
+                  ON DUPLICATE KEY UPDATE token=?, expires_at=?, used=0");
+    $stmt->bind_param("issss", $client_id, $token, $expires, $token, $expires);
+    $stmt->execute();
+    $stmt->close();
     return 'http://' . $_SERVER['HTTP_HOST'] . '/wilsovewel.com/client-setup.php?token=' . $token;
 }
 
@@ -26,13 +27,16 @@ if (isset($_GET['ajax_action'])) {
     header('Content-Type: application/json');
 
     if ($_GET['ajax_action'] == 'save_client') {
+        $token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($token)) { echo json_encode(['status'=>'error','message'=>'Invalid CSRF token.']); exit; }
+
         $id = (int)($_POST['id'] ?? 0);
-        $name = $conn->real_escape_string(trim($_POST['name'] ?? ''));
-        $email = $conn->real_escape_string(trim($_POST['email'] ?? ''));
-        $phone = $conn->real_escape_string($_POST['phone'] ?? '');
-        $company = $conn->real_escape_string($_POST['company'] ?? '');
-        $status = $conn->real_escape_string($_POST['status'] ?? 'Active');
-        $pass_option = $_POST['pass_option'] ?? 'none'; // 'set', 'link', 'none'
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $phone = $_POST['phone'] ?? '';
+        $company = $_POST['company'] ?? '';
+        $status = $_POST['status'] ?? 'Active';
+        $pass_option = $_POST['pass_option'] ?? 'none';
         $raw_pass = trim($_POST['password'] ?? '');
 
         if (empty($name) || empty($email)) {
@@ -40,14 +44,17 @@ if (isset($_GET['ajax_action'])) {
         }
 
         if ($id > 0) {
-            $sql = "UPDATE clients SET name='$name', email='$email', phone='$phone', company='$company', status='$status'";
             if ($pass_option === 'set' && !empty($raw_pass)) {
                 $hashed = password_hash($raw_pass, PASSWORD_DEFAULT);
-                $sql .= ", password='$hashed'";
+                $stmt = $conn->prepare("UPDATE clients SET name=?, email=?, phone=?, company=?, status=?, password=? WHERE id=?");
+                $stmt->bind_param("ssssssi", $name, $email, $phone, $company, $status, $hashed, $id);
+            } else {
+                $stmt = $conn->prepare("UPDATE clients SET name=?, email=?, phone=?, company=?, status=? WHERE id=?");
+                $stmt->bind_param("sssssi", $name, $email, $phone, $company, $status, $id);
             }
-            $sql .= " WHERE id=$id";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); exit; }
+            $stmt->close();
             log_audit($conn, 'Update', 'Client', 'Admin', $admin_id, "Updated client record: $name (ID: $id)");
             echo json_encode(['status' => 'success', 'message' => 'Client record updated.']);
         } else {
@@ -55,10 +62,17 @@ if (isset($_GET['ajax_action'])) {
             if ($pass_option === 'set' && !empty($raw_pass)) {
                 $hashed = password_hash($raw_pass, PASSWORD_DEFAULT);
             }
-            $sql = "INSERT INTO clients (name, email, phone, company, status, password) VALUES ('$name', '$email', '$phone', '$company', '$status', " . (!empty($hashed) ? "'$hashed'" : "NULL") . ")";
-            $conn->query($sql);
-            if ($conn->error) { echo json_encode(['status'=>'error','message'=>$conn->error]); exit; }
-            $new_id = $conn->insert_id;
+            if (!empty($hashed)) {
+                $stmt = $conn->prepare("INSERT INTO clients (name, email, phone, company, status, password) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssss", $name, $email, $phone, $company, $status, $hashed);
+            } else {
+                $stmt = $conn->prepare("INSERT INTO clients (name, email, phone, company, status) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssss", $name, $email, $phone, $company, $status);
+            }
+            $stmt->execute();
+            if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); exit; }
+            $new_id = $stmt->insert_id;
+            $stmt->close();
             
             log_audit($conn, 'Create', 'Client', 'Admin', $admin_id, "Created new client record: $name (ID: $new_id)");
 
@@ -75,9 +89,16 @@ if (isset($_GET['ajax_action'])) {
     }
 
     if ($_GET['ajax_action'] == 'resend_link') {
-        $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT * FROM clients WHERE id = $id");
+        $token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($token)) { echo json_encode(['status'=>'error','message'=>'Invalid CSRF token.']); exit; }
+
+        $id = (int)$_POST['id'];
+        $stmt = $conn->prepare("SELECT * FROM clients WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $c = $res->fetch_assoc();
+        $stmt->close();
         if (!$c) { echo json_encode(['status'=>'error','message'=>'Client not found.']); exit; }
         $link = generate_setup_link($conn, $id);
         $sent = send_client_setup_email($c['email'], $c['name'], $link);
@@ -88,14 +109,25 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'get_client') {
         $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT * FROM clients WHERE id = $id");
+        $stmt = $conn->prepare("SELECT * FROM clients WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         echo json_encode($res->fetch_assoc());
+        $stmt->close();
         exit;
     }
 
     if ($_GET['ajax_action'] == 'delete_client') {
-        $id = (int)$_GET['id'];
-        $conn->query("DELETE FROM clients WHERE id = $id");
+        $token = $_POST['csrf_token'] ?? '';
+        if (!verify_csrf_token($token)) { echo json_encode(['status'=>'error','message'=>'Invalid CSRF token.']); exit; }
+
+        $id = (int)$_POST['id'];
+        $stmt = $conn->prepare("DELETE FROM clients WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); exit; }
+        $stmt->close();
         log_audit($conn, 'Delete', 'Client', 'Admin', $admin_id, "Deleted client record ID: $id");
         echo json_encode(['status' => 'success']);
         exit;
@@ -103,7 +135,9 @@ if (isset($_GET['ajax_action'])) {
 }
 
 $clients = [];
-$res = $conn->query("SELECT * FROM clients ORDER BY created_at DESC");
+$stmt = $conn->prepare("SELECT * FROM clients ORDER BY created_at DESC");
+$stmt->execute();
+$res = $stmt->get_result();
 while ($row = $res->fetch_assoc()) $clients[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
@@ -115,6 +149,7 @@ $permissions = get_admin_permissions($admin_id);
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Client Directory | Terminal</title>
     <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
+    <script>window.CSRF_TOKEN = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES) ?>';</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
@@ -158,7 +193,8 @@ $permissions = get_admin_permissions($admin_id);
 
     <main class="flex-1 overflow-y-auto custom-scrollbar p-6">
         <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-            <table class="w-full text-left border-collapse">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50/50 border-b border-slate-100">
                         <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Client / Company</th>
@@ -210,6 +246,7 @@ $permissions = get_admin_permissions($admin_id);
                     <?php endforeach; ?>
                 </tbody>
             </table>
+                </div>
         </div>
     </main>
 </div>
@@ -226,6 +263,7 @@ $permissions = get_admin_permissions($admin_id);
         </div>
         <div class="overflow-y-auto custom-scrollbar flex-1">
             <form id="clientForm" class="p-8 space-y-5">
+                <?= get_csrf_field() ?>
                 <input type="hidden" name="id" id="clientId">
                 <div class="grid grid-cols-2 gap-5">
                     <div class="space-y-1.5">
@@ -366,7 +404,10 @@ document.getElementById('clientForm').addEventListener('submit', async function(
 
 async function resendLink(id) {
     showToast('Generating link...');
-    const res = await fetch(`?ajax_action=resend_link&id=${id}`);
+    const fd = new URLSearchParams();
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=resend_link', { method: 'POST', body: fd });
     const result = await res.json();
     showToast(result.message, result.status);
     if (result.setup_link) showLink(result.setup_link);
@@ -374,7 +415,10 @@ async function resendLink(id) {
 
 async function deleteClient(id) {
     if (!confirm('Delete client record?')) return;
-    const res = await fetch(`?ajax_action=delete_client&id=${id}`);
+    const fd = new URLSearchParams();
+    fd.append('id', id);
+    fd.append('csrf_token', CSRF_TOKEN);
+    const res = await fetch('?ajax_action=delete_client', { method: 'POST', body: fd });
     const result = await res.json();
     if (result.status === 'success') location.reload();
     else showToast(result.message, 'error');

@@ -27,7 +27,7 @@
             <h1 class="text-lg font-bold font-headline text-slate-900">Platform Documentation</h1>
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Step-by-step guide for non-technical users</p>
         </div>
-        <a href="admin/dashboard.php" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors">Return to Dashboard</a>
+        <a href="/dashboard" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors">Return to Dashboard</a>
     </header>
 
     <div class="flex-1 flex overflow-hidden">
@@ -357,7 +357,7 @@
                             </div>
                             <div>
                                 <h4 class="font-bold text-slate-900">Login & Access</h4>
-                                <p class="text-xs text-slate-500">Clients log in via <code>/client/login.php</code> using the credentials you set up or they created.</p>
+                                <p class="text-xs text-slate-500">Clients log in via <code>/client-login.php</code> using the credentials you set up or they created.</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">

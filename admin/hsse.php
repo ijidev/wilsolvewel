@@ -1,41 +1,39 @@
 <?php
-include '../config.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
 
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 $admin_name = $_SESSION['admin_name'] ?? 'Admin';
 $admin_avatar = $_SESSION['admin_avatar'] ?? null;
-// If admin has no department/template, treat as Director (root admin)
 $permissions = get_admin_permissions($admin_id) ?: ['role' => 'Director'];
 
-// --- Page-level Access Guard ---
 $is_director = ($permissions['role'] ?? '') === 'Director';
 $has_hsse_access = $is_director
     || !empty($permissions['HSSE']['read'])
     || !empty($permissions['HSSE']['write']);
 $access_denied = !$has_hsse_access;
 
-
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_observation') {
     header('Content-Type: application/json');
-    $admin_id = $_SESSION['admin_id'] ?? 1;
-    $title = $conn->real_escape_string($_POST['title'] ?? '');
-    $type = $conn->real_escape_string($_POST['type'] ?? 'Routine');
-    $severity = $conn->real_escape_string($_POST['severity'] ?? 'Low');
-    $location = $conn->real_escape_string($_POST['location'] ?? '');
-    $description = $conn->real_escape_string($_POST['description'] ?? '');
-    $project_id = $_POST['project_id'] ? (int)$_POST['project_id'] : 'NULL';
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token. Please reload the page.']);
+        exit;
+    }
+    $admin_id = $_SESSION['admin_id'];
+    $title = $_POST['title'] ?? '';
+    $type = $_POST['type'] ?? 'Routine';
+    $severity = $_POST['severity'] ?? 'Low';
+    $location = $_POST['location'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $project_id = $_POST['project_id'] ? (int)$_POST['project_id'] : null;
     
     if (empty($title) || empty($description)) {
         echo json_encode(['status' => 'error', 'message' => 'Title and Description are required']);
         exit;
     }
 
-    // --- Safe Days Reset Logic ---
     if ($severity === 'High') {
-        // Calculate current safe days before reset
-        $last_incident_res = $conn->query("SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1");
+        $last_incident_res = safe_query($conn, "SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1");
         $current_safe_days = 0;
         if ($last_incident_res && $last_incident_res->num_rows > 0) {
             $last_date = new DateTime($last_incident_res->fetch_assoc()['created_at']);
@@ -44,65 +42,102 @@ if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_observation'
             $current_safe_days = get_setting('hsse_base_safe_days', 412);
         }
 
-        // Log the Milestone for record keeping
-        $conn->query("INSERT INTO hsse_milestones (safe_days, reason) VALUES ($current_safe_days, 'High-Severity Incident: $title')");
+        $reason = "High-Severity Incident: $title";
+        $stmt = $conn->prepare("INSERT INTO hsse_milestones (safe_days, reason) VALUES (?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("is", $current_safe_days, $reason);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
-    $sql = "INSERT INTO hsse_observations (title, type, severity, location, description, inspector_id, status, project_id) 
-            VALUES ('$title', '$type', '$severity', '$location', '$description', $admin_id, 'Open', $project_id)";
-    
-    if ($conn->query($sql)) {
-        echo json_encode(['status' => 'success', 'message' => 'Observation logged successfully']);
+    $stmt = $conn->prepare("INSERT INTO hsse_observations (title, type, severity, location, description, inspector_id, status, project_id) VALUES (?, ?, ?, ?, ?, ?, 'Open', ?)");
+    if ($stmt) {
+        $stmt->bind_param("sssssii", $title, $type, $severity, $location, $description, $admin_id, $project_id);
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success', 'message' => 'Observation logged successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+        }
+        $stmt->close();
     } else {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        echo json_encode(['status' => 'error', 'message' => 'Database prepare failed']);
     }
     exit;
 }
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'resolve_observation') {
     header('Content-Type: application/json');
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token. Please reload the page.']);
+        exit;
+    }
     $id = (int)$_POST['id'];
-    $sql = "UPDATE hsse_observations SET status = 'Resolved' WHERE id = $id";
-    if ($conn->query($sql)) {
-        echo json_encode(['status' => 'success']);
+    $stmt = $conn->prepare("UPDATE hsse_observations SET status = 'Resolved' WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+        }
+        $stmt->close();
     } else {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        echo json_encode(['status' => 'error', 'message' => 'Database prepare failed']);
     }
     exit;
 }
 
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_audit') {
     header('Content-Type: application/json');
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token. Please reload the page.']);
+        exit;
+    }
     $id = (int)($_POST['id'] ?? 0);
-    $title = $conn->real_escape_string($_POST['title'] ?? '');
-    $type = $conn->real_escape_string($_POST['type'] ?? '');
-    $audit_date = $conn->real_escape_string($_POST['audit_date'] ?? '');
-    $location = $conn->real_escape_string($_POST['location'] ?? '');
+    $title = $_POST['title'] ?? '';
+    $type = $_POST['type'] ?? '';
+    $audit_date = $_POST['audit_date'] ?? '';
+    $location = $_POST['location'] ?? '';
     
     if ($id > 0) {
-        $sql = "UPDATE hsse_audits SET title='$title', type='$type', audit_date='$audit_date', location='$location' WHERE id=$id";
+        $stmt = $conn->prepare("UPDATE hsse_audits SET title=?, type=?, audit_date=?, location=? WHERE id=?");
+        if ($stmt) $stmt->bind_param("ssssi", $title, $type, $audit_date, $location, $id);
         $action = 'Updated';
     } else {
-        $sql = "INSERT INTO hsse_audits (title, type, audit_date, location, status) VALUES ('$title', '$type', '$audit_date', '$location', 'Upcoming')";
+        $stmt = $conn->prepare("INSERT INTO hsse_audits (title, type, audit_date, location, status) VALUES (?, ?, ?, ?, 'Upcoming')");
+        if ($stmt) $stmt->bind_param("ssss", $title, $type, $audit_date, $location);
         $action = 'Scheduled';
     }
     
-    if ($conn->query($sql)) {
+    if ($stmt && $stmt->execute()) {
         log_audit($conn, $id > 0 ? 'Update' : 'Create', 'HSSE_Audit', 'Admin', $admin_id, "$action audit: $title");
         echo json_encode(['status' => 'success']);
     } else {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        echo json_encode(['status' => 'error', 'message' => $stmt ? $stmt->error : 'Database prepare failed']);
     }
+    if ($stmt) $stmt->close();
     exit;
 }
 
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'delete_audit') {
     header('Content-Type: application/json');
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token. Please reload the page.']);
+        exit;
+    }
     $id = (int)$_POST['id'];
-    if ($conn->query("DELETE FROM hsse_audits WHERE id = $id")) {
-        log_audit($conn, 'Delete', 'HSSE_Audit', 'Admin', $admin_id, "Deleted audit ID: $id");
-        echo json_encode(['status' => 'success']);
+    $stmt = $conn->prepare("DELETE FROM hsse_audits WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            log_audit($conn, 'Delete', 'HSSE_Audit', 'Admin', $admin_id, "Deleted audit ID: $id");
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+        }
+        $stmt->close();
     } else {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        echo json_encode(['status' => 'error', 'message' => 'Database prepare failed']);
     }
     exit;
 }
@@ -110,16 +145,20 @@ if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'delete_audit') {
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'get_observation_replies') {
     header('Content-Type: application/json');
     $obs_id = (int)$_GET['observation_id'];
-    $res = $conn->query("
+    $stmt = $conn->prepare("
         SELECT r.*, a.name as admin_name, a.avatar as admin_avatar 
         FROM hsse_observation_replies r 
         JOIN admins a ON r.admin_id = a.id 
-        WHERE r.observation_id = $obs_id 
+        WHERE r.observation_id = ? 
         ORDER BY r.created_at ASC
     ");
     $replies = [];
-    if ($res) {
+    if ($stmt) {
+        $stmt->bind_param("i", $obs_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         while ($row = $res->fetch_assoc()) $replies[] = $row;
+        $stmt->close();
     }
     echo json_encode($replies);
     exit;
@@ -127,59 +166,65 @@ if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'get_observation_rep
 
 if (isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'add_observation_reply') {
     header('Content-Type: application/json');
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token. Please reload the page.']);
+        exit;
+    }
     $obs_id = (int)$_POST['observation_id'];
-    $message = $conn->real_escape_string(trim($_POST['message']));
+    $message = trim($_POST['message'] ?? '');
     if (!empty($message)) {
-        if ($conn->query("INSERT INTO hsse_observation_replies (observation_id, admin_id, message) VALUES ($obs_id, $admin_id, '$message')")) {
-            echo json_encode(['status' => 'success']);
+        $stmt = $conn->prepare("INSERT INTO hsse_observation_replies (observation_id, admin_id, message) VALUES (?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("iis", $obs_id, $admin_id, $message);
+            if ($stmt->execute()) {
+                echo json_encode(['status' => 'success']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+            }
+            $stmt->close();
         } else {
-            echo json_encode(['status' => 'error', 'message' => $conn->error]);
+            echo json_encode(['status' => 'error', 'message' => 'Database prepare failed']);
         }
     }
     exit;
 }
 
-// --- Fetch Statistics (Automated) ---
-
-// 1. Calculate Safe Days: Days since the last 'High' severity observation (LTI equivalent)
-$last_incident_res = $conn->query("SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1");
+$last_incident_res = safe_query($conn, "SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1");
 $safe_days = 0;
 if ($last_incident_res && $last_incident_res->num_rows > 0) {
     $last_date = new DateTime($last_incident_res->fetch_assoc()['created_at']);
     $now = new DateTime();
     $safe_days = $now->diff($last_date)->days;
 } else {
-    // If no incidents recorded, use base project start or a default
     $safe_days = get_setting('hsse_base_safe_days', 412); 
 }
 
-// 2. Compliance Index: (Resolved Observations / Total Observations) * 100
-$total_obs_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations");
-$resolved_obs_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE status = 'Resolved'");
+$total_obs_res = safe_query($conn, "SELECT COUNT(*) as total FROM hsse_observations");
+$resolved_obs_res = safe_query($conn, "SELECT COUNT(*) as total FROM hsse_observations WHERE status = 'Resolved'");
 $total_obs = $total_obs_res->fetch_assoc()['total'];
 $resolved_obs = $resolved_obs_res->fetch_assoc()['total'];
 $compliance_index = ($total_obs > 0) ? round(($resolved_obs / $total_obs) * 100, 1) : 100.0;
 
-// 3. Footer Stats
 $near_misses = 0;
-$near_miss_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE type = 'Incident'");
+$near_miss_res = safe_query($conn, "SELECT COUNT(*) as total FROM hsse_observations WHERE type = 'Incident'");
 if ($near_miss_res) $near_misses = $near_miss_res->fetch_assoc()['total'];
 
 $breaches = 0;
-$breach_res = $conn->query("SELECT COUNT(*) as total FROM hsse_observations WHERE severity = 'High' OR type = 'Hazard'");
+$breach_res = safe_query($conn, "SELECT COUNT(*) as total FROM hsse_observations WHERE severity = 'High' OR type = 'Hazard'");
 if ($breach_res) $breaches = $breach_res->fetch_assoc()['total'];
 
-// --- Fetch all for management ---
-$all_observations_res = $conn->query("
+$all_observations_res = safe_query($conn, "
     SELECT o.*, a.name as inspector_name 
     FROM hsse_observations o 
     LEFT JOIN admins a ON o.inspector_id = a.id 
     ORDER BY o.created_at DESC
 ");
 
-// --- Handle Inline Updates (For manual overrides if needed) ---
 if (isset($_POST['update_metric'])) {
     if ($permissions['role'] === 'Director' || $permissions['HSSE']['write']) {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token. Please reload the page and try again.');
+        }
         $key = $_POST['metric_key'];
         $val = $_POST['metric_value'];
         set_setting($key, $val);
@@ -190,10 +235,10 @@ if (isset($_POST['update_metric'])) {
 }
 
 $critical_count = 0;
-$critical_res = $conn->query("SELECT COUNT(*) as count FROM hsse_observations WHERE severity = 'High' AND status != 'Resolved'");
+$critical_res = safe_query($conn, "SELECT COUNT(*) as count FROM hsse_observations WHERE severity = 'High' AND status != 'Resolved'");
 if ($critical_res) $critical_count = $critical_res->fetch_assoc()['count'];
 
-$observations_res = $conn->query("
+$observations_res = safe_query($conn, "
     SELECT o.*, a.name as inspector_name, a.avatar as inspector_avatar 
     FROM hsse_observations o 
     LEFT JOIN admins a ON o.inspector_id = a.id 
@@ -201,11 +246,11 @@ $observations_res = $conn->query("
     LIMIT 10
 ");
 
-$audits_res = $conn->query("SELECT * FROM hsse_audits WHERE status = 'Upcoming' ORDER BY audit_date ASC LIMIT 2");
+$audits_res = safe_query($conn, "SELECT * FROM hsse_audits WHERE status = 'Upcoming' ORDER BY audit_date ASC LIMIT 2");
 
-$milestones_res = $conn->query("SELECT * FROM hsse_milestones ORDER BY reset_date DESC LIMIT 5");
+$milestones_res = safe_query($conn, "SELECT * FROM hsse_milestones ORDER BY reset_date DESC LIMIT 5");
 
-$projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
+$projects_res = safe_query($conn, "SELECT id, name FROM projects ORDER BY name ASC");
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -219,6 +264,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
     <script>
         window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;
         window.WILSOLVEWEL_AVATAR = <?php echo json_encode($admin_avatar); ?>;
+        window.CSRF_TOKEN = '<?= generate_csrf_token() ?>';
     </script>
     <script>
         tailwind.config = {
@@ -260,7 +306,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
     <!-- TopNavBar -->
     <script src="../components/admin_topnav.js" data-root="../"></script>
 
-    <main class="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative custom-scrollbar">
         <div class="w-full relative z-10">
 
 <?php if ($access_denied): ?>
@@ -530,6 +576,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         </div>
         <div class="overflow-y-auto p-8 custom-scrollbar">
             <form id="observationForm" class="space-y-6">
+                <?= get_csrf_field() ?>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-1.5">
                         <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Observation Type</label>
@@ -594,6 +641,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         </div>
         <form id="auditForm" class="space-y-4">
             <input type="hidden" name="id" id="audit_id">
+            <?= get_csrf_field() ?>
             <div class="space-y-1">
                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Audit Title</label>
                 <input type="text" name="title" id="audit_title" required class="w-full bg-slate-50 border-slate-100 rounded-xl px-4 py-3 text-xs font-bold">
@@ -635,6 +683,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         <div class="p-6 bg-white border-t border-slate-100 shrink-0">
             <form id="chatForm" class="flex gap-3">
                 <input type="hidden" id="chat_obs_id" name="observation_id">
+                <?= get_csrf_field() ?>
                 <input type="text" name="message" required placeholder="Type a response or directive..." class="flex-1 bg-slate-50 border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                 <button type="submit" class="w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
                     <span class="material-symbols-outlined">send</span>
@@ -660,6 +709,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
             </div>
             
             <form method="POST">
+                <?= get_csrf_field() ?>
                 <input type="hidden" name="update_metric" value="1">
                 <input type="hidden" id="modal_metric_key" name="metric_key">
                 <div class="space-y-6">
@@ -690,7 +740,8 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
             </button>
         </div>
         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-            <table class="w-full">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                 <thead>
                     <tr class="text-left">
                         <th class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4 pl-4">Title / Inspector</th>
@@ -733,6 +784,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                     <?php endwhile; endif; ?>
                 </tbody>
             </table>
+                </div>
         </div>
     </div>
 </div>
@@ -755,6 +807,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         if(!confirm('Mark this observation as resolved?')) return;
         const formData = new FormData();
         formData.append('id', id);
+        formData.append('csrf_token', window.CSRF_TOKEN);
         fetch('hsse.php?ajax_action=resolve_observation', { method: 'POST', body: formData })
         .then(r => r.json()).then(data => {
             if(data.status === 'success') window.location.reload();
@@ -798,7 +851,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
         if (!confirm('Are you sure you want to delete this audit?')) return;
         fetch('hsse.php?ajax_action=delete_audit', {
             method: 'POST',
-            body: new URLSearchParams({'id': id})
+            body: new URLSearchParams({'id': id, 'csrf_token': window.CSRF_TOKEN})
         }).then(r => r.json()).then(data => {
             if (data.status === 'success') window.location.reload();
             else alert(data.message);
@@ -904,5 +957,6 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
     };
 </script>
 
+<?php endif; ?>
 </body>
 </html>

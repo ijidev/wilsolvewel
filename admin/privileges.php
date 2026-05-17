@@ -1,11 +1,10 @@
 <?php
-include '../config.php';
-
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
 
 // Define Modules
 $modules = [
-    'Dashboard' => 'admin/index.php',
+    'Dashboard' => '/dashboard',
     'Projects' => 'admin/project',
     'Assets' => 'admin/asset',
     'Procurement' => 'admin/procurement',
@@ -20,9 +19,12 @@ $modules = [
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
+        if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+            csrf_error_response();
+        }
         if ($_POST['action'] == 'save_template') {
             $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
-            $name = $conn->real_escape_string($_POST['name']);
+            $name = $_POST['name'];
             
             $perms = [];
             foreach ($modules as $mod => $path) {
@@ -34,16 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $perms_json = json_encode($perms);
             
             if ($id) {
-                $conn->query("UPDATE privilege_templates SET name = '$name', permissions = '$perms_json' WHERE id = $id");
+                $stmt = $conn->prepare("UPDATE privilege_templates SET name = ?, permissions = ? WHERE id = ?");
+                $stmt->bind_param("ssi", $name, $perms_json, $id);
+                $stmt->execute();
+                $stmt->close();
                 $message = "Template updated.";
             } else {
-                $conn->query("INSERT INTO privilege_templates (name, permissions) VALUES ('$name', '$perms_json')");
+                $stmt = $conn->prepare("INSERT INTO privilege_templates (name, permissions) VALUES (?, ?)");
+                $stmt->bind_param("ss", $name, $perms_json);
+                $stmt->execute();
+                $stmt->close();
                 $message = "Template created.";
             }
         }
         if ($_POST['action'] == 'delete') {
             $id = (int)$_POST['id'];
-            $conn->query("DELETE FROM privilege_templates WHERE id = $id");
+            $stmt = $conn->prepare("DELETE FROM privilege_templates WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->close();
             $message = "Template removed.";
         }
     }
@@ -126,6 +137,7 @@ while ($row = $result->fetch_assoc()) {
                                     <span class="material-symbols-outlined text-base">edit</span>
                                 </button>
                                 <form method="POST" onsubmit="return confirm('Delete this template?')">
+                                    <?= get_csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?php echo $t['id']; ?>">
                                     <button type="submit" class="w-8 h-8 flex items-center justify-center hover:bg-red-50 rounded-lg text-slate-400 hover:text-red-500 transition-all">
@@ -175,6 +187,7 @@ while ($row = $result->fetch_assoc()) {
                 </button>
             </div>
             <form method="POST" class="flex flex-col flex-1 overflow-hidden">
+                <?= get_csrf_field() ?>
                 <input type="hidden" name="action" value="save_template">
                 <input type="hidden" name="id" id="editId">
                 

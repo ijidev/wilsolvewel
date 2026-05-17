@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php require_once 'config.php'; secure_session_start(); generate_csrf_token();
+$conn = get_db_connection();
+$showcase_projects = [];
+$res = $conn->query("SELECT * FROM showcase_projects WHERE status='Active' ORDER BY sort_order ASC, id DESC");
+if ($res) {
+    while ($row = $res->fetch_assoc()) $showcase_projects[] = $row;
+}
+?><!DOCTYPE html>
 
 <html class="light" lang="en">
 
@@ -37,13 +44,13 @@
                         Delivering <span class="text-secondary">Engineering Excellence.</span>
                     </h1>
                     <p class="text-on-surface-variant text-base md:text-lg max-w-xl leading-relaxed font-light">
-                        We help industries keep running by providing fast-response engineering support, reliable procurement, and technical expertise that prevents costly disruption across Nigeria’s Oil & Gas, Energy, and Infrastructure sectors.
+                        We help industries keep running by providing fast-response engineering support, reliable procurement, and technical expertise that prevents costly disruption across Nigeria's Oil & Gas, Energy, and Infrastructure sectors.
                     </p>
                     <div class="flex flex-wrap gap-4 pt-4">
                         <a href="services.html" class="anodized-gradient text-on-primary px-10 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-transform">
                             Explore Services
                         </a>
-                        <a href="contact.html" class="bg-surface-container-high text-on-surface px-10 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
+                        <a href="contact.php" class="bg-surface-container-high text-on-surface px-10 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
                             Consult an Engineer
                         </a>
                     </div>
@@ -168,9 +175,9 @@
                 <div class="bg-surface-container-low rounded-3xl p-10 lg:p-20 grid lg:grid-cols-2 gap-16 items-center border border-outline-variant/10">
                     <div class="space-y-8">
                         <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em] block">Corporate Identity</span>
-                        <h2 class="font-headline text-3xl md:text-5xl font-bold text-on-surface leading-tight">Nigeria’s Foremost Heavy <span class="text-primary">Equipment Surgeons.</span></h2>
+                        <h2 class="font-headline text-3xl md:text-5xl font-bold text-on-surface leading-tight">Nigeria's Foremost Heavy <span class="text-primary">Equipment Surgeons.</span></h2>
                         <div class="space-y-6 text-on-surface-variant leading-relaxed text-base font-light">
-                            <p>Wilsolvewel Nigeria Limited is an indigenous engineering and industrial support company founded in 2021. We specialize in keeping the iron heart of Nigeria’s industrial operations beating by providing engineering-led solutions across Oil & Gas, Energy, and Infrastructure.</p>
+                            <p>Wilsolvewel Nigeria Limited is an indigenous engineering and industrial support company founded in 2021. We specialize in keeping the iron heart of Nigeria's industrial operations beating by providing engineering-led solutions across Oil & Gas, Energy, and Infrastructure.</p>
                             <p>We partner with organizations to solve critical operational challenges, protect equipment investments, and ensure projects perform safely and without disruption. At Wilsolvewel, we deliver value through innovation, integrity, and engineering excellence.</p>
                         </div>
                         <div class="pt-4">
@@ -209,60 +216,34 @@
                         <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.3em] mb-4 block">Proven Performance</span>
                         <h2 class="font-headline text-4xl font-bold text-on-surface tracking-tight">Recent Industrial Reconstructions</h2>
                     </div>
-                    <a href="projects.html" class="text-on-surface-variant font-headline font-bold uppercase tracking-widest text-[10px] border-b border-on-surface-variant pb-1 hover:text-primary hover:border-primary transition-colors">Full Project Library</a>
+                    <a href="projects.php" class="text-on-surface-variant font-headline font-bold uppercase tracking-widest text-[10px] border-b border-on-surface-variant pb-1 hover:text-primary hover:border-primary transition-colors">Full Project Library</a>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Project 1 -->
+                    <?php if (empty($showcase_projects)): ?>
+                    <div class="lg:col-span-3 text-center py-16">
+                        <span class="material-symbols-outlined text-5xl text-outline mb-4">folder_off</span>
+                        <p class="text-on-surface-variant text-sm">No showcase projects yet.</p>
+                    </div>
+                    <?php else: ?>
+                    <?php foreach ($showcase_projects as $project): ?>
                     <div class="group space-y-6">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
                             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
-                                alt="Gas Turbine Commissioning"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
+                                alt="<?= htmlspecialchars($project['title']) ?>"
+                                src="<?= htmlspecialchars($project['image_url'] ?: 'https://placehold.co/600x450/1e293b/64748b?text=Project') ?>" />
                         </div>
                         <div class="space-y-2 px-2">
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] font-label text-primary font-bold uppercase tracking-widest">Commissioning</span>
-                                <span class="text-[10px] font-label text-outline font-bold uppercase tracking-widest">2021</span>
+                                <span class="text-[10px] font-label text-primary font-bold uppercase tracking-widest"><?= htmlspecialchars($project['category'] ?: 'Project') ?></span>
+                                <span class="text-[10px] font-label text-outline font-bold uppercase tracking-widest"><?= htmlspecialchars($project['year'] ?: '') ?></span>
                             </div>
-                            <h3 class="font-headline text-xl font-bold text-on-surface">OBOB Gas Turbine Support</h3>
-                            <p class="text-on-surface-variant text-sm font-light">Alternator commissioning for Triumph Power and Gas System Ltd (AGIP).</p>
+                            <h3 class="font-headline text-xl font-bold text-on-surface"><?= htmlspecialchars($project['title']) ?></h3>
+                            <p class="text-on-surface-variant text-sm font-light"><?= htmlspecialchars($project['description'] ?: $project['client_name']) ?></p>
                         </div>
                     </div>
-
-                    <!-- Project 2 -->
-                    <div class="group space-y-6">
-                        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
-                                alt="Crude Oil Pump Installation"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL2icG4PWakb4pmy3ahdG-5OsyndkSQ_XAp34Aja84XNeMxyihqgKc9J740YcrLkU3RAQVAgsEpIO_6s1imD5VcaAE8UyR0RJVzhUZ7yV51fXNAs6ddL-yf-rH-DHSdAiz1l_eIoylGhr1sh1-Pgxah-MIm0nj8Z-aQjynFCM7uNq64WdHjv-fb2wZrY65ZABrfFf_QUsNNFg0wmMyqRygLgC3EsUngMi4TgqUEk6_evRNwwIBhAmw0e76jYtl9CCFH0vk5LcpAUoG" />
-                        </div>
-                        <div class="space-y-2 px-2">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] font-label text-primary font-bold uppercase tracking-widest">Installation</span>
-                                <span class="text-[10px] font-label text-outline font-bold uppercase tracking-widest">2023</span>
-                            </div>
-                            <h3 class="font-headline text-xl font-bold text-on-surface">Export Line Pump Integration</h3>
-                            <p class="text-on-surface-variant text-sm font-light">Testing and installation for New Cross E&P flow improvement projects.</p>
-                        </div>
-                    </div>
-
-                    <!-- Project 3 -->
-                    <div class="group space-y-6">
-                        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
-                                alt="Tower Crane Maintenance"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
-                        </div>
-                        <div class="space-y-2 px-2">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] font-label text-primary font-bold uppercase tracking-widest">Maintenance</span>
-                                <span class="text-[10px] font-label text-outline font-bold uppercase tracking-widest">2025</span>
-                            </div>
-                            <h3 class="font-headline text-xl font-bold text-on-surface">Tower Crane Rehabilitation</h3>
-                            <p class="text-on-surface-variant text-sm font-light">Major maintenance for The Carpenter's Church green-field auditorium project.</p>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>
@@ -278,7 +259,7 @@
                     <p class="text-lg text-primary-fixed/80 max-w-2xl mx-auto font-light leading-relaxed">Partner with Wilsolvewel Engineering for technical support that prioritizes iron availability, site safety, and machine longevity.</p>
                     
                     <div class="flex flex-wrap justify-center gap-6 pt-6">
-                        <a href="contact.html" class="bg-white text-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all">
+                        <a href="contact.php" class="bg-white text-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all">
                             Book Inspection
                         </a>
                         <a href="services.html" class="border-2 border-white/30 text-white px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] hover:bg-white/10 transition-all">

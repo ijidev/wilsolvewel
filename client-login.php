@@ -1,36 +1,52 @@
 <?php
-include 'config.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once 'config.php';
+secure_session_start();
 
 $conn = get_db_connection();
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $conn->real_escape_string(trim($_POST['email'] ?? ''));
-    $password = $_POST['password'] ?? '';
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf_token($token)) {
+        $error = 'Invalid form submission. Please reload and try again.';
+    } else {
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
-    if (!empty($email) && !empty($password)) {
-        $res = $conn->query("SELECT id, name, password, status FROM clients WHERE email = '$email'");
-        if ($res && $res->num_rows > 0) {
-            $client = $res->fetch_assoc();
-            if ($client['status'] !== 'Active') {
-                $error = "Account is suspended or pending setup. Please contact support.";
-            } else if (password_verify($password, $client['password'])) {
-                $_SESSION['client_id'] = $client['id'];
-                $_SESSION['client_name'] = $client['name'];
-                
-                log_audit($conn, 'Login', 'Auth', 'Client', $client['id'], "Client logged in successfully.");
-                
-                header("Location: client/index.php");
-                exit;
+        if (!empty($email) && !empty($password)) {
+            $stmt = $conn->prepare("SELECT id, name, password, status FROM clients WHERE email = ?");
+            if ($stmt) {
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                if ($res && $res->num_rows > 0) {
+                    $client = $res->fetch_assoc();
+                    $stmt->close();
+                    if ($client['status'] !== 'Active') {
+                        $error = "Account is suspended or pending setup. Please contact support.";
+                    } else if (password_verify($password, $client['password'])) {
+                        session_regenerate_id(true);
+                        $_SESSION['client_id'] = $client['id'];
+                        $_SESSION['client_name'] = $client['name'];
+                        $_SESSION['last_regenerated'] = time();
+                        
+                        log_audit($conn, 'Login', 'Auth', 'Client', $client['id'], "Client logged in successfully.");
+                        
+                        header("Location: client/index.php");
+                        exit;
+                    } else {
+                        $error = "Invalid credentials.";
+                    }
+                } else {
+                    $stmt->close();
+                    $error = "Invalid credentials.";
+                }
             } else {
-                $error = "Invalid credentials.";
+                $error = "System error. Please try again.";
             }
         } else {
-            $error = "Invalid credentials.";
+            $error = "Please enter email and password.";
         }
-    } else {
-        $error = "Please enter email and password.";
     }
 }
 ?>
@@ -133,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
 
                     <form method="POST" action="" class="space-y-6">
+                        <?= get_csrf_field() ?>
                         <div class="space-y-2">
                             <label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Email Address</label>
                             <input name="email" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" placeholder="client@company.com" type="email" required />

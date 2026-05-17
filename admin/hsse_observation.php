@@ -1,23 +1,29 @@
 <?php
-include '../../config.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 // --- Handle Form Submission ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $conn->real_escape_string($_POST['title'] ?? '');
-    $type = $conn->real_escape_string($_POST['type'] ?? 'Routine');
-    $severity = $conn->real_escape_string($_POST['severity'] ?? 'Low');
-    $location = $conn->real_escape_string($_POST['location'] ?? '');
-    $description = $conn->real_escape_string($_POST['description'] ?? '');
-    
-    $sql = "INSERT INTO hsse_observations (title, type, severity, location, description, inspector_id, status) 
-            VALUES ('$title', '$type', '$severity', '$location', '$description', $admin_id, 'Open')";
-    
-    if ($conn->query($sql)) {
-        header("Location: monitor.php?success=1");
-        exit;
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
+    }
+
+    $title = $_POST['title'] ?? '';
+    $type = $_POST['type'] ?? 'Routine';
+    $severity = $_POST['severity'] ?? 'Low';
+    $location = $_POST['location'] ?? '';
+    $description = $_POST['description'] ?? '';
+
+    $stmt = $conn->prepare("INSERT INTO hsse_observations (title, type, severity, location, description, inspector_id, status) VALUES (?, ?, ?, ?, ?, ?, 'Open')");
+    if ($stmt) {
+        $stmt->bind_param("sssssi", $title, $type, $severity, $location, $description, $admin_id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            header("Location: monitor.php?success=1");
+            exit;
+        }
+        $stmt->close();
     }
 }
 
@@ -107,6 +113,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
                 </section>
                 <!-- Form Section -->
                 <form method="POST" action="" class="bg-surface-container-lowest rounded-md p-8 shadow-[0_40px_60px_-15px_rgba(0,0,0,0.04)] space-y-12">
+                    <?= get_csrf_field() ?>
                     <!-- Observation Type Selection -->
                     <div class="space-y-6">
                         <label class="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500">01. Observation Type & Severity</label>

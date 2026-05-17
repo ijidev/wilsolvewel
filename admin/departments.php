@@ -1,29 +1,50 @@
 <?php
-include '../config.php';
-
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
 
 // Handle Actions
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
+        if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+            csrf_error_response();
+        }
         if ($_POST['action'] == 'add_dept') {
-            $name = $conn->real_escape_string($_POST['name']);
-            $template_id = !empty($_POST['template_id']) ? (int)$_POST['template_id'] : 'NULL';
-            $conn->query("INSERT IGNORE INTO departments (name, privilege_template_id) VALUES ('$name', $template_id)");
+            $name = $_POST['name'];
+            $template_id = !empty($_POST['template_id']) ? (int)$_POST['template_id'] : null;
+            if ($template_id === null) {
+                $stmt = $conn->prepare("INSERT IGNORE INTO departments (name, privilege_template_id) VALUES (?, NULL)");
+                $stmt->bind_param("s", $name);
+            } else {
+                $stmt = $conn->prepare("INSERT IGNORE INTO departments (name, privilege_template_id) VALUES (?, ?)");
+                $stmt->bind_param("si", $name, $template_id);
+            }
+            $stmt->execute();
+            $stmt->close();
             $message = "Department registered.";
         }
         if ($_POST['action'] == 'update_dept') {
             $id = (int)$_POST['id'];
-            $name = $conn->real_escape_string($_POST['name']);
-            $template_id = !empty($_POST['template_id']) ? (int)$_POST['template_id'] : 'NULL';
-            $conn->query("UPDATE departments SET name = '$name', privilege_template_id = $template_id WHERE id = $id");
+            $name = $_POST['name'];
+            $template_id = !empty($_POST['template_id']) ? (int)$_POST['template_id'] : null;
+            if ($template_id === null) {
+                $stmt = $conn->prepare("UPDATE departments SET name = ?, privilege_template_id = NULL WHERE id = ?");
+                $stmt->bind_param("si", $name, $id);
+            } else {
+                $stmt = $conn->prepare("UPDATE departments SET name = ?, privilege_template_id = ? WHERE id = ?");
+                $stmt->bind_param("sii", $name, $template_id, $id);
+            }
+            $stmt->execute();
+            $stmt->close();
             $message = "Infrastructure updated.";
         }
         if ($_POST['action'] == 'assign_staff') {
             $staff_id = (int)$_POST['staff_id'];
             $dept_id = (int)$_POST['dept_id'];
-            $conn->query("UPDATE admins SET department_id = $dept_id WHERE id = $staff_id");
+            $stmt = $conn->prepare("UPDATE admins SET department_id = ? WHERE id = ?");
+            $stmt->bind_param("ii", $dept_id, $staff_id);
+            $stmt->execute();
+            $stmt->close();
             $message = "Staff assignment synchronized.";
         }
     }
@@ -50,7 +71,11 @@ $dept_res = $conn->query("
 $departments = [];
 while ($d = $dept_res->fetch_assoc()) {
     $d['members'] = [];
-    $m_res = $conn->query("SELECT id, name, email FROM admins WHERE department_id = " . $d['id']);
+    $m_stmt = $conn->prepare("SELECT id, name, email FROM admins WHERE department_id = ?");
+    $m_stmt->bind_param("i", $d['id']);
+    $m_stmt->execute();
+    $m_res = $m_stmt->get_result();
+    $m_stmt->close();
     while ($m = $m_res->fetch_assoc()) $d['members'][] = $m;
     $departments[] = $d;
 }
@@ -172,6 +197,7 @@ while ($d = $dept_res->fetch_assoc()) {
                 <button onclick="closeModal('deptModal')" class="text-slate-400"><span class="material-symbols-outlined">close</span></button>
             </div>
             <form method="POST" class="p-6 space-y-6">
+                <?= get_csrf_field() ?>
                 <input type="hidden" name="action" id="deptAction" value="add_dept">
                 <input type="hidden" name="id" id="deptId">
                 <div>
@@ -203,6 +229,7 @@ while ($d = $dept_res->fetch_assoc()) {
                 <h3 class="font-bold text-slate-900">Assign Team Member</h3>
             </div>
             <form method="POST" class="p-6 space-y-6">
+                <?= get_csrf_field() ?>
                 <input type="hidden" name="action" value="assign_staff">
                 <input type="hidden" name="dept_id" id="assignDeptId">
                 <div>

@@ -1,9 +1,7 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 $permissions = get_admin_permissions($admin_id);
 
 $success_msg = '';
@@ -13,12 +11,17 @@ $error_msg = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_global'])) {
     if ($permissions['role'] !== 'Director') {
         $error_msg = "Permission denied.";
+    } elseif (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
     } else {
         $fields = ['site_name', 'seo_description', 'currency', 'timezone'];
         foreach ($fields as $f) {
             if (isset($_POST[$f])) {
-                $v = $conn->real_escape_string($_POST[$f]);
-                $conn->query("INSERT INTO global_settings (setting_key, setting_value) VALUES ('$f', '$v') ON DUPLICATE KEY UPDATE setting_value='$v'");
+                $v = $_POST[$f];
+                $stmt = $conn->prepare("INSERT INTO global_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value=?");
+                $stmt->bind_param("sss", $f, $v, $v);
+                $stmt->execute();
+                $stmt->close();
             }
         }
         log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated Global Settings");
@@ -30,6 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_global'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
     if ($permissions['role'] !== 'Director') {
         $error_msg = "Permission denied.";
+    } elseif (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
     } else {
         set_setting('smtp_host', $_POST['smtp_host']);
         set_setting('smtp_port', $_POST['smtp_port']);
@@ -46,19 +51,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
     }
 }
 
+// Handle Contact Info Update
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_contact'])) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
+    }
+    $contact_fields = ['contact_address','contact_phone','contact_email','contact_procurement_email','hours_weekdays','hours_saturday','hours_sunday','map_latitude','map_longitude','google_maps_api_key'];
+    foreach ($contact_fields as $f) {
+        if (isset($_POST[$f])) {
+            set_setting($f, trim($_POST[$f]));
+        }
+    }
+    log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated Contact Information");
+    $success_msg = "Contact information updated.";
+}
+
 // Handle Routing Rules CRUD
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_rule'])) {
-    $source_type = $conn->real_escape_string($_POST['source_type']);
-    $keyword = $conn->real_escape_string($_POST['match_keyword']);
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
+    }
+    $source_type = $_POST['source_type'];
+    $keyword = $_POST['match_keyword'];
     $dept_id = (int)$_POST['department_id'];
-    $conn->query("INSERT INTO routing_rules (source_type, match_keyword, department_id) VALUES ('$source_type', '$keyword', $dept_id)");
+    $stmt = $conn->prepare("INSERT INTO routing_rules (source_type, match_keyword, department_id) VALUES (?, ?, ?)");
+    $stmt->bind_param("ssi", $source_type, $keyword, $dept_id);
+    $stmt->execute();
+    $stmt->close();
     log_audit($conn, 'Create', 'RoutingRule', 'Admin', $admin_id, "Added rule for $source_type");
     $success_msg = "Routing rule added.";
 }
 
-if (isset($_GET['delete_rule'])) {
-    $id = (int)$_GET['delete_rule'];
-    $conn->query("DELETE FROM routing_rules WHERE id = $id");
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_rule'])) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        csrf_error_response();
+    }
+    $id = (int)$_POST['delete_rule'];
+    $stmt = $conn->prepare("DELETE FROM routing_rules WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
     log_audit($conn, 'Delete', 'RoutingRule', 'Admin', $admin_id, "Deleted rule #$id");
     $success_msg = "Routing rule deleted.";
 }
@@ -150,6 +182,10 @@ $active_tab = $_GET['tab'] ?? 'global';
                     <span class="material-symbols-outlined text-lg">mail</span>
                     <span class="text-sm">SMTP Setup</span>
                 </a>
+                <a href="?tab=contacts" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='contacts' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
+                    <span class="material-symbols-outlined text-lg">contact_page</span>
+                    <span class="text-sm">Contact Info</span>
+                </a>
                 <a href="?tab=rules" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all <?php echo $active_tab=='rules' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:bg-slate-50 font-medium'; ?>">
                     <span class="material-symbols-outlined text-lg">alt_route</span>
                     <span class="text-sm">Routing Rules</span>
@@ -162,7 +198,7 @@ $active_tab = $_GET['tab'] ?? 'global';
         </div>
 
         <!-- Main Content Pane -->
-        <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 relative">
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8 relative">
             <div class="max-w-3xl mx-auto">
 
                 <?php if ($active_tab === 'global'): ?>
@@ -173,6 +209,7 @@ $active_tab = $_GET['tab'] ?? 'global';
                     </div>
                     <form method="POST" class="p-8 space-y-6">
                         <input type="hidden" name="save_global" value="1">
+                        <?= get_csrf_field() ?>
                         
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Platform Name</label>
@@ -219,6 +256,7 @@ $active_tab = $_GET['tab'] ?? 'global';
                     </div>
                     <form method="POST" class="p-8 space-y-6">
                         <input type="hidden" name="save_smtp" value="1">
+                        <?= get_csrf_field() ?>
                         
                         <div class="grid grid-cols-2 gap-6">
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
@@ -266,6 +304,73 @@ $active_tab = $_GET['tab'] ?? 'global';
                     </form>
                 </div>
 
+                <?php elseif ($active_tab === 'contacts'): ?>
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <h2 class="text-xl font-bold font-headline text-slate-900">Contact Information</h2>
+                        <p class="text-xs text-slate-500 mt-1">Manage contact details displayed on the public website.</p>
+                    </div>
+                    <form method="POST" class="p-8 space-y-6">
+                        <input type="hidden" name="save_contact" value="1">
+                        <?= get_csrf_field() ?>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Address</label>
+                                <input type="text" name="contact_address" value="<?php echo htmlspecialchars(get_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone</label>
+                                <input type="text" name="contact_phone" value="<?php echo htmlspecialchars(get_setting('contact_phone', '+234 (0) 800 945 768')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">General Email</label>
+                                <input type="email" name="contact_email" value="<?php echo htmlspecialchars(get_setting('contact_email', 'info@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Procurement Email</label>
+                                <input type="email" name="contact_procurement_email" value="<?php echo htmlspecialchars(get_setting('contact_procurement_email', 'procurement@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-100 pt-6">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Business Hours</h3>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Weekdays</label>
+                                    <input type="text" name="hours_weekdays" value="<?php echo htmlspecialchars(get_setting('hours_weekdays', '8:00 AM - 5:00 PM')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Saturday</label>
+                                    <input type="text" name="hours_saturday" value="<?php echo htmlspecialchars(get_setting('hours_saturday', 'By Appointment')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Sunday</label>
+                                    <input type="text" name="hours_sunday" value="<?php echo htmlspecialchars(get_setting('hours_sunday', 'Closed')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-100 pt-6">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Google Maps</h3>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Latitude</label>
+                                    <input type="text" name="map_latitude" value="<?php echo htmlspecialchars(get_setting('map_latitude', '6.5244')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Longitude</label>
+                                    <input type="text" name="map_longitude" value="<?php echo htmlspecialchars(get_setting('map_longitude', '3.3792')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Google Maps API Key</label>
+                                    <input type="text" name="google_maps_api_key" value="<?php echo htmlspecialchars(get_setting('google_maps_api_key', '')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Optional">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 flex justify-end">
+                            <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Contact Info</button>
+                        </div>
+                    </form>
+                </div>
+
                 <?php elseif ($active_tab === 'rules'): ?>
                 <div class="space-y-6">
                     <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
@@ -278,6 +383,7 @@ $active_tab = $_GET['tab'] ?? 'global';
                         <div class="p-8">
                             <form method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-100">
                                 <input type="hidden" name="add_rule" value="1">
+                                <?= get_csrf_field() ?>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Request Type</label>
                                     <select name="source_type" required class="w-full bg-white border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:ring-1 focus:ring-primary">
@@ -331,9 +437,13 @@ $active_tab = $_GET['tab'] ?? 'global';
                                                 <p class="text-[10px] text-slate-500 mt-0.5 font-medium">Assigned to: <span class="text-primary font-bold"><?= htmlspecialchars($rule['department_name']) ?></span></p>
                                             </div>
                                         </div>
-                                        <a href="?tab=rules&delete_rule=<?= $rule['id'] ?>" class="p-2 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" onclick="return confirm('Delete this rule?')">
-                                            <span class="material-symbols-outlined text-sm">delete</span>
-                                        </a>
+                                        <form method="POST" class="inline">
+                                            <input type="hidden" name="delete_rule" value="<?= $rule['id'] ?>">
+                                            <?= get_csrf_field() ?>
+                                            <button type="submit" class="p-2 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" onclick="return confirm('Delete this rule?')">
+                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                            </button>
+                                        </form>
                                     </div>
                                     <?php endforeach; ?>
                                 <?php endif; ?>

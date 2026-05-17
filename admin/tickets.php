@@ -1,22 +1,38 @@
 <?php
-include '../config.php';
+require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 if (isset($_GET['ajax_action'])) {
     header('Content-Type: application/json');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid security token. Please refresh the page.']);
+            exit;
+        }
+    }
 
     if ($_GET['ajax_action'] == 'update_assignment') {
         $ticket_id = (int)$_POST['ticket_id'];
         $dept_id = (int)($_POST['department_id'] ?? 0);
         $assigned_to = (int)($_POST['assigned_admin_id'] ?? 0);
-        
-        $dept_sql = $dept_id > 0 ? $dept_id : "NULL";
-        $assign_sql = $assigned_to > 0 ? $assigned_to : "NULL";
 
-        $conn->query("UPDATE tickets SET department_id=$dept_sql, assigned_admin_id=$assign_sql WHERE id=$ticket_id");
+        if ($dept_id > 0 && $assigned_to > 0) {
+            $stmt = $conn->prepare("UPDATE tickets SET department_id=?, assigned_admin_id=? WHERE id=?");
+            $stmt->bind_param("iii", $dept_id, $assigned_to, $ticket_id);
+        } elseif ($dept_id > 0) {
+            $stmt = $conn->prepare("UPDATE tickets SET department_id=?, assigned_admin_id=NULL WHERE id=?");
+            $stmt->bind_param("ii", $dept_id, $ticket_id);
+        } elseif ($assigned_to > 0) {
+            $stmt = $conn->prepare("UPDATE tickets SET department_id=NULL, assigned_admin_id=? WHERE id=?");
+            $stmt->bind_param("ii", $assigned_to, $ticket_id);
+        } else {
+            $stmt = $conn->prepare("UPDATE tickets SET department_id=NULL, assigned_admin_id=NULL WHERE id=?");
+            $stmt->bind_param("i", $ticket_id);
+        }
+        $stmt->execute();
+        $stmt->close();
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Updated assignment for ticket ID: $ticket_id");
         echo json_encode(['status' => 'success']);
         exit;
@@ -24,9 +40,12 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'update_status') {
         $ticket_id = (int)$_POST['ticket_id'];
-        $status = $conn->real_escape_string($_POST['status']);
-        
-        $conn->query("UPDATE tickets SET status='$status' WHERE id=$ticket_id");
+        $status = $_POST['status'];
+
+        $stmt = $conn->prepare("UPDATE tickets SET status=? WHERE id=?");
+        $stmt->bind_param("si", $status, $ticket_id);
+        $stmt->execute();
+        $stmt->close();
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Updated status to '$status' for ticket ID: $ticket_id");
         echo json_encode(['status' => 'success']);
         exit;
@@ -34,7 +53,7 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'add_reply') {
         $ticket_id = (int)$_POST['ticket_id'];
-        $message = $conn->real_escape_string(trim($_POST['message']));
+        $message = trim($_POST['message']);
         $attachment = null;
 
         if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] == 0) {
@@ -50,17 +69,31 @@ if (isset($_GET['ajax_action'])) {
             echo json_encode(['status' => 'error', 'message' => 'Reply cannot be empty.']); exit;
         }
 
-        $attach_sql = $attachment ? "'$attachment'" : "NULL";
-        $conn->query("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message, attachment) VALUES ($ticket_id, 'Admin', $admin_id, '$message', $attach_sql)");
+        if ($attachment) {
+            $stmt = $conn->prepare("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message, attachment) VALUES (?, 'Admin', ?, ?, ?)");
+            $stmt->bind_param("iiss", $ticket_id, $admin_id, $message, $attachment);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message, attachment) VALUES (?, 'Admin', ?, ?, NULL)");
+            $stmt->bind_param("iis", $ticket_id, $admin_id, $message);
+        }
+        $stmt->execute();
         $new_reply_id = $conn->insert_id;
+        $stmt->close();
         
         // Also update ticket status to In Progress if it was Open
-        $conn->query("UPDATE tickets SET status='In Progress' WHERE id=$ticket_id AND status='Open'");
+        $stmt2 = $conn->prepare("UPDATE tickets SET status='In Progress' WHERE id=? AND status='Open'");
+        $stmt2->bind_param("i", $ticket_id);
+        $stmt2->execute();
+        $stmt2->close();
         
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Replied to ticket ID: $ticket_id" . ($attachment ? " with attachment" : ""));
         
-        $res = $conn->query("SELECT tr.*, a.name as admin_name FROM ticket_replies tr JOIN admins a ON tr.sender_id = a.id WHERE tr.id = $new_reply_id");
+        $stmt3 = $conn->prepare("SELECT tr.*, a.name as admin_name FROM ticket_replies tr JOIN admins a ON tr.sender_id = a.id WHERE tr.id = ?");
+        $stmt3->bind_param("i", $new_reply_id);
+        $stmt3->execute();
+        $res = $stmt3->get_result();
         $reply = $res->fetch_assoc();
+        $stmt3->close();
         
         // Attachment HTML
         $attach_html = '';
@@ -81,7 +114,7 @@ if (isset($_GET['ajax_action'])) {
         $html .= '</div>';
         $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
         if (!empty($reply['message'])) {
-            $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($reply['message']) . '</p>';
+            $html .= '<div class="text-sm leading-relaxed font-medium">' . $reply['message'] . '</div>';
         }
         $html .= $attach_html;
         $html .= '</div></div>';
@@ -94,15 +127,18 @@ if (isset($_GET['ajax_action'])) {
         $ticket_id = (int)$_GET['ticket_id'];
         $last_id = (int)$_GET['last_id'];
         
-        $res = $conn->query("
+        $stmt = $conn->prepare("
             SELECT tr.*, 
                    IF(tr.sender_type='Admin', a.name, c.name) as sender_name 
             FROM ticket_replies tr 
             LEFT JOIN admins a ON (tr.sender_type = 'Admin' AND tr.sender_id = a.id)
             LEFT JOIN clients c ON (tr.sender_type = 'Client' AND tr.sender_id = c.id)
-            WHERE tr.ticket_id = $ticket_id AND tr.id > $last_id 
+            WHERE tr.ticket_id = ? AND tr.id > ? 
             ORDER BY tr.created_at ASC
         ");
+        $stmt->bind_param("ii", $ticket_id, $last_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         
         $replies = [];
         while ($r = $res->fetch_assoc()) {
@@ -126,7 +162,7 @@ if (isset($_GET['ajax_action'])) {
                 $html .= '</div>';
                 $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
                 if (!empty($r['message'])) {
-                    $html .= '<p class="text-sm leading-relaxed whitespace-pre-wrap font-medium">' . htmlspecialchars($r['message']) . '</p>';
+                    $html .= '<div class="text-sm leading-relaxed font-medium">' . $r['message'] . '</div>';
                 }
                 $html .= $attach_html;
                 $html .= '</div></div>';
@@ -138,13 +174,14 @@ if (isset($_GET['ajax_action'])) {
                 $html .= '</div>';
                 $html .= '<div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">';
                 if (!empty($r['message'])) {
-                    $html .= '<p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">' . htmlspecialchars($r['message']) . '</p>';
+                    $html .= '<div class="text-sm text-slate-700 leading-relaxed">' . $r['message'] . '</div>';
                 }
                 $html .= str_replace('bg-black/10', 'bg-slate-50', $attach_html); // slight style diff for client attachment
                 $html .= '</div></div>';
             }
             $replies[] = ['id' => $r['id'], 'html' => $html];
         }
+        $stmt->close();
         echo json_encode(['status' => 'success', 'replies' => $replies]);
         exit;
     }
@@ -153,20 +190,28 @@ if (isset($_GET['ajax_action'])) {
         $id = (int)$_GET['id'];
         
         // Ticket info
-        $res = $conn->query("SELECT t.*, c.name as client_name, c.email as client_email FROM tickets t JOIN clients c ON t.client_id = c.id WHERE t.id = $id");
+        $stmt = $conn->prepare("SELECT t.*, c.name as client_name, c.email as client_email FROM tickets t JOIN clients c ON t.client_id = c.id WHERE t.id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
         $ticket = $res->fetch_assoc();
+        $stmt->close();
         
         // Replies
         $replies = [];
-        $res = $conn->query("
+        $stmt2 = $conn->prepare("
             SELECT tr.*, 
                    IF(tr.sender_type='Admin', a.name, c.name) as sender_name 
             FROM ticket_replies tr 
             LEFT JOIN admins a ON (tr.sender_type = 'Admin' AND tr.sender_id = a.id)
             LEFT JOIN clients c ON (tr.sender_type = 'Client' AND tr.sender_id = c.id)
-            WHERE tr.ticket_id = $id ORDER BY tr.created_at ASC
+            WHERE tr.ticket_id = ? ORDER BY tr.created_at ASC
         ");
+        $stmt2->bind_param("i", $id);
+        $stmt2->execute();
+        $res = $stmt2->get_result();
         while ($row = $res->fetch_assoc()) $replies[] = $row;
+        $stmt2->close();
         
         // Depts and Staff for dropdowns
         $depts = []; $staff = [];
@@ -259,7 +304,7 @@ if (isset($_GET['ajax_action'])) {
                         </div>
                         <div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-sm">
                             <?php if (!empty($r['message'])): ?>
-                                <p class="text-sm leading-relaxed whitespace-pre-wrap font-medium"><?php echo htmlspecialchars($r['message']); ?></p>
+                                <div class="text-sm leading-relaxed font-medium"><?php echo $r['message']; ?></div>
                             <?php endif; ?>
                             <?php echo $attach_html; ?>
                         </div>
@@ -273,7 +318,7 @@ if (isset($_GET['ajax_action'])) {
                         </div>
                         <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">
                             <?php if (!empty($r['message'])): ?>
-                                <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap"><?php echo htmlspecialchars($r['message']); ?></p>
+                                <div class="text-sm text-slate-700 leading-relaxed"><?php echo $r['message']; ?></div>
                             <?php endif; ?>
                             <?php echo str_replace('bg-black/10', 'bg-slate-50', $attach_html); ?>
                         </div>
@@ -285,9 +330,10 @@ if (isset($_GET['ajax_action'])) {
         <!-- Reply Box -->
         <?php if ($ticket['status'] !== 'Closed'): ?>
         <form id="replyForm" onsubmit="addReply(event, <?php echo $id; ?>)" class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm relative bottom-0">
+            <?= get_csrf_field() ?>
             <div class="flex gap-4 items-end">
                 <div class="flex-1">
-                    <textarea id="replyMessage" rows="2" placeholder="Type your reply to the client..." required class="w-full border-0 focus:ring-0 p-2 text-sm text-slate-700 custom-scrollbar resize-none bg-transparent"></textarea>
+                    <textarea id="replyMessage" class="wysiwyg" placeholder="Type your reply to the client..."></textarea>
                 </div>
                 <div class="flex items-center gap-2">
                     <input type="file" id="replyAttachment" class="hidden" onchange="updateFileLabel(this)" />
@@ -335,10 +381,12 @@ $permissions = get_admin_permissions($admin_id);
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Support Tickets | Terminal</title>
     <script>window.WILSOLVEWEL_PERMISSIONS = <?php echo json_encode($permissions); ?>;</script>
+    <script>const CSRF_TOKEN = '<?= generate_csrf_token() ?>';</script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
     <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#EAB308","on-primary":"#000000",surface:"#F8FAFC","on-surface":"#0F172A"},fontFamily:{headline:["Space Grotesk"],body:["Manrope"]}}}}</script>
+    <script src="../components/wysiwyg.js"></script>
     <style>
         .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
@@ -468,6 +516,7 @@ function showToast(msg, type = 'success') {
         const adminId = document.getElementById('staffSelect').value;
         
         const fd = new FormData();
+        fd.append('csrf_token', CSRF_TOKEN);
         fd.append('ticket_id', ticketId);
         fd.append('department_id', deptId);
         fd.append('assigned_admin_id', adminId);
@@ -483,6 +532,7 @@ function showToast(msg, type = 'success') {
 
     async function updateStatus(ticketId, status) {
         const fd = new FormData();
+        fd.append('csrf_token', CSRF_TOKEN);
         fd.append('ticket_id', ticketId);
         fd.append('status', status);
         
@@ -519,13 +569,13 @@ function showToast(msg, type = 'success') {
     async function addReply(e, ticketId) {
         e.preventDefault();
         const btn = document.getElementById('replyBtn');
-        const input = document.getElementById('replyMessage');
         const fileInput = document.getElementById('replyAttachment');
-        const message = input.value;
+        const message = WYSIWYG.getContent('replyMessage');
         
         btn.disabled = true;
         
         const fd = new FormData();
+        fd.append('csrf_token', CSRF_TOKEN);
         fd.append('ticket_id', ticketId);
         fd.append('message', message);
         if (fileInput.files[0]) {
@@ -535,7 +585,7 @@ function showToast(msg, type = 'success') {
             const res = await fetch('?ajax_action=add_reply', { method: 'POST', body: fd });
             const result = await res.json();
             if (result.status === 'success') {
-                input.value = '';
+                WYSIWYG.setContent('replyMessage', '');
                 fileInput.value = '';
                 document.getElementById('fileLabel').classList.add('hidden');
                 document.getElementById('replyThread').insertAdjacentHTML('beforeend', result.html);

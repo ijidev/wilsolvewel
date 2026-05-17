@@ -1,10 +1,7 @@
 <?php
-include '../../config.php';
-
+require_once '../../includes/admin_auth.php';
 $conn = get_db_connection();
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$admin_id = $_SESSION['admin_id'] ?? 1;
+$admin_id = $_SESSION['admin_id'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['initiate_order'])) {
     $item_name = $conn->real_escape_string($_POST['item_name']);
