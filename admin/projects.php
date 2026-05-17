@@ -3,6 +3,11 @@ require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
 $admin_id = $_SESSION['admin_id'];
 
+ensure_column_exists($conn, 'project_milestones', 'assigned_to_department', "INT(11) NULL");
+ensure_column_exists($conn, 'project_sub_milestones', 'assigned_to_admin', "INT(11) NULL");
+ensure_column_exists($conn, 'project_sub_milestones', 'assigned_to_department', "INT(11) NULL");
+ensure_column_exists($conn, 'departments', 'leader_id', "INT(11) NULL");
+
 function check_project_permission($conn, $project_id, $admin_id) {
     if (!$project_id) return true;
     if ($admin_id == 1) return true;
