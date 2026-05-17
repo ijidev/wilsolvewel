@@ -11,7 +11,7 @@ function generate_setup_link($conn, $client_id) {
     $stmt->bind_param("issss", $client_id, $token, $expires, $token, $expires);
     $stmt->execute();
     $stmt->close();
-    return 'http://' . $_SERVER['HTTP_HOST'] . '/wilsovewel.com/client-setup.php?token=' . $token;
+    return 'http://' . $_SERVER['HTTP_HOST'] . '/client-setup.php?token=' . $token;
 }
 
 function send_client_setup_email($to_email, $to_name, $link) {

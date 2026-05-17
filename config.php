@@ -515,8 +515,10 @@ function get_db_connection() {
         actor_type VARCHAR(50) DEFAULT 'Admin',
         actor_id INT(11) NULL,
         description TEXT,
+        details TEXT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    ensure_column_exists($conn, 'audit_logs', 'details', "TEXT NULL");
 
     // ── ADMIN SESSIONS (for Login-As feature) ─────────────────────────────────
     $conn->query("CREATE TABLE IF NOT EXISTS admin_sessions (
