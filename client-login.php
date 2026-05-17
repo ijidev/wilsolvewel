@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body class="bg-surface font-body text-on-surface site-gradient-bg min-h-screen flex flex-col">
     <!-- Top Navigation Shell -->
-    <script src="../components/header.js" data-root="../"></script>
+    <script src="components/header.js" data-root="./"></script>
 
     <main class="relative flex-1 flex flex-col items-center justify-center pt-20 pb-12">
         <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
@@ -115,8 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                     <span class="text-[10px] font-headline font-bold uppercase tracking-widest text-primary">Client Gateway</span>
                 </div>
-                <h1 class="text-5xl lg:text-7xl font-headline font-bold text-on-surface tracking-tighter leading-[0.9] mb-8">
-                    Client <br /><span class="text-primary">Terminal</span><br />Access.
+                <h1 class="font-headline font-bold text-on-surface tracking-tighter mb-8">
+                    <span class="text-5xl lg:text-7xl leading-[1.1] block">Client <span class="text-primary">Terminal</span></span>
+                    <span class="text-2xl lg:text-3xl text-on-surface-variant/50 font-medium mt-3 block tracking-[0.15em] uppercase">Access Portal</span>
                 </h1>
                 <div class="space-y-6 max-w-md">
                     <div class="flex items-center gap-4 text-on-surface-variant">
@@ -187,6 +188,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <!-- Footer Shell -->
-    <script src="../components/footer.js" data-root="../"></script>
+    <script src="components/footer.js" data-root="./"></script>
 </body>
 </html>
