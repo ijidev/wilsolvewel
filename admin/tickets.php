@@ -224,6 +224,9 @@ if (isset($_GET['ajax_action'])) {
         ?>
         <!-- Header & Meta -->
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mb-6">
+            <button onclick="backToTicketList()" class="lg:hidden w-8 h-8 flex items-center justify-center hover:bg-slate-50 rounded-lg shrink-0 mb-3">
+                <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+            </button>
             <div class="flex items-start justify-between gap-4 mb-4">
                 <div class="flex-1">
                     <h2 class="text-xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($ticket['subject']); ?></h2>
@@ -390,6 +393,7 @@ $permissions = get_admin_permissions($admin_id);
     <style>
         .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
+        @media (max-width: 1023px) { .hidden-mobile { display: none !important; } }
     </style>
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface min-h-screen">
@@ -413,7 +417,7 @@ $permissions = get_admin_permissions($admin_id);
 
     <div class="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
         <!-- Master List -->
-        <div class="w-full md:w-64 lg:w-80 bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar flex flex-col shrink-0 p-4 space-y-3">
+        <div id="ticketList" class="w-full md:w-64 lg:w-80 bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar flex flex-col shrink-0 p-4 space-y-3">
             <?php if (empty($tickets)): ?>
                 <div class="text-center py-10"><span class="material-symbols-outlined text-4xl text-slate-200">mark_email_read</span><p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No Support Tickets</p></div>
             <?php endif; ?>
@@ -435,7 +439,7 @@ $permissions = get_admin_permissions($admin_id);
         </div>
 
         <!-- Detail View -->
-        <div class="flex-1 bg-[#F8FAFC] overflow-y-auto custom-scrollbar relative flex flex-col">
+        <div id="detailContainer" class="flex-1 bg-[#F8FAFC] overflow-y-auto custom-scrollbar relative flex flex-col hidden-mobile lg:flex">
             <div id="detailPane" class="flex-1 p-4 lg:p-6 w-full hidden flex flex-col">
                 <!-- Content loaded via AJAX -->
             </div>
@@ -461,6 +465,12 @@ function showToast(msg, type = 'success') {
     let lastReplyId = 0;
     let pollInterval = null;
 
+    function backToTicketList() {
+        document.getElementById('ticketList').classList.remove('hidden-mobile');
+        document.getElementById('detailContainer').classList.add('hidden-mobile');
+        document.getElementById('detailPane').classList.add('hidden');
+    }
+
     async function loadTicket(id, cardEl) {
         currentTicketId = id;
         document.querySelectorAll('.group').forEach(el => el.classList.remove('ring-2', 'ring-primary', 'border-transparent', 'bg-slate-50'));
@@ -470,6 +480,11 @@ function showToast(msg, type = 'success') {
         const pane = document.getElementById('detailPane');
         pane.classList.remove('hidden');
         pane.innerHTML = '<div class="text-center py-20 flex-1 flex flex-col items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl animate-spin mb-4">sync</span><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Loading Conversation...</p></div>';
+        
+        if (window.innerWidth < 1024) {
+            document.getElementById('ticketList').classList.add('hidden-mobile');
+            document.getElementById('detailContainer').classList.remove('hidden-mobile');
+        }
         
         const res = await fetch(`?ajax_action=load_details&id=${id}`);
         const data = await res.json();

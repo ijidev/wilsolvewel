@@ -201,6 +201,27 @@ $active_tab = $_GET['tab'] ?? 'global';
         <main class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8 relative">
             <div class="max-w-3xl mx-auto">
 
+                <!-- Mobile Tab Bar -->
+                <div class="md:hidden overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 mb-6">
+                    <div class="flex gap-1 pb-2 border-b border-slate-100 min-w-max">
+                        <a href="?tab=global" class="whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all <?php echo $active_tab=='global' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:text-slate-700'; ?>">
+                            <span class="material-symbols-outlined text-base align-middle mr-1">language</span>Global
+                        </a>
+                        <a href="?tab=smtp" class="whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all <?php echo $active_tab=='smtp' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:text-slate-700'; ?>">
+                            <span class="material-symbols-outlined text-base align-middle mr-1">mail</span>SMTP
+                        </a>
+                        <a href="?tab=contacts" class="whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all <?php echo $active_tab=='contacts' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:text-slate-700'; ?>">
+                            <span class="material-symbols-outlined text-base align-middle mr-1">contact_page</span>Contact
+                        </a>
+                        <a href="?tab=rules" class="whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all <?php echo $active_tab=='rules' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:text-slate-700'; ?>">
+                            <span class="material-symbols-outlined text-base align-middle mr-1">alt_route</span>Rules
+                        </a>
+                        <a href="?tab=errors" class="whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all <?php echo $active_tab=='errors' ? 'bg-red-50 text-red-600' : 'text-slate-400 hover:text-slate-700'; ?>">
+                            <span class="material-symbols-outlined text-base align-middle mr-1">bug_report</span>Errors
+                        </a>
+                    </div>
+                </div>
+
                 <?php if ($active_tab === 'global'): ?>
                 <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
                     <div class="p-8 border-b border-slate-50 bg-slate-50/50">
