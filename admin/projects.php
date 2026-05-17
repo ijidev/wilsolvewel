@@ -3,8 +3,6 @@ require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
 $admin_id = $_SESSION['admin_id'];
 
-ensure_column_exists($conn, 'departments', 'leader_id', "INT(11) NULL");
-
 function check_project_permission($conn, $project_id, $admin_id) {
     if (!$project_id) return true;
     if ($admin_id == 1) return true;
@@ -790,7 +788,7 @@ while ($row = $res->fetch_assoc()) $clients[] = $row;
 
 // Fetch Departments & Admins for assignment
 $departments_list = [];
-$res = $conn->query("SELECT d.id, d.name, a.name as leader_name FROM departments d LEFT JOIN admins a ON d.leader_id = a.id ORDER BY d.name ASC");
+$res = $conn->query("SELECT id, name FROM departments ORDER BY name ASC");
 while ($row = $res->fetch_assoc()) $departments_list[] = $row;
 $admins_all = [];
 $res = $conn->query("SELECT id, name FROM admins ORDER BY name ASC");
@@ -948,7 +946,7 @@ $permissions = get_admin_permissions($admin_id);
                     <select name="department_id" id="projectDept" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                         <option value="">-- No Department --</option>
                         <?php foreach ($departments_list as $d): ?>
-                            <option value="<?php echo $d['id']; ?>"><?php echo htmlspecialchars($d['name']); ?><?php echo $d['leader_name'] ? ' (Lead: '.$d['leader_name'].')' : ''; ?></option>
+                            <option value="<?php echo $d['id']; ?>"><?php echo htmlspecialchars($d['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
