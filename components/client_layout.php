@@ -82,7 +82,7 @@ $page_back_link = $page_back_link ?? 'javascript:history.back()';
                 <?php endif; ?>
                 <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight truncate"><?= $page_h1 ?></h1>
                 <?php if ($page_h1_sub): ?>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"><?= $page_h1_sub ?></p>
+                <p class="hidden sm:block text-[9px] font-bold text-slate-400 uppercase tracking-widest"><?= $page_h1_sub ?></p>
                 <?php endif; ?>
             </div>
         </div>

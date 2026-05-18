@@ -31,6 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $project_id = $stmt->insert_id;
             log_audit($conn, 'Create', 'Projects', 'Client', $client_id, 'Proposed Project', ['title' => $title]);
 
+            // Notify all active admins
+            $admin_ids = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
+            if ($admin_ids) {
+                while ($a = $admin_ids->fetch_assoc()) {
+                    create_notification($conn, 'admin', $a['id'], 'New project proposal', htmlspecialchars($title), 'admin/projects.php?id=' . $project_id, 'add_task');
+                }
+            }
+
             $message = "Project proposal submitted successfully. Ref: #PROJ-$project_id";
         } else {
             $error = "Error submitting proposal: " . $stmt->error;

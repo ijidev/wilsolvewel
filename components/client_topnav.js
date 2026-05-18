@@ -18,7 +18,7 @@
 <div class="flex items-center gap-0 sm:gap-2">
 <button id="btn-notifications" class="p-1.5 sm:p-2 text-slate-500 hover:text-primary transition-colors relative">
 <span class="material-symbols-outlined text-lg sm:text-xl">notifications</span>
-<span class="absolute top-1 right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full border border-white dark:border-slate-900"></span>
+<span id="notif-badge" class="hidden absolute top-0.5 right-0.5 min-w-[16px] h-4 bg-red-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full border border-white dark:border-slate-900 px-1 leading-none shadow-sm">0</span>
 </button>
 <a href="settings.php" class="p-1.5 sm:p-2 text-slate-500 hover:text-primary transition-colors hidden sm:block">
 <span class="material-symbols-outlined text-lg sm:text-xl">settings</span>
@@ -28,14 +28,19 @@
 <img id="btn-profile" alt="Client Profile" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-primary/20 object-cover shadow-sm hover:ring-4 hover:ring-primary/10 transition-all cursor-pointer shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvA8jiYE3XLfxn4zoHv6yGSqPmhfH6SJUNq-eww-gmysXbVVvS-kVHyB9j_fmBK7TEQqVZbftrasDbkl09jygOBEW56PWx_Pu6Z9oVxvFZP90ISPrRCxJhPiZMqkEYbUo72qibthSnqTDxCVixma9uRAy8mPcPDpzkjSig8-rw54vkqOkBY_twlToUUw4w8hc-o0fKg3xLyL3QKGp5Fd04ua9doAraSzEvB7vs82CJ9cyIoJbzsJQcKYn2Pw-cFHv-AxTQfiCn8xnq"/>
 
 <!-- Notifications Dropdown -->
-<div id="dropdown-notifications" class="hidden absolute top-14 right-14 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50">
+<div id="dropdown-notifications" class="hidden absolute top-14 right-14 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50">
     <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-        <span class="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Notifications</span>
-        <span class="text-[10px] text-primary cursor-pointer hover:underline">Mark all read</span>
+        <div>
+            <span class="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Notifications</span>
+            <span id="notif-count-label" class="text-[10px] text-slate-400 ml-2"></span>
+        </div>
+        <span id="notif-mark-read" class="text-[10px] text-primary cursor-pointer hover:underline hidden">Mark all read</span>
     </div>
-    <div class="p-6 text-center text-slate-500 dark:text-slate-400">
-        <span class="material-symbols-outlined text-4xl mb-2 opacity-50">notifications_paused</span>
-        <p class="text-xs">You're all caught up!</p>
+    <div id="notif-list" class="max-h-80 overflow-y-auto custom-scrollbar divide-y divide-slate-50 dark:divide-slate-800">
+        <div class="p-6 text-center text-slate-500 dark:text-slate-400">
+            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">notifications_paused</span>
+            <p class="text-xs">Loading...</p>
+        </div>
     </div>
 </div>
 
@@ -79,20 +84,137 @@
         const dropNotif = document.getElementById('dropdown-notifications');
         const btnProfile = document.getElementById('btn-profile');
         const dropProfile = document.getElementById('dropdown-profile');
+        const notifBadge = document.getElementById('notif-badge');
+        const notifList = document.getElementById('notif-list');
+        const notifMarkRead = document.getElementById('notif-mark-read');
+        const notifCountLabel = document.getElementById('notif-count-label');
 
         function closeDropdowns() {
             if(dropNotif) dropNotif.classList.add('hidden');
             if(dropProfile) dropProfile.classList.add('hidden');
         }
 
-        if(btnNotif && dropNotif) {
+        // ── Notifications ──────────────────────────────────────────────────────
+
+        let lastNotifId = 0;
+        let notifInterval = null;
+        let notifOpen = false;
+
+        async function fetchNotifications() {
+            try {
+                const res = await fetch('fetch_notifications.php?last_id=' + lastNotifId);
+                const data = await res.json();
+                if (data.status !== 'success') return;
+
+                const unread = data.unread || 0;
+                if (unread > 0) {
+                    notifBadge.textContent = unread > 99 ? '99+' : unread;
+                    notifBadge.classList.remove('hidden');
+                } else {
+                    notifBadge.classList.add('hidden');
+                }
+
+                if (data.notifications && data.notifications.length > 0) {
+                    lastNotifId = data.notifications[0].id;
+                    // Browser push notification
+                    if (document.hidden && data.notifications.length > 0 && 'Notification' in window && Notification.permission === 'granted') {
+                        const n = data.notifications[0];
+                        new Notification(n.title, { body: n.message || '', icon: '/favicon.ico', tag: 'opencode-notif' });
+                    }
+                }
+
+                if (notifOpen) renderNotifications(data);
+            } catch (e) {}
+        }
+
+        function renderNotifications(data) {
+            const notifs = data.notifications || [];
+            const unread = data.unread || 0;
+
+            notifCountLabel.textContent = unread > 0 ? '(' + unread + ' unread)' : '';
+            notifMarkRead.classList.toggle('hidden', unread === 0);
+
+            if (notifs.length === 0 && unread === 0) {
+                notifList.innerHTML = '<div class="p-6 text-center text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-4xl mb-2 opacity-50">notifications_paused</span><p class="text-xs">You\'re all caught up!</p></div>';
+                return;
+            }
+
+            notifList.innerHTML = notifs.map(function(n) {
+                var timeAgo = timeSince(n.created_at);
+                var cls = n.is_read == 0 ? 'bg-primary/5 dark:bg-primary/5' : '';
+                var icon = n.icon || 'notifications';
+                return '<div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ' + cls + '">' +
+                    '<div class="flex items-start gap-3">' +
+                        '<span class="material-symbols-outlined text-lg text-primary shrink-0 mt-0.5">' + icon + '</span>' +
+                        '<div class="min-w-0 flex-1">' +
+                            '<p class="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">' + escHtml(n.title) + '</p>' +
+                            (n.message ? '<p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">' + escHtml(n.message) + '</p>' : '') +
+                            '<p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest font-bold">' + timeAgo + '</p>' +
+                        '</div>' +
+                        (n.link ? '<a href="' + n.link + '" class="shrink-0 text-primary hover:text-primary/80"><span class="material-symbols-outlined text-sm">arrow_forward</span></a>' : '') +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function escHtml(str) {
+            var d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function timeSince(ts) {
+            var now = new Date();
+            var d = new Date(ts.replace(' ', 'T') + 'Z');
+            var diff = Math.floor((now - d) / 1000);
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            return Math.floor(diff / 86400) + 'd ago';
+        }
+
+        async function markAllRead() {
+            var fd = new FormData();
+            fd.append('csrf_token', document.querySelector('input[name="csrf_token"]')?.value || '');
+            fd.append('type', 'all');
+            await fetch('mark_notification_read.php', { method: 'POST', body: fd });
+            notifBadge.classList.add('hidden');
+            fetchNotifications();
+        }
+
+        if (btnNotif && dropNotif) {
             btnNotif.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isHidden = dropNotif.classList.contains('hidden');
                 closeDropdowns();
-                if (isHidden) dropNotif.classList.remove('hidden');
+                if (isHidden) {
+                    dropNotif.classList.remove('hidden');
+                    notifOpen = true;
+                    fetchNotifications();
+                } else {
+                    notifOpen = false;
+                }
             });
         }
+
+        if (notifMarkRead) {
+            notifMarkRead.addEventListener('click', markAllRead);
+        }
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
+        // Start polling
+        fetchNotifications();
+        notifInterval = setInterval(fetchNotifications, 30000);
+
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) fetchNotifications();
+        });
+
+        // ── Profile Dropdown ───────────────────────────────────────────────────
 
         if(btnProfile && dropProfile) {
             btnProfile.addEventListener('click', (e) => {
@@ -104,7 +226,10 @@
         }
 
         document.addEventListener('click', (e) => {
-            if(dropNotif && !dropNotif.contains(e.target)) dropNotif.classList.add('hidden');
+            if(dropNotif && !dropNotif.contains(e.target)) {
+                dropNotif.classList.add('hidden');
+                notifOpen = false;
+            }
             if(dropProfile && !dropProfile.contains(e.target)) dropProfile.classList.add('hidden');
         });
 

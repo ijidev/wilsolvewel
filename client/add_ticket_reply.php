@@ -37,6 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $attach_sql = $attachment ? "'$attachment'" : "NULL";
     $conn->query("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message, attachment) VALUES ($ticket_id, 'Client', $client_id, '$message', $attach_sql)");
     $new_id = $conn->insert_id;
+
+    // Notify all active admins
+    $subject_res = $conn->query("SELECT subject FROM tickets WHERE id = $ticket_id");
+    $t_subject = $subject_res ? $subject_res->fetch_assoc()['subject'] : 'Ticket';
+    $admin_ids = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
+    if ($admin_ids) {
+        while ($a = $admin_ids->fetch_assoc()) {
+            create_notification($conn, 'admin', $a['id'], 'Client replied to ticket', htmlspecialchars($t_subject), 'admin/tickets.php?ticket_id=' . $ticket_id, 'forum');
+        }
+    }
     
     echo json_encode([
         'status' => 'success', 

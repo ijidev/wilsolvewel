@@ -35,6 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || 
         if ($stmt) {
             $stmt->bind_param("iiiisss", $client_id, $project_id ?: null, $order_id ?: null, $dept_id ?: null, $subject, $priority, $description);
             if ($stmt->execute()) {
+                $ticket_id = $conn->insert_id;
+                $client_name = $_SESSION['client_name'] ?? 'A client';
+                $admin_ids_res = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
+                if ($admin_ids_res) {
+                    while ($admin = $admin_ids_res->fetch_assoc()) {
+                        create_notification($conn, 'admin', $admin['id'], 'New ticket from ' . $client_name, $subject, 'admin/tickets.php?ticket_id=' . $ticket_id, 'confirmation_number');
+                    }
+                }
                 if (isset($_POST['ajax_ticket'])) {
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'success', 'order_id' => $order_id]);

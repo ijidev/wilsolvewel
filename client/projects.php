@@ -259,6 +259,39 @@ if (isset($_GET['ajax_action'])) {
         exit;
     }
 
+    if ($_GET['ajax_action'] == 'propose_project') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token.']);
+            exit;
+        }
+        $title = trim($_POST['asset_model'] ?? '') . ' - ' . trim($_POST['serial_number'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        if (empty($title) || empty($description)) {
+            echo json_encode(['status' => 'error', 'message' => 'Asset model, serial number, and description are required.']);
+            exit;
+        }
+        $dept_id = get_auto_assigned_department($conn, 'project_proposal', $title . ' ' . $description);
+        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Planning', 0, NOW())");
+        $dept_id_val = $dept_id ?: null;
+        $stmt->bind_param("iiss", $client_id, $dept_id_val, $title, $description);
+        if ($stmt->execute()) {
+            $project_id = $stmt->insert_id;
+            $stmt->close();
+            log_audit($conn, 'Create', 'Projects', 'Client', $client_id, 'Proposed Project', ['title' => $title]);
+            $admin_ids = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
+            if ($admin_ids) {
+                while ($a = $admin_ids->fetch_assoc()) {
+                    create_notification($conn, 'admin', $a['id'], 'New project proposal', htmlspecialchars($title), 'admin/projects.php?id=' . $project_id, 'add_task');
+                }
+            }
+            echo json_encode(['status' => 'success', 'project_id' => $project_id]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'DB error: ' . $stmt->error]);
+            $stmt->close();
+        }
+        exit;
+    }
+
     if ($_GET['ajax_action'] == 'guide_dismiss') {
         if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid token']); exit;
@@ -280,7 +313,7 @@ $total_projects = count($projects);
 $page_title = 'WILSOVLEWEL | Client Projects';
 $page_h1 = 'System Ledger';
 $page_h1_sub = 'Project Tracking';
-$page_h1_action = '<a href="propose_project.php" class="bg-primary text-on-primary px-3 sm:px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0 ml-2"><span class="material-symbols-outlined text-sm">add_circle</span> <span class="hidden sm:inline">NEW PROPOSAL</span></a>';
+$page_h1_action = '<button onclick="document.getElementById(\'proposeModal\').classList.remove(\'hidden\')" class="bg-primary text-on-primary px-3 sm:px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0 ml-2"><span class="material-symbols-outlined text-sm">add_circle</span> <span class="hidden sm:inline">NEW PROPOSAL</span></button>';
 $page_styles = '
     .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
     .modal-overlay.open{display:flex}
@@ -393,6 +426,11 @@ ob_start();
 
     <div id="detailBackdrop" onclick="closeProjectDetail()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[300] opacity-0 pointer-events-none transition-all duration-500"></div>
     <div id="detailCanvas" class="fixed top-0 right-0 h-full w-full lg:w-[680px] bg-white z-[301] translate-x-full transition-transform duration-500 ease-in-out shadow-2xl flex flex-col">
+        <div class="absolute top-4 right-4 z-[302]">
+            <button onclick="closeProjectDetail()" class="w-10 h-10 rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-200 shadow-lg flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-white transition-all active:scale-90">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
         <div id="detailContent" class="flex-1 flex flex-col overflow-hidden bg-slate-50">
             <div id="projectHeader"></div>
             <div id="projectBody" class="flex-1 overflow-y-auto custom-scrollbar"></div>
@@ -405,6 +443,45 @@ $page_main_class = 'max-w-7xl mx-auto w-full px-4 sm:px-6 py-6';
 $page_class = 'flex flex-col min-h-screen';
 
 $page_after_main = '
+    <div id="proposeModal" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/50 hidden p-4" style="backdrop-filter:blur(4px)">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto custom-scrollbar p-6 sm:p-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-lg font-bold font-headline text-slate-900">Propose Project</h3>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Submit a new project for review</p>
+                </div>
+                <button onclick="closeProposeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors"><span class="material-symbols-outlined text-sm">close</span></button>
+            </div>
+            <form id="proposeForm" class="space-y-5">
+                ' . get_csrf_field() . '
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Machine Model</label>
+                        <input type="text" name="asset_model" required placeholder="e.g. Caterpillar D11" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary/20">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Serial / Asset Number</label>
+                        <input type="text" name="serial_number" required placeholder="e.g. SN-8829-XL" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary/20">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Issue Description</label>
+                    <textarea name="description" required rows="4" placeholder="Describe the mechanical anomalies, symptoms, or required service..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeProposeModal()" class="px-6 py-3 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200 transition-all">Cancel</button>
+                    <button type="submit" id="proposeSubmitBtn" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95">Submit Proposal</button>
+                </div>
+            </form>
+            <div id="proposeSuccess" class="hidden text-center py-8">
+                <span class="material-symbols-outlined text-5xl text-emerald-500 mb-3">check_circle</span>
+                <h4 class="text-lg font-bold font-headline text-slate-900">Proposal Submitted!</h4>
+                <p class="text-xs text-slate-500 mt-1">Ref: <span id="proposeRef" class="font-bold text-primary"></span></p>
+                <button onclick="closeProposeModal()" class="mt-6 px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest">Done</button>
+            </div>
+        </div>
+    </div>
+
     <div id="msChatModal" class="modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
@@ -433,6 +510,12 @@ $page_scripts = '
 <script>
     const clientId = ' . $client_id . ';
     let currentMsId = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectIdFromUrl = urlParams.get("id");
+    if (projectIdFromUrl) {
+        setTimeout(() => loadProject(projectIdFromUrl), 300);
+    }
 
     async function loadProject(id) {
         document.getElementById("detailCanvas").classList.remove("translate-x-full");
@@ -503,6 +586,41 @@ $page_scripts = '
         input.value = "";
         const res = await fetch("?ajax_action=add_milestone_report", { method: "POST", body: fd });
         await loadMsChats();
+    });
+
+    // ── Propose Project Modal ──────────────────────────────────────────────────
+    function closeProposeModal() {
+        document.getElementById("proposeModal").classList.add("hidden");
+        document.getElementById("proposeForm").reset();
+        document.getElementById("proposeForm").classList.remove("hidden");
+        document.getElementById("proposeSuccess").classList.add("hidden");
+    }
+
+    document.getElementById("proposeForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById("proposeSubmitBtn");
+        btn.disabled = true;
+        btn.innerHTML = \'<span class="material-symbols-outlined animate-spin text-sm">sync</span> Submitting...\';
+        const fd = new FormData(this);
+        fd.append("ajax_action", "propose_project");
+        try {
+            const res = await fetch("?ajax_action=propose_project", { method: "POST", body: fd });
+            const data = await res.json();
+            if (data.status === "success") {
+                document.getElementById("proposeForm").classList.add("hidden");
+                document.getElementById("proposeRef").textContent = "#PROJ-" + data.project_id;
+                document.getElementById("proposeSuccess").classList.remove("hidden");
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                alert(data.message || "Submission failed.");
+                btn.disabled = false;
+                btn.innerHTML = "Submit Proposal";
+            }
+        } catch(e) {
+            alert("Network error.");
+            btn.disabled = false;
+            btn.innerHTML = "Submit Proposal";
+        }
     });
 </script>
 ';

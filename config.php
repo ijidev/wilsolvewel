@@ -527,6 +527,20 @@ function get_db_connection() {
     )");
     ensure_column_exists($conn, 'audit_logs', 'details', "TEXT NULL");
 
+    // ── NOTIFICATIONS ─────────────────────────────────────────────────────────
+    $conn->query("CREATE TABLE IF NOT EXISTS notifications (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        recipient_type ENUM('admin','client') NOT NULL,
+        recipient_id INT(11) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        message TEXT,
+        link VARCHAR(500),
+        icon VARCHAR(50) DEFAULT 'notifications',
+        is_read TINYINT(1) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_recipient (recipient_type, recipient_id, is_read)
+    )");
+
     // ── ADMIN SESSIONS (for Login-As feature) ─────────────────────────────────
     $conn->query("CREATE TABLE IF NOT EXISTS admin_sessions (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -589,6 +603,15 @@ function set_setting($key, $value) {
     $stmt = $conn->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
     if ($stmt) {
         $stmt->bind_param("sss", $key, $value, $value);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+function create_notification($conn, $recipient_type, $recipient_id, $title, $message = '', $link = '', $icon = 'notifications') {
+    $stmt = $conn->prepare("INSERT INTO notifications (recipient_type, recipient_id, title, message, link, icon) VALUES (?, ?, ?, ?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("sissss", $recipient_type, $recipient_id, $title, $message, $link, $icon);
         $stmt->execute();
         $stmt->close();
     }

@@ -784,16 +784,70 @@ if (isset($_GET['ajax_action'])) {
     }
 }
 
+// ── Filters ────────────────────────────────────────────────────────────────────
+$filter_search = trim($_GET['search'] ?? '');
+$filter_client = (int)($_GET['client'] ?? 0);
+$filter_dept = (int)($_GET['dept'] ?? 0);
+$filter_budget_min = (float)($_GET['budget_min'] ?? 0);
+$filter_budget_max = (float)($_GET['budget_max'] ?? 0);
+
+$where = [];
+$params = [];
+$types = '';
+
+if ($filter_search) {
+    $where[] = "(p.name LIKE ? OR c.name LIKE ?)";
+    $search_term = '%' . $filter_search . '%';
+    $params[] = $search_term;
+    $params[] = $search_term;
+    $types .= 'ss';
+}
+if ($filter_client > 0) {
+    $where[] = "p.client_id = ?";
+    $params[] = $filter_client;
+    $types .= 'i';
+}
+if ($filter_dept > 0) {
+    $where[] = "p.department_id = ?";
+    $params[] = $filter_dept;
+    $types .= 'i';
+}
+if ($filter_budget_min > 0) {
+    $where[] = "p.budget >= ?";
+    $params[] = $filter_budget_min;
+    $types .= 'd';
+}
+if ($filter_budget_max > 0) {
+    $where[] = "p.budget <= ?";
+    $params[] = $filter_budget_max;
+    $types .= 'd';
+}
+
+$where_clause = '';
+if (!empty($where)) {
+    $where_clause = 'WHERE ' . implode(' AND ', $where);
+}
+
 // Fetch Projects with Milestone Progress
 $projects = [];
-$res = $conn->query("
+$sql = "
     SELECT p.*, c.name as client_name,
            (SELECT COUNT(*) FROM project_milestones WHERE project_id = p.id) as total_ms,
            (SELECT COUNT(*) FROM project_milestones WHERE project_id = p.id AND status = 'Completed') as completed_ms
     FROM projects p 
     JOIN clients c ON p.client_id = c.id 
+    $where_clause
     ORDER BY p.created_at DESC
-");
+";
+if (!empty($params)) {
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $stmt->close();
+} else {
+    $res = $conn->query($sql);
+}
 while ($row = $res->fetch_assoc()) {
     $row['progress'] = $row['total_ms'] > 0 ? round(($row['completed_ms'] / $row['total_ms']) * 100) : 0;
     $projects[] = $row;
@@ -909,6 +963,46 @@ $guide_dismissed = get_setting('guide_dismissed_admin_' . $admin_id, '');
         </div>
         <!-- Master List -->
         <div class="flex-1 bg-white overflow-y-auto custom-scrollbar flex flex-col min-w-0">
+            <!-- Filter Bar -->
+            <form method="GET" class="p-4 pb-0 flex flex-wrap items-end gap-3 border-b border-slate-100 bg-slate-50/50">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Search</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                        <input type="text" name="search" value="<?= htmlspecialchars($filter_search) ?>" placeholder="Project or client name..." class="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Client</label>
+                    <select name="client" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20">
+                        <option value="0">All Clients</option>
+                        <?php foreach ($clients as $c): ?>
+                            <option value="<?= $c['id'] ?>" <?= $filter_client === $c['id'] ? 'selected' : '' ?>><?= htmlspecialchars($c['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Department</label>
+                    <select name="dept" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20">
+                        <option value="0">All Depts</option>
+                        <?php foreach ($departments_list as $d): ?>
+                            <option value="<?= $d['id'] ?>" <?= $filter_dept === $d['id'] ? 'selected' : '' ?>><?= htmlspecialchars($d['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Budget Min</label>
+                    <input type="number" step="0.01" name="budget_min" value="<?= $filter_budget_min ?: '' ?>" placeholder="$0" class="w-24 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary/20">
+                </div>
+                <div>
+                    <label class="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Budget Max</label>
+                    <input type="number" step="0.01" name="budget_max" value="<?= $filter_budget_max ?: '' ?>" placeholder="$999k" class="w-24 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary/20">
+                </div>
+                <div class="flex items-center gap-2 pb-0.5">
+                    <button type="submit" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-primary/90 transition-all">Filter</button>
+                    <a href="?" class="px-4 py-2 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200 transition-all">Clear</a>
+                </div>
+            </form>
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                 <?php if (empty($projects)): ?>
                     <div class="text-center py-10"><span class="material-symbols-outlined text-4xl text-slate-200">folder_off</span><p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No Projects Found</p></div>

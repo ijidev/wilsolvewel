@@ -62,7 +62,7 @@ ob_start();
 <div class="flex flex-col min-h-screen">
     <div class="w-full relative z-10">
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-8">
             <div onclick="location.href='projects.php'" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between h-32 group hover:border-primary/30 transition-all cursor-pointer">
                 <div class="flex justify-between items-start">
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">ACTIVE PROJECTS</span>
@@ -106,7 +106,7 @@ ob_start();
                     if ($projects_res->num_rows > 0):
                         while($p = $projects_res->fetch_assoc()):
                     ?>
-                    <div onclick="location.href='project-details.php?id=<?= $p['id'] ?>'" class="bg-white p-5 rounded-[2rem] border border-slate-100 hover:border-primary/20 hover:bg-slate-50/50 transition-all cursor-pointer group flex items-center gap-6">
+                    <div onclick="location.href='projects.php?id=<?= $p['id'] ?>'" class="bg-white p-5 rounded-[2rem] border border-slate-100 hover:border-primary/20 hover:bg-slate-50/50 transition-all cursor-pointer group flex items-center gap-6">
                         <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 group-hover:border-primary/20 transition-all shrink-0">
                             <span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">analytics</span>
                         </div>

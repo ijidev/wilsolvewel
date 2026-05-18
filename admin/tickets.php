@@ -86,6 +86,13 @@ if (isset($_GET['ajax_action'])) {
         $stmt2->execute();
         $stmt2->close();
         
+        // Notify client
+        $ticket_info = safe_query($conn, "SELECT client_id, subject FROM tickets WHERE id = ?", "i", [$ticket_id]);
+        if ($ticket_info) {
+            $t = $ticket_info->fetch_assoc();
+            create_notification($conn, 'client', $t['client_id'], 'New reply on your ticket', htmlspecialchars($t['subject']), 'tickets.php', 'forum');
+        }
+        
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Replied to ticket ID: $ticket_id" . ($attachment ? " with attachment" : ""));
         
         $stmt3 = $conn->prepare("SELECT tr.*, a.name as admin_name FROM ticket_replies tr JOIN admins a ON tr.sender_id = a.id WHERE tr.id = ?");

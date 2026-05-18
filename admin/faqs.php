@@ -137,7 +137,7 @@ if (isset($_GET['edit_cat'])) {
     </header>
 
     <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-        <div class="max-w-5xl mx-auto space-y-8">
+        <div class="max-w-7xl mx-auto space-y-6">
 
             <!-- Toolbar -->
             <div class="flex items-center justify-between gap-4">
@@ -155,103 +155,118 @@ if (isset($_GET['edit_cat'])) {
                 </div>
             </div>
 
-            <!-- FAQs Table -->
-            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                <?php if (empty($faqs)): ?>
-                <div class="text-center py-16">
-                    <span class="material-symbols-outlined text-5xl text-slate-300 mb-3">quiz</span>
-                    <p class="text-xs text-slate-400 font-bold">No FAQs yet. Click "Add FAQ" to get started.</p>
+            <!-- Mobile Toggle (hidden on lg+) -->
+            <div class="flex lg:hidden gap-2 bg-white rounded-2xl p-1 border border-slate-100 shadow-sm">
+                <button onclick="switchFaqTab('faqs')" id="faq-tab-faqs-btn" class="flex-1 px-5 py-3 rounded-xl text-xs font-bold transition-all bg-slate-900 text-white shadow-sm">FAQs</button>
+                <button onclick="switchFaqTab('categories')" id="faq-tab-cats-btn" class="flex-1 px-5 py-3 rounded-xl text-xs font-bold transition-all text-slate-500 hover:text-slate-900">Categories</button>
+            </div>
+
+            <!-- 70/30 Grid -->
+            <div class="lg:grid lg:grid-cols-[7fr_3fr] lg:gap-6">
+
+                <!-- FAQs Panel -->
+                <div class="faq-panel max-lg:block lg:block">
+                    <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                        <?php if (empty($faqs)): ?>
+                        <div class="text-center py-16">
+                            <span class="material-symbols-outlined text-5xl text-slate-300 mb-3">quiz</span>
+                            <p class="text-xs text-slate-400 font-bold">No FAQs yet. Click "Add FAQ" to get started.</p>
+                        </div>
+                        <?php else: ?>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-slate-100">
+                                        <th class="text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6 py-4">Question</th>
+                                        <th class="text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6 py-4">Category</th>
+                                        <th class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 py-4">Order</th>
+                                        <th class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 py-4">Status</th>
+                                        <th class="text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6 py-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($faqs as $f): ?>
+                                    <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <p class="text-sm font-bold text-slate-900"><?php echo htmlspecialchars($f['question']); ?></p>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 rounded-lg text-[10px] font-bold text-primary uppercase tracking-widest">
+                                                <span class="material-symbols-outlined text-[12px]"><?php echo htmlspecialchars($f['category_icon'] ?? 'help'); ?></span>
+                                                <?php echo htmlspecialchars($f['category_name']); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 text-center text-xs font-bold text-slate-500"><?php echo (int)$f['sort_order']; ?></td>
+                                        <td class="px-4 py-4 text-center">
+                                            <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest <?php echo $f['status']=='Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'; ?>"><?php echo $f['status']; ?></span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <button onclick='openEditFaq(<?php echo json_encode($f); ?>)' class="p-2 text-slate-300 hover:text-primary transition-colors">
+                                                    <span class="material-symbols-outlined text-sm">edit</span>
+                                                </button>
+                                                <form method="POST" class="inline" onsubmit="return confirm('Delete this FAQ?')">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                                                    <input type="hidden" name="delete_faq" value="<?php echo $f['id']; ?>">
+                                                    <button type="submit" class="p-2 text-slate-300 hover:text-red-500 transition-colors">
+                                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-                <?php else: ?>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-slate-100">
-                                <th class="text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6 py-4">Question</th>
-                                <th class="text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6 py-4">Category</th>
-                                <th class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 py-4">Order</th>
-                                <th class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 py-4">Status</th>
-                                <th class="text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6 py-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($faqs as $f): ?>
-                            <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <p class="text-sm font-bold text-slate-900"><?php echo htmlspecialchars($f['question']); ?></p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 rounded-lg text-[10px] font-bold text-primary uppercase tracking-widest">
-                                        <span class="material-symbols-outlined text-[12px]"><?php echo htmlspecialchars($f['category_icon'] ?? 'help'); ?></span>
-                                        <?php echo htmlspecialchars($f['category_name']); ?>
-                                    </span>
-                                </td>
-                                <td class="px-4 py-4 text-center text-xs font-bold text-slate-500"><?php echo (int)$f['sort_order']; ?></td>
-                                <td class="px-4 py-4 text-center">
-                                    <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest <?php echo $f['status']=='Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'; ?>"><?php echo $f['status']; ?></span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-1">
-                                        <button onclick='openEditFaq(<?php echo json_encode($f); ?>)' class="p-2 text-slate-300 hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-sm">edit</span>
+
+                <!-- Categories Panel -->
+                <div class="cat-panel max-lg:hidden lg:block">
+                    <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden lg:sticky lg:top-6">
+                        <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                            <div>
+                                <h2 class="text-base font-bold font-headline text-slate-900">Categories</h2>
+                                <p class="text-[10px] text-slate-500"><?php echo count($categories); ?> categories</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <?php if (empty($categories)): ?>
+                            <p class="text-center py-6 text-xs text-slate-400 italic">No categories yet.</p>
+                            <?php else: ?>
+                            <div class="flex flex-wrap gap-3">
+                                <?php foreach ($categories as $c): ?>
+                                <div class="group flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-100 hover:border-primary/30 transition-all">
+                                    <span class="material-symbols-outlined text-primary text-sm"><?php echo htmlspecialchars($c['icon']); ?></span>
+                                    <span class="text-xs font-bold text-slate-700"><?php echo htmlspecialchars($c['name']); ?></span>
+                                    <span class="text-[9px] text-slate-400 font-bold">/<?php echo htmlspecialchars($c['slug']); ?></span>
+                                    <div class="flex items-center gap-0.5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button onclick='openEditCat(<?php echo json_encode($c); ?>)' class="p-1 text-slate-300 hover:text-primary transition-colors">
+                                            <span class="material-symbols-outlined text-[14px]">edit</span>
                                         </button>
-                                        <form method="POST" class="inline" onsubmit="return confirm('Delete this FAQ?')">
+                                        <form method="POST" class="inline" onsubmit="return confirm('Delete this category and all its FAQs?')">
                                             <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
-                                            <input type="hidden" name="delete_faq" value="<?php echo $f['id']; ?>">
-                                            <button type="submit" class="p-2 text-slate-300 hover:text-red-500 transition-colors">
-                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                            <input type="hidden" name="delete_category" value="<?php echo $c['id']; ?>">
+                                            <button type="submit" class="p-1 text-slate-300 hover:text-red-500 transition-colors">
+                                                <span class="material-symbols-outlined text-[14px]">delete</span>
                                             </button>
                                         </form>
                                     </div>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <!-- Categories Section -->
-            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-base font-bold font-headline text-slate-900">Categories</h2>
-                        <p class="text-[10px] text-slate-500"><?php echo count($categories); ?> categories</p>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <?php if (empty($categories)): ?>
-                    <p class="text-center py-6 text-xs text-slate-400 italic">No categories yet.</p>
-                    <?php else: ?>
-                    <div class="flex flex-wrap gap-3">
-                        <?php foreach ($categories as $c): ?>
-                        <div class="group flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-100 hover:border-primary/30 transition-all">
-                            <span class="material-symbols-outlined text-primary text-sm"><?php echo htmlspecialchars($c['icon']); ?></span>
-                            <span class="text-xs font-bold text-slate-700"><?php echo htmlspecialchars($c['name']); ?></span>
-                            <span class="text-[9px] text-slate-400 font-bold">/<?php echo htmlspecialchars($c['slug']); ?></span>
-                            <div class="flex items-center gap-0.5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick='openEditCat(<?php echo json_encode($c); ?>)' class="p-1 text-slate-300 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <?php endif; ?>
+                            <div class="mt-4">
+                                <button onclick="openModal('categoryModal')" class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-widest hover:underline">
+                                    <span class="material-symbols-outlined text-sm">add</span> Add Category
                                 </button>
-                                <form method="POST" class="inline" onsubmit="return confirm('Delete this category and all its FAQs?')">
-                                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
-                                    <input type="hidden" name="delete_category" value="<?php echo $c['id']; ?>">
-                                    <button type="submit" class="p-1 text-slate-300 hover:text-red-500 transition-colors">
-                                        <span class="material-symbols-outlined text-[14px]">delete</span>
-                                    </button>
-                                </form>
                             </div>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <?php endif; ?>
-                    <div class="mt-4">
-                        <button onclick="openModal('categoryModal')" class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-widest hover:underline">
-                            <span class="material-symbols-outlined text-sm">add</span> Add Category
-                        </button>
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -449,6 +464,29 @@ function openEditCat(c) {
 document.querySelectorAll('.modal-bg').forEach(function(el) {
     el.addEventListener('click', function() { this.parentElement.classList.add('hidden'); });
 });
+
+// Mobile FAQ/Categories toggle
+function switchFaqTab(tab) {
+    var faqPanel = document.querySelector('.faq-panel');
+    var catPanel = document.querySelector('.cat-panel');
+    var faqBtn = document.getElementById('faq-tab-faqs-btn');
+    var catBtn = document.getElementById('faq-tab-cats-btn');
+    if (tab === 'faqs') {
+        faqPanel.classList.remove('max-lg:hidden');
+        faqPanel.classList.add('max-lg:block');
+        catPanel.classList.remove('max-lg:block');
+        catPanel.classList.add('max-lg:hidden');
+        faqBtn.className = 'flex-1 px-5 py-3 rounded-xl text-xs font-bold transition-all bg-slate-900 text-white shadow-sm';
+        catBtn.className = 'flex-1 px-5 py-3 rounded-xl text-xs font-bold transition-all text-slate-500 hover:text-slate-900';
+    } else {
+        catPanel.classList.remove('max-lg:hidden');
+        catPanel.classList.add('max-lg:block');
+        faqPanel.classList.remove('max-lg:block');
+        faqPanel.classList.add('max-lg:hidden');
+        catBtn.className = 'flex-1 px-5 py-3 rounded-xl text-xs font-bold transition-all bg-slate-900 text-white shadow-sm';
+        faqBtn.className = 'flex-1 px-5 py-3 rounded-xl text-xs font-bold transition-all text-slate-500 hover:text-slate-900';
+    }
+}
 </script>
 </body>
 </html>
