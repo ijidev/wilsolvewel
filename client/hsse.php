@@ -262,20 +262,6 @@ ob_start();
 
     <!-- Sidebar -->
     <div class="lg:col-span-4 space-y-6">
-        <!-- Emergency Hub -->
-        <div class="bg-slate-900 text-white p-6 rounded-2xl relative overflow-hidden shadow-xl">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
-            <div class="relative z-10">
-                <span class="material-symbols-outlined text-primary text-3xl mb-3">emergency</span>
-                <h3 class="font-headline font-black text-xl mb-2">Emergency Hub</h3>
-                <p class="text-xs text-slate-400 mb-6 leading-relaxed">Direct connection to terminal emergency services and automated containment protocols.</p>
-                <button class="w-full py-3.5 border-2 border-red-500/50 text-red-500 font-headline font-black text-xs uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-lg">emergency</span>
-                    INITIATE SIGNAL
-                </button>
-            </div>
-        </div>
-
         <!-- Upcoming Audits -->
         <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
             <h4 class="font-headline text-[9px] font-black tracking-widest text-primary mb-4 uppercase flex items-center gap-1.5">Upcoming Audits & Talks

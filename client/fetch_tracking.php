@@ -33,7 +33,7 @@ try {
 
     if ($verify_res && $verify_res->num_rows > 0) {
         $history_res = $conn->query("
-            SELECT status, location, note as notes, created_at 
+            SELECT status, location, notes, created_at 
             FROM procurement_history 
             WHERE order_id = $order_id 
             ORDER BY created_at DESC

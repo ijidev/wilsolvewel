@@ -584,7 +584,7 @@ if (isset($_GET['ajax_action'])) {
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] opacity-60 mb-4">REF: #PRJ-<?php echo $proj['id']; ?></p>
 
                 <!-- Inline metadata grid -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
                     <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100">
                         <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Client</p>
                         <p class="text-[11px] font-bold text-primary truncate"><?php echo htmlspecialchars($proj['client_name']); ?></p>
@@ -594,8 +594,12 @@ if (isset($_GET['ajax_action'])) {
                         <p class="text-[11px] font-bold text-slate-700 truncate"><?php echo $proj['dept_name'] ?: '—'; ?></p>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100">
+                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Budget</p>
+                        <p class="text-[11px] font-bold text-emerald-600"><?php echo !empty($proj['budget']) ? '$' . number_format($proj['budget'], 2) : '—'; ?></p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100">
                         <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Start</p>
-                        <p class="text-[11px] font-bold text-slate-700"><?php echo date('d M Y', strtotime($proj['start_date'])); ?></p>
+                        <p class="text-[11px] font-bold text-slate-700"><?php echo $proj['start_date'] ? date('d M Y', strtotime($proj['start_date'])) : 'TBD'; ?></p>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100">
                         <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">End</p>
@@ -769,6 +773,15 @@ if (isset($_GET['ajax_action'])) {
         ]);
         exit;
     }
+
+    if ($_GET['ajax_action'] == 'guide_dismiss') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid token']); exit;
+        }
+        set_setting('guide_dismissed_admin_' . $admin_id, '1');
+        echo json_encode(['status' => 'success']);
+        exit;
+    }
 }
 
 // Fetch Projects with Milestone Progress
@@ -800,6 +813,7 @@ $res = $conn->query("SELECT id, name FROM admins ORDER BY name ASC");
 while ($row = $res->fetch_assoc()) $admins_all[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
+$guide_dismissed = get_setting('guide_dismissed_admin_' . $admin_id, '');
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -844,6 +858,55 @@ $permissions = get_admin_permissions($admin_id);
     </header>
 
     <div class="flex-1 flex overflow-hidden">
+        <!-- Workflow Guide -->
+        <div class="hidden lg:block absolute bottom-6 right-6 z-50">
+<button onclick="document.getElementById('workflowGuide').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-orange-500 border border-orange-400 shadow-lg flex items-center justify-center text-white hover:bg-orange-600 hover:border-orange-500 transition-all" title="Workflow Guide">
+            <span class="material-symbols-outlined text-lg">help</span>
+        </button>
+        </div>
+        <div id="workflowGuide" class="hidden fixed inset-0 z-[400] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" onclick="if(event.target===this)document.getElementById('workflowGuide').classList.add('hidden')">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto custom-scrollbar p-8" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold font-headline text-slate-900">Project Workflow Guide</h3>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Admin Operations</p>
+                    </div>
+                    <button onclick="document.getElementById('workflowGuide').classList.add('hidden')" class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200"><span class="material-symbols-outlined text-sm">close</span></button>
+                    <?= get_csrf_field() ?>
+                </div>
+                <div class="space-y-5">
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Planning Phase</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Create milestones for the project. Each milestone represents a major deliverable or phase. Add tasks (sub-milestones) under each milestone and assign them to individuals or departments. Milestones can only be created and edited during this phase.</p></div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">2</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Client Review</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">The client reviews all milestones and approves or rejects them. Use milestone chat logs to discuss any questions or changes. All milestones must be approved before proceeding.</p></div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">3</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Activation</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Once all milestones are approved, the <strong>Activate</strong> button unlocks. Clicking it moves the project to <strong>Active (Development)</strong> phase and locks the milestone roadmap. No further milestone changes are allowed.</p></div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">4</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Execution</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Work through milestones — start them (In Progress), then mark them complete when finished. Use milestone chat logs for daily reports and client communication. Use the hold/resume toggle to pause work if needed.</p></div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">5</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When all milestones are marked complete, the project auto-transitions to <strong>Completed</strong> status. The project is now closed.</p></div>
+                    </div>
+                </div>
+                <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer group text-xs text-slate-400 hover:text-slate-600 transition-colors">
+                        <input type="checkbox" id="dontShowAgain" class="rounded border-slate-300 text-primary focus:ring-primary/20" />
+                        <span>Don't show this again</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <button onclick="dismissGuide(document.getElementById('dontShowAgain').checked)" class="px-5 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all">Got It</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Master List -->
         <div class="flex-1 bg-white overflow-y-auto custom-scrollbar flex flex-col min-w-0">
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
@@ -860,7 +923,10 @@ $permissions = get_admin_permissions($admin_id);
                             </div>
                         </div>
                         <h3 class="font-bold text-slate-900 leading-tight mb-1 pr-4"><?php echo htmlspecialchars($p['name']); ?></h3>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3"><?php echo htmlspecialchars($p['client_name']); ?></p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"><?php echo htmlspecialchars($p['client_name']); ?></p>
+                        <?php if (!empty($p['budget'])): ?>
+                        <p class="text-[11px] font-bold text-emerald-600 mt-1">$<?php echo number_format($p['budget'], 2); ?></p>
+                        <?php endif; ?>
                         
                         <div class="space-y-1.5">
                             <div class="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-slate-400">
@@ -1078,7 +1144,21 @@ window.onload = () => {
     if (id) loadProject(id);
     
     initMilestoneLogic();
+
+    <?php if (!$guide_dismissed): ?>
+    setTimeout(() => {
+        document.getElementById('workflowGuide').classList.remove('hidden');
+    }, 500);
+    <?php endif; ?>
 };
+
+function dismissGuide(permanent) {
+    document.getElementById('workflowGuide').classList.add('hidden');
+    if (permanent) {
+        var token = document.querySelector('#workflowGuide input[name=\'csrf_token\']')?.value || CSRF_TOKEN;
+        fetch('?ajax_action=guide_dismiss', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: 'csrf_token=' + token });
+    }
+}
 
 async function toggleProjectHold(id, current) {
     const fd = new FormData();

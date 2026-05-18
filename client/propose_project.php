@@ -24,17 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Auto-Routing Logic
         $dept_id = get_auto_assigned_department($conn, 'project_proposal', $title . ' ' . $description);
 
-        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Diagnostic', 0, NOW())");
+        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Planning', 0, NOW())");
         $dept_id_val = $dept_id ?: null;
         $stmt->bind_param("iiss", $client_id, $dept_id_val, $title, $description);
         if ($stmt->execute()) {
             $project_id = $stmt->insert_id;
-            // Optionally create an audit log
-            $stmt2 = $conn->prepare("INSERT INTO audit_logs (action_type, module, actor_type, actor_id, description, details) VALUES ('Create', 'Projects', 'Client', ?, 'Proposed Project', ?)");
-            $details = "New project proposal: $title";
-            $stmt2->bind_param("is", $client_id, $details);
-            $stmt2->execute();
-            $stmt2->close();
+            log_audit($conn, 'Create', 'Projects', 'Client', $client_id, 'Proposed Project', ['title' => $title]);
 
             $message = "Project proposal submitted successfully. Ref: #PROJ-$project_id";
         } else {

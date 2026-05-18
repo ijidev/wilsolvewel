@@ -9,7 +9,7 @@ if (isset($_GET['ajax_action'])) {
 
     if ($_GET['ajax_action'] == 'get_history') {
         $id = (int)$_GET['id'];
-        $res = $conn->query("SELECT h.*, a.name as admin_name FROM procurement_history h LEFT JOIN admins a ON h.updated_by = a.id WHERE h.order_id = $id ORDER BY h.created_at DESC");
+        $res = $conn->query("SELECT h.*, a.name as admin_name FROM procurement_history h LEFT JOIN admins a ON h.admin_id = a.id WHERE h.order_id = $id ORDER BY h.created_at DESC");
         $rows = [];
         while ($r = $res->fetch_assoc()) $rows[] = $r;
         echo json_encode($rows);
@@ -23,7 +23,7 @@ if (isset($_GET['ajax_action'])) {
         $tracking_id = $conn->real_escape_string($_POST['tracking_id']);
         $note = $conn->real_escape_string($_POST['note']);
 
-        $conn->query("INSERT INTO procurement_history (order_id, updated_by, status, location, note) 
+        $conn->query("INSERT INTO procurement_history (order_id, admin_id, status, location, notes) 
                       VALUES ($order_id, $admin_id, '$status', '$location', '$note')");
         
         $conn->query("UPDATE procurement_orders SET 

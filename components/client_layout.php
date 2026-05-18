@@ -94,7 +94,7 @@ $page_back_link = $page_back_link ?? 'javascript:history.back()';
     </header>
     <?php endif; ?>
 
-    <main class="relative z-10 <?= $page_main_class ?>">
+    <main class="relative <?= $page_main_class ?>">
         <?= $page_content ?>
     </main>
 

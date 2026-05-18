@@ -33,8 +33,20 @@ $open_tickets_count = 0;
 $t_stats = safe_query($conn, "SELECT COUNT(*) as count FROM tickets WHERE client_id = ? AND status != 'Resolved'", "i", [$client_id]);
 if ($t_stats) $open_tickets_count = $t_stats->fetch_assoc()['count'];
 
-$safe_days = get_setting('hsse_safe_days', 412);
-$compliance_index = get_setting('hsse_compliance_index', 98.4);
+// Safe Days: days since last High severity incident
+$last_incident = safe_query($conn, "SELECT created_at FROM hsse_observations WHERE severity = 'High' ORDER BY created_at DESC LIMIT 1");
+$safe_days = 0;
+if ($last_incident && $last_incident->num_rows > 0) {
+    $last_date = new DateTime($last_incident->fetch_assoc()['created_at']);
+    $safe_days = (new DateTime())->diff($last_date)->days;
+} else {
+    $safe_days = (int)get_setting('hsse_base_safe_days', 412);
+}
+
+// Compliance Index: resolved / total observations
+$total_obs_all = safe_query($conn, "SELECT COUNT(*) as c FROM hsse_observations")->fetch_assoc()['c'];
+$resolved_obs_all = safe_query($conn, "SELECT COUNT(*) as c FROM hsse_observations WHERE status = 'Resolved'")->fetch_assoc()['c'];
+$compliance_index = $total_obs_all > 0 ? round(($resolved_obs_all / $total_obs_all) * 100, 1) : 100.0;
 
 $reports_res = safe_query($conn, "SELECT pr.*, p.name as project_name FROM project_reports pr JOIN projects p ON pr.project_id = p.id WHERE p.client_id = ? ORDER BY pr.created_at DESC LIMIT 3", "i", [$client_id]);
 

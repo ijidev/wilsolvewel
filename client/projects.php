@@ -56,11 +56,14 @@ if (isset($_GET['ajax_action'])) {
                     <span class="text-[10px] font-bold text-slate-400">#PRJ-<?php echo str_pad($id, 4, '0', STR_PAD_LEFT); ?></span>
                 </div>
                 <h2 class="text-2xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($proj['name']); ?></h2>
+                <?php if (!empty($proj['status'])): ?>
+                    <span class="inline-block px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $proj['status']=='Completed'?'bg-emerald-50 text-emerald-600':($proj['status']=='Planning'?'bg-amber-50 text-amber-600':($proj['status']=='On Hold'?'bg-red-50 text-red-500':'bg-blue-50 text-blue-600')); ?>"><?php echo htmlspecialchars($proj['status']); ?></span>
+                <?php endif; ?>
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4">
                     <div class="flex items-center gap-1.5 text-xs text-slate-500">
                         <span class="material-symbols-outlined" style="font-size:14px">schedule</span>
-                        <?php echo date('M d, Y', strtotime($proj['start_date'])); ?> 
-                        <?php if($proj['end_date']) echo ' - ' . date('M d, Y', strtotime($proj['end_date'])); ?>
+                        <?php echo $proj['start_date'] ? date('M d, Y', strtotime($proj['start_date'])) : 'TBD'; ?> 
+                        <?php if(!empty($proj['end_date'])) echo ' - ' . date('M d, Y', strtotime($proj['end_date'])); ?>
                     </div>
                     <?php if ($proj['dept_name']): ?>
                         <div class="flex items-center gap-1.5 text-xs text-slate-500">
@@ -68,7 +71,20 @@ if (isset($_GET['ajax_action'])) {
                             <?php echo htmlspecialchars($proj['dept_name']); ?>
                         </div>
                     <?php endif; ?>
+                    <?php if (!empty($proj['budget'])): ?>
+                        <div class="flex items-center gap-1.5 text-xs text-emerald-600 font-bold">
+                            <span class="material-symbols-outlined" style="font-size:14px">account_balance</span>
+                            $<?php echo number_format($proj['budget'], 2); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
+
+                <?php if (!empty($proj['description'])): ?>
+                    <div class="mt-4 pt-4 border-t border-slate-50">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Description</p>
+                        <p class="text-sm text-slate-600 leading-relaxed"><?php echo nl2br(htmlspecialchars($proj['description'])); ?></p>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Assets (Read Only) -->
                 <?php if (count($assigned_assets) > 0): ?>
@@ -242,7 +258,18 @@ if (isset($_GET['ajax_action'])) {
         echo json_encode(['status' => 'success']);
         exit;
     }
+
+    if ($_GET['ajax_action'] == 'guide_dismiss') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid token']); exit;
+        }
+        set_setting('guide_dismissed_client_' . $client_id, '1');
+        echo json_encode(['status' => 'success']);
+        exit;
+    }
 }
+
+$guide_dismissed = get_setting('guide_dismissed_client_' . $client_id, '');
 
 // Fetch all projects for the list view
 $projects_list_res = safe_query($conn, "SELECT * FROM projects WHERE client_id = ? ORDER BY created_at DESC", "i", [$client_id]);
@@ -261,49 +288,112 @@ $page_styles = '
 
 ob_start();
 ?>
-<div class="flex-1 flex overflow-hidden h-[calc(100vh-8rem)]">
-    <div class="w-full lg:w-[400px] bg-white border-r border-slate-100 flex flex-col shrink-0">
+<div class="flex flex-col h-full">
+    <!-- Workflow Guide -->
+    <div class="hidden lg:block absolute bottom-6 right-6 z-50">
+        <button onclick="document.getElementById('clientWorkflowGuide').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-orange-500 border border-orange-400 shadow-lg flex items-center justify-center text-white hover:bg-orange-600 hover:border-orange-500 transition-all" title="Workflow Guide">
+            <span class="material-symbols-outlined text-lg">help</span>
+        </button>
+    </div>
+    <div id="clientWorkflowGuide" class="hidden fixed inset-0 z-[400] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" onclick="if(event.target===this)document.getElementById('clientWorkflowGuide').classList.add('hidden')">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto custom-scrollbar p-8" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-lg font-bold font-headline text-slate-900">Project Workflow Guide</h3>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Client Portal</p>
+                </div>
+                <button onclick="document.getElementById('clientWorkflowGuide').classList.add('hidden')" class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200"><span class="material-symbols-outlined text-sm">close</span></button>
+                <?= get_csrf_field() ?>
+            </div>
+            <div class="space-y-5">
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Project Proposed</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters <strong>Planning</strong> phase where milestones are defined.</p></div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">2</div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Review Milestones</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Review the milestones created by the project team. Each milestone outlines a key deliverable or phase of work. Use the milestone discussion chat to ask questions or request changes.</p></div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">3</div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Approve or Reject</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Approve milestones you agree with or reject those needing changes. The project can only proceed to the <strong>Development</strong> phase once all milestones are approved.</p></div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">4</div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Track Progress</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Once the project is active, monitor milestone progress in real time. Each milestone shows its status — Pending, In Progress, or Completed.</p></div>
+                </div>
+                <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">5</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Communicate</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use milestone discussion chats to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
+                    </div>
+                </div>
+                <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer group text-xs text-slate-400 hover:text-slate-600 transition-colors">
+                        <input type="checkbox" id="dontShowAgain" class="rounded border-slate-300 text-primary focus:ring-primary/20" />
+                        <span>Don't show this again</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <button onclick="dismissGuide(document.getElementById('dontShowAgain').checked)" class="px-5 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all">Got It</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function dismissGuide(permanent) {
+        document.getElementById('clientWorkflowGuide').classList.add('hidden');
+        if (permanent) {
+            var fd = new FormData();
+            fd.append('csrf_token', document.querySelector('#clientWorkflowGuide input[name=\'csrf_token\']')?.value || '<?= generate_csrf_token() ?>');
+            fetch('?ajax_action=guide_dismiss', { method: 'POST', body: fd });
+        }
+    }
+
+    <?php if (!$guide_dismissed): ?>
+    setTimeout(function() {
+        var el = document.getElementById('clientWorkflowGuide');
+        if (el) el.classList.remove('hidden');
+    }, 500);
+    <?php endif; ?>
+    </script>
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
         <div class="p-4 border-b border-slate-100 bg-slate-50/50">
             <div class="relative">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
                 <input type="text" id="projectSearch" placeholder="Search projects..." class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
             </div>
         </div>
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1" id="projectList">
+        <div class="p-4 lg:p-6" id="projectList">
             <?php if ($total_projects == 0): ?>
                 <div class="text-center py-10">
                     <span class="material-symbols-outlined text-4xl text-slate-200 mb-2">folder_open</span>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No Projects Found</p>
                 </div>
             <?php else: ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <?php foreach ($projects as $p): ?>
-                    <button onclick="loadProject(<?php echo $p['id']; ?>)" class="w-full text-left p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group relative">
+                    <button onclick="loadProject(<?php echo $p['id']; ?>)" class="group relative bg-white border border-slate-100 rounded-3xl p-5 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md text-left">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-sm text-slate-900 group-hover:text-primary transition-colors pr-8 leading-tight">
-                                <?php echo htmlspecialchars($p['name']); ?>
-                            </h3>
-                            <span class="px-2 py-1 bg-slate-100 text-slate-500 rounded-md text-[9px] font-bold uppercase tracking-widest shrink-0">
-                                <?php echo htmlspecialchars($p['status']); ?>
-                            </span>
+                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':'bg-blue-50 text-blue-600')); ?>"><?php echo $p['status']; ?></span>
                         </div>
+                        <h3 class="font-bold text-sm text-slate-900 group-hover:text-primary transition-colors leading-tight mb-1 pr-4"><?php echo htmlspecialchars($p['name']); ?></h3>
                         <div class="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:12px">calendar_today</span> <?php echo date('M d, Y', strtotime($p['start_date'])); ?></span>
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:12px">calendar_today</span> <?php echo $p['start_date'] ? date('M d, Y', strtotime($p['start_date'])) : 'TBD'; ?></span>
                         </div>
+                        <?php if (!empty($p['budget'])): ?>
+                        <p class="text-[11px] font-bold text-emerald-600 mt-2">$<?php echo number_format($p['budget'], 2); ?></p>
+                        <?php endif; ?>
                     </button>
                 <?php endforeach; ?>
+                </div>
             <?php endif; ?>
         </div>
     </div>
 
-    <div class="flex-1 bg-slate-50 hidden lg:flex flex-col relative" id="detailCanvas">
-        <div class="absolute inset-0 flex items-center justify-center text-center p-4 sm:p-8 z-0">
-            <div class="px-4">
-                <span class="material-symbols-outlined text-4xl sm:text-6xl text-slate-200 mb-4 block">space_dashboard</span>
-                <h2 class="text-lg font-bold font-headline text-slate-900 mb-1">Select a Project</h2>
-                <p class="text-xs text-slate-500 max-w-sm mx-auto">Choose a project from the ledger to view its roadmap, milestones, and documentation.</p>
-            </div>
-        </div>
-        <div id="detailContent" class="absolute inset-0 flex flex-col z-10 bg-slate-50 hidden overflow-hidden">
+    <div id="detailBackdrop" onclick="closeProjectDetail()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[300] opacity-0 pointer-events-none transition-all duration-500"></div>
+    <div id="detailCanvas" class="fixed top-0 right-0 h-full w-full lg:w-[680px] bg-white z-[301] translate-x-full transition-transform duration-500 ease-in-out shadow-2xl flex flex-col">
+        <div id="detailContent" class="flex-1 flex flex-col overflow-hidden bg-slate-50">
             <div id="projectHeader"></div>
             <div id="projectBody" class="flex-1 overflow-y-auto custom-scrollbar"></div>
         </div>
@@ -311,18 +401,10 @@ ob_start();
 </div>
 <?php
 $page_content = ob_get_clean();
-$page_main_class = 'flex-1 flex flex-col overflow-hidden';
+$page_main_class = 'max-w-7xl mx-auto w-full px-4 sm:px-6 py-6';
 $page_class = 'flex flex-col min-h-screen';
 
 $page_after_main = '
-    <div id="mobileDetailOverlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[100] lg:hidden opacity-0 pointer-events-none transition-opacity duration-300"></div>
-    <div id="mobileDetailDrawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-50 z-[110] lg:hidden transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
-        <div class="h-16 border-b border-slate-100 bg-white px-4 flex items-center justify-between shrink-0">
-            <h3 class="font-bold font-headline text-slate-900">Project Details</h3>
-            <button onclick="closeMobileDetails()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100"><span class="material-symbols-outlined text-sm">close</span></button>
-        </div>
-        <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative" id="mobileDetailContent"></div>
-    </div>
     <div id="msChatModal" class="modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
@@ -353,30 +435,22 @@ $page_scripts = '
     let currentMsId = null;
 
     async function loadProject(id) {
-        const detailCanvas = document.getElementById("detailContent");
-        detailCanvas.classList.remove("hidden");
+        document.getElementById("detailCanvas").classList.remove("translate-x-full");
+        document.getElementById("detailBackdrop").classList.remove("opacity-0", "pointer-events-none");
         document.getElementById("projectHeader").innerHTML = \'<div class="p-6 text-center text-slate-400"><span class="material-symbols-outlined animate-spin">refresh</span></div>\';
         document.getElementById("projectBody").innerHTML = "";
-        if (window.innerWidth < 1024) {
-            document.getElementById("mobileDetailOverlay").classList.remove("opacity-0", "pointer-events-none");
-            document.getElementById("mobileDetailDrawer").classList.remove("translate-x-full");
-            document.getElementById("mobileDetailContent").innerHTML = \'<div class="p-6 text-center text-slate-400"><span class="material-symbols-outlined animate-spin">refresh</span></div>\';
-        }
         const res = await fetch("?ajax_action=load_details&id=" + id);
         const data = await res.json();
         document.getElementById("projectHeader").innerHTML = data.header_html;
         document.getElementById("projectBody").innerHTML = data.body_html;
-        if (window.innerWidth < 1024) {
-            document.getElementById("mobileDetailContent").innerHTML = data.header_html + data.body_html;
-        }
         document.querySelectorAll("#projectList button").forEach(b => b.classList.remove("bg-white", "shadow-sm", "border-slate-200"));
         const btn = document.querySelector("button[onclick=\\"loadProject(" + id + ")\\"]");
         if (btn) btn.classList.add("bg-white", "shadow-sm", "border-slate-200");
     }
 
-    function closeMobileDetails() {
-        document.getElementById("mobileDetailOverlay").classList.add("opacity-0", "pointer-events-none");
-        document.getElementById("mobileDetailDrawer").classList.add("translate-x-full");
+    function closeProjectDetail() {
+        document.getElementById("detailCanvas").classList.add("translate-x-full");
+        document.getElementById("detailBackdrop").classList.add("opacity-0", "pointer-events-none");
     }
 
     document.getElementById("projectSearch").addEventListener("input", function(e) {

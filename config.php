@@ -255,6 +255,9 @@ function get_db_connection() {
     )");
     ensure_column_exists($conn, 'clients', 'password', "VARCHAR(255) NULL");
 
+    ensure_column_exists($conn, 'clients', 'address', 'VARCHAR(255) NULL');
+    ensure_column_exists($conn, 'clients', 'profile_pic', 'VARCHAR(255) NULL');
+
     $conn->query("CREATE TABLE IF NOT EXISTS client_password_tokens (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
         client_id INT(11) NOT NULL,
@@ -310,6 +313,8 @@ function get_db_connection() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     ensure_column_exists($conn, 'projects', 'department_id', "INT(11) NULL");
+    ensure_column_exists($conn, 'projects', 'start_date', 'DATE NULL');
+    ensure_column_exists($conn, 'projects', 'end_date', 'DATE NULL');
 
     $conn->query("CREATE TABLE IF NOT EXISTS assets (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,

@@ -113,8 +113,8 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
                         <div class="w-2/5 border-r border-white/5 p-6 flex flex-col items-center justify-center bg-black/20 z-10 relative backdrop-blur-sm">
                             <div class="w-28 h-28 rounded-full bg-slate-800 border border-white/10 overflow-hidden mb-5 shadow-2xl flex items-center justify-center shrink-0 p-1">
                                 <div class="w-full h-full rounded-full overflow-hidden bg-slate-700 flex items-center justify-center">
-                                    <?php if(!empty($staff['profile_pic'])): ?>
-                                        <img src="../<?php echo htmlspecialchars($staff['profile_pic']); ?>" class="w-full h-full object-cover">
+                                    <?php if(!empty($staff['avatar'])): ?>
+                                        <img src="../<?php echo htmlspecialchars($staff['avatar']); ?>" class="w-full h-full object-cover">
                                     <?php else: ?>
                                         <span class="text-4xl font-black text-slate-500 font-headline uppercase"><?php echo substr($staff['name'], 0, 2); ?></span>
                                     <?php endif; ?>

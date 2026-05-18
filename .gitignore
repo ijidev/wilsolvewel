@@ -21,5 +21,9 @@ servers/cloudflare/config.php
 /tmp/
 *.tmp
 
+# Change log & agent instructions (local only)
+log.md
+AGENTS.md
+
 # Dev/scratch scripts
 scratch/
