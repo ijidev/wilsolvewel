@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->execute()) {
             $project_id = $stmt->insert_id;
             // Optionally create an audit log
-            $stmt2 = $conn->prepare("INSERT INTO audit_logs (user_type, user_id, action, details) VALUES ('client', ?, 'Proposed Project', ?)");
+            $stmt2 = $conn->prepare("INSERT INTO audit_logs (action_type, module, actor_type, actor_id, description, details) VALUES ('Create', 'Projects', 'Client', ?, 'Proposed Project', ?)");
             $details = "New project proposal: $title";
             $stmt2->bind_param("is", $client_id, $details);
             $stmt2->execute();
