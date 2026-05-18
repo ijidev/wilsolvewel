@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dept_id = get_auto_assigned_department($conn, 'project_proposal', $title . ' ' . $description);
 
         $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Diagnostic', 0, NOW())");
-        $stmt->bind_param("iiss", $client_id, $dept_id ?: null, $title, $description);
+        $dept_id_val = $dept_id ?: null;
+        $stmt->bind_param("iiss", $client_id, $dept_id_val, $title, $description);
         if ($stmt->execute()) {
             $project_id = $stmt->insert_id;
             // Optionally create an audit log
