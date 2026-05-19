@@ -1,8 +1,6 @@
 <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 relative">
     <div class="flex items-center gap-3 min-w-0">
-        <button id="admin-sidebar-toggle" class="hidden p-1.5 -ml-1 text-slate-500 hover:text-blue-600 transition-colors rounded-lg hover:bg-slate-100">
-            <span class="material-symbols-outlined text-xl">menu</span>
-        </button>
+
         <div class="min-w-0">
             <h1 class="text-sm sm:text-lg font-bold font-headline text-slate-900 leading-tight truncate"><?php echo htmlspecialchars($page_title ?? 'Dashboard'); ?></h1>
             <?php if (!empty($page_subtitle)): ?>
@@ -14,7 +12,7 @@
         <?php if (!empty($page_header_actions)): ?>
             <div class="hidden sm:flex items-center gap-2 mr-2"><?php echo $page_header_actions; ?></div>
         <?php endif; ?>
-        <button id="admin-btn-notifications" class="relative p-2 text-slate-500 hover:text-blue-600 transition-colors rounded-lg hover:bg-slate-100">
+        <button id="admin-btn-notifications" class="hidden lg:block relative p-2 text-slate-500 hover:text-blue-600 transition-colors rounded-lg hover:bg-slate-100">
             <span class="material-symbols-outlined text-xl">notifications</span>
             <span id="admin-notif-badge" class="hidden absolute top-1 right-1 min-w-[16px] h-4 bg-red-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full border-2 border-white px-1 leading-none shadow-sm">0</span>
         </button>
