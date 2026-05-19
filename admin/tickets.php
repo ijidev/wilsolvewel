@@ -396,6 +396,10 @@ $res = $conn->query("SELECT t.id, t.subject, t.status, t.priority, t.created_at,
 while ($row = $res->fetch_assoc()) $tickets[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
+
+$page_title = 'Support Tickets';
+$page_subtitle = 'Client Requests & Issues';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -429,12 +433,7 @@ $permissions = get_admin_permissions($admin_id);
 </div>
 
 <div class="lg:ml-64 min-h-screen flex flex-col bg-[#F8FAFC]">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20 sticky top-0">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Support Tickets</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Client Requests & Issues</p>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <div class="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
         <!-- Master List -->

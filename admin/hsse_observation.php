@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Fetch Projects for dropdown
 $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
+
+$page_title = 'HSSE Observation';
+$page_subtitle = '';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 
@@ -96,9 +100,9 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
     <script src="../../components/effects.js"></script>
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
     <!-- Main Content Canvas -->
-    <main class="lg:ml-64 pt-20 relative z-10 min-h-screen">
-        <!-- TopNavBar -->
-        <script src="../../components/admin_topnav.js" data-root="../../"></script>
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
+    <main class="relative z-10 min-h-screen">
         <div class="max-w-7xl mx-auto p-8 flex flex-col md:flex-row gap-8">
             <!-- Left Column: Primary Reporting Form -->
             <div class="flex-1 space-y-8">
@@ -310,6 +314,7 @@ $projects_res = $conn->query("SELECT id, name FROM projects ORDER BY name ASC");
             <span class="text-[10px] font-label mt-1">SET</span>
         </button>
     </nav>
+</div>
 </body>
 
 </html>

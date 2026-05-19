@@ -893,6 +893,12 @@ while ($row = $res->fetch_assoc()) $admins_all[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
 $guide_dismissed = get_setting('guide_dismissed_admin_' . $admin_id, '');
+
+$page_title = 'Project Operations';
+$page_subtitle = 'Client Projects & Reporting';
+$page_header_actions = '<button onclick="openProjectModal()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+    <span class="material-symbols-outlined text-sm">add_box</span> NEW PROJECT
+</button>';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -926,15 +932,7 @@ $guide_dismissed = get_setting('guide_dismissed_admin_' . $admin_id, '');
 </div>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 z-20">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Project Operations</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Client Projects & Reporting</p>
-        </div>
-        <button onclick="openProjectModal()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
-            <span class="material-symbols-outlined text-sm">add_box</span> NEW PROJECT
-        </button>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <div class="flex-1 flex overflow-hidden">
         <!-- Workflow Guide -->

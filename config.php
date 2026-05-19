@@ -32,9 +32,22 @@ define('DB_NAME', getenv('DB_NAME') ?: 'wilsolvewel_db');
 
 // ── Environment Configuration ───────────────────────────────────────────────
 define('APP_ENV', getenv('APP_ENV') ?: 'production');
+$script_dir = str_replace('\\', '/', dirname(__FILE__));
+$doc_root = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT']));
+if (strpos($script_dir, $doc_root) === 0) {
+    $relative = substr($script_dir, strlen($doc_root));
+    define('APP_ROOT', rtrim($relative, '/'));
+} else {
+    define('APP_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/'));
+}
 
 function is_dev() {
     return APP_ENV === 'dev' || APP_ENV === 'development';
+}
+
+function app_url($path = '') {
+    $path = ltrim($path, '/');
+    return APP_ROOT . ($path ? '/' . $path : '');
 }
 
 if (is_dev()) {
@@ -301,6 +314,7 @@ function get_db_connection() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (order_id) REFERENCES procurement_orders(id) ON DELETE CASCADE
     )");
+    ensure_column_exists($conn, 'procurement_history', 'notes', "TEXT NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS projects (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -325,8 +339,10 @@ function get_db_connection() {
         location VARCHAR(255) NULL,
         value DECIMAL(15,2) DEFAULT 0.00,
         purchase_date DATE NULL,
+        file_path VARCHAR(500) NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    ensure_column_exists($conn, 'assets', 'file_path', "VARCHAR(500) NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS tickets (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,

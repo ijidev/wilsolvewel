@@ -42,6 +42,11 @@ if ($hsse_milestone) {
     $safe_days = (new DateTime())->diff(new DateTime($last_lti['created_at']))->days;
 }
 
+// HSSE Compliance Index
+$total_obs = (int)($conn->query("SELECT COUNT(*) as c FROM hsse_observations")->fetch_assoc()['c']);
+$resolved_obs = (int)($conn->query("SELECT COUNT(*) as c FROM hsse_observations WHERE status = 'Resolved'")->fetch_assoc()['c']);
+$compliance_index = $total_obs > 0 ? round(($resolved_obs / $total_obs) * 100, 1) : 100.0;
+
 // Recent Activity (Audit Logs)
 $recent_logs = [];
 $res = $conn->query("
@@ -64,6 +69,11 @@ $res = $conn->query("
 while ($row = $res->fetch_assoc()) $recent_tickets[] = $row;
 
 ?>
+<?php
+$page_title = 'Dashboard Overview';
+$page_subtitle = 'Welcome back, ' . htmlspecialchars($_SESSION['admin_name'] ?? 'Admin');
+$page_header_actions = '';
+?>
 <!DOCTYPE html>
 <html class="light" lang="en">
 <head>
@@ -85,22 +95,7 @@ while ($row = $res->fetch_assoc()) $recent_tickets[] = $row;
 <script src="../components/admin_sidenav.js" data-root="../"></script>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-8 shrink-0 z-20">
-        <div>
-            <h1 class="text-2xl font-bold font-headline text-slate-900 leading-tight">Dashboard Overview</h1>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Welcome back, <?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?></p>
-        </div>
-        <div class="hidden md:flex gap-4">
-            <a href="inquiries.php" class="bg-slate-50 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-primary/10 hover:text-slate-900 transition-colors">
-                <span class="material-symbols-outlined text-sm">inbox</span> Inquiries
-                <?php if($inq_stats['pending'] > 0): ?><span class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center text-[9px]"><?php echo $inq_stats['pending']; ?></span><?php endif; ?>
-            </a>
-            <a href="tickets.php" class="bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all">
-                <span class="material-symbols-outlined text-sm">confirmation_number</span> Support Tickets
-                <?php if($ticket_stats['active'] > 0): ?><span class="bg-primary text-on-primary px-1.5 rounded-md text-[9px]"><?php echo $ticket_stats['active']; ?></span><?php endif; ?>
-            </a>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10">
         
@@ -139,9 +134,15 @@ while ($row = $res->fetch_assoc()) $recent_tickets[] = $row;
                     <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center"><span class="material-symbols-outlined text-xl">shield_with_heart</span></div>
                     <span class="text-3xl font-black font-headline text-white"><?php echo $safe_days; ?></span>
                 </div>
-                <div class="relative z-10">
-                    <p class="text-sm font-bold text-white">Safe Days (HSSE)</p>
-                    <p class="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Zero-Harm Target</p>
+                <div class="relative z-10 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-bold text-white">Safe Days (HSSE)</p>
+                        <p class="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Zero-Harm Target</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-black font-headline text-primary"><?php echo $compliance_index; ?>%</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Compliance</p>
+                    </div>
                 </div>
             </div>
 

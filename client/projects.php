@@ -309,7 +309,7 @@ $total_projects = count($projects);
 $page_title = 'WILSOVLEWEL | Client Projects';
 $page_h1 = 'System Ledger';
 $page_h1_sub = 'Project Tracking';
-$page_h1_action = '<button onclick="document.getElementById(\'proposeModal\').classList.remove(\'hidden\')" class="bg-primary text-on-primary px-3 sm:px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0 ml-2"><span class="material-symbols-outlined text-sm">add_circle</span> <span class="hidden sm:inline">NEW PROPOSAL</span></button>';
+$page_h1_action = '<div class="flex items-center gap-2"><button onclick="exportSelectedProjects()" class="bg-white border border-slate-200 text-on-surface px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-slate-50 transition-all shrink-0"><span class="material-symbols-outlined text-sm">download</span> <span class="hidden sm:inline">Export</span></button><button onclick="document.getElementById(\'proposeModal\').classList.remove(\'hidden\')" class="bg-primary text-on-primary px-3 sm:px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0 ml-2"><span class="material-symbols-outlined text-sm">add_circle</span> <span class="hidden sm:inline">NEW PROPOSAL</span></button></div>';
 $page_styles = '
     .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
     .modal-overlay.open{display:flex}
@@ -402,7 +402,11 @@ ob_start();
             <?php else: ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <?php foreach ($projects as $p): ?>
-                    <button onclick="loadProject(<?php echo $p['id']; ?>)" class="group relative bg-white border border-slate-100 rounded-3xl p-5 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md text-left">
+                    <div class="group relative bg-white border border-slate-100 rounded-3xl p-5 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md text-left">
+                        <div class="absolute top-3 right-3 z-10">
+                            <input type="checkbox" class="project-export-checkbox rounded border-slate-300 text-primary focus:ring-primary/20" value="<?php echo $p['id']; ?>" onclick="event.stopPropagation()">
+                        </div>
+                        <div onclick="loadProject(<?php echo $p['id']; ?>)">
                         <div class="flex justify-between items-start mb-2">
                             <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':'bg-blue-50 text-blue-600')); ?>"><?php echo $p['status']; ?></span>
                         </div>
@@ -413,7 +417,8 @@ ob_start();
                         <?php if (!empty($p['budget'])): ?>
                         <p class="text-[11px] font-bold text-emerald-600 mt-2">$<?php echo number_format($p['budget'], 2); ?></p>
                         <?php endif; ?>
-                    </button>
+                    </div>
+                    </div>
                 <?php endforeach; ?>
                 </div>
             <?php endif; ?>
@@ -522,9 +527,7 @@ $page_scripts = '
         const data = await res.json();
         document.getElementById("projectHeader").innerHTML = data.header_html;
         document.getElementById("projectBody").innerHTML = data.body_html;
-        document.querySelectorAll("#projectList button").forEach(b => b.classList.remove("bg-white", "shadow-sm", "border-slate-200"));
-        const btn = document.querySelector("button[onclick=\\"loadProject(" + id + ")\\"]");
-        if (btn) btn.classList.add("bg-white", "shadow-sm", "border-slate-200");
+        document.querySelectorAll("#projectList > div > div").forEach(function(b) { b.classList.remove("bg-white", "shadow-sm", "border-slate-200"); });
     }
 
     function closeProjectDetail() {
@@ -532,9 +535,146 @@ $page_scripts = '
         document.getElementById("detailBackdrop").classList.add("opacity-0", "pointer-events-none");
     }
 
+    // ── Export Selected Projects ───────────────────────────────────────────────
+    async function exportSelectedProjects() {
+        var checkboxes = document.querySelectorAll(".project-export-checkbox:checked");
+        if (checkboxes.length === 0) {
+            alert("Please select at least one project to export.");
+            return;
+        }
+        var ids = Array.from(checkboxes).map(function(cb) { return cb.value; }).join(",");
+        var btn = document.querySelector(\'button[onclick="exportSelectedProjects()"]\');
+        var originalHTML = btn.innerHTML;
+        btn.innerHTML = \'<span class="material-symbols-outlined text-sm animate-spin">refresh</span>\';
+        btn.disabled = true;
+        try {
+            var res = await fetch("export_project_data.php?ids=" + ids);
+            var data = await res.json();
+            if (data.status !== "success" || !data.projects || data.projects.length === 0) {
+                alert(data.message || "Failed to fetch project data.");
+                return;
+            }
+            generateProjectPDF(data.projects);
+        } catch (err) {
+            console.error("Export failed:", err);
+            alert("Failed to export. Check console.");
+        } finally {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    }
+
+    function escHtml(str) {
+        if (!str) return "";
+        var d = document.createElement("div");
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function generateProjectPDF(projects) {
+        var win = window.open("", "_blank");
+        if (!win) { alert("Please allow popups for this site to export."); return; }
+        var html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Project Export</title>
+<style>
+    @page { margin: 15mm; }
+    body { font-family: "Segoe UI", Arial, sans-serif; color: #1a1a1a; padding: 0; margin: 0; }
+    .page { page-break-after: always; padding: 20px; }
+    .page:last-child { page-break-after: auto; }
+    .header { border-bottom: 3px solid #EAB308; padding-bottom: 12px; margin-bottom: 20px; }
+    .header h1 { font-size: 20px; font-weight: 800; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 1px; }
+    .header .meta { font-size: 11px; color: #666; }
+    .section { margin-bottom: 20px; }
+    .section h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #EAB308; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin: 0 0 10px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+    .field { font-size: 11px; padding: 3px 0; }
+    .field .label { color: #888; font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; }
+    .field .value { font-weight: 700; color: #1a1a1a; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 10px; }
+    table th { background: #f5f5f5; text-align: left; padding: 6px 8px; font-weight: 700; text-transform: uppercase; font-size: 8px; letter-spacing: 0.5px; color: #666; border-bottom: 1px solid #ddd; }
+    table td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 9px; text-transform: uppercase; }
+    .badge-completed { background: #d1fae5; color: #047857; }
+    .badge-active { background: #dbeafe; color: #1d4ed8; }
+    .badge-planning { background: #fef3c7; color: #b45309; }
+    .badge-hold { background: #fee2e2; color: #b91c1c; }
+    .badge-open { background: #fef3c7; color: #b45309; }
+    .badge-resolved { background: #d1fae5; color: #047857; }
+    .milestone { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+    .milestone:last-child { border-bottom: none; }
+    .milestone-title { font-weight: 700; font-size: 11px; }
+    .milestone-meta { font-size: 9px; color: #888; }
+    .sub-task { font-size: 10px; padding-left: 16px; color: #555; }
+    .footer { border-top: 1px solid #ddd; padding-top: 10px; margin-top: 20px; font-size: 9px; color: #999; text-align: center; }
+</style></head><body>`;
+        projects.forEach(function(p, idx) {
+            var statusClass = "active";
+            if (p.status === "Completed") statusClass = "completed";
+            else if (p.status === "Planning") statusClass = "planning";
+            else if (p.status === "On Hold") statusClass = "hold";
+            html += `<div class="page"><div class="header"><h1>Project Manifest</h1><div class="meta">Project #PRJ-${String(p.id).padStart(4, "0")} | Listing ${idx + 1} of ${projects.length} | Generated ${new Date().toLocaleString()}</div></div>`;
+            html += `<div class="section"><h2>Project Details</h2><div class="grid"><div class="field"><div class="label">Project Name</div><div class="value">${escHtml(p.name)}</div></div><div class="field"><div class="label">Status</div><div class="value"><span class="badge badge-${statusClass}">${p.status}</span></div></div><div class="field"><div class="label">Budget</div><div class="value">${p.budget ? "$" + parseFloat(p.budget).toLocaleString() : "N/A"}</div></div><div class="field"><div class="label">Start Date</div><div class="value">${p.start_date || "TBD"}</div></div><div class="field"><div class="label">End Date</div><div class="value">${p.end_date || "TBD"}</div></div><div class="field"><div class="label">Department</div><div class="value">${p.department_id || "Unassigned"}</div></div></div></div>`;
+
+            if (p.description) {
+                html += `<div class="section"><h2>Description</h2><p style="font-size:11px;color:#444;line-height:1.6">${escHtml(p.description)}</p></div>`;
+            }
+
+            if (p.milestones && p.milestones.length > 0) {
+                html += `<div class="section"><h2>Milestones (${p.milestones.length})</h2>`;
+                p.milestones.forEach(function(m) {
+                    var msClass = m.status === "Completed" ? "badge-completed" : (m.status === "In Progress" ? "badge-active" : "badge-planning");
+                    html += `<div class="milestone"><div class="milestone-title">${escHtml(m.title)} <span class="badge ${msClass}" style="margin-left:6px">${m.status}</span></div>`;
+                    if (m.due_date) html += `<div class="milestone-meta">Due: ${m.due_date}</div>`;
+                    if (m.description) html += `<div style="font-size:10px;color:#555;margin:2px 0">${escHtml(m.description)}</div>`;
+                    if (m.sub_milestones && m.sub_milestones.length > 0) {
+                        m.sub_milestones.forEach(function(s) {
+                            var icon = s.is_completed ? "\\u2713" : "\\u25CB";
+                            html += `<div class="sub-task">${icon} ${escHtml(s.title)}</div>`;
+                        });
+                    }
+                    html += `</div>`;
+                });
+                html += `</div>`;
+            } else {
+                html += `<div class="section"><h2>Milestones</h2><p style="font-size:10px;color:#888;font-style:italic">No milestones defined yet.</p></div>`;
+            }
+
+            if (p.assets && p.assets.length > 0) {
+                html += `<div class="section"><h2>Assigned Assets (${p.assets.length})</h2><table><thead><tr><th>Asset</th></tr></thead><tbody>`;
+                p.assets.forEach(function(a) {
+                    html += `<tr><td>${escHtml(a.name)}</td></tr>`;
+                });
+                html += `</tbody></table></div>`;
+            }
+
+            if (p.tickets && p.tickets.length > 0) {
+                html += `<div class="section"><h2>Associated Tickets (${p.tickets.length})</h2><table><thead><tr><th>Ticket</th><th>Subject</th><th>Status</th><th>Created</th></tr></thead><tbody>`;
+                p.tickets.forEach(function(tk) {
+                    var tkClass = tk.status === "Resolved" || tk.status === "Closed" ? "badge-resolved" : "badge-open";
+                    html += `<tr><td>#TK-${tk.id}</td><td>${escHtml(tk.subject || "N/A")}</td><td><span class="badge ${tkClass}">${tk.status}</span></td><td>${tk.created_at_formatted || ""}</td></tr>`;
+                    if (tk.replies && tk.replies.length > 0) {
+                        html += `<tr><td colspan="4" style="padding:4px 8px 12px"><div style="font-size:9px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Conversation</div>`;
+                        tk.replies.forEach(function(r) {
+                            var senderLabel = r.sender_type === 'admin' ? 'Staff' : 'Client';
+                            html += `<div style="font-size:9px;padding:4px 8px;margin:2px 0;background:#f9f9f9;border-radius:4px;border-left:2px solid #EAB308"><strong>${senderLabel}</strong> <span style="color:#999">${r.created_at_formatted}</span><br>${escHtml(r.message)}</div>`;
+                        });
+                        html += `</td></tr>`;
+                    }
+                });
+                html += `</tbody></table></div>`;
+            }
+
+            html += `<div class="footer">WilsOveWel Project Manifest | Confidential</div></div>`;
+        });
+        html += `</body></html>`;
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+        win.print();
+    }
+
     document.getElementById("projectSearch").addEventListener("input", function(e) {
         const term = e.target.value.toLowerCase();
-        document.querySelectorAll("#projectList button").forEach(b => {
+        document.querySelectorAll("#projectList > div > div").forEach(b => {
             const text = b.innerText.toLowerCase();
             b.style.display = text.includes(term) ? "block" : "none";
         });

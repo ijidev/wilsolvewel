@@ -24,20 +24,18 @@ try {
     }
 
     // Security: Verify the order belongs to the client or their projects
-    $verify_res = $conn->query("
-        SELECT po.id 
-        FROM procurement_orders po 
-        LEFT JOIN projects p ON po.project_id = p.id 
-        WHERE po.id = $order_id AND (p.client_id = $client_id OR po.client_id = $client_id)
-    ");
+    $verify_sql = "SELECT po.id FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE po.id = ? AND (p.client_id = ? OR po.client_id = ?)";
+    $verify_stmt = $conn->prepare($verify_sql);
+    $verify_stmt->bind_param("iii", $order_id, $client_id, $client_id);
+    $verify_stmt->execute();
+    $verify_res = $verify_stmt->get_result();
 
     if ($verify_res && $verify_res->num_rows > 0) {
-        $history_res = $conn->query("
-            SELECT status, location, notes, created_at 
-            FROM procurement_history 
-            WHERE order_id = $order_id 
-            ORDER BY created_at DESC
-        ");
+        $history_sql = "SELECT status, location, notes, created_at FROM procurement_history WHERE order_id = ? ORDER BY created_at DESC";
+        $history_stmt = $conn->prepare($history_sql);
+        $history_stmt->bind_param("i", $order_id);
+        $history_stmt->execute();
+        $history_res = $history_stmt->get_result();
         
         $history = [];
         if ($history_res) {
@@ -46,14 +44,16 @@ try {
                 $history[] = $row;
             }
         }
+        $history_stmt->close();
+        $verify_stmt->close();
         ob_clean();
         echo json_encode($history);
     } else {
+        $verify_stmt->close();
         ob_clean();
         echo json_encode([]);
     }
 } catch (Exception $e) {
     ob_clean();
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode([]);
 }

@@ -75,6 +75,12 @@ $initials = strtoupper(substr($admin['name'], 0, 1) . (strpos($admin['name'], ' 
 $avatar_url = $admin['avatar'] ?? '';
 
 $permissions = get_admin_permissions($admin_id);
+
+$page_title = 'My Profile';
+$page_subtitle = 'Personal Account Settings & Staff ID';
+$page_header_actions = '<button onclick="window.print()" class="bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-slate-800 transition-colors">
+    <span class="material-symbols-outlined text-sm">print</span> PRINT ID CARD
+</button>';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -127,15 +133,7 @@ $permissions = get_admin_permissions($admin_id);
     <script src="../components/admin_sidenav.js" data-root="../"></script>
 
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 relative z-20">
-            <div class="flex flex-col">
-                <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">My Profile</h1>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Personal Account Settings & Staff ID</p>
-            </div>
-            <button onclick="window.print()" class="bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-slate-800 transition-colors">
-                <span class="material-symbols-outlined text-sm">print</span> PRINT ID CARD
-            </button>
-        </header>
+        <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
         <main class="flex-1 overflow-y-auto p-6 lg:p-12">
             

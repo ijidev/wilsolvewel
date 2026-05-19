@@ -17,12 +17,13 @@ $orders_res = safe_query($conn, "SELECT po.*, p.name as project_name FROM procur
 $active_orders = safe_query($conn, "SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = ? OR po.client_id = ?) AND po.status != 'Delivered'", "ii", [$client_id, $client_id])->fetch_row()[0];
 $in_transit = safe_query($conn, "SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = ? OR po.client_id = ?) AND po.status = 'In Transit'", "ii", [$client_id, $client_id])->fetch_row()[0];
 $held_customs = safe_query($conn, "SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = ? OR po.client_id = ?) AND po.status = 'Held by Customs'", "ii", [$client_id, $client_id])->fetch_row()[0];
+$delivered_orders = safe_query($conn, "SELECT COUNT(*) FROM procurement_orders po LEFT JOIN projects p ON po.project_id = p.id WHERE (p.client_id = ? OR po.client_id = ?) AND po.status = 'Delivered'", "ii", [$client_id, $client_id])->fetch_row()[0];
 
 $page_title = 'Procurement & Logistics | Terminal';
 $page_h1 = 'Order Tracking';
 $page_h1_sub = 'Procurement & Logistics Terminal';
 $page_h1_badge = 'Supply Chain';
-$page_h1_action = '<button onclick="exportManifest()" class="bg-white border border-slate-200 text-on-surface px-4 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm"><span class="material-symbols-outlined text-sm">download</span> Export Manifest</button>';
+$page_h1_action = '<button onclick="exportSelected()" class="bg-white border border-slate-200 text-on-surface px-4 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm"><span class="material-symbols-outlined text-sm">download</span> Export Selected</button>';
 $page_cdn_heads = '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>';
 $page_styles = '
@@ -32,7 +33,7 @@ $page_styles = '
 
 ob_start();
 ?>
-<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
     <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
         <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <span class="material-symbols-outlined">inventory_2</span>
@@ -60,6 +61,15 @@ ob_start();
             <span class="text-xl font-bold text-on-surface"><?= $held_customs ?></span>
         </div>
     </div>
+    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500">
+            <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <div>
+            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 font-headline block">Delivered</span>
+            <span class="text-xl font-bold text-on-surface"><?= $delivered_orders ?></span>
+        </div>
+    </div>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -67,6 +77,9 @@ ob_start();
     <table class="w-full text-left border-collapse">
         <thead>
             <tr class="bg-slate-50/50 border-b border-slate-100">
+                <th class="px-3 sm:px-6 py-4 w-10">
+                    <input type="checkbox" id="select-all-export" class="rounded border-slate-300 text-primary focus:ring-primary/20">
+                </th>
                 <th class="px-3 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 whitespace-nowrap">Order Ref</th>
                 <th class="px-3 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 whitespace-nowrap">Item Description</th>
                 <th class="px-3 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 whitespace-nowrap">Project Context</th>
@@ -84,6 +97,9 @@ ob_start();
                     if ($po['status'] == 'Processing') $status_color = 'amber-500';
             ?>
             <tr class="hover:bg-slate-50/50 transition-colors group">
+                <td class="px-3 sm:px-6 py-4">
+                    <input type="checkbox" class="export-checkbox rounded border-slate-300 text-primary focus:ring-primary/20" value="<?= $po['id'] ?>">
+                </td>
                 <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <span class="font-mono text-xs font-bold text-slate-400">#<?= htmlspecialchars($po['order_number']) ?></span>
                 </td>
@@ -108,7 +124,7 @@ ob_start();
             </tr>
             <?php endwhile; else: ?>
             <tr>
-                <td colspan="5" class="px-3 sm:px-6 py-20 text-center">
+                <td colspan="6" class="px-3 sm:px-6 py-20 text-center">
                     <span class="material-symbols-outlined text-4xl text-slate-200 block mb-2">local_shipping</span>
                     <p class="text-xs text-slate-400 italic">No procurement records found.</p>
                 </td>
@@ -265,6 +281,10 @@ $page_scripts = '
             .then(r => r.json())
             .then(data => {
                 timeline.innerHTML = "";
+                if (!Array.isArray(data) || data.error) {
+                    timeline.innerHTML = \'<p class="text-xs text-slate-400 italic">No movement logs found yet.</p>\';
+                    return;
+                }
                 if (data.length === 0) {
                     timeline.innerHTML = \'<p class="text-xs text-slate-400 italic">No movement logs found yet.</p>\';
                 } else {
@@ -277,7 +297,7 @@ $page_scripts = '
                 }
             })
             .catch(err => {
-                timeline.innerHTML = \'<p class="text-xs text-red-500 italic">Error fetching logistical data. Terminal offline.</p>\';
+                timeline.innerHTML = \'<p class="text-xs text-slate-400 italic">No movement logs found yet.</p>\';
                 console.error(err);
             });
     }
@@ -302,7 +322,7 @@ $page_scripts = '
                         const item = document.createElement("div");
                         item.className = "p-4 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer";
                         item.innerHTML = \'<div class="flex justify-between items-start mb-2"><span class="text-[10px] font-bold text-primary font-headline">#TK-\' + t.id + \'</span><span class="text-[9px] font-bold px-2 py-0.5 rounded-full \' + statusClass + \' uppercase tracking-wider">\' + t.status + \'</span></div><p class="text-xs font-bold text-on-surface line-clamp-1">\' + (t.subject || "Support Inquiry") + \'</p><p class="text-[10px] text-slate-400 mt-1">\' + (t.created_at || "") + \'</p>\';
-                        item.onclick = () => window.open("tickets.php", "_self");
+                        item.onclick = () => window.open("tickets.php?ticket_id=" + t.id, "_self");
                         list.appendChild(item);
                     });
                     helpBox.querySelector("h4").innerText = "Need further assistance?";
@@ -334,26 +354,138 @@ $page_scripts = '
         .catch(err => { form.classList.add("hidden"); success.classList.remove("hidden"); fetchOrderTickets(currentOrder.id); });
     };
 
-    async function exportManifest() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF("p", "mm", "a4");
-        const tableContainer = document.querySelector(".bg-white.rounded-2xl.shadow-sm.border.border-slate-100.overflow-hidden");
-        if (!tableContainer) return;
-        const btn = document.querySelector(\'button[onclick="exportManifest()"]\');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = \'<span class="material-symbols-outlined text-sm animate-spin">refresh</span> Exporting...\';
+    // ── Select All checkbox ────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", function() {
+        var selectAll = document.getElementById("select-all-export");
+        if (selectAll) {
+            selectAll.addEventListener("change", function() {
+                document.querySelectorAll(".export-checkbox").forEach(function(cb) {
+                    cb.checked = selectAll.checked;
+                });
+            });
+        }
+    });
+
+    async function exportSelected() {
+        var checkboxes = document.querySelectorAll(".export-checkbox:checked");
+        if (checkboxes.length === 0) {
+            alert("Please select at least one order to export.");
+            return;
+        }
+        var ids = Array.from(checkboxes).map(function(cb) { return cb.value; }).join(",");
+        var btn = document.querySelector(\'button[onclick="exportSelected()"]\');
+        var originalText = btn.innerHTML;
+        btn.innerHTML = \'<span class="material-symbols-outlined text-sm animate-spin">refresh</span> Fetching data...\';
         btn.disabled = true;
         try {
-            const canvas = await html2canvas(tableContainer, { scale: 2, useCORS: true, logging: false, backgroundColor: "#ffffff" });
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
-            const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-            doc.setFontSize(16); doc.text("Procurement Manifest", 10, 15);
-            doc.setFontSize(10); doc.text("Generated: " + new Date().toLocaleString(), 10, 22);
-            doc.addImage(imgData, "JPEG", 10, 30, pdfWidth, pdfHeight);
-            doc.save("Procurement_Manifest.pdf");
-        } catch (err) { console.error("Export failed:", err); alert("Failed to export manifest."); }
-        finally { btn.innerHTML = originalText; btn.disabled = false; }
+            var res = await fetch("export_order_data.php?ids=" + ids);
+            var data = await res.json();
+            if (data.status !== "success" || !data.orders || data.orders.length === 0) {
+                alert(data.message || "Failed to fetch order data.");
+                return;
+            }
+            generateManifestPDF(data.orders);
+        } catch (err) {
+            console.error("Export failed:", err);
+            alert("Failed to export manifest. Check console for details.");
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    function generateManifestPDF(orders) {
+        var win = window.open("", "_blank");
+        if (!win) { alert("Please allow popups for this site to export."); return; }
+        var html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Procurement Manifest</title>
+<style>
+    @page { margin: 15mm; }
+    body { font-family: "Segoe UI", Arial, sans-serif; color: #1a1a1a; padding: 0; margin: 0; }
+    .page { page-break-after: always; padding: 20px; }
+    .page:last-child { page-break-after: auto; }
+    .header { border-bottom: 3px solid #EAB308; padding-bottom: 12px; margin-bottom: 20px; }
+    .header h1 { font-size: 20px; font-weight: 800; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 1px; }
+    .header .meta { font-size: 11px; color: #666; }
+    .section { margin-bottom: 20px; }
+    .section h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #EAB308; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin: 0 0 10px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+    .field { font-size: 11px; padding: 3px 0; }
+    .field .label { color: #888; font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; }
+    .field .value { font-weight: 700; color: #1a1a1a; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 10px; }
+    table th { background: #f5f5f5; text-align: left; padding: 6px 8px; font-weight: 700; text-transform: uppercase; font-size: 8px; letter-spacing: 0.5px; color: #666; border-bottom: 1px solid #ddd; }
+    table td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 9px; text-transform: uppercase; }
+    .badge-processing { background: #fef3c7; color: #b45309; }
+    .badge-transit { background: #dbeafe; color: #1d4ed8; }
+    .badge-customs { background: #fee2e2; color: #b91c1c; }
+    .badge-delivered { background: #d1fae5; color: #047857; }
+    .badge-open { background: #fef3c7; color: #b45309; }
+    .badge-resolved { background: #d1fae5; color: #047857; }
+    .timeline { padding-left: 16px; border-left: 2px solid #EAB308; }
+    .timeline-item { margin-bottom: 10px; position: relative; }
+    .timeline-item:before { content: ""; position: absolute; left: -21px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: #EAB308; border: 2px solid #fff; box-shadow: 0 0 0 1px #EAB308; }
+    .timeline-date { font-size: 9px; color: #888; font-weight: 600; }
+    .timeline-status { font-weight: 700; font-size: 11px; color: #1a1a1a; }
+    .timeline-location { font-size: 10px; color: #555; }
+    .timeline-notes { font-size: 10px; color: #666; background: #f9f9f9; padding: 4px 8px; border-radius: 4px; margin-top: 2px; }
+    .footer { border-top: 1px solid #ddd; padding-top: 10px; margin-top: 20px; font-size: 9px; color: #999; text-align: center; }
+</style></head><body>`;
+        orders.forEach(function(o, idx) {
+            var statusClass = "processing";
+            if (o.status === "In Transit") statusClass = "transit";
+            else if (o.status === "Held by Customs") statusClass = "customs";
+            else if (o.status === "Delivered") statusClass = "delivered";
+            var badgeClass = "badge-" + statusClass;
+            html += `<div class="page"><div class="header"><h1>Procurement Manifest</h1><div class="meta">Order #${o.order_number} | Listing ${idx + 1} of ${orders.length} | Generated ${new Date().toLocaleString()}</div></div>`;
+            html += `<div class="section"><h2>Order Details</h2><div class="grid"><div class="field"><div class="label">Item</div><div class="value">${escHtml(o.item_name)}</div></div><div class="field"><div class="label">Status</div><div class="value"><span class="badge ${badgeClass}">${o.status}</span></div></div><div class="field"><div class="label">Order Ref</div><div class="value">#${o.order_number}</div></div><div class="field"><div class="label">Project</div><div class="value">${escHtml(o.project_name || "Maintenance Independent")}</div></div><div class="field"><div class="label">Quantity</div><div class="value">${parseInt(o.quantity)} Units</div></div><div class="field"><div class="label">Unit Price</div><div class="value">$${parseFloat(o.unit_price || 0).toLocaleString()}</div></div><div class="field"><div class="label">Total</div><div class="value">$${parseFloat(o.total_price || 0).toLocaleString()}</div></div><div class="field"><div class="label">Supplier</div><div class="value">${escHtml(o.supplier || "OEM Partner")}</div></div><div class="field"><div class="label">Tracking ID</div><div class="value">${o.tracking_id || "N/A"}</div></div><div class="field"><div class="label">Current Location</div><div class="value">${escHtml(o.current_location || "Awaiting Dispatch")}</div></div><div class="field"><div class="label">Last Updated</div><div class="value">${o.updated_at || o.created_at || "N/A"}</div></div></div></div>`;
+
+            if (o.tracking && o.tracking.length > 0) {
+                html += `<div class="section"><h2>Tracking Timeline</h2><div class="timeline">`;
+                o.tracking.forEach(function(t) {
+                    html += `<div class="timeline-item"><div class="timeline-date">${t.created_at}</div><div class="timeline-status">${t.status}</div>`;
+                    if (t.location) html += `<div class="timeline-location">Location: ${t.location}</div>`;
+                    if (t.notes) html += `<div class="timeline-notes">${escHtml(t.notes)}</div>`;
+                    html += `</div>`;
+                });
+                html += `</div></div>`;
+            } else {
+                html += `<div class="section"><h2>Tracking Timeline</h2><p style="font-size:10px;color:#888;font-style:italic">No movement logs recorded yet.</p></div>`;
+            }
+
+            if (o.tickets && o.tickets.length > 0) {
+                html += `<div class="section"><h2>Associated Tickets</h2><table><thead><tr><th>Ticket ID</th><th>Subject</th><th>Status</th><th>Created</th></tr></thead><tbody>`;
+                o.tickets.forEach(function(tk) {
+                    var tkStatusClass = tk.status === "Resolved" || tk.status === "Closed" ? "badge-resolved" : "badge-open";
+                    html += `<tr><td>#TK-${tk.id}</td><td>${escHtml(tk.subject || "N/A")}</td><td><span class="badge ${tkStatusClass}">${tk.status}</span></td><td>${tk.created_at_formatted || ""}</td></tr>`;
+                    if (tk.replies && tk.replies.length > 0) {
+                        html += `<tr><td colspan="4" style="padding:4px 8px 12px"><div style="font-size:9px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Conversation</div>`;
+                        tk.replies.forEach(function(r) {
+                            var senderLabel = r.sender_type === 'admin' ? 'Staff' : 'Client';
+                            html += `<div style="font-size:9px;padding:4px 8px;margin:2px 0;background:#f9f9f9;border-radius:4px;border-left:2px solid #EAB308"><strong>${senderLabel}</strong> <span style="color:#999">${r.created_at_formatted}</span><br>${escHtml(r.message)}</div>`;
+                        });
+                        html += `</td></tr>`;
+                    }
+                });
+                html += `</tbody></table></div>`;
+            } else {
+                html += `<div class="section"><h2>Associated Tickets</h2><p style="font-size:10px;color:#888;font-style:italic">No tickets linked to this order.</p></div>`;
+            }
+
+            html += `<div class="footer">WilsOveWel Supply Chain Manifest | Confidential</div></div>`;
+        });
+        html += `</body></html>`;
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+        win.print();
+    }
+
+    function escHtml(str) {
+        if (!str) return "";
+        var d = document.createElement("div");
+        d.textContent = str;
+        return d.innerHTML;
     }
 </script>
 ';

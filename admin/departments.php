@@ -79,6 +79,18 @@ while ($d = $dept_res->fetch_assoc()) {
     while ($m = $m_res->fetch_assoc()) $d['members'][] = $m;
     $departments[] = $d;
 }
+
+$page_title = 'Infrastructure Control';
+$page_subtitle = 'Departments & Team Assignments';
+ob_start(); ?>
+<?php if ($message): ?>
+    <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 uppercase"><?php echo $message; ?></span>
+<?php endif; ?>
+<button onclick="openAddModal()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs hover:shadow-lg transition-all flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm">corporate_fare</span>
+    REGISTER DEPT
+</button>
+<?php $page_header_actions = ob_get_clean();
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -120,22 +132,7 @@ while ($d = $dept_res->fetch_assoc()) {
     <script src="../components/admin_sidenav.js" data-root="../"></script>
 
     <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <!-- Top Nav -->
-        <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 relative z-20">
-            <div class="flex flex-col">
-                <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Infrastructure Control</h1>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Departments & Team Assignments</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <?php if ($message): ?>
-                    <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 uppercase"><?php echo $message; ?></span>
-                <?php endif; ?>
-                <button onclick="openAddModal()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs hover:shadow-lg transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">corporate_fare</span>
-                    REGISTER DEPT
-                </button>
-            </div>
-        </header>
+        <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto custom-scrollbar p-6">

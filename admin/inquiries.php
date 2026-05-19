@@ -143,6 +143,22 @@ $result = $stmt->get_result();
 $inquiries = [];
 while ($row = $result->fetch_assoc()) $inquiries[] = $row;
 $stmt->close();
+
+$page_title = 'Inquiry Hub';
+$page_subtitle = 'Engineering Terminal';
+ob_start();
+?>
+<div class="max-w-xs w-full relative">
+    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+    <input type="text" placeholder="Search records..." class="w-full bg-slate-50 border-none rounded-xl pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-primary transition-all">
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-emerald-50 rounded-full border border-emerald-100">
+    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+    <span class="text-[9px] font-bold text-emerald-600 uppercase">Live</span>
+</div>
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-xs"><?php echo $admin_initials; ?></div>
+<?php
+$page_header_actions = ob_get_clean();
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -199,25 +215,7 @@ $stmt->close();
     </div>
 
     <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 relative z-20">
-            <div class="flex items-center gap-6 flex-1 min-w-0">
-                <div class="flex flex-col shrink-0">
-                    <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight truncate">Inquiry Hub</h1>
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Engineering Terminal</p>
-                </div>
-                <div class="max-w-xs w-full relative hidden sm:block">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                    <input type="text" placeholder="Search records..." class="w-full bg-slate-50 border-none rounded-xl pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-primary transition-all">
-                </div>
-            </div>
-            <div class="flex items-center gap-3 shrink-0">
-                <div class="flex items-center gap-2 px-3 py-1 bg-emerald-50 rounded-full border border-emerald-100 hidden xs:flex">
-                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                    <span class="text-[9px] font-bold text-emerald-600 uppercase">Live</span>
-                </div>
-                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-xs"><?php echo $admin_initials; ?></div>
-            </div>
-        </header>
+        <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
         <div class="flex-1 flex overflow-hidden p-3 lg:p-4 gap-4 relative z-10">
             <!-- List View -->

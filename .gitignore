@@ -23,7 +23,7 @@ servers/cloudflare/config.php
 
 # Change log & agent instructions (local only)
 log.md
-AGENTS.md
+# AGENTS.md moved to .agent/instructions.md — kept tracked for AI context
 
 # Dev/scratch scripts
 scratch/

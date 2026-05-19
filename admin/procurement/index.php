@@ -66,6 +66,14 @@ while ($row = $res->fetch_assoc()) $orders[] = $row;
 
 $statuses = ['Pending', 'Order Confirmed', 'Processing', 'Dispatched', 'In Transit', 'Held by Customs', 'Awaiting Clearance', 'Out for Delivery', 'Delivered', 'Completed', 'Cancelled'];
 $permissions = get_admin_permissions($admin_id);
+
+$page_title = 'Procurement Orders';
+$page_subtitle = 'Supply Chain';
+ob_start(); ?>
+<a href="create.php" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+    <span class="material-symbols-outlined text-sm">add_shopping_cart</span> INITIATE ORDER
+</a>
+<?php $page_header_actions = ob_get_clean();
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -98,16 +106,7 @@ $permissions = get_admin_permissions($admin_id);
 </div>
 
 <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-    <!-- Header -->
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 z-20">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Procurement Command</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Global Supply Logistics</p>
-        </div>
-        <a href="create.php" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
-            <span class="material-symbols-outlined text-sm">add_shopping_cart</span> INITIATE ORDER
-        </a>
-    </header>
+    <?php require_once __DIR__ . '/../../components/admin_header.php'; ?>
 
     <div class="flex-1 flex overflow-hidden gap-0">
         <!-- LEFT: Order List -->

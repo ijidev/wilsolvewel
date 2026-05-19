@@ -51,6 +51,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
     }
 }
 
+// Handle Test SMTP
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['test_smtp'])) {
+    header('Content-Type: application/json');
+    if ($permissions['role'] !== 'Director') {
+        echo json_encode(['status' => 'error', 'message' => 'Permission denied.']);
+        exit;
+    }
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token. Reload the page.']);
+        exit;
+    }
+    $test_email = trim($_POST['test_email'] ?? '');
+    if (!filter_var($test_email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['status' => 'error', 'message' => 'Please enter a valid email address.']);
+        exit;
+    }
+    $subject = 'SMTP Test — WilsOveWel';
+    $body = '<p>This is a test email from <strong>WilsOveWel Engineering</strong>.</p><p>If you received this, your SMTP configuration is working correctly.</p><p style="color:#64748B;font-size:12px;margin-top:20px;">Sent: ' . date('M j, Y h:i A') . '</p>';
+    $sent = send_email($test_email, $subject, email_template('SMTP Test', $body));
+    echo json_encode([
+        'status' => $sent ? 'success' : 'error',
+        'message' => $sent ? 'Test email sent successfully! Check ' . htmlspecialchars($test_email) . ' inbox.' : 'Failed to send test email. Check SMTP settings and try again.'
+    ]);
+    exit;
+}
+
 // Handle Contact Info Update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_contact'])) {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
@@ -130,6 +156,10 @@ $routing_rules = [];
 while ($row = $rules_res->fetch_assoc()) $routing_rules[] = $row;
 
 $active_tab = $_GET['tab'] ?? 'global';
+
+$page_title = 'System Settings';
+$page_subtitle = 'Configuration & Logs';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -141,6 +171,8 @@ $active_tab = $_GET['tab'] ?? 'global';
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#EAB308","on-primary":"#000000",surface:"#F8FAFC","on-surface":"#0F172A"},fontFamily:{headline:["Space Grotesk"],body:["Manrope"]}}}}</script>
     <style>
         .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
@@ -163,12 +195,7 @@ $active_tab = $_GET['tab'] ?? 'global';
 <?php endif; ?>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">System Settings</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Configuration & Logs</p>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <div class="flex-1 flex overflow-hidden">
         <!-- Settings Nav Sidebar -->
@@ -323,6 +350,24 @@ $active_tab = $_GET['tab'] ?? 'global';
                             <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Configuration</button>
                         </div>
                     </form>
+
+                    <div class="px-8 pb-8">
+                        <div class="border-t border-slate-100 pt-6">
+                            <h3 class="text-sm font-bold font-headline text-slate-900 mb-1">Test SMTP</h3>
+                            <p class="text-[11px] text-slate-400 mb-4">Send a test email to verify your SMTP configuration works end-to-end (auth, encryption, delivery).</p>
+                            <div class="flex items-end gap-3">
+                                <div class="flex-1">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Recipient Email</label>
+                                    <input type="email" id="test-email" value="<?php echo htmlspecialchars($smtp_from_email); ?>" placeholder="you@example.com" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                </div>
+                                <button type="button" id="test-smtp-btn" onclick="testSmtp()" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-600 transition-colors shadow-lg shrink-0 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">send</span>
+                                    <span>Send Test</span>
+                                </button>
+                            </div>
+                            <div id="test-smtp-result" class="mt-3 text-xs font-bold hidden"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <?php elseif ($active_tab === 'contacts'): ?>
@@ -370,24 +415,29 @@ $active_tab = $_GET['tab'] ?? 'global';
                             </div>
                         </div>
                         <div class="border-t border-slate-100 pt-6">
-                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Google Maps</h3>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Location & Map</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Address</label>
+                                    <input type="text" id="map-address" name="contact_address" value="<?php echo htmlspecialchars(get_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Search address or click map">
+                                </div>
+                                <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Latitude</label>
-                                    <input type="text" name="map_latitude" value="<?php echo htmlspecialchars(get_setting('map_latitude', '6.5244')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <input type="text" id="map-lat" name="map_latitude" value="<?php echo htmlspecialchars(get_setting('map_latitude', '6.5244')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Longitude</label>
-                                    <input type="text" name="map_longitude" value="<?php echo htmlspecialchars(get_setting('map_longitude', '3.3792')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                                </div>
-                                <div class="space-y-1.5">
-                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Google Maps API Key</label>
-                                    <input type="text" name="google_maps_api_key" value="<?php echo htmlspecialchars(get_setting('google_maps_api_key', '')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Optional">
+                                    <input type="text" id="map-lng" name="map_longitude" value="<?php echo htmlspecialchars(get_setting('map_longitude', '3.3792')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono">
                                 </div>
                             </div>
+                            <div class="mt-4">
+                                <div id="leaflet-map" class="w-full h-64 sm:h-80 rounded-2xl border border-slate-200 overflow-hidden" style="z-index:1;"></div>
+                                <p class="text-[9px] text-slate-400 mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-xs">touch_app</span> Click or drag the pin to set location — coordinates update automatically</p>
+                            </div>
+                            <input type="hidden" name="google_maps_api_key" value="">
                         </div>
                         <div class="pt-4 border-t border-slate-100 flex justify-end">
-                            <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Contact Info</button>
+                            <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Configuration</button>
                         </div>
                     </form>
                 </div>
@@ -514,5 +564,78 @@ $active_tab = $_GET['tab'] ?? 'global';
     </div>
 </div>
 
+<script>
+var mapInitialized = false;
+function initMap() {
+    var el = document.getElementById('leaflet-map');
+    if (mapInitialized || !el) return;
+    mapInitialized = true;
+
+    var lat = parseFloat(document.getElementById('map-lat').value) || 6.5244;
+    var lng = parseFloat(document.getElementById('map-lng').value) || 3.3792;
+
+    var map = L.map(el, { zoomControl: true }).setView([lat, lng], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(map);
+
+    var marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+    marker.on('dragend', function() {
+        var pos = marker.getLatLng();
+        document.getElementById('map-lat').value = pos.lat.toFixed(6);
+        document.getElementById('map-lng').value = pos.lng.toFixed(6);
+    });
+
+    map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        document.getElementById('map-lat').value = e.latlng.lat.toFixed(6);
+        document.getElementById('map-lng').value = e.latlng.lng.toFixed(6);
+    });
+
+    setTimeout(function() { map.invalidateSize(); }, 100);
+}
+
+(function() {
+    if (window.location.search.includes('tab=contacts')) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() { setTimeout(initMap, 300); });
+        } else {
+            setTimeout(initMap, 300);
+        }
+    }
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest('[href*="tab=contacts"]');
+        if (link) setTimeout(initMap, 300);
+    });
+})();
+
+async function testSmtp() {
+    var email = document.getElementById("test-email").value.trim();
+    if (!email) { alert("Please enter a recipient email."); return; }
+    var btn = document.getElementById("test-smtp-btn");
+    var result = document.getElementById("test-smtp-result");
+    btn.disabled = true;
+    btn.querySelector("span:last-child").textContent = "Sending...";
+    result.className = "mt-3 text-xs font-bold hidden";
+    try {
+        var formData = new FormData();
+        formData.append("test_smtp", "1");
+        formData.append("test_email", email);
+        formData.append("csrf_token", document.querySelector(\'input[name="csrf_token"]\').value);
+        var res = await fetch("", { method: "POST", body: formData });
+        var data = await res.json();
+        result.textContent = data.message;
+        result.className = "mt-3 text-xs font-bold block " + (data.status === "success" ? "text-emerald-600" : "text-red-500");
+    } catch (err) {
+        result.textContent = "Request failed. Check console.";
+        result.className = "mt-3 text-xs font-bold block text-red-500";
+    } finally {
+        btn.disabled = false;
+        btn.querySelector("span:last-child").textContent = "Send Test";
+    }
+}
+</script>
 </body>
 </html>

@@ -71,6 +71,10 @@ if (isset($_GET['edit'])) {
         if ($p['id'] == $id) { $edit_project = $p; break; }
     }
 }
+
+$page_title = 'Showcase Projects';
+$page_subtitle = '';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -99,12 +103,7 @@ if (isset($_GET['edit'])) {
 <?php endif; ?>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Showcase Projects</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Manage public-facing project portfolio</p>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div class="max-w-5xl mx-auto space-y-8">

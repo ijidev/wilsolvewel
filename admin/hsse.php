@@ -251,6 +251,10 @@ $audits_res = safe_query($conn, "SELECT * FROM hsse_audits WHERE status = 'Upcom
 $milestones_res = safe_query($conn, "SELECT * FROM hsse_milestones ORDER BY reset_date DESC LIMIT 5");
 
 $projects_res = safe_query($conn, "SELECT id, name FROM projects ORDER BY name ASC");
+
+$page_title = 'HSSE Dashboard';
+$page_subtitle = 'Health, Safety, Security & Environment';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -303,8 +307,7 @@ $projects_res = safe_query($conn, "SELECT id, name FROM projects ORDER BY name A
 <script src="../components/admin_sidenav.js" data-root="../"></script>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
-    <!-- TopNavBar -->
-    <script src="../components/admin_topnav.js" data-root="../"></script>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative custom-scrollbar">
         <div class="w-full relative z-10">

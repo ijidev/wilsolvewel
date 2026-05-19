@@ -8,12 +8,15 @@ $recipient_type = $_GET['type'] ?? '';
 $recipient_id = (int)($_GET['id'] ?? 0);
 $last_id = (int)($_GET['last_id'] ?? 0);
 
-if (!$recipient_type || !$recipient_id) {
-    if (isset($_SESSION['admin_id'])) {
-        $recipient_type = 'admin';
+if (!$recipient_type) {
+    echo json_encode(['status' => 'error', 'message' => 'Type required']);
+    exit;
+}
+
+if (!$recipient_id) {
+    if ($recipient_type === 'admin' && isset($_SESSION['admin_id'])) {
         $recipient_id = (int)$_SESSION['admin_id'];
-    } elseif (isset($_SESSION['client_id'])) {
-        $recipient_type = 'client';
+    } elseif ($recipient_type === 'client' && isset($_SESSION['client_id'])) {
         $recipient_id = (int)$_SESSION['client_id'];
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Not authenticated']);

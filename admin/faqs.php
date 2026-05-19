@@ -95,6 +95,10 @@ $edit_category = null;
 if (isset($_GET['edit_cat'])) {
     foreach ($categories as $c) { if ($c['id'] == $_GET['edit_cat']) { $edit_category = $c; break; } }
 }
+
+$page_title = 'FAQ Manager';
+$page_subtitle = count($faqs) . ' entries across ' . count($categories) . ' categories (dynamic)';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -129,12 +133,7 @@ if (isset($_GET['edit_cat'])) {
 <?php endif; ?>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
-        <div class="flex flex-col">
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">FAQ Manager</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"><?php echo count($faqs); ?> entries across <?php echo count($categories); ?> categories</p>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div class="max-w-7xl mx-auto space-y-6">

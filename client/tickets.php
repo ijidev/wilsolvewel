@@ -227,9 +227,18 @@ $page_scripts = '
     let currentTicketId = null;
     let pollInterval = null;
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const params = new URLSearchParams(window.location.search);
+        const ticketId = params.get("ticket_id");
+        if (ticketId) {
+            openThread(parseInt(ticketId));
+        }
+    });
+
     async function openThread(id) {
         currentTicketId = id;
         document.getElementById("replyTicketId").value = id;
+        history.replaceState(null, "", "?ticket_id=" + id);
         const overlay = document.getElementById("threadOverlay");
         const panel = document.getElementById("threadPanel");
         const content = document.getElementById("threadContent");
@@ -266,6 +275,7 @@ $page_scripts = '
         setTimeout(() => overlay.classList.add("hidden"), 300);
         if (pollInterval) clearInterval(pollInterval);
         currentTicketId = null;
+        history.replaceState(null, "", window.location.pathname);
     }
 
     function renderThread(ticket, replies) {

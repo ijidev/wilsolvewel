@@ -15,6 +15,10 @@ $staff = $res->fetch_assoc();
 if (!$staff) { header('Location: staff.php'); exit; }
 
 $site_name = get_setting('site_name') ?: 'Wilsolvewel';
+
+$page_title = 'Staff Overview';
+$page_subtitle = '';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -39,18 +43,7 @@ $site_name = get_setting('site_name') ?: 'Wilsolvewel';
 <script src="../components/admin_sidenav.js" data-root="../"></script>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 z-20">
-        <div class="flex items-center gap-4">
-            <a href="staff.php" class="text-slate-400 hover:text-slate-900 transition-colors"><span class="material-symbols-outlined">arrow_back</span></a>
-            <div>
-                <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Staff Overview</h1>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"><?php echo htmlspecialchars($staff['name']); ?></p>
-            </div>
-        </div>
-        <button onclick="downloadIDCard()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
-            <span class="material-symbols-outlined text-sm">picture_as_pdf</span> DOWNLOAD ID CARD
-        </button>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <main class="flex-1 overflow-y-auto p-6 md:p-12">
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">

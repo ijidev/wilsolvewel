@@ -106,6 +106,12 @@ while ($row = $res->fetch_assoc()) $staff[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
 $is_director = ($permissions['role'] ?? '') === 'Director';
+
+$page_title = 'Staff Management';
+$page_subtitle = 'Internal Team Control';
+$page_header_actions = '<button onclick="openStaffModal()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+    <span class="material-symbols-outlined text-sm">person_add</span> ADD NEW STAFF
+</button>';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -138,15 +144,7 @@ $is_director = ($permissions['role'] ?? '') === 'Director';
 </div>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 z-20">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Staff Management</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Internal Team Control</p>
-        </div>
-        <button onclick="openStaffModal()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
-            <span class="material-symbols-outlined text-sm">person_add</span> ADD NEW STAFF
-        </button>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <main class="flex-1 overflow-y-auto custom-scrollbar p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

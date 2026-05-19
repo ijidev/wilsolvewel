@@ -54,6 +54,10 @@ function getActionColor($action) {
     if ($action === 'Delete') return 'text-red-500';
     return 'text-slate-500';
 }
+
+$page_title = 'Audit Trail';
+$page_subtitle = 'Activity Logs';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -78,12 +82,7 @@ function getActionColor($action) {
 <script src="../components/admin_sidenav.js" data-root="../"></script>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
-        <div>
-            <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Global Audit Monitor</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">System Activity & Event Logs</p>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <main class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8">
         <div class="max-w-4xl mx-auto relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">

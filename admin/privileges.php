@@ -67,6 +67,10 @@ while ($row = $result->fetch_assoc()) {
     $row['permissions'] = json_decode($row['permissions'], true);
     $templates[] = $row;
 }
+
+$page_title = 'Role Privileges';
+$page_subtitle = '';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -108,22 +112,7 @@ while ($row = $result->fetch_assoc()) {
     <script src="../components/admin_sidenav.js" data-root="../"></script>
 
     <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <!-- Top Nav -->
-        <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 relative z-20">
-            <div class="flex flex-col">
-                <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Access Control</h1>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Privilege Templates</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <?php if ($message): ?>
-                    <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 uppercase"><?php echo $message; ?></span>
-                <?php endif; ?>
-                <button onclick="openEditor()" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-xs hover:shadow-lg transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">add_box</span>
-                    NEW TEMPLATE
-                </button>
-            </div>
-        </header>
+        <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
         <!-- Main Work Area -->
         <main class="flex-1 overflow-y-auto custom-scrollbar p-6">

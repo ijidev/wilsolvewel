@@ -116,9 +116,10 @@
             }
         }
 
-        async function fetchNotifications() {
+        async function fetchNotifications(fullReload) {
             try {
-                const res = await fetch('fetch_notifications.php?last_id=' + lastNotifId);
+                var fetchId = fullReload ? 0 : lastNotifId;
+                const res = await fetch('fetch_notifications.php?type=client&last_id=' + fetchId);
                 const data = await res.json();
                 if (data.status !== 'success') return;
 
@@ -161,7 +162,9 @@
                 var timeAgo = timeSince(n.created_at);
                 var cls = n.is_read == 0 ? 'bg-primary/5 dark:bg-primary/5' : '';
                 var icon = n.icon || 'notifications';
-                return '<div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ' + cls + '">' +
+                var href = n.link || '#';
+                var onclick = n.link ? 'event.preventDefault(); window.clickNotif(' + n.id + ',\'' + href.replace(/'/g, "\\'") + '\')' : '';
+                return '<a href="' + href + '" onclick="' + onclick + '" class="block p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ' + cls + '">' +
                     '<div class="flex items-start gap-3">' +
                         '<span class="material-symbols-outlined text-lg text-primary shrink-0 mt-0.5">' + icon + '</span>' +
                         '<div class="min-w-0 flex-1">' +
@@ -169,10 +172,19 @@
                             (n.message ? '<p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">' + escHtml(n.message) + '</p>' : '') +
                             '<p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest font-bold">' + timeAgo + '</p>' +
                         '</div>' +
-                        (n.link ? '<a href="' + n.link + '" class="shrink-0 text-primary hover:text-primary/80"><span class="material-symbols-outlined text-sm">arrow_forward</span></a>' : '') +
                     '</div>' +
-                '</div>';
+                '</a>';
             }).join('');
+        }
+
+        window.clickNotif = function(id, link) {
+            var fd = new FormData();
+            fd.append('id', id);
+            fetch('mark_notification_read.php', { method: 'POST', body: fd }).then(function() {
+                window.location.href = link;
+            }).catch(function() {
+                window.location.href = link;
+            });
         }
 
         function escHtml(str) {
@@ -208,7 +220,7 @@
                 if (isHidden) {
                     dropNotif.classList.remove('hidden');
                     notifOpen = true;
-                    fetchNotifications();
+                    fetchNotifications(true);
                 } else {
                     notifOpen = false;
                 }

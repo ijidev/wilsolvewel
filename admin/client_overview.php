@@ -22,6 +22,10 @@ if (!$client) {
 }
 
 $permissions = get_admin_permissions($admin_id);
+
+$page_title = 'Client Overview';
+$page_subtitle = '';
+$page_header_actions = '';
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -44,17 +48,7 @@ $permissions = get_admin_permissions($admin_id);
 <script src="../components/admin_sidenav.js" data-root="../"></script>
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 z-20">
-        <div class="flex items-center gap-4">
-            <a href="clients.php" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-                <span class="material-symbols-outlined text-sm">arrow_back</span>
-            </a>
-            <div>
-                <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">Client Overview</h1>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Client Profile & Information</p>
-            </div>
-        </div>
-    </header>
+    <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
     <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10">
         <div class="max-w-4xl mx-auto">
