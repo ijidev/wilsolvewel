@@ -354,7 +354,7 @@ $active_tab = $_GET['tab'] ?? 'global';
                         </div>
                         <div class="border-t border-slate-100 pt-6">
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Business Hours</h3>
-                            <div class="grid grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Weekdays</label>
                                     <input type="text" name="hours_weekdays" value="<?php echo htmlspecialchars(get_setting('hours_weekdays', '8:00 AM - 5:00 PM')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
@@ -371,7 +371,7 @@ $active_tab = $_GET['tab'] ?? 'global';
                         </div>
                         <div class="border-t border-slate-100 pt-6">
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Google Maps</h3>
-                            <div class="grid grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Latitude</label>
                                     <input type="text" name="map_latitude" value="<?php echo htmlspecialchars(get_setting('map_latitude', '6.5244')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">

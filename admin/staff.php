@@ -4,19 +4,15 @@ $conn = get_db_connection();
 $admin_id = $_SESSION['admin_id'];
 
 function send_staff_notification($to_email, $to_name, $is_new, $password = null) {
-    $smtp_host = get_setting('smtp_host');
-    $smtp_user = get_setting('smtp_user');
-    $smtp_from = get_setting('smtp_from_email') ?: $smtp_user;
     $smtp_from_name = get_setting('smtp_from_name') ?: 'Wilsolvewel Engineering';
-    if (empty($smtp_host) || empty($smtp_user)) return false;
-    $subject = $is_new ? 'Welcome to Wilsolvewel Engineering Terminal' : 'Your Profile Has Been Updated';
-    $body = "Hello $to_name,\n\n" .
-        ($is_new
-            ? "Your staff account has been created on the Wilsolvewel Engineering Terminal.\n\nTemporary Password: " . ($password ?: 'staff123') . "\n\nPlease login and change your password immediately."
-            : "Your profile on the Wilsolvewel Engineering Terminal has been updated by an administrator."
-        ) . "\n\nRegards,\n$smtp_from_name";
-    $headers = "From: $smtp_from_name <$smtp_from>\r\nContent-Type: text/plain; charset=utf-8";
-    return @mail($to_email, $subject, $body, $headers);
+    if ($is_new) {
+        $subject = 'Welcome to Wilsolvewel Engineering Terminal';
+        $html = email_template('Welcome to the Team', '<p>Hello ' . htmlspecialchars($to_name) . ',</p><p>Your staff account has been created on the <strong>Wilsolvewel Engineering Terminal</strong>.</p><p><strong>Temporary Password:</strong> <code style="background:#F1F5F9;padding:4px 8px;border-radius:4px;font-size:14px">' . htmlspecialchars($password ?: 'staff123') . '</code></p><p>Please login and change your password immediately.</p>');
+    } else {
+        $subject = 'Your Profile Has Been Updated';
+        $html = email_template('Profile Updated', '<p>Hello ' . htmlspecialchars($to_name) . ',</p><p>Your profile on the <strong>Wilsolvewel Engineering Terminal</strong> has been updated by an administrator.</p><p>If you did not expect this change, please contact your administrator.</p>');
+    }
+    return send_email($to_email, $subject, $html);
 }
 
 if (isset($_GET['ajax_action'])) {

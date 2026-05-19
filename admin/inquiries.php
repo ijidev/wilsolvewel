@@ -57,11 +57,15 @@ if (isset($_GET['ajax_action'])) {
             echo json_encode(['status' => 'error', 'message' => $smtp_status['message']]);
             exit;
         }
+        $inquiry = safe_query($conn, "SELECT name, type, message FROM inquiries WHERE id = ?", "i", [$id])->fetch_assoc();
+        $subject = 'Fwd: ' . $inquiry['type'] . ' inquiry from ' . $inquiry['name'];
+        $html = email_template('Forwarded Inquiry', '<p>An inquiry has been forwarded to you:</p><p><strong>Type:</strong> ' . htmlspecialchars($inquiry['type']) . '</p><p><strong>From:</strong> ' . htmlspecialchars($inquiry['name']) . '</p><p><strong>Message:</strong></p><blockquote style="border-left:3px solid #EAB308;padding-left:1em;color:#475569">' . nl2br(htmlspecialchars($inquiry['message'])) . '</blockquote>');
+        $sent = send_email($_POST['email'], $subject, $html);
         $stmt = $conn->prepare("UPDATE inquiries SET forwarded_to = ? WHERE id = ?");
         $stmt->bind_param("si", $_POST['email'], $id);
         $stmt->execute();
         $stmt->close();
-        echo json_encode(['status' => 'success', 'message' => 'Forwarded successfully to ' . $_POST['email']]);
+        echo json_encode(['status' => 'success', 'message' => ($sent ? 'Forwarded' : 'Failed to send') . ' successfully to ' . $_POST['email']]);
         exit;
     }
 
@@ -71,11 +75,16 @@ if (isset($_GET['ajax_action'])) {
             echo json_encode(['status' => 'error', 'message' => $smtp_status['message']]);
             exit;
         }
+        $inquiry = safe_query($conn, "SELECT name, type, message FROM inquiries WHERE id = ?", "i", [$id])->fetch_assoc();
+        $reply_body = $_POST['message'] ?? '';
+        $subject = 'Re: ' . $inquiry['type'] . ' inquiry';
+        $html = email_template('Reply to Your Inquiry', '<p>Hello ' . htmlspecialchars($inquiry['name']) . ',</p><p>Regarding your <strong>' . htmlspecialchars($inquiry['type']) . '</strong> inquiry:</p><div style="background:#F8FAFC;border-radius:12px;padding:20px;margin:16px 0">' . nl2br(htmlspecialchars($reply_body)) . '</div>');
+        $sent = send_email($_POST['to'], $subject, $html);
         $stmt = $conn->prepare("UPDATE inquiries SET status = 'Replied' WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->close();
-        echo json_encode(['status' => 'success', 'message' => 'Reply sent successfully to ' . $_POST['to']]);
+        echo json_encode(['status' => 'success', 'message' => ($sent ? 'Reply sent' : 'Failed to send reply') . ' to ' . $_POST['to']]);
         exit;
     }
 

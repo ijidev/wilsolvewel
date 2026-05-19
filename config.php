@@ -690,4 +690,114 @@ function test_smtp_connection() {
         return ['status' => false, 'message' => 'Connection failed: ' . $errstr];
     }
 }
+
+function email_template($title, $body_html) {
+    $brand = htmlspecialchars(get_setting('smtp_from_name', 'WilsOveWel Engineering'));
+    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#F1F5F9;font-family:Manrope,Helvetica,Arial,sans-serif}.wrapper{padding:32px 16px}.card{max-width:560px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)}.header{background:#0F172A;padding:24px 32px}.header h1{color:#EAB308;font-size:18px;font-weight:700;margin:0;letter-spacing:-0.3px}.header span{color:#64748B;font-size:11px}.body{padding:32px}.body h2{color:#0F172A;font-size:16px;font-weight:700;margin:0 0 16px}.body p{color:#334155;font-size:14px;line-height:1.7;margin:0 0 12px}.body a{color:#2563EB;text-decoration:underline}.footer{background:#F8FAFC;padding:16px 32px;text-align:center;border-top:1px solid #E2E8F0}.footer p{color:#94A3B8;font-size:11px;margin:0}</style></head><body><div class="wrapper"><div class="card"><div class="header"><h1>' . $brand . '</h1><span>Notification</span></div><div class="body"><h2>' . $title . '</h2>' . $body_html . '</div><div class="footer"><p>&copy; ' . date('Y') . ' ' . $brand . '. All rights reserved.</p></div></div></div></body></html>';
+}
+
+function get_department_admins($conn, $department_id = null) {
+    $sql = "SELECT id, email, name FROM admins WHERE status = 'Active'";
+    if ($department_id) $sql .= " AND department_id = " . (int)$department_id;
+    $res = $conn->query($sql);
+    $admins = [];
+    if ($res) while ($a = $res->fetch_assoc()) $admins[] = $a;
+    return $admins;
+}
+
+function notify_department_admins($conn, $department_id, $title, $message, $link, $icon, $email_subject, $email_html) {
+    $admins = get_department_admins($conn, $department_id);
+    if (empty($admins)) $admins = get_department_admins($conn, null);
+    foreach ($admins as $a) {
+        create_notification($conn, 'admin', $a['id'], $title, $message, $link, $icon);
+        send_email($a['email'], $email_subject, $email_html);
+    }
+    return !empty($admins);
+}
+
+function send_email($to, $subject, $html_body, $text_body = '') {
+    $host = get_setting('smtp_host');
+    $port = (int)get_setting('smtp_port', 587);
+    $user = get_setting('smtp_user');
+    $pass = get_setting('smtp_pass');
+    $enc = get_setting('smtp_encryption', 'tls');
+    $from_email = get_setting('smtp_from_email', 'noreply@wilsolvewel.com');
+    $from_name = get_setting('smtp_from_name', 'WilsOveWel Engineering');
+
+    if (empty($from_email)) $from_email = 'noreply@wilsolvewel.com';
+    if (empty($from_name)) $from_name = 'WilsOveWel Engineering';
+    if (empty($text_body)) $text_body = strip_tags($html_body);
+
+    if (empty($host)) return false;
+
+    return _smtp_send($host, $port, $user, $pass, $enc, $from_email, $from_name, $to, $subject, $html_body, $text_body);
+}
+
+function _smtp_cmd($fp, $cmd) { fwrite($fp, $cmd . "\r\n"); $line = fgets($fp, 512); return $line; }
+function _smtp_code($line) { return substr(trim($line), 0, 3); }
+function _smtp_read_ehlo($fp) { $line = ''; do { $line = fgets($fp, 512); } while (substr(trim($line), 3, 1) === '-'); return $line; }
+
+function _smtp_send($host, $port, $user, $pass, $enc, $from_email, $from_name, $to, $subject, $html_body, $text_body) {
+    $errno = 0; $errstr = '';
+    $fp = @fsockopen($host, $port, $errno, $errstr, 15);
+    if (!$fp) return false;
+
+    $line = fgets($fp, 512);
+    if (_smtp_code($line) !== '220') { fclose($fp); return false; }
+
+    $helo = 'EHLO WilsOveWel';
+    $line = _smtp_cmd($fp, $helo);
+    if (_smtp_code($line) !== '250') { fclose($fp); return false; }
+    $line = _smtp_read_ehlo($fp);
+
+    if ($enc === 'tls') {
+        $line = _smtp_cmd($fp, 'STARTTLS');
+        if (_smtp_code($line) === '220') {
+            if (!@stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) { fclose($fp); return false; }
+            $line = _smtp_cmd($fp, $helo);
+            if (_smtp_code($line) !== '250') { fclose($fp); return false; }
+            $line = _smtp_read_ehlo($fp);
+        }
+    }
+
+    if (!empty($user) && !empty($pass)) {
+        $line = _smtp_cmd($fp, 'AUTH LOGIN');
+        if (_smtp_code($line) === '334') {
+            $line = _smtp_cmd($fp, base64_encode($user));
+            if (_smtp_code($line) === '334') {
+                $line = _smtp_cmd($fp, base64_encode($pass));
+                if (_smtp_code($line) !== '235') { fclose($fp); return false; }
+            } else { fclose($fp); return false; }
+        }
+    }
+
+    $line = _smtp_cmd($fp, "MAIL FROM:<$from_email>");
+    if (_smtp_code($line) !== '250') { fclose($fp); return false; }
+
+    $to_clean = trim(preg_replace('/^.*<(.*)>.*$/', '$1', $to));
+    $line = _smtp_cmd($fp, "RCPT TO:<$to_clean>");
+    if (_smtp_code($line) !== '250' && _smtp_code($line) !== '251') { fclose($fp); return false; }
+
+    $line = _smtp_cmd($fp, 'DATA');
+    if (_smtp_code($line) !== '354') { fclose($fp); return false; }
+
+    $headers = "From: $from_name <$from_email>\r\n";
+    $headers .= "Reply-To: $from_email\r\n";
+    $headers .= "To: $to\r\n";
+    $headers .= "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: multipart/alternative; boundary=\"alt-boundary\"\r\n";
+    $headers .= "X-Mailer: WilsOveWel/1.0\r\n\r\n";
+    $headers .= "--alt-boundary\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n\r\n" . $text_body . "\r\n\r\n";
+    $headers .= "--alt-boundary\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n\r\n" . $html_body . "\r\n\r\n";
+    $headers .= "--alt-boundary--\r\n.\r\n";
+
+    fwrite($fp, $headers);
+    $line = fgets($fp, 512);
+
+    fclose($fp);
+    return _smtp_code($line) === '250';
+}
 ?>

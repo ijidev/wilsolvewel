@@ -34,6 +34,13 @@ if (isset($_GET['ajax_action'])) {
         $stmt->execute();
         $stmt->close();
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Updated assignment for ticket ID: $ticket_id");
+        // Notify assigned admin
+        if ($assigned_to > 0) {
+            $ainfo = safe_query($conn, "SELECT a.email, a.name, t.subject FROM admins a JOIN tickets t ON t.id = ? WHERE a.id = ?", "ii", [$ticket_id, $assigned_to]);
+            if ($ainfo && $a = $ainfo->fetch_assoc()) {
+                send_email($a['email'], 'Ticket Assigned: ' . htmlspecialchars($a['subject']), email_template('You have been assigned a ticket', '<p>Hello ' . htmlspecialchars($a['name']) . ',</p><p>Ticket <strong>' . htmlspecialchars($a['subject']) . '</strong> has been assigned to you.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/admin/tickets.php?ticket_id=' . $ticket_id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Ticket</a></p>'));
+            }
+        }
         echo json_encode(['status' => 'success']);
         exit;
     }
@@ -47,6 +54,11 @@ if (isset($_GET['ajax_action'])) {
         $stmt->execute();
         $stmt->close();
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Updated status to '$status' for ticket ID: $ticket_id");
+        // Notify client
+        $cinfo = safe_query($conn, "SELECT t.subject, c.email, c.name FROM tickets t JOIN clients c ON t.client_id = c.id WHERE t.id = ?", "i", [$ticket_id]);
+        if ($cinfo && $c = $cinfo->fetch_assoc()) {
+            send_email($c['email'], 'Ticket #' . $ticket_id . ' Status: ' . $status, email_template('Your ticket status has changed', '<p>Hello ' . htmlspecialchars($c['name']) . ',</p><p>Your ticket <strong>' . htmlspecialchars($c['subject']) . '</strong> has been updated to: <strong>' . $status . '</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/tickets.php' . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Ticket</a></p>'));
+        }
         echo json_encode(['status' => 'success']);
         exit;
     }
@@ -87,10 +99,11 @@ if (isset($_GET['ajax_action'])) {
         $stmt2->close();
         
         // Notify client
-        $ticket_info = safe_query($conn, "SELECT client_id, subject FROM tickets WHERE id = ?", "i", [$ticket_id]);
+        $ticket_info = safe_query($conn, "SELECT t.client_id, t.subject, c.name as client_name, c.email as client_email FROM tickets t JOIN clients c ON t.client_id = c.id WHERE t.id = ?", "i", [$ticket_id]);
         if ($ticket_info) {
             $t = $ticket_info->fetch_assoc();
             create_notification($conn, 'client', $t['client_id'], 'New reply on your ticket', htmlspecialchars($t['subject']), 'tickets.php', 'forum');
+            send_email($t['client_email'], 'New Reply on Ticket #' . $ticket_id . ': ' . htmlspecialchars($t['subject']), email_template('We\'ve replied to your ticket', '<p>Hello ' . htmlspecialchars($t['client_name']) . ',</p><p>Your support ticket <strong>' . htmlspecialchars($t['subject']) . '</strong> has received a new reply from our team.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/tickets.php' . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Reply</a></p>'));
         }
         
         log_audit($conn, 'Update', 'Ticket', 'Admin', $admin_id, "Replied to ticket ID: $ticket_id" . ($attachment ? " with attachment" : ""));
@@ -121,7 +134,7 @@ if (isset($_GET['ajax_action'])) {
         $html .= '</div>';
         $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
         if (!empty($reply['message'])) {
-            $html .= '<div class="text-sm leading-relaxed font-medium">' . $reply['message'] . '</div>';
+            $html .= '<div class="ticket-msg text-sm leading-relaxed font-medium">' . $reply['message'] . '</div>';
         }
         $html .= $attach_html;
         $html .= '</div></div>';
@@ -162,28 +175,28 @@ if (isset($_GET['ajax_action'])) {
 
             $html = '';
             if ($r['sender_type'] === 'Admin') {
-                $html .= '<div class="flex flex-col items-end mb-6 animate-in slide-in-from-right-4 duration-300">';
-                $html .= '<div class="flex items-center gap-2 mb-1">';
-                $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
+                $html .= '<div class="flex flex-col items-end mb-4 sm:mb-6 animate-in slide-in-from-right-4 duration-300">';
+                $html .= '<div class="flex items-center gap-2 mb-1.5 px-1">';
+                $html .= '<span class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
                 $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($r['sender_name']) . '</span>';
                 $html .= '</div>';
-                $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-lg shadow-primary/10">';
+                $html .= '<div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-4 sm:px-5 py-3 max-w-[90%] sm:max-w-[80%] shadow-lg shadow-primary/10">';
                 if (!empty($r['message'])) {
-                    $html .= '<div class="text-sm leading-relaxed font-medium">' . $r['message'] . '</div>';
+                    $html .= '<div class="ticket-msg text-sm leading-relaxed font-medium">' . $r['message'] . '</div>';
                 }
                 $html .= $attach_html;
                 $html .= '</div></div>';
             } else {
-                $html .= '<div class="flex flex-col items-start mb-6 animate-in slide-in-from-left-4 duration-300">';
-                $html .= '<div class="flex items-center gap-2 mb-1">';
+                $html .= '<div class="flex flex-col items-start mb-4 sm:mb-6 animate-in slide-in-from-left-4 duration-300">';
+                $html .= '<div class="flex items-center gap-2 mb-1.5 px-1">';
                 $html .= '<span class="text-xs font-bold text-slate-900">' . htmlspecialchars($r['sender_name']) . '</span>';
-                $html .= '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
+                $html .= '<span class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest">' . date('M j, Y h:i A', strtotime($r['created_at'])) . '</span>';
                 $html .= '</div>';
-                $html .= '<div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">';
+                $html .= '<div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-4 sm:p-5 max-w-[90%] sm:max-w-[80%] shadow-sm">';
                 if (!empty($r['message'])) {
-                    $html .= '<div class="text-sm text-slate-700 leading-relaxed">' . $r['message'] . '</div>';
+                    $html .= '<div class="ticket-msg text-sm text-slate-700 leading-relaxed">' . $r['message'] . '</div>';
                 }
-                $html .= str_replace('bg-black/10', 'bg-slate-50', $attach_html); // slight style diff for client attachment
+                $html .= str_replace('bg-black/10', 'bg-slate-50', $attach_html);
                 $html .= '</div></div>';
             }
             $replies[] = ['id' => $r['id'], 'html' => $html];
@@ -230,28 +243,28 @@ if (isset($_GET['ajax_action'])) {
         ob_start();
         ?>
         <!-- Header & Meta -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mb-6">
+        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-sm mb-4 sm:mb-6">
             <button onclick="backToTicketList()" class="lg:hidden w-8 h-8 flex items-center justify-center hover:bg-slate-50 rounded-lg shrink-0 mb-3">
                 <span class="material-symbols-outlined text-slate-500">arrow_back</span>
             </button>
-            <div class="flex items-start justify-between gap-4 mb-4">
-                <div class="flex-1">
-                    <h2 class="text-xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($ticket['subject']); ?></h2>
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-base sm:text-xl font-bold font-headline text-slate-900 mb-1 truncate"><?php echo htmlspecialchars($ticket['subject']); ?></h2>
                     <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm text-slate-400">person</span>
-                        <p class="text-xs font-bold text-slate-600"><?php echo htmlspecialchars($ticket['client_name']); ?> <span class="text-slate-300 font-normal ml-1">(<?php echo htmlspecialchars($ticket['client_email']); ?>)</span></p>
+                        <span class="material-symbols-outlined text-sm text-slate-400 shrink-0">person</span>
+                        <p class="text-[11px] sm:text-xs font-bold text-slate-600 truncate"><?php echo htmlspecialchars($ticket['client_name']); ?> <span class="text-slate-300 font-normal ml-1 hidden sm:inline">(<?php echo htmlspecialchars($ticket['client_email']); ?>)</span></p>
                     </div>
                 </div>
-                <div class="flex flex-col items-end gap-2 shrink-0">
-                    <span class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest <?php echo $ticket['status']=='Open'?'bg-amber-100 text-amber-700':($ticket['status']=='In Progress'?'bg-blue-100 text-blue-700':($ticket['status']=='Resolved'?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-600')); ?>"><?php echo $ticket['status']; ?></span>
-                    <span class="px-2 py-0.5 rounded bg-slate-50 text-slate-400 text-[9px] font-bold uppercase tracking-tighter"><?php echo $ticket['priority']; ?> Priority</span>
+                <div class="flex flex-row sm:flex-col items-center sm:items-end gap-2 shrink-0">
+                    <span class="px-2.5 sm:px-3 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold uppercase tracking-widest whitespace-nowrap <?php echo $ticket['status']=='Open'?'bg-amber-100 text-amber-700':($ticket['status']=='In Progress'?'bg-blue-100 text-blue-700':($ticket['status']=='Resolved'?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-600')); ?>"><?php echo $ticket['status']; ?></span>
+                    <span class="px-2 py-0.5 rounded bg-slate-50 text-slate-400 text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter"><?php echo $ticket['priority']; ?></span>
                 </div>
             </div>
             
-            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-100">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-slate-100">
                 <div class="space-y-1">
-                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Assign Department</label>
-                    <select onchange="updateAssignment(<?php echo $id; ?>)" id="deptSelect" class="w-full bg-slate-50 border-transparent rounded-xl px-3 py-2 text-xs font-bold focus:ring-1 focus:ring-primary text-slate-700">
+                    <label class="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
+                    <select onchange="updateAssignment(<?php echo $id; ?>)" id="deptSelect" class="w-full bg-slate-50 border-transparent rounded-xl px-3 py-2.5 sm:py-2 text-xs font-bold focus:ring-1 focus:ring-primary text-slate-700">
                         <option value="0">Unassigned</option>
                         <?php foreach($depts as $d): ?>
                             <option value="<?php echo $d['id']; ?>" <?php if($ticket['department_id']==$d['id']) echo 'selected'; ?>><?php echo htmlspecialchars($d['name']); ?></option>
@@ -259,8 +272,8 @@ if (isset($_GET['ajax_action'])) {
                     </select>
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Assign Staff</label>
-                    <select onchange="updateAssignment(<?php echo $id; ?>)" id="staffSelect" class="w-full bg-slate-50 border-transparent rounded-xl px-3 py-2 text-xs font-bold focus:ring-1 focus:ring-primary text-slate-700">
+                    <label class="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest">Staff</label>
+                    <select onchange="updateAssignment(<?php echo $id; ?>)" id="staffSelect" class="w-full bg-slate-50 border-transparent rounded-xl px-3 py-2.5 sm:py-2 text-xs font-bold focus:ring-1 focus:ring-primary text-slate-700">
                         <option value="0">Unassigned</option>
                         <?php foreach($staff as $s): ?>
                             <option value="<?php echo $s['id']; ?>" <?php if($ticket['assigned_admin_id']==$s['id']) echo 'selected'; ?>><?php echo htmlspecialchars($s['name']); ?></option>
@@ -268,8 +281,8 @@ if (isset($_GET['ajax_action'])) {
                     </select>
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Update Status</label>
-                    <select onchange="updateStatus(<?php echo $id; ?>, this.value)" class="w-full bg-slate-50 border-transparent rounded-xl px-3 py-2 text-xs font-bold focus:ring-1 focus:ring-primary text-slate-700">
+                    <label class="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status</label>
+                    <select onchange="updateStatus(<?php echo $id; ?>, this.value)" class="w-full bg-slate-50 border-transparent rounded-xl px-3 py-2.5 sm:py-2 text-xs font-bold focus:ring-1 focus:ring-primary text-slate-700">
                         <option value="Open" <?php if($ticket['status']=='Open') echo 'selected'; ?>>Open</option>
                         <option value="In Progress" <?php if($ticket['status']=='In Progress') echo 'selected'; ?>>In Progress</option>
                         <option value="Resolved" <?php if($ticket['status']=='Resolved') echo 'selected'; ?>>Resolved</option>
@@ -281,11 +294,11 @@ if (isset($_GET['ajax_action'])) {
 
         <!-- Initial Ticket Description -->
         <div class="flex flex-col items-start mb-6">
-            <div class="flex items-center gap-2 mb-1">
+            <div class="flex items-center gap-2 mb-1.5 px-1">
                 <span class="text-xs font-bold text-slate-900"><?php echo htmlspecialchars($ticket['client_name']); ?></span>
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($ticket['created_at'])); ?></span>
+                <span class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($ticket['created_at'])); ?></span>
             </div>
-            <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">
+            <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-4 sm:p-5 max-w-[90%] sm:max-w-[80%] shadow-sm">
                 <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap"><?php echo htmlspecialchars($ticket['description']); ?></p>
             </div>
         </div>
@@ -308,13 +321,13 @@ if (isset($_GET['ajax_action'])) {
                 <?php if ($r['sender_type'] === 'Admin'): ?>
                     <!-- Admin Reply (Right) -->
                     <div class="flex flex-col items-end">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($r['created_at'])); ?></span>
+                        <div class="flex items-center gap-2 mb-1.5 px-1">
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($r['created_at'])); ?></span>
                             <span class="text-xs font-bold text-slate-900"><?php echo htmlspecialchars($r['sender_name']); ?></span>
                         </div>
-                        <div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-5 py-3 max-w-[80%] shadow-sm">
+                        <div class="bg-primary text-on-primary rounded-2xl rounded-tr-none px-4 sm:px-5 py-3 max-w-[90%] sm:max-w-[80%] shadow-sm">
                             <?php if (!empty($r['message'])): ?>
-                                <div class="text-sm leading-relaxed font-medium"><?php echo $r['message']; ?></div>
+                                <div class="ticket-msg text-sm leading-relaxed font-medium"><?php echo $r['message']; ?></div>
                             <?php endif; ?>
                             <?php echo $attach_html; ?>
                         </div>
@@ -322,13 +335,13 @@ if (isset($_GET['ajax_action'])) {
                 <?php else: ?>
                     <!-- Client Reply (Left) -->
                     <div class="flex flex-col items-start">
-                        <div class="flex items-center gap-2 mb-1">
+                        <div class="flex items-center gap-2 mb-1.5 px-1">
                             <span class="text-xs font-bold text-slate-900"><?php echo htmlspecialchars($r['sender_name']); ?></span>
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($r['created_at'])); ?></span>
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?php echo date('M j, Y h:i A', strtotime($r['created_at'])); ?></span>
                         </div>
-                        <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-5 max-w-[80%] shadow-sm">
+                        <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-4 sm:p-5 max-w-[90%] sm:max-w-[80%] shadow-sm">
                             <?php if (!empty($r['message'])): ?>
-                                <div class="text-sm text-slate-700 leading-relaxed"><?php echo $r['message']; ?></div>
+                                <div class="ticket-msg text-sm text-slate-700 leading-relaxed"><?php echo $r['message']; ?></div>
                             <?php endif; ?>
                             <?php echo str_replace('bg-black/10', 'bg-slate-50', $attach_html); ?>
                         </div>
@@ -339,19 +352,19 @@ if (isset($_GET['ajax_action'])) {
 
         <!-- Reply Box -->
         <?php if ($ticket['status'] !== 'Closed'): ?>
-        <form id="replyForm" onsubmit="addReply(event, <?php echo $id; ?>)" class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm relative bottom-0">
+        <form id="replyForm" onsubmit="addReply(event, <?php echo $id; ?>)" class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-sm">
             <?= get_csrf_field() ?>
-            <div class="flex gap-4 items-end">
-                <div class="flex-1">
+            <div class="flex flex-col gap-3">
+                <div>
                     <textarea id="replyMessage" class="wysiwyg" placeholder="Type your reply to the client..."></textarea>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 justify-end">
                     <input type="file" id="replyAttachment" class="hidden" onchange="updateFileLabel(this)" />
-                    <button type="button" onclick="document.getElementById('replyAttachment').click()" class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 transition-colors">
-                        <span class="material-symbols-outlined text-sm">attach_file</span>
+                    <button type="button" onclick="document.getElementById('replyAttachment').click()" class="w-11 h-11 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 hover:text-primary transition-colors shrink-0" title="Attach file">
+                        <span class="material-symbols-outlined text-lg">attach_file</span>
                     </button>
-                    <button type="submit" id="replyBtn" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shrink-0">
-                        <span class="material-symbols-outlined">send</span>
+                    <button type="submit" id="replyBtn" class="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors shrink-0 shadow-md" title="Send reply">
+                        <span class="material-symbols-outlined text-lg">send</span>
                     </button>
                 </div>
             </div>
@@ -401,6 +414,7 @@ $permissions = get_admin_permissions($admin_id);
         .custom-scrollbar::-webkit-scrollbar{width:4px}.custom-scrollbar::-webkit-scrollbar-track{background:transparent}.custom-scrollbar::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}
         @media (max-width: 1023px) { .hidden-mobile { display: none !important; } }
+        .ticket-msg ul,.ticket-msg ol{padding-left:1.5em;margin:0.5em 0}.ticket-msg li{margin:0.25em 0}.ticket-msg ul{list-style-type:disc!important}.ticket-msg ol{list-style-type:decimal!important}.ticket-msg a{color:#2563EB!important;text-decoration:underline!important}.ticket-msg blockquote{border-left:3px solid #EAB308;padding-left:1em;margin:0.5em 0;color:#475569;font-style:italic}.ticket-msg p{margin:0 0 0.5em}
     </style>
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface min-h-screen">
@@ -476,10 +490,21 @@ function showToast(msg, type = 'success') {
         document.getElementById('ticketList').classList.remove('hidden-mobile');
         document.getElementById('detailContainer').classList.add('hidden-mobile');
         document.getElementById('detailPane').classList.add('hidden');
+        document.getElementById('emptyPane').classList.remove('hidden');
+        if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+        currentTicketId = null;
+        const url = new URL(window.location);
+        url.searchParams.delete('ticket_id');
+        window.history.replaceState({}, '', url);
     }
 
     async function loadTicket(id, cardEl) {
         currentTicketId = id;
+        // Persist in URL so detail panel survives page refresh
+        const url = new URL(window.location);
+        url.searchParams.set('ticket_id', id);
+        window.history.replaceState({}, '', url);
+
         document.querySelectorAll('.group').forEach(el => el.classList.remove('ring-2', 'ring-primary', 'border-transparent', 'bg-slate-50'));
         if (cardEl) cardEl.classList.add('ring-2', 'ring-primary', 'border-transparent', 'bg-slate-50');
         
@@ -496,6 +521,10 @@ function showToast(msg, type = 'success') {
         const res = await fetch(`?ajax_action=load_details&id=${id}`);
         const data = await res.json();
         pane.innerHTML = data.html;
+        
+        // Init WYSIWYG on dynamically loaded reply form
+        var replyTa = document.getElementById('replyMessage');
+        if (replyTa && window.WYSIWYG) WYSIWYG.init(replyTa);
         
         lastReplyId = data.last_reply_id;
         
@@ -623,6 +652,13 @@ function showToast(msg, type = 'success') {
         } finally {
             btn.disabled = false;
         }
+    }
+
+    // Auto-load ticket from URL param on page load
+    var initialTicketId = new URLSearchParams(window.location.search).get('ticket_id');
+    if (initialTicketId) {
+        var targetCard = document.querySelector('[onclick*="loadTicket(' + initialTicketId + ')"]');
+        loadTicket(parseInt(initialTicketId), targetCard);
     }
 </script>
 </body>

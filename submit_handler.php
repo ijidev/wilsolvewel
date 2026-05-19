@@ -31,21 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sssssi", $name, $email, $type, $message, $technical_json, $dept_id);
 
         if ($stmt->execute()) {
-            // Prepare Email
-            $to = get_setting('smtp_from_email', 'admin@wilsolvewel.com');
+            // Notify department admins
             $subject = "New Inquiry: $type from $name";
-            $email_body = "New $type inquiry received.\n\n";
-            $email_body .= "Name: $name\n";
-            $email_body .= "Email: $email\n";
-            $email_body .= "Message: $message\n\n";
-            $email_body .= "Technical Details:\n";
+            $details = '';
             foreach ($technical_data as $key => $value) {
-                $email_body .= ucfirst(str_replace('_', ' ', $key)) . ": $value\n";
+                $details .= '<tr><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px">' . ucfirst(str_replace('_', ' ', $key)) . '</td><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:13px;font-weight:600">' . htmlspecialchars($value) . '</td></tr>';
             }
-
-            $headers = "From: " . get_setting('smtp_from_name', 'Wilsolvewel Engineering') . " <" . get_setting('smtp_from_email', 'noreply@wilsolvewel.com') . ">";
-
-            @mail($to, $subject, $email_body, $headers);
+            notify_department_admins($conn, $dept_id, 'New inquiry: ' . $type, $name . ' - ' . $message, 'admin/inquiries.php', 'contact_mail', $subject, email_template('New ' . $type . ' Inquiry', '<p>A new inquiry has been submitted from the website:</p><table style="width:100%;border-collapse:collapse;margin-top:12px"><tr><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px">Name</td><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:13px;font-weight:600">' . htmlspecialchars($name) . '</td></tr><tr><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px">Email</td><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:13px;font-weight:600">' . htmlspecialchars($email) . '</td></tr><tr><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px">Message</td><td style="padding:6px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:13px;font-weight:600">' . nl2br(htmlspecialchars($message)) . '</td></tr>' . $details . '</table>'));
 
             echo "<script>alert('Thank you! Your request has been submitted successfully.'); window.location.href='index.html';</script>";
         } else {

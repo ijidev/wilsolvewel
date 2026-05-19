@@ -106,7 +106,7 @@ if (isset($_GET['edit'])) {
                     <?php if ($edit_category): ?>
                     <input type="hidden" name="id" value="<?php echo $edit_category['id']; ?>">
                     <?php endif; ?>
-                    <div class="grid grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Name *</label>
                             <input type="text" name="name" value="<?php echo htmlspecialchars($edit_category['name'] ?? ''); ?>" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">

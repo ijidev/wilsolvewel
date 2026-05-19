@@ -74,6 +74,22 @@
         let lastNotifId = 0;
         var notifOpen = false;
 
+        function requestNotifPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                if (localStorage.getItem('notif_prompt_shown')) return;
+                localStorage.setItem('notif_prompt_shown', '1');
+                var overlay = document.createElement('div');
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:16px';
+                var modal = document.createElement('div');
+                modal.style.cssText = 'background:#1E293B;border-radius:20px;padding:32px;max-width:400px;width:100%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.4);border:1px solid rgba(234,179,8,0.2)';
+                modal.innerHTML = '<div style="width:56px;height:56px;background:rgba(234,179,8,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><span class="material-symbols-outlined" style="font-size:28px;color:#EAB308">notifications_active</span></div><p style="color:#fff;font-size:15px;font-weight:700;margin:0 0 8px;font-family:Manrope,sans-serif">Stay in the loop</p><p style="color:#94A3B8;font-size:13px;line-height:1.6;margin:0 0 24px;font-family:Manrope,sans-serif">Enable notifications so you never miss updates, messages, and project logs from <strong style="color:#EAB308">WilsOveWel</strong>.</p><div style="display:flex;gap:12px"><button id="notif-prompt-accept" style="flex:1;background:#EAB308;color:#0F172A;border:none;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:Manrope,sans-serif">Enable Notifications</button><button id="notif-prompt-dismiss" style="flex:1;background:rgba(255,255,255,0.08);color:#94A3B8;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:Manrope,sans-serif">Maybe Later</button></div>';
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                document.getElementById('notif-prompt-accept').addEventListener('click', function () { Notification.requestPermission(); overlay.remove(); });
+                document.getElementById('notif-prompt-dismiss').addEventListener('click', function () { overlay.remove(); });
+            }
+        }
+
         async function fetchNotifications() {
             try {
                 const res = await fetch(rootPath + 'client/fetch_notifications.php?last_id=' + lastNotifId);
@@ -90,14 +106,17 @@
 
                 if (data.notifications && data.notifications.length > 0) {
                     lastNotifId = data.notifications[0].id;
-                    if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
-                        var n = data.notifications[0];
-                        new Notification(n.title, { body: n.message || '', icon: '/favicon.ico', tag: 'opencode-notif' });
+                    console.log('[Notif] New notifications:', data.notifications.length, 'Permission:', Notification.permission);
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        data.notifications.forEach(function(n) {
+                            console.log('[Notif] Firing push for:', n.title);
+                            try { new Notification(n.title, { body: n.message || '', icon: '/favicon.ico' }); } catch(e) { console.error('[Notif] Push error:', e); }
+                        });
                     }
                 }
 
                 if (notifOpen) renderNotifications(data);
-            } catch (e) {}
+            } catch (e) { console.error('[Notif] Fetch error:', e); }
         }
 
         function renderNotifications(data) {
@@ -142,7 +161,7 @@
 
         async function markAllRead() {
             var fd = new FormData();
-            fd.append('csrf_token', document.querySelector('input[name="csrf_token"]')?.value || '');
+            fd.append('csrf_token', window.CSRF_TOKEN || document.querySelector('input[name="csrf_token"]')?.value || '');
             fd.append('type', 'all');
             await fetch(rootPath + 'client/mark_notification_read.php', { method: 'POST', body: fd });
             notifBadge.classList.add('hidden');
@@ -163,7 +182,7 @@
 
         if (notifMarkRead) notifMarkRead.addEventListener('click', markAllRead);
 
-        if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+        if ('Notification' in window && Notification.permission === 'default') requestNotifPermission();
 
         fetchNotifications();
         setInterval(fetchNotifications, 30000);

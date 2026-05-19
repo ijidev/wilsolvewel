@@ -156,8 +156,8 @@ ob_start();
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                     Safe Days
                     <span class="relative group/tip">
-                        <span class="material-symbols-outlined text-[14px] text-slate-300 cursor-help">help</span>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                        <span class="material-symbols-outlined text-[14px] text-primary cursor-help">help</span>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                             Days since the last High-severity incident. Resets when a critical event occurs.
                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                         </div>
@@ -169,8 +169,8 @@ ob_start();
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                     Compliance
                     <span class="relative group/tip">
-                        <span class="material-symbols-outlined text-[14px] text-slate-300 cursor-help">help</span>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                        <span class="material-symbols-outlined text-[14px] text-primary cursor-help">help</span>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                             Percentage of safety observations that have been resolved. Higher values indicate better safety culture.
                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                         </div>
@@ -182,8 +182,8 @@ ob_start();
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                     Open
                     <span class="relative group/tip">
-                        <span class="material-symbols-outlined text-[14px] text-slate-300 cursor-help">help</span>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                        <span class="material-symbols-outlined text-[14px] text-primary cursor-help">help</span>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                             Observations still under review that have not yet been marked as resolved.
                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                         </div>
@@ -195,8 +195,8 @@ ob_start();
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                     Total
                     <span class="relative group/tip">
-                        <span class="material-symbols-outlined text-[14px] text-slate-300 cursor-help">help</span>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                        <span class="material-symbols-outlined text-[14px] text-primary cursor-help">help</span>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                             All safety observations logged across your projects and general site areas.
                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                         </div>
@@ -211,8 +211,8 @@ ob_start();
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="font-headline font-bold text-slate-900 flex items-center gap-1.5">Hazard & Incident Stream
                     <span class="relative group/tip">
-                        <span class="material-symbols-outlined text-[16px] text-slate-300 cursor-help">help</span>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                        <span class="material-symbols-outlined text-[16px] text-primary cursor-help">help</span>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                             Live feed of all safety observations, hazards, and incidents reported for your projects and general site areas.
                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                         </div>
@@ -266,8 +266,8 @@ ob_start();
         <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
             <h4 class="font-headline text-[9px] font-black tracking-widest text-primary mb-4 uppercase flex items-center gap-1.5">Upcoming Audits & Talks
                 <span class="relative group/tip">
-                    <span class="material-symbols-outlined text-[14px] text-primary/50 cursor-help">help</span>
-                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                    <span class="material-symbols-outlined text-[14px] text-primary cursor-help">help</span>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                         Scheduled safety audits and toolbox talks — formal assessments of safety protocols and procedures.
                         <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                     </div>
@@ -296,8 +296,8 @@ ob_start();
             <div class="flex items-center justify-between">
                 <span class="material-symbols-outlined text-3xl mb-2">verified</span>
                 <span class="relative group/tip self-start">
-                    <span class="material-symbols-outlined text-lg text-white/50 cursor-help">help</span>
-                    <div class="absolute bottom-full right-0 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 transition-opacity pointer-events-none z-20 text-left normal-case tracking-normal">
+                    <span class="material-symbols-outlined text-lg text-white cursor-help">help</span>
+                    <div class="absolute bottom-full right-0 mb-2 w-52 p-2.5 bg-slate-900 text-white text-[8px] font-bold leading-relaxed rounded-lg shadow-lg opacity-0 group-hover/tip:opacity-100 group-active/tip:opacity-100 transition-opacity pointer-events-none z-40 text-left normal-case tracking-normal">
                         Same as Safe Days — the current incidence-free period measured in consecutive days without a critical event.
                         <div class="absolute top-full right-4 border-4 border-transparent border-t-slate-900"></div>
                     </div>

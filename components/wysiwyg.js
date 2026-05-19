@@ -47,31 +47,60 @@
             el.addEventListener('mouseenter', function () { this.style.background = '#F1F5F9'; this.style.color = '#0F172A'; });
             el.addEventListener('mouseleave', function () { if (!this.classList.contains('active')) { this.style.background = 'transparent'; this.style.color = '#64748B'; } });
 
+            // Prevent button from stealing focus from the editor
+            el.addEventListener('mousedown', function (e) { e.preventDefault(); editor.focus(); });
+
             if (btn.cmd === 'source') {
                 el.addEventListener('click', function () {
                     toggleSource(editor, textarea, el);
                 });
             } else if (btn.cmd === 'link') {
                 el.addEventListener('click', function () {
-                    var url = prompt('Enter URL:');
+                    editor.focus();
+                    // Save current selection before prompt steals focus
+                    var savedRange = null;
+                    var sel = window.getSelection();
+                    if (sel && sel.rangeCount > 0 && editor.contains(sel.anchorNode)) {
+                        savedRange = sel.getRangeAt(0);
+                    }
+                    var hasSelection = savedRange && savedRange.toString().trim().length > 0;
+
+                    var url = prompt('Enter URL:' + (hasSelection ? '' : ' (no text selected — will insert URL as link)'));
                     if (url) {
                         var clean = url.trim();
                         if (clean && !/^https?:\/\//i.test(clean)) clean = 'https://' + clean;
-                        document.execCommand('createLink', false, clean);
                         editor.focus();
+                        // Restore selection if we saved one
+                        if (savedRange) {
+                            try { sel.removeAllRanges(); sel.addRange(savedRange); } catch(e) {}
+                        }
+                        if (hasSelection) {
+                            document.execCommand('createLink', false, clean);
+                        } else {
+                            // No selection — insert the URL as linked text
+                            document.execCommand('insertHTML', false, '<a href="' + clean.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '">' + clean + '</a>');
+                        }
                         syncContent();
                     }
                 });
             } else {
                 el.addEventListener('click', function () {
-                    document.execCommand(this.dataset.cmd, false, null);
                     editor.focus();
+                    document.execCommand(this.dataset.cmd, false, null);
                     syncContent();
                 });
             }
 
             toolbar.appendChild(el);
         });
+
+            // Inject editor styles once (with !important to beat Tailwind preflight)
+            if (!document.getElementById('wysiwyg-styles')) {
+                var styleEl = document.createElement('style');
+                styleEl.id = 'wysiwyg-styles';
+                styleEl.textContent = '.wysiwyg-editor ul,.wysiwyg-editor ol{padding-left:1.5em!important;margin:0.5em 0!important}.wysiwyg-editor li{list-style-type:disc!important;list-style-position:inside!important;margin:0.25em 0!important}.wysiwyg-editor ol>li{list-style-type:decimal!important}.wysiwyg-editor ul{list-style-type:disc!important}.wysiwyg-editor ol{list-style-type:decimal!important}.wysiwyg-editor a{color:#2563EB!important;text-decoration:underline!important}.wysiwyg-editor a:hover{color:#1D4ED8!important}.wysiwyg-editor blockquote{border-left:3px solid #EAB308!important;padding-left:1em!important;margin:0.5em 0!important;color:#475569!important;font-style:italic!important}.wysiwyg-editor p{margin:0 0 0.5em!important}';
+                document.head.appendChild(styleEl);
+            }
 
         // Editor body
         var editor = document.createElement('div');
@@ -89,6 +118,15 @@
 
         wrapper.addEventListener('focusin', function () { wrapper.style.borderColor = '#EAB308'; });
         wrapper.addEventListener('focusout', function () { wrapper.style.borderColor = '#E2E8F0'; });
+
+        // Prevent link clicks in editor from navigating
+        editor.addEventListener('click', function (e) {
+            var node = e.target;
+            while (node && node !== editor) {
+                if (node.tagName === 'A') { e.preventDefault(); break; }
+                node = node.parentNode;
+            }
+        });
 
         function syncContent() {
             textarea.value = editor.innerHTML;

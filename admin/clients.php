@@ -16,11 +16,9 @@ function generate_setup_link($conn, $client_id) {
 
 function send_client_setup_email($to_email, $to_name, $link) {
     $from_name = get_setting('smtp_from_name') ?: 'Wilsolvewel Engineering';
-    $from_email = get_setting('smtp_from_email') ?: get_setting('smtp_user');
     $subject = 'Set Up Your Wilsolvewel Client Account';
-    $body = "Hello $to_name,\n\nYour client account has been created on the Wilsolvewel Engineering portal.\n\nPlease click the link below to verify your email and set your password:\n\n$link\n\nThis link expires in 48 hours.\n\nRegards,\n$from_name";
-    $headers = "From: $from_name <$from_email>\r\nContent-Type: text/plain; charset=utf-8";
-    return @mail($to_email, $subject, $body, $headers);
+    $html = email_template('Set Up Your Account', '<p>Hello ' . htmlspecialchars($to_name) . ',</p><p>Your client account has been created on the <strong>Wilsolvewel Engineering</strong> portal.</p><p>Click the button below to verify your email and set your password:</p><p style="margin-top:24px"><a href="' . $link . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">Set Up My Account</a></p><p style="margin-top:24px;color:#64748B;font-size:12px">This link expires in 48 hours. If you did not create this account, please ignore this email.</p>');
+    return send_email($to_email, $subject, $html);
 }
 
 if (isset($_GET['ajax_action'])) {
@@ -56,6 +54,7 @@ if (isset($_GET['ajax_action'])) {
             if ($stmt->error) { echo json_encode(['status'=>'error','message'=>$stmt->error]); exit; }
             $stmt->close();
             log_audit($conn, 'Update', 'Client', 'Admin', $admin_id, "Updated client record: $name (ID: $id)");
+            send_email($email, 'Your profile has been updated', email_template('Profile Updated', '<p>Hello ' . htmlspecialchars($name) . ',</p><p>Your profile on the <strong>Wilsolvewel Engineering</strong> portal has been updated by an administrator.</p><p>If you did not expect this change, please contact support.</p>'));
             echo json_encode(['status' => 'success', 'message' => 'Client record updated.']);
         } else {
             $hashed = '';

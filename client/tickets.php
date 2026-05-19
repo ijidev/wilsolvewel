@@ -37,12 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['create_ticket']) || 
             if ($stmt->execute()) {
                 $ticket_id = $conn->insert_id;
                 $client_name = $_SESSION['client_name'] ?? 'A client';
-                $admin_ids_res = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
-                if ($admin_ids_res) {
-                    while ($admin = $admin_ids_res->fetch_assoc()) {
-                        create_notification($conn, 'admin', $admin['id'], 'New ticket from ' . $client_name, $subject, 'admin/tickets.php?ticket_id=' . $ticket_id, 'confirmation_number');
-                    }
-                }
+                notify_department_admins($conn, $dept_id, 'New ticket from ' . $client_name, $subject, 'admin/tickets.php?ticket_id=' . $ticket_id, 'confirmation_number', 'New Support Ticket: ' . $subject, email_template('New Ticket #' . $ticket_id, '<p>' . htmlspecialchars($client_name) . ' has opened a new support ticket:</p><p><strong>Subject:</strong> ' . htmlspecialchars($subject) . '</p><p><strong>Priority:</strong> ' . htmlspecialchars($priority) . '</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/admin/tickets.php?ticket_id=' . $ticket_id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Ticket</a></p>'));
                 if (isset($_POST['ajax_ticket'])) {
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'success', 'order_id' => $order_id]);

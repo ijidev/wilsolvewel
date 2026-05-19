@@ -130,9 +130,9 @@ if (isset($_GET['edit_cat'])) {
 
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
     <header class="h-16 bg-white border-b border-slate-100 flex items-center px-6 shrink-0 z-20">
-        <div>
+        <div class="flex flex-col">
             <h1 class="text-lg font-bold font-headline text-slate-900 leading-tight">FAQ Manager</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Manage questions, answers & categories</p>
+            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"><?php echo count($faqs); ?> entries across <?php echo count($categories); ?> categories</p>
         </div>
     </header>
 
@@ -140,19 +140,13 @@ if (isset($_GET['edit_cat'])) {
         <div class="max-w-7xl mx-auto space-y-6">
 
             <!-- Toolbar -->
-            <div class="flex items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-lg font-bold font-headline text-slate-900">All FAQs</h2>
-                    <p class="text-xs text-slate-500"><?php echo count($faqs); ?> entries across <?php echo count($categories); ?> categories</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="openModal('categoryModal')" class="flex items-center gap-2 px-5 py-3 rounded-2xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-primary/30 transition-all uppercase tracking-widest">
-                        <span class="material-symbols-outlined text-sm">folder</span> Categories
-                    </button>
-                    <button onclick="openModal('faqModal')" class="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
-                        <span class="material-symbols-outlined text-sm">add</span> Add FAQ
-                    </button>
-                </div>
+            <div class="flex items-center justify-end gap-3">
+                <button onclick="openModal('categoryModal')" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:border-primary/30 transition-all uppercase tracking-widest">
+                    <span class="material-symbols-outlined text-sm">folder</span> <span class="hidden sm:inline">Categories</span>
+                </button>
+                <button onclick="openModal('faqModal')" class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
+                    <span class="material-symbols-outlined text-sm">add</span> <span class="hidden sm:inline">Add FAQ</span>
+                </button>
             </div>
 
             <!-- Mobile Toggle (hidden on lg+) -->

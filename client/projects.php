@@ -278,12 +278,8 @@ if (isset($_GET['ajax_action'])) {
             $project_id = $stmt->insert_id;
             $stmt->close();
             log_audit($conn, 'Create', 'Projects', 'Client', $client_id, 'Proposed Project', ['title' => $title]);
-            $admin_ids = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
-            if ($admin_ids) {
-                while ($a = $admin_ids->fetch_assoc()) {
-                    create_notification($conn, 'admin', $a['id'], 'New project proposal', htmlspecialchars($title), 'admin/projects.php?id=' . $project_id, 'add_task');
-                }
-            }
+            $client_name = $_SESSION['client_name'] ?? 'A client';
+            notify_department_admins($conn, $dept_id, 'New project proposal', htmlspecialchars($title), 'admin/projects.php?id=' . $project_id, 'add_task', 'New Project Proposal: ' . htmlspecialchars($title), email_template('New Project Proposal', '<p>' . htmlspecialchars($client_name) . ' has proposed a new project:</p><p><strong>Project:</strong> ' . htmlspecialchars($title) . '</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/admin/projects.php?id=' . $project_id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Proposal</a></p>'));
             echo json_encode(['status' => 'success', 'project_id' => $project_id]);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'DB error: ' . $stmt->error]);

@@ -72,7 +72,7 @@ $permissions = get_admin_permissions($admin_id);
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-1.5">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Address</p>
                             <p class="text-sm font-bold text-slate-900"><?php echo htmlspecialchars($client['email']); ?></p>

@@ -79,6 +79,11 @@ if (isset($_GET['ajax_action'])) {
             $new_id = $conn->insert_id;
             $stmt->close();
             log_audit($conn, 'Create', 'Project', 'Admin', $admin_id, "Created new project: $name (ID: $new_id)");
+            // Notify client
+            $client_res = safe_query($conn, "SELECT email, name FROM clients WHERE id = ?", "i", [$client_id]);
+            if ($client_res && $c = $client_res->fetch_assoc()) {
+                send_email($c['email'], 'New Project: ' . htmlspecialchars($name), email_template('A new project has been created for you', '<p>Hello ' . htmlspecialchars($c['name']) . ',</p><p>A new project has been created for you on the <strong>Wilsolvewel Engineering</strong> portal:</p><p><strong>Project:</strong> ' . htmlspecialchars($name) . '</p><p><strong>Status:</strong> ' . htmlspecialchars($status) . '</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $new_id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
+            }
             echo json_encode(['status' => 'success', 'message' => 'Project created.']);
         }
         exit;
@@ -134,6 +139,12 @@ if (isset($_GET['ajax_action'])) {
         $stmt->close();
         
         log_audit($conn, 'Create', 'Project', 'Admin', $admin_id, "Sent a message in project ID: $project_id");
+        
+        // Notify client
+        $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$project_id]);
+        if ($pinfo && $p = $pinfo->fetch_assoc()) {
+            send_email($p['email'], 'New message on project: ' . htmlspecialchars($p['name']), email_template('New message on your project', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>There is a new message on your project <strong>' . htmlspecialchars($p['name']) . '</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $project_id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Messages</a></p>'));
+        }
         
         $new_id = $conn->insert_id;
         $stmt = $conn->prepare("SELECT pr.*, COALESCE(a.name, 'Unknown Admin') as sender_name FROM project_reports pr LEFT JOIN admins a ON pr.sender_id = a.id WHERE pr.id = ?");
@@ -236,6 +247,11 @@ if (isset($_GET['ajax_action'])) {
         $stmt->execute();
         $stmt->close();
         log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Project #$id transitioned to Active");
+        // Notify client
+        $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$id]);
+        if ($pinfo && $p = $pinfo->fetch_assoc()) {
+            send_email($p['email'], 'Project Active: ' . htmlspecialchars($p['name']), email_template('Your project is now Active', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>Your project <strong>' . htmlspecialchars($p['name']) . '</strong> has been approved and is now <strong>Active</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
+        }
         echo json_encode(['status' => 'success']);
         exit;
     }
@@ -258,6 +274,11 @@ if (isset($_GET['ajax_action'])) {
         $stmt->bind_param("si", $new, $id);
         $stmt->execute();
         $stmt->close();
+        // Notify client
+        $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$id]);
+        if ($pinfo && $p = $pinfo->fetch_assoc()) {
+            send_email($p['email'], 'Project ' . $new . ': ' . htmlspecialchars($p['name']), email_template('Your project status has changed', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>Your project <strong>' . htmlspecialchars($p['name']) . '</strong> has been updated to: <strong>' . $new . '</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
+        }
         echo json_encode(['status' => 'success', 'new_status' => $new]);
         exit;
     }
@@ -388,6 +409,10 @@ if (isset($_GET['ajax_action'])) {
             $stmt->execute();
             $stmt->close();
             log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Project #$pid automatically marked Completed");
+            $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$pid]);
+            if ($pinfo && $p = $pinfo->fetch_assoc()) {
+                send_email($p['email'], 'Project Completed: ' . htmlspecialchars($p['name']), email_template('Your project has been completed', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>Your project <strong>' . htmlspecialchars($p['name']) . '</strong> has been marked as <strong>Completed</strong>.</p><p>Thank you for working with Wilsolvewel Engineering.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $pid . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
+            }
         } else if ($total > 0 && $done < $total) {
             $stmt = $conn->prepare("SELECT status FROM projects WHERE id = ?");
             $stmt->bind_param("i", $pid);

@@ -38,15 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->query("INSERT INTO ticket_replies (ticket_id, sender_type, sender_id, message, attachment) VALUES ($ticket_id, 'Client', $client_id, '$message', $attach_sql)");
     $new_id = $conn->insert_id;
 
-    // Notify all active admins
-    $subject_res = $conn->query("SELECT subject FROM tickets WHERE id = $ticket_id");
-    $t_subject = $subject_res ? $subject_res->fetch_assoc()['subject'] : 'Ticket';
-    $admin_ids = $conn->query("SELECT id FROM admins WHERE status = 'Active'");
-    if ($admin_ids) {
-        while ($a = $admin_ids->fetch_assoc()) {
-            create_notification($conn, 'admin', $a['id'], 'Client replied to ticket', htmlspecialchars($t_subject), 'admin/tickets.php?ticket_id=' . $ticket_id, 'forum');
-        }
-    }
+    // Notify ticket's department admins
+    $dept_res = $conn->query("SELECT t.department_id, t.assigned_admin_id, t.subject FROM tickets t WHERE t.id = $ticket_id");
+    $t_dept = $dept_res ? $dept_res->fetch_assoc() : null;
+    $t_subject = $t_dept['subject'] ?? 'Ticket';
+    $dept_id = $t_dept['department_id'] ?? null;
+    $client_name = $_SESSION['client_name'] ?? 'A client';
+    notify_department_admins($conn, $dept_id, 'Client replied to ticket', htmlspecialchars($t_subject), 'admin/tickets.php?ticket_id=' . $ticket_id, 'forum', 'Client Reply: ' . htmlspecialchars($t_subject), email_template('New Reply on Ticket', '<p>' . htmlspecialchars($client_name) . ' has replied to a ticket:</p><p><strong>Subject:</strong> ' . htmlspecialchars($t_subject) . '</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/admin/tickets.php?ticket_id=' . $ticket_id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Ticket</a></p>'));
     
     echo json_encode([
         'status' => 'success', 

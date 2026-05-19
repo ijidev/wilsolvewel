@@ -33,7 +33,13 @@ if (isset($_GET['ajax_action'])) {
                       WHERE id=$order_id");
         
         log_audit($conn, 'Update', 'Procurement', 'Admin', $admin_id, "Logged status update '$status' for order ID: $order_id");
-        
+
+        // Notify client
+        $order_info = safe_query($conn, "SELECT o.order_number, o.item_name, COALESCE(c.email, pc.email) as email, COALESCE(c.name, pc.name) as client_name FROM procurement_orders o LEFT JOIN clients c ON o.client_id = c.id LEFT JOIN projects p ON o.project_id = p.id LEFT JOIN clients pc ON p.client_id = pc.id WHERE o.id = ?", "i", [$order_id]);
+        if ($order_info && $cl = $order_info->fetch_assoc()) {
+            send_email($cl['email'], 'Order ' . $cl['order_number'] . ': ' . $status, email_template('Order Status Update', '<p>Hello ' . htmlspecialchars($cl['client_name']) . ',</p><p>Your procurement order <strong>' . htmlspecialchars($cl['order_number']) . '</strong> (' . htmlspecialchars($cl['item_name']) . ') has been updated to: <strong>' . $status . '</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/procurement.php' . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">Track Order</a></p>'));
+        }
+
         echo json_encode(['status' => 'success']);
         exit;
     }
