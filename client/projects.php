@@ -337,24 +337,20 @@ ob_start();
             <div class="space-y-5">
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Project Proposed</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters <strong>Planning</strong> phase where milestones are defined.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Proposal Submitted</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters <strong>Planning</strong> phase where milestones are defined.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">2</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Review Milestones</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Review the milestones created by the project team. Each milestone outlines a key deliverable or phase of work. Use the milestone discussion chat to ask questions or request changes.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Team Plans</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Our project team creates milestones and tasks. You can review the roadmap and use milestone discussion chats to ask questions or request changes.</p></div>
                 </div>
                 <div class="flex gap-4">
-                    <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">3</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Approve or Reject</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Approve milestones you agree with or reject those needing changes. The project can only proceed to the <strong>Development</strong> phase once all milestones are approved.</p></div>
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">3</div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Project Activated</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Once planning is complete, the admin activates the project. The roadmap locks and work begins. Monitor milestone progress in real time — Pending, In Progress, or Completed.</p></div>
                 </div>
                 <div class="flex gap-4">
-                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">4</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Track Progress</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Once the project is active, monitor milestone progress in real time. Each milestone shows its status — Pending, In Progress, or Completed.</p></div>
+                    <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">4</div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Communicate</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use milestone discussion chats to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
                 </div>
-                <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">5</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Communicate</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use milestone discussion chats to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
-                    </div>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
                     <label class="flex items-center gap-2 cursor-pointer group text-xs text-slate-400 hover:text-slate-600 transition-colors">

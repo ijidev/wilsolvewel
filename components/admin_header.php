@@ -72,7 +72,7 @@ if (isset($conn) && $conn) {
             <span class="absolute -top-0.5 right-0.5 min-w-[14px] h-3.5 bg-red-500 text-white text-[7px] font-bold flex items-center justify-center rounded-full px-1 leading-none"><?= $inquiry_count > 99 ? '99+' : $inquiry_count ?></span>
             <?php endif; ?>
         </a>
-        <button id="footer-sidebar-toggle" class="relative flex flex-col items-center justify-center gap-0.5 text-primary py-1 -mt-3">
+        <button id="footer-sidebar-toggle" onclick="toggleSidebar()" class="relative flex flex-col items-center justify-center gap-0.5 text-primary py-1">
             <span class="material-symbols-outlined text-2xl">grid_view</span>
             <span class="text-[7px] font-bold uppercase tracking-widest">Menu</span>
         </button>

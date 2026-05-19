@@ -4,27 +4,6 @@
     if (script && script.getAttribute('data-root')) rootPath = script.getAttribute('data-root');
 
     document.addEventListener("DOMContentLoaded", function () {
-        // ── Sidebar Toggle (header + footer) ─────────────────────────────────
-        var sidebar = document.querySelector('aside');
-        var headerToggle = document.getElementById('admin-sidebar-toggle');
-        var footerToggle = document.getElementById('footer-sidebar-toggle');
-
-        function toggleSidebar(e) {
-            e.stopPropagation();
-            if (sidebar) sidebar.classList.toggle('-translate-x-full');
-        }
-
-        if (headerToggle && sidebar) headerToggle.onclick = toggleSidebar;
-        if (footerToggle && sidebar) footerToggle.onclick = toggleSidebar;
-
-        document.addEventListener('click', function (e) {
-            if (sidebar && !sidebar.contains(e.target) &&
-                !headerToggle?.contains(e.target) &&
-                !footerToggle?.contains(e.target)) {
-                sidebar.classList.add('-translate-x-full');
-            }
-        });
-
         // ── Admin Notifications ────────────────────────────────────────────────
         var btnNotif = document.getElementById('admin-btn-notifications');
         var footerNotifBtn = document.getElementById('footer-notif-btn');

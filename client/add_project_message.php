@@ -12,29 +12,6 @@ $conn = get_db_connection();
 
 $action = $_GET['action'] ?? '';
 
-if ($action == 'approve_milestone' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $csrf_token = $_POST['csrf_token'] ?? '';
-    if (!verify_csrf_token($csrf_token)) {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token.']); exit;
-    }
-
-    $id = (int)$_POST['id'];
-    $status = $_POST['status'];
-    
-    // Verify milestone belongs to client
-    $verify = safe_query($conn, "SELECT pm.id FROM project_milestones pm JOIN projects p ON pm.project_id = p.id WHERE pm.id = ? AND p.client_id = ?", "ii", [$id, $client_id]);
-    if ($verify->num_rows === 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Access denied.']); exit;
-    }
-    
-    $stmt = $conn->prepare("UPDATE project_milestones SET approval_status = ? WHERE id = ?");
-    $stmt->bind_param("si", $status, $id);
-    $stmt->execute();
-    $stmt->close();
-    echo json_encode(['status' => 'success']);
-    exit;
-}
-
 if ($action == 'get_milestone_reports') {
     $milestone_id = (int)$_GET['milestone_id'];
     

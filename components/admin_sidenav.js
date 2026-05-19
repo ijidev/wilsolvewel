@@ -73,7 +73,6 @@
         '    <a href="' + root + 'admin/logout.php" class="mt-2 flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 text-xs font-bold text-slate-500 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all uppercase tracking-widest"><span class="material-symbols-outlined text-[16px]">logout</span> Log Out</a>',
         '  </div>',
         '</aside>',
-        '<button onclick="toggleSidebar()" class="fixed bottom-6 left-6 w-12 h-12 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center justify-center lg:hidden z-30 hover:bg-primary hover:text-on-primary transition-colors"><span class="material-symbols-outlined">grid_view</span></button>'
     ].join('\n');
 }
 

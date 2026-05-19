@@ -683,18 +683,13 @@ if (isset($_GET['ajax_action'])) {
                 </h3>
                 <div class="flex gap-2">
                         <?php if ($proj['status'] == 'Planning'): ?>
-                            <?php 
-                                $all_approved = true;
-                                if (empty($milestones)) $all_approved = false;
-                                foreach ($milestones as $m) if ($m['approval_status'] != 'Approved') $all_approved = false;
-                            ?>
-                            <?php if ($all_approved): ?>
+                            <?php if (!empty($milestones)): ?>
                                 <button onclick="confirmProjectActive(<?php echo $id; ?>)" class="px-3 py-1.5 bg-primary text-on-primary rounded-lg text-[8px] font-bold uppercase tracking-widest hover:shadow-lg transition-all flex items-center gap-1.5">
                                     <span class="material-symbols-outlined text-[14px]">rocket_launch</span> Activate
                                 </button>
                             <?php else: ?>
-                                <div class="px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-[7px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-1.5" title="All milestones must be approved by client">
-                                    <span class="material-symbols-outlined text-[12px]">info</span> Awaiting Approval
+                                <div class="px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-[7px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-1.5" title="Add at least one milestone first">
+                                    <span class="material-symbols-outlined text-[12px]">info</span> Add Milestones First
                                 </div>
                             <?php endif; ?>
 
@@ -720,7 +715,6 @@ if (isset($_GET['ajax_action'])) {
                     $ms_counter = 1;
                     foreach ($milestones as $m): 
                         $statusClass = $m['status'] == 'Completed' ? 'bg-emerald-500 border-emerald-500' : ($m['status'] == 'In Progress' ? 'bg-amber-500 border-amber-500' : 'bg-slate-100 border-slate-200');
-                        $approvalText = $m['approval_status'] == 'Approved' ? 'bg-emerald-50 text-emerald-600' : ($m['approval_status'] == 'Rejected' ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-500');
                         $taskCount = count($m['sub_milestones']);
                         $doneCount = 0; foreach($m['sub_milestones'] as $sm) if($sm['is_completed']) $doneCount++;
                     ?>
@@ -736,7 +730,6 @@ if (isset($_GET['ajax_action'])) {
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2">
                                     <h4 class="text-[13px] font-bold text-slate-900 truncate"><?php echo htmlspecialchars($m['title']); ?></h4>
-                                    <span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase <?php echo $approvalText; ?> shrink-0"><?php echo $m['approval_status']; ?></span>
                                 </div>
                                 <?php if($m['due_date']): ?><p class="text-[9px] text-slate-400"><?php echo date('M d', strtotime($m['due_date'])); ?></p><?php endif; ?>
                             </div>
@@ -957,19 +950,15 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                         <div><h4 class="text-sm font-bold text-slate-900">Planning Phase</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Create milestones for the project. Each milestone represents a major deliverable or phase. Add tasks (sub-milestones) under each milestone and assign them to individuals or departments. Milestones can only be created and edited during this phase.</p></div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">2</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Client Review</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">The client reviews all milestones and approves or rejects them. Use milestone chat logs to discuss any questions or changes. All milestones must be approved before proceeding.</p></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">2</div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Activation</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When planning is complete, click the <strong>Activate</strong> button to move the project to <strong>Active (Development)</strong> phase. This locks the milestone roadmap — no further milestone additions or edits are allowed.</p></div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">3</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Activation</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Once all milestones are approved, the <strong>Activate</strong> button unlocks. Clicking it moves the project to <strong>Active (Development)</strong> phase and locks the milestone roadmap. No further milestone changes are allowed.</p></div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">4</div>
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">3</div>
                         <div><h4 class="text-sm font-bold text-slate-900">Execution</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Work through milestones — start them (In Progress), then mark them complete when finished. Use milestone chat logs for daily reports and client communication. Use the hold/resume toggle to pause work if needed.</p></div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">5</div>
+                        <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">4</div>
                         <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When all milestones are marked complete, the project auto-transitions to <strong>Completed</strong> status. The project is now closed.</p></div>
                     </div>
                 </div>
