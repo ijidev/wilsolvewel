@@ -650,7 +650,7 @@ $page_scripts = '
                     if (tk.replies && tk.replies.length > 0) {
                         html += `<tr><td colspan="4" style="padding:4px 8px 12px"><div style="font-size:9px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Conversation</div>`;
                         tk.replies.forEach(function(r) {
-                            var senderLabel = r.sender_type === 'admin' ? 'Staff' : 'Client';
+                            var senderLabel = r.sender_type === \'admin\' ? \'Staff\' : \'Client\';
                             html += `<div style="font-size:9px;padding:4px 8px;margin:2px 0;background:#f9f9f9;border-radius:4px;border-left:2px solid #EAB308"><strong>${senderLabel}</strong> <span style="color:#999">${r.created_at_formatted}</span><br>${escHtml(r.message)}</div>`;
                         });
                         html += `</td></tr>`;
