@@ -1,10 +1,20 @@
+<?php
+require_once __DIR__ . '/config.php';
+$conn = get_db_connection();
+
+$openings = [];
+$res = $conn->query("SELECT * FROM job_openings WHERE status='Open' ORDER BY sort_order ASC, id DESC");
+if ($res) {
+    while ($row = $res->fetch_assoc()) $openings[] = $row;
+}
+$icons = ['settings', 'inventory_2', 'support_agent', 'engineering', 'handyman', 'precision_manufacturing'];
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en">
 
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="0;url=career.php" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
@@ -25,7 +35,6 @@
     <!-- Technical Grid Overlay Background -->
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
     <!-- Hero Section -->
-        <!-- Hero Section -->
         <section class="relative py-24 px-5 sm:px-6 lg:px-12 z-10 max-w-7xl mx-auto">
             <div class="grid lg:grid-cols-2 gap-16 items-center min-h-[60vh]">
                 <div class="space-y-8">
@@ -43,7 +52,7 @@
                         <a href="#openings" class="bg-primary text-on-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                             View Openings
                         </a>
-                        <a href="about.html" class="bg-surface-container-high text-on-surface px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
+                        <a href="about.php" class="bg-surface-container-high text-on-surface px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
                             Our Mission
                         </a>
                     </div>
@@ -102,42 +111,32 @@
             </div>
         </section>
     <!-- Current Openings Section -->
-    <section class="px-5 sm:px-6 lg:px-12 py-24 max-w-[1440px] mx-auto">
+    <section id="openings" class="px-5 sm:px-6 lg:px-12 py-24 max-w-[1440px] mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
         <div>
           <h2 class="text-4xl font-headline font-bold tracking-tight mb-4">Open Positions</h2>
           <p class="text-on-surface-variant">Find your place in our high-precision teams.</p>
         </div>
-        <div class="flex bg-surface-container px-2 py-2 rounded-lg">
-          <button class="bg-surface-container-lowest px-4 py-2 rounded-md text-sm font-headline font-bold shadow-sm">All
-            Roles</button>
-          <button
-            class="px-4 py-2 rounded-md text-sm font-headline font-bold text-on-surface-variant">Engineering</button>
-          <button
-            class="px-4 py-2 rounded-md text-sm font-headline font-bold text-on-surface-variant">Operations</button>
-          <button class="px-4 py-2 rounded-md text-sm font-headline font-bold text-on-surface-variant">Technical
-            Support</button>
-        </div>
       </div>
       <div class="space-y-4">
-        <!-- Role 1 -->
+        <?php if (count($openings) > 0): ?>
+        <?php $idx = 0; foreach ($openings as $o): ?>
         <div
           class="group bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6">
           <div class="flex items-center gap-6">
             <div class="w-14 h-14 bg-surface-container flex items-center justify-center rounded-lg text-primary">
-              <span class="material-symbols-outlined text-3xl">settings</span>
+              <span class="material-symbols-outlined text-3xl"><?php echo $icons[$idx % count($icons)]; ?></span>
             </div>
             <div>
-              <h3 class="text-xl font-headline font-bold group-hover:text-primary transition-colors">Senior Mechanical
-                Engineer</h3>
+              <h3 class="text-xl font-headline font-bold group-hover:text-primary transition-colors"><?php echo htmlspecialchars($o['title']); ?></h3>
               <div class="flex gap-4 mt-1">
                 <span
                   class="text-xs font-headline uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">location_on</span> Lagos HQ
+                  <span class="material-symbols-outlined text-sm">location_on</span> <?php echo htmlspecialchars($o['location']); ?>
                 </span>
                 <span
                   class="text-xs font-headline uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">schedule</span> Full-Time
+                  <span class="material-symbols-outlined text-sm">schedule</span> <?php echo htmlspecialchars($o['type']); ?>
                 </span>
               </div>
             </div>
@@ -146,79 +145,21 @@
             <div class="hidden lg:block text-right">
               <div class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">
                 Department</div>
-              <div class="text-sm font-bold">Industrial Design</div>
+              <div class="text-sm font-bold"><?php echo htmlspecialchars($o['department'] ?: 'General'); ?></div>
             </div>
-            <button
+            <a href="mailto:careers@wilsolvewel.com?subject=Application for <?php echo urlencode($o['title']); ?>"
               class="w-full md:w-auto px-8 py-3 bg-surface-container-high rounded-lg font-headline font-bold text-on-surface hover:bg-primary hover:text-white transition-all">Apply
-              Now</button>
+              Now</a>
           </div>
         </div>
-        <!-- Role 2 -->
-        <div
-          class="group bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="flex items-center gap-6">
-            <div class="w-14 h-14 bg-surface-container flex items-center justify-center rounded-lg text-primary">
-              <span class="material-symbols-outlined text-3xl">inventory_2</span>
-            </div>
-            <div>
-              <h3 class="text-xl font-headline font-bold group-hover:text-primary transition-colors">Procurement
-                Specialist</h3>
-              <div class="flex gap-4 mt-1">
-                <span
-                  class="text-xs font-headline uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">location_on</span> Port Harcourt
-                </span>
-                <span
-                  class="text-xs font-headline uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">schedule</span> Full-Time
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-8 w-full md:w-auto">
-            <div class="hidden lg:block text-right">
-              <div class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">
-                Department</div>
-              <div class="text-sm font-bold">Supply Chain</div>
-            </div>
-            <button
-              class="w-full md:w-auto px-8 py-3 bg-surface-container-high rounded-lg font-headline font-bold text-on-surface hover:bg-primary hover:text-white transition-all">Apply
-              Now</button>
-          </div>
+        <?php $idx++; endforeach; ?>
+        <?php else: ?>
+        <div class="text-center py-16">
+          <span class="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4">work_off</span>
+          <h3 class="text-xl font-headline font-bold text-on-surface-variant mb-2">No Open Positions Right Now</h3>
+          <p class="text-on-surface-variant/60">We're always looking for great talent. Send us your CV anyway.</p>
         </div>
-        <!-- Role 3 -->
-        <div
-          class="group bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/10 hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="flex items-center gap-6">
-            <div class="w-14 h-14 bg-surface-container flex items-center justify-center rounded-lg text-primary">
-              <span class="material-symbols-outlined text-3xl">support_agent</span>
-            </div>
-            <div>
-              <h3 class="text-xl font-headline font-bold group-hover:text-primary transition-colors">Technical Support
-                Technician</h3>
-              <div class="flex gap-4 mt-1">
-                <span
-                  class="text-xs font-headline uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">location_on</span> Abuja / Remote
-                </span>
-                <span
-                  class="text-xs font-headline uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">schedule</span> Hybrid
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-8 w-full md:w-auto">
-            <div class="hidden lg:block text-right">
-              <div class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">
-                Department</div>
-              <div class="text-sm font-bold">Client Success</div>
-            </div>
-            <button
-              class="w-full md:w-auto px-8 py-3 bg-surface-container-high rounded-lg font-headline font-bold text-on-surface hover:bg-primary hover:text-white transition-all">Apply
-              Now</button>
-          </div>
-        </div>
+        <?php endif; ?>
       </div>
       <div class="mt-12 text-center">
         <p class="text-on-surface-variant mb-6 italic">Don't see a role that fits? Send us your technical schematic (CV)
@@ -253,7 +194,6 @@
         <div class="lg:w-1/2 relative">
           <div
             class="w-full h-80 bg-surface-container-low rounded-lg border border-outline-variant/30 relative overflow-hidden p-8 flex items-center justify-center">
-            <!-- Abstract "Blueprint" Visualization -->
             <div class="absolute inset-0 opacity-10">
               <div class="w-full h-full technical-grid"></div>
             </div>

@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_title = 'Wilsovlewel | Propose Project';
+$page_title = 'Wilsolvewel | Propose Project';
 $page_h1 = 'Propose Project';
 $page_h1_sub = 'Initiate a maintenance or overhaul request by detailing asset specifications.';
 $page_h1_badge = 'New Submittal';

@@ -100,7 +100,7 @@ $client_res = $stmt->get_result();
 $stmt->close();
 $client = $client_res->fetch_assoc();
 
-$page_title = 'Wilsovlewel | Client Settings';
+$page_title = 'Wilsolvewel | Client Settings';
 $page_h1 = 'Account Settings';
 $page_h1_sub = 'Update your company profile and security credentials.';
 

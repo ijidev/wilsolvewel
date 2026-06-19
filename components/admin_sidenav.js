@@ -30,6 +30,14 @@
         '      </div>',
         '    </div>',
 
+        '    <div data-section="content">',
+        '      <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Content</p>',
+        '      <div class="space-y-1">',
+        '        <a href="' + root + 'admin/team_members.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all"><span class="material-symbols-outlined text-[20px]">groups</span> Team Members</a>',
+        '        <a href="' + root + 'admin/job_openings.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all"><span class="material-symbols-outlined text-[20px]">work_history</span> Job Openings</a>',
+        '      </div>',
+        '    </div>',
+
         '    <div data-section="operations">',
         '      <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Operations</p>',
         '      <div class="space-y-1">',

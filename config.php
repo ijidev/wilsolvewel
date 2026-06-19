@@ -24,7 +24,7 @@ function loadEnv($path) {
 // Load .env file from root
 loadEnv(__DIR__ . '/.env');
 
-// Wilsovlewel Engineering - Database Configuration
+// Wilsolvewel Engineering - Database Configuration
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
 define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
@@ -427,6 +427,31 @@ function get_db_connection() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     ensure_column_exists($conn, 'showcase_projects', 'content', "LONGTEXT NULL");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS team_members (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        position VARCHAR(255) NOT NULL,
+        bio TEXT NULL,
+        photo_url VARCHAR(500) NULL,
+        department VARCHAR(100) NULL,
+        sort_order INT(11) DEFAULT 0,
+        status VARCHAR(20) DEFAULT 'Active',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS job_openings (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        department VARCHAR(100) NULL,
+        location VARCHAR(255) NULL,
+        type VARCHAR(50) DEFAULT 'Full-Time',
+        description TEXT NULL,
+        requirements TEXT NULL,
+        status VARCHAR(20) DEFAULT 'Open',
+        sort_order INT(11) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
 
     $conn->query("CREATE TABLE IF NOT EXISTS faq_categories (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,

@@ -95,7 +95,7 @@
                 { name: 'Construction', path: 'industries.html#construction', desc: 'Heavy machinery foundations', icon: 'foundation' }
             ]
         },
-        { name: 'About', path: 'about.html' },
+        { name: 'About', path: 'about.php' },
         { name: 'HSSE', path: 'hsse.html' },
         { name: 'Projects', path: 'projects.php' },
         { name: 'Technical Specs', path: 'spec-forms.php' },

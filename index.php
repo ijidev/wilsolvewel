@@ -48,7 +48,7 @@ if ($res) {
                     </p>
                     <div class="flex flex-wrap gap-4 pt-4">
                         <a href="services.html" class="anodized-gradient text-on-primary px-10 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-transform">
-                            Explore Services
+                            View Our Services
                         </a>
                         <a href="contact.php" class="bg-surface-container-high text-on-surface px-10 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
                             Consult an Engineer
@@ -255,15 +255,12 @@ if ($res) {
                 <div class="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
                 
                 <div class="relative z-10 space-y-8">
-                    <h2 class="font-headline text-4xl lg:text-6xl font-bold tracking-tighter leading-none">Stop the Bleed of <br />Machine Downtime</h2>
+                    <h2 class="font-headline text-4xl lg:text-6xl font-bold tracking-tighter leading-none">Let's Keep Your <br />Operations Running</h2>
                     <p class="text-lg text-primary-fixed/80 max-w-2xl mx-auto font-light leading-relaxed">Partner with Wilsolvewel Engineering for technical support that prioritizes iron availability, site safety, and machine longevity.</p>
                     
                     <div class="flex flex-wrap justify-center gap-6 pt-6">
                         <a href="contact.php" class="bg-white text-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all">
-                            Book Inspection
-                        </a>
-                        <a href="services.html" class="border-2 border-white/30 text-white px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] hover:bg-white/10 transition-all">
-                            Technical Scope
+                            Contact Us
                         </a>
                     </div>
                 </div>

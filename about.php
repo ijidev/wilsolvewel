@@ -1,3 +1,15 @@
+<?php
+require_once __DIR__ . '/config.php';
+$conn = get_db_connection();
+
+$team_members = [];
+$res = $conn->query("SELECT * FROM team_members WHERE status='Active' ORDER BY sort_order ASC, id ASC");
+if ($res) {
+    while ($row = $res->fetch_assoc()) $team_members[] = $row;
+}
+$icons = ['engineering', 'inventory_2', 'support_agent', 'finance', 'business', 'groups'];
+$team_count = count($team_members);
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en">
@@ -254,38 +266,28 @@
                     Led by experienced professionals in engineering, procurement, technical support, finance and business development, our team drives strategic growth while delivering excellence.
                 </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <?php if ($team_count > 0): ?>
+                    <?php $idx = 0; foreach ($team_members as $m): ?>
                     <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 text-center space-y-4 group hover:shadow-lg transition-all">
-                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary transition-colors">
-                            <span class="material-symbols-outlined text-4xl text-primary group-hover:text-on-primary">engineering</span>
+                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary transition-colors overflow-hidden">
+                            <?php if ($m['photo_url']): ?>
+                            <img src="<?php echo htmlspecialchars($m['photo_url']); ?>" class="w-full h-full object-cover" alt="<?php echo htmlspecialchars($m['name']); ?>">
+                            <?php else: ?>
+                            <span class="material-symbols-outlined text-4xl text-primary group-hover:text-on-primary"><?php echo $icons[$idx % count($icons)]; ?></span>
+                            <?php endif; ?>
                         </div>
-                        <h4 class="font-headline font-bold">Engr. [Name]</h4>
-                        <p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Managing Director</p>
-                        <p class="text-[10px] text-on-surface-variant font-light">Engineering &amp; Operations Lead</p>
+                        <h4 class="font-headline font-bold"><?php echo htmlspecialchars($m['name']); ?></h4>
+                        <p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold"><?php echo htmlspecialchars($m['position']); ?></p>
+                        <?php if ($m['bio']): ?>
+                        <p class="text-[10px] text-on-surface-variant font-light"><?php echo htmlspecialchars($m['bio']); ?></p>
+                        <?php endif; ?>
                     </div>
-                    <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 text-center space-y-4 group hover:shadow-lg transition-all">
-                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary transition-colors">
-                            <span class="material-symbols-outlined text-4xl text-primary group-hover:text-on-primary">inventory_2</span>
-                        </div>
-                        <h4 class="font-headline font-bold">[Name]</h4>
-                        <p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Procurement Director</p>
-                        <p class="text-[10px] text-on-surface-variant font-light">Supply Chain &amp; Logistics</p>
+                    <?php $idx++; endforeach; ?>
+                    <?php else: ?>
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-on-surface-variant italic">Team member information coming soon.</p>
                     </div>
-                    <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 text-center space-y-4 group hover:shadow-lg transition-all">
-                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary transition-colors">
-                            <span class="material-symbols-outlined text-4xl text-primary group-hover:text-on-primary">support_agent</span>
-                        </div>
-                        <h4 class="font-headline font-bold">[Name]</h4>
-                        <p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Technical Director</p>
-                        <p class="text-[10px] text-on-surface-variant font-light">Maintenance &amp; Field Operations</p>
-                    </div>
-                    <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 text-center space-y-4 group hover:shadow-lg transition-all">
-                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary transition-colors">
-                            <span class="material-symbols-outlined text-4xl text-primary group-hover:text-on-primary">finance</span>
-                        </div>
-                        <h4 class="font-headline font-bold">[Name]</h4>
-                        <p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Finance Director</p>
-                        <p class="text-[10px] text-on-surface-variant font-light">Business Development &amp; Strategy</p>
-                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>
@@ -426,7 +428,7 @@
                     Wilsolvewel Nigeria Limited is ready to support your engineering, procurement and technical needs. Contact us today to discuss your project requirements, equipment challenges or supply needs. Our team will assess your situation and deliver solutions that keep your operations running efficiently and safely.
                 </p>
                 <div class="flex flex-wrap justify-center gap-6">
-                    <a href="contact.html" class="bg-primary text-on-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                    <a href="contact.php" class="bg-primary text-on-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                         Contact Us Today
                     </a>
                     <a href="services.html" class="bg-surface/10 text-surface-bright px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-widest border border-surface/20 hover:bg-surface/20 transition-all">

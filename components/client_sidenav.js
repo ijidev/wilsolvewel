@@ -22,7 +22,7 @@
                 <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">precision_manufacturing</span>
             </div>
             <div class="min-w-0">
-                <h2 class="text-base font-extrabold text-slate-900 dark:text-white font-headline tracking-tight">Wilsovlewel</h2>
+                <h2 class="text-base font-extrabold text-slate-900 dark:text-white font-headline tracking-tight">Wilsolvewel</h2>
                 <p class="text-[9px] text-primary font-bold uppercase tracking-[0.2em]">Terminal v1.0</p>
             </div>
         </div>
