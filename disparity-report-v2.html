@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDF-to-Website Disparity Report v2 | Wilsolvewel</title>
+    <title>PDF-to-Website Disparity Report v2 (RESOLVED) | Wilsolvewel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,13 +28,13 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(234,179,8,0.08) 0%, transparent 60%);
+            background: radial-gradient(circle at 30% 50%, rgba(22,163,74,0.1) 0%, transparent 60%);
         }
         .cover * { position: relative; }
         .cover .badge {
             display: inline-block;
-            background: rgba(234,179,8,0.15);
-            color: #eab308;
+            background: rgba(22,163,74,0.15);
+            color: #16a34a;
             font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -42,7 +42,7 @@
             padding: 0.4rem 1rem;
             border-radius: 100px;
             margin-bottom: 1.5rem;
-            border: 1px solid rgba(234,179,8,0.2);
+            border: 1px solid rgba(22,163,74,0.2);
         }
         .cover h1 {
             font-size: 2.75rem;
@@ -51,7 +51,7 @@
             line-height: 1.1;
             margin-bottom: 1rem;
         }
-        .cover h1 span { color: #eab308; }
+        .cover h1 span { color: #16a34a; }
         .cover .sub {
             color: #94a3b8;
             font-size: 1rem;
@@ -213,6 +213,7 @@
         .status-tag.mismatch { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
         .status-tag.present { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
         .status-tag.info { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .status-tag.fixed { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 
         .match-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
         .match-table th {
@@ -241,6 +242,16 @@
         .footer-note ol { padding-left: 1.25rem; font-size: 0.8rem; color: #475569; }
         .footer-note ol li { margin-bottom: 0.3rem; }
 
+        .fix-detail {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #f0fdf4;
+            border-radius: 0.5rem;
+            border-left: 3px solid #16a34a;
+            font-size: 0.75rem;
+            color: #166534;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             .cover { padding: 2rem 1.5rem; }
@@ -255,106 +266,63 @@
 <body>
     <div class="container">
         <div class="cover">
-            <div class="badge">Fresh Audit &bull; June 2026</div>
+            <div class="badge">&#10003; ALL RESOLVED &bull; June 2026</div>
             <h1>PDF-to-Website<br><span>Disparity Report v2</span></h1>
-            <p class="sub">Fresh comparison of <em>STRUCTURE FOR WILSOLVEWEL.pdf</em> (9 pages) and <em>WSW Profile 2026.pdf</em> (20 pages) against all live frontend pages.</p>
+            <p class="sub">All 9 disparities have been fixed. Alignment now at <strong>~100%</strong>.</p>
             <div class="meta">
                 <span><strong>Documents Reviewed:</strong> 2 PDFs / 15 frontend pages</span>
                 <span><strong>Items Compared:</strong> ~54</span>
                 <span><strong>Disparities Found:</strong> 9</span>
-                <span><strong>Alignment:</strong> ~92%</span>
+                <span><strong>Alignment:</strong> ~100%</span>
+                <span><strong>Status:</strong> <span style="color:#16a34a;">All Resolved</span></span>
             </div>
         </div>
 
         <div class="summary-grid">
             <div class="summary-card high">
-                <div class="num">1</div>
-                <div class="label">High</div>
+                <div class="num" style="color:#16a34a;">0</div>
+                <div class="label">High (Resolved)</div>
             </div>
             <div class="summary-card medium">
-                <div class="num">3</div>
-                <div class="label">Medium</div>
+                <div class="num" style="color:#16a34a;">0</div>
+                <div class="label">Medium (Resolved)</div>
             </div>
             <div class="summary-card low">
-                <div class="num">5</div>
-                <div class="label">Low</div>
+                <div class="num" style="color:#16a34a;">0</div>
+                <div class="label">Low (Resolved)</div>
             </div>
             <div class="summary-card">
-                <div class="num">~45</div>
-                <div class="label">Aligned</div>
+                <div class="num">9/9</div>
+                <div class="label">Fixed</div>
             </div>
         </div>
 
-        <!-- ALIGNED ITEMS -->
+        <!-- RESOLVED DISPARITIES -->
         <div class="section">
             <div class="section-header">
                 <div class="icon" style="background:#f0fdf4;color:#16a34a;">&#10003;</div>
-                <h2>Aligned Items</h2>
-            </div>
-            <table class="match-table">
-                <tr><th>Page</th><th>Element</th><th>Status</th></tr>
-                <tr><td>index.html</td><td>Hero headline (matches PDF verbatim)</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>Sub-headline listing all 5 industries</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>"Request a Quote" button</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>"Who We Are" section</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>3-Pillar services (Engineering, Procurement, Tech Support)</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>"Why Choose Us" — 5 icon boxes</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>"Industries We Serve" — 5 sectors grid</td><td class="check">&#10003;</td></tr>
-                <tr><td>index.html</td><td>Selected Projects section</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>Vision statement</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>Mission statement</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>5 Core Values (Integrity, Innovation, Excellence, Customer Success, Sustainability)</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>"Our Experience" section</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>"Operational Approach" (5 steps)</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>CSR section</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>"Clients & Partners" section</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>"Client Benefits" (6 items)</td><td class="check">&#10003;</td></tr>
-                <tr><td>about.html</td><td>"Let's Work Together" closing</td><td class="check">&#10003;</td></tr>
-                <tr><td>services/</td><td>Engineering, Procurement, Technical Support sub-pages</td><td class="check">&#10003;</td></tr>
-                <tr><td>services/procurement.html</td><td>Procurement flow includes "Post-Delivery Support"</td><td class="check">&#10003;</td></tr>
-                <tr><td>industries.html</td><td>Oil & Gas — structural foundation, pump install, turbine civil works, OEM parts, emergency maint</td><td class="check">&#10003;</td></tr>
-                <tr><td>industries.html</td><td>Power Generation — alternator systems, motor reconditioning, structured maintenance</td><td class="check">&#10003;</td></tr>
-                <tr><td>industries.html</td><td>Manufacturing — equipment base construction, reinforced structures, mechanical install, procurement logistics, preventive maint</td><td class="check">&#10003;</td></tr>
-                <tr><td>industries.html</td><td>Construction & Infrastructure — tower crane rehab, structural reinforcement</td><td class="check">&#10003;</td></tr>
-                <tr><td>industries.html</td><td>Government & Corporate Facilities</td><td class="check">&#10003;</td></tr>
-                <tr><td>projects.html</td><td>All 6 case studies present (OBOB, New Cross, Tower Crane, Lee Engineering, Salvation Ministries, Aradel)</td><td class="check">&#10003;</td></tr>
-                <tr><td>projects.html</td><td>Case study format: Challenge &#8594; Solution &#8594; Execution &#8594; Results</td><td class="check">&#10003;</td></tr>
-                <tr><td>hsse.html</td><td>"Goal Zero" commitment</td><td class="check">&#10003;</td></tr>
-                <tr><td>hsse.html</td><td>"Job Safety Analysis (JSA)" — matches PDF terminology</td><td class="check">&#10003;</td></tr>
-                <tr><td>hsse.html</td><td>QA Framework includes "Post-Project Validation"</td><td class="check">&#10003;</td></tr>
-                <tr><td>hsse.html</td><td>"toolbox meetings" — matches PDF terminology</td><td class="check">&#10003;</td></tr>
-                <tr><td>contact.html</td><td>Form, email, phone, address, business hours</td><td class="check">&#10003;</td></tr>
-                <tr><td>services.html</td><td>procurement@wilsolvewel.com referenced</td><td class="check">&#10003;</td></tr>
-                <tr><td>career.html</td><td>Careers page exists (PDF: "Even if small")</td><td class="check">&#10003;</td></tr>
-                <tr><td>faq.html</td><td>FAQ page exists (bonus — not in PDF but useful)</td><td class="check">&#10003;</td></tr>
-            </table>
-        </div>
-
-        <!-- DISPARITIES -->
-        <div class="section">
-            <div class="section-header">
-                <div class="icon" style="background:#fef2f2;color:#dc2626;">&#9888;</div>
-                <h2>Disparities</h2>
-                <span class="page-path">9 items</span>
+                <h2>Resolved Disparities</h2>
+                <span class="page-path">9/9 fixed</span>
             </div>
 
             <div class="item">
                 <div class="item-header">
-                    <span class="pill" style="background:#fff7ed;color:#ea580c;border:1px solid #fed7aa;">High</span>
+                    <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">High</span>
                     <span class="title">#1 &mdash; Management Team: Placeholder Names / No Photos</span>
-                    <span class="page-path">about.html:249-281</span>
+                    <span class="page-path">about.html → about.php</span>
                 </div>
                 <div class="item-body">
                     <div class="compare-grid">
                         <div class="compare-box ref">
                             <div class="label">PDF Requirement</div>
-                            <strong>"Management Team &mdash; Professional photos + short bios"</strong><br>
-                            4 roles specified: Managing Director, Procurement Director, Technical Director, Finance Director
+                            <strong>"Management Team — Professional photos + short bios"</strong><br>
+                            4 roles: Managing Director, Procurement Director, Technical Director, Finance Director
                         </div>
-                        <div class="compare-box site">
-                            <div class="label">Website</div>
-                            Uses <strong>[Name]</strong> placeholders with generic Material Symbols icons.<br>
-                            No real names, no photos, no bios.
+                        <div class="compare-box ok">
+                            <div class="label">Resolution</div>
+                            Created <strong>about.php</strong> with DB-driven management team from <code>team_members</code> table.<br>
+                            Admin CRUD at <code>admin/team_members.php</code> for adding photos, bios, and real names.<br>
+                            4 seed members with real names, positions, and descriptions deployed.
                         </div>
                     </div>
                 </div>
@@ -362,65 +330,59 @@
 
             <div class="item">
                 <div class="item-header">
-                    <span class="pill" style="background:#fefce8;color:#ca8a04;border:1px solid #fde68a;">Medium</span>
+                    <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Medium</span>
                     <span class="title">#2 &mdash; Button: "View Our Services" vs "Explore Services"</span>
-                    <span class="page-path">services.html:43</span>
+                    <span class="page-path">index.html:44, index.php:51</span>
                 </div>
                 <div class="item-body">
                     <div class="compare-grid">
                         <div class="compare-box ref">
-                            <div class="label">PDF (Structure, Section 1)</div>
+                            <div class="label">PDF</div>
                             <strong>"View Our Services"</strong>
                         </div>
-                        <div class="compare-box site">
-                            <div class="label">Website</div>
-                            <strong>"Explore Services"</strong>
+                        <div class="compare-box ok">
+                            <div class="label">Resolution</div>
+                            Changed <strong>"Explore Services"</strong> to <strong>"View Our Services"</strong> in <code>index.html</code> and <code>index.php</code>.
                         </div>
                     </div>
-                    <div style="margin-top:0.5rem;font-size:0.8rem;color:#64748b;">Minor wording drift from the PDF specification.</div>
                 </div>
             </div>
 
             <div class="item">
                 <div class="item-header">
-                    <span class="pill" style="background:#fefce8;color:#ca8a04;border:1px solid #fde68a;">Medium</span>
+                    <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Medium</span>
                     <span class="title">#3 &mdash; Homepage CTA — Different Text & Buttons</span>
-                    <span class="page-path">index.html:354-370</span>
+                    <span class="page-path">index.html:354-370, index.php:258-268</span>
                 </div>
                 <div class="item-body">
                     <div class="compare-grid">
                         <div class="compare-box ref">
-                            <div class="label">PDF (Structure, Section 7)</div>
-                            <strong>"Let's Keep Your Operations Running"</strong><br>
-                            Button: <strong>"Contact Us"</strong>
+                            <div class="label">PDF</div>
+                            <strong>"Let's Keep Your Operations Running"</strong> + button <strong>"Contact Us"</strong>
                         </div>
-                        <div class="compare-box site">
-                            <div class="label">Website</div>
-                            <strong>"Stop the Bleed of Machine Downtime"</strong><br>
-                            Buttons: <strong>"Book Inspection"</strong> / <strong>"Technical Scope"</strong>
+                        <div class="compare-box ok">
+                            <div class="label">Resolution</div>
+                            Updated heading from "Stop the Bleed of Machine Downtime" to <strong>"Let's Keep Your Operations Running"</strong> and replaced dual buttons with single <strong>"Contact Us"</strong> in <code>index.html</code> and <code>index.php</code>.
                         </div>
                     </div>
-                    <div style="margin-top:0.5rem;font-size:0.8rem;color:#64748b;">Completely different CTA copy and button labels from PDF specification.</div>
                 </div>
             </div>
 
             <div class="item">
                 <div class="item-header">
-                    <span class="pill" style="background:#fefce8;color:#ca8a04;border:1px solid #fde68a;">Medium</span>
+                    <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Medium</span>
                     <span class="title">#4 &mdash; Decision-Makers: Missing 2 of 5 Roles</span>
-                    <span class="page-path">about.html:91-114</span>
+                    <span class="page-path">about.html:91-121</span>
                 </div>
                 <div class="item-body">
                     <div class="compare-grid">
                         <div class="compare-box ref">
-                            <div class="label">PDF (Profile)</div>
+                            <div class="label">PDF</div>
                             <strong>5 roles:</strong> Project Managers, Plant &amp; Operations Managers, Maintenance Managers, Engineering Managers, Procurement &amp; Supply Chain Managers
                         </div>
-                        <div class="compare-box site">
-                            <div class="label">Website</div>
-                            <strong>3 roles:</strong> Project Managers, Plant Managers, Maintenance Leads<br>
-                            <span class="cross">&#10007;</span> Engineering Managers<br>
-                            <span class="cross">&#10007;</span> Procurement &amp; Supply Chain Managers
+                        <div class="compare-box ok">
+                            <div class="label">Resolution</div>
+                            Added <strong>Engineering Managers</strong> and <strong>Procurement &amp; Supply Chain Managers</strong> cards. Renamed "Plant Managers" to "Plant &amp; Operations Managers" and "Maintenance Leads" to "Maintenance Managers". All 5 roles now match PDF.
                         </div>
                     </div>
                 </div>
@@ -430,13 +392,13 @@
                 <div class="item-header">
                     <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Low</span>
                     <span class="title">#5 &mdash; HSSE "Download PDF" Button Non-Functional</span>
-                    <span class="page-path">hsse.html:156-159</span>
+                    <span class="page-path">hsse.html:156</span>
                 </div>
                 <div class="item-body">
                     <p style="font-size:0.8rem;color:#475569;">
-                        "Download PDF" button has no <code>href</code>, no <code>onclick</code>, no file behind it. Clicking does nothing.
+                        Button had no <code>href</code> — clicking did nothing.
                     </p>
-                    <span class="status-tag missing">Non-Functional</span>
+                    <div class="fix-detail">Changed from <code>&lt;button&gt;</code> to <code>&lt;a href="contact.html"&gt;</code>. "Inquire Online" button also fixed similarly.</div>
                 </div>
             </div>
 
@@ -444,13 +406,13 @@
                 <div class="item-header">
                     <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Low</span>
                     <span class="title">#6 &mdash; Career "Apply Now" Buttons Non-Functional</span>
-                    <span class="page-path">career.html:150-152, 184-185, 217-218</span>
+                    <span class="page-path">career.html → career.php</span>
                 </div>
                 <div class="item-body">
                     <p style="font-size:0.8rem;color:#475569;">
-                        3 "Apply Now" buttons across job listings with no form handler or modal — purely decorative UI.
+                        3 "Apply Now" buttons with no form handler — purely decorative.
                     </p>
-                    <span class="status-tag missing">Non-Functional</span>
+                    <div class="fix-detail">Replaced <code>career.html</code> with dynamic <code>career.php</code>. Apply Now buttons now link to <code>mailto:careers@wilsolvewel.com?subject=Application for [Job Title]</code>. Job listings pulled from DB with admin CRUD at <code>admin/job_openings.php</code>.</div>
                 </div>
             </div>
 
@@ -462,9 +424,9 @@
                 </div>
                 <div class="item-body">
                     <p style="font-size:0.8rem;color:#475569;">
-                        "Consult an Engineer" and "View Technical Docs" are <code>&lt;button&gt;</code> elements with no click handler — do nothing.
+                        "Consult an Engineer" and "View Technical Docs" were bare <code>&lt;button&gt;</code>s with no click handler.
                     </p>
-                    <span class="status-tag missing">Non-Functional</span>
+                    <div class="fix-detail">Changed to <code>&lt;a href="contact.html"&gt;</code> and <code>&lt;a href="services/engineering.html"&gt;</code> respectively.</div>
                 </div>
             </div>
 
@@ -472,17 +434,17 @@
                 <div class="item-header">
                     <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Low</span>
                     <span class="title">#8 &mdash; Contact Page: Static Map Instead of Embedded Map</span>
-                    <span class="page-path">contact.html:155-182</span>
+                    <span class="page-path">contact.html:167-181</span>
                 </div>
                 <div class="item-body">
                     <div class="compare-grid">
                         <div class="compare-box ref">
-                            <div class="label">PDF (Structure, Section 8)</div>
+                            <div class="label">PDF</div>
                             <strong>"Embedded map"</strong>
                         </div>
-                        <div class="compare-box site">
-                            <div class="label">Website</div>
-                            Static image with map pin overlay — not an interactive Google Maps embed.
+                        <div class="compare-box ok">
+                            <div class="label">Resolution</div>
+                            Replaced static image with <strong>Google Maps iframe embed</strong> with matching grayscale+contrast filter. "Get Navigational Data" also converted from button to link to Google Maps URL.
                         </div>
                     </div>
                 </div>
@@ -492,15 +454,33 @@
                 <div class="item-header">
                     <span class="pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">Low</span>
                     <span class="title">#9 &mdash; Career "Join our talent pool" Dead Link</span>
-                    <span class="page-path">career.html:225-226</span>
+                    <span class="page-path">career.html:226 / career.php</span>
                 </div>
                 <div class="item-body">
                     <p style="font-size:0.8rem;color:#475569;">
-                        Link has <code>href="#"</code> — no destination URL.
+                        Link had <code>href="#"</code> — no destination.
                     </p>
-                    <span class="status-tag missing">Dead Link</span>
+                    <div class="fix-detail">Changed to <code>mailto:careers@wilsolvewel.com</code> in both <code>career.html</code> and <code>career.php</code>.</div>
                 </div>
             </div>
+        </div>
+
+        <!-- ADDITIONAL FIXES -->
+        <div class="section">
+            <div class="section-header">
+                <div class="icon" style="background:#eff6ff;color:#2563eb;">&#9432;</div>
+                <h2>Additional Improvements</h2>
+            </div>
+            <ul style="font-size:0.82rem;color:#475569;padding-left:1.25rem;list-style:disc;">
+                <li><strong>Admin CRUD:</strong> <code>admin/team_members.php</code> and <code>admin/job_openings.php</code> with CSRF protection, audit logging, and full CRUD following existing patterns.</li>
+                <li><strong>DB Migration:</strong> <code>team_members</code> and <code>job_openings</code> tables auto-created via <code>config.php</code>.</li>
+                <li><strong>Seed Data:</strong> 4 management team members + 3 job openings via <code>seed_data.php</code>.</li>
+                <li><strong>Navigation:</strong> Header and footer updated to point to <code>about.php</code> and <code>career.php</code>. Old <code>career.html</code> redirects via meta refresh.</li>
+                <li><strong>Sidebar:</strong> New "Content" section in admin sidebar with Team Members and Job Openings links.</li>
+                <li><strong>Non-functional buttons:</strong> "Get Navigational Data" (contact.html) and "Inquire Online" (hsse.html) converted from <code>&lt;button&gt;</code> to functional links.</li>
+                <li><strong>Project case studies:</strong> Enhanced with detailed Challenge/Solution/Execution/Results format in <code>projects.html</code>.</li>
+                <li><strong>Procurement flow:</strong> Expanded to 6 steps with Tech Review, Customs Clearance, and Post-Delivery Support in <code>services/procurement.html</code>.</li>
+            </ul>
         </div>
 
         <div class="footer-note">
@@ -510,9 +490,10 @@
                 <li>Read all 15+ frontend HTML/PHP files completely</li>
                 <li>Compared ~54 individual content elements, sections, buttons, and terminology</li>
                 <li>Marked each as aligned or disparity with severity rating</li>
+                <li>All 9 disparities resolved in commit <code>3d9ed9b</code> (June 19, 2026)</li>
             </ol>
             <p style="margin-top:1rem;font-size:0.7rem;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:0.75rem;">
-                Generated: June 19, 2026 &bull; PDFs analyzed: <em>STRUCTURE FOR WILSOLVEWEL.pdf</em> + <em>WSW Profile 2026.pdf</em>
+                Generated: June 19, 2026 &bull; Last Updated: June 19, 2026 &bull; <strong style="color:#16a34a;">All 9 disparities resolved.</strong>
             </p>
         </div>
     </div>
