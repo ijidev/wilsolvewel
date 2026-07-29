@@ -59,14 +59,6 @@ if ($res) {
     while ($row = $res->fetch_assoc()) $members[] = $row;
 }
 
-$edit_member = null;
-if (isset($_GET['edit'])) {
-    $id = (int)$_GET['edit'];
-    foreach ($members as $m) {
-        if ($m['id'] == $id) { $edit_member = $m; break; }
-    }
-}
-
 $page_title = 'Team Members';
 $page_subtitle = '';
 $page_header_actions = '';
@@ -96,6 +88,63 @@ $page_header_actions = '';
 <script>setTimeout(() => document.getElementById('toast').style.transform = 'translateX(150%)', 4000);</script>
 <?php endif; ?>
 
+<!-- Form Modal -->
+<div id="formModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="relative h-full flex items-start justify-center p-4 pt-12 lg:pt-20 overflow-y-auto">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl border border-slate-100">
+            <div class="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center rounded-t-[2rem]">
+                <h2 id="modalTitle" class="text-xl font-bold font-headline text-slate-900">Add New Team Member</h2>
+                <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form method="POST" class="p-8 space-y-6">
+                <input type="hidden" name="save_member" value="1">
+                <input type="hidden" name="id" id="editId" value="0">
+                <?= get_csrf_field() ?>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Name *</label>
+                        <input type="text" name="name" id="fieldName" value="" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Position</label>
+                        <input type="text" name="position" id="fieldPosition" value="" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Department</label>
+                        <input type="text" name="department" id="fieldDepartment" value="" placeholder="e.g. Management" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Sort Order</label>
+                        <input type="number" name="sort_order" id="fieldSortOrder" value="0" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="space-y-1.5 col-span-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Photo URL</label>
+                        <input type="url" name="photo_url" id="fieldPhotoUrl" value="" placeholder="https://..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="space-y-1.5 col-span-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Bio</label>
+                        <textarea name="bio" id="fieldBio" rows="3" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary"></textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Status</label>
+                        <select name="status" id="fieldStatus" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal()" class="px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-colors">Cancel</button>
+                    <button type="submit" id="modalSubmit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Add Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
     <?php require_once __DIR__ . '/../components/admin_header.php'; ?>
 
@@ -103,67 +152,18 @@ $page_header_actions = '';
         <div class="max-w-5xl mx-auto space-y-8">
 
             <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-8 border-b border-slate-50 bg-slate-50/50">
-                    <h2 class="text-xl font-bold font-headline text-slate-900"><?php echo $edit_member ? 'Edit Team Member' : 'Add New Team Member'; ?></h2>
-                </div>
-                <form method="POST" class="p-8 space-y-6">
-                    <input type="hidden" name="save_member" value="1">
-                    <?= get_csrf_field() ?>
-                    <?php if ($edit_member): ?>
-                    <input type="hidden" name="id" value="<?php echo $edit_member['id']; ?>">
-                    <?php endif; ?>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="space-y-1.5 col-span-2 sm:col-span-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Name *</label>
-                            <input type="text" name="name" value="<?php echo htmlspecialchars($edit_member['name'] ?? ''); ?>" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="space-y-1.5 col-span-2 sm:col-span-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Position</label>
-                            <input type="text" name="position" value="<?php echo htmlspecialchars($edit_member['position'] ?? ''); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="space-y-1.5 col-span-2 sm:col-span-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Department</label>
-                            <input type="text" name="department" value="<?php echo htmlspecialchars($edit_member['department'] ?? ''); ?>" placeholder="e.g. Management" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="space-y-1.5 col-span-2 sm:col-span-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Sort Order</label>
-                            <input type="number" name="sort_order" value="<?php echo (int)($edit_member['sort_order'] ?? 0); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="space-y-1.5 col-span-2">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Photo URL</label>
-                            <input type="url" name="photo_url" value="<?php echo htmlspecialchars($edit_member['photo_url'] ?? ''); ?>" placeholder="https://..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="space-y-1.5 col-span-2">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Bio</label>
-                            <textarea name="bio" rows="3" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary"><?php echo htmlspecialchars($edit_member['bio'] ?? ''); ?></textarea>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Status</label>
-                            <select name="status" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                                <option value="Active" <?php echo ($edit_member['status']??'Active')=='Active'?'selected':''; ?>>Active</option>
-                                <option value="Inactive" <?php echo ($edit_member['status']??'')=='Inactive'?'selected':''; ?>>Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
-                        <?php if ($edit_member): ?>
-                        <a href="team_members.php" class="px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-colors">Cancel</a>
-                        <?php endif; ?>
-                        <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg"><?php echo $edit_member ? 'Update Member' : 'Add Member'; ?></button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
                 <div class="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
                     <div>
                         <h2 class="text-xl font-bold font-headline text-slate-900">All Team Members</h2>
                         <p class="text-xs text-slate-500 mt-1"><?php echo count($members); ?> total members</p>
                     </div>
+                    <button onclick="openAddModal()" class="bg-slate-900 text-white px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">add</span> Add Member
+                    </button>
                 </div>
                 <div class="p-8">
                     <?php if (empty($members)): ?>
-                    <p class="text-center py-10 text-slate-400 text-xs italic">No team members yet. Add one above.</p>
+                    <p class="text-center py-10 text-slate-400 text-xs italic">No team members yet. Add one now.</p>
                     <?php else: ?>
                     <div class="space-y-3">
                         <?php foreach ($members as $m): ?>
@@ -195,9 +195,9 @@ $page_header_actions = '';
                                 </div>
                             </div>
                             <div class="flex items-center gap-1 shrink-0 ml-4">
-                                <a href="?edit=<?php echo $m['id']; ?>" class="p-2 text-slate-300 hover:text-primary transition-colors">
+                                <button onclick='openEditModal(<?php echo json_encode($m); ?>)' class="p-2 text-slate-300 hover:text-primary transition-colors">
                                     <span class="material-symbols-outlined text-sm">edit</span>
-                                </a>
+                                </button>
                                 <form method="POST" class="inline" onsubmit="return confirm('Delete this team member?')">
                                     <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                                     <input type="hidden" name="delete_member" value="<?php echo $m['id']; ?>">
@@ -216,5 +216,39 @@ $page_header_actions = '';
         </div>
     </div>
 </div>
+
+<script>
+function openAddModal() {
+    document.getElementById('editId').value = '0';
+    document.getElementById('fieldName').value = '';
+    document.getElementById('fieldPosition').value = '';
+    document.getElementById('fieldDepartment').value = '';
+    document.getElementById('fieldSortOrder').value = '0';
+    document.getElementById('fieldPhotoUrl').value = '';
+    document.getElementById('fieldBio').value = '';
+    document.getElementById('fieldStatus').value = 'Active';
+    document.getElementById('modalTitle').textContent = 'Add New Team Member';
+    document.getElementById('modalSubmit').textContent = 'Add Member';
+    document.getElementById('formModal').classList.remove('hidden');
+}
+
+function openEditModal(member) {
+    document.getElementById('editId').value = member.id || 0;
+    document.getElementById('fieldName').value = member.name || '';
+    document.getElementById('fieldPosition').value = member.position || '';
+    document.getElementById('fieldDepartment').value = member.department || '';
+    document.getElementById('fieldSortOrder').value = member.sort_order || 0;
+    document.getElementById('fieldPhotoUrl').value = member.photo_url || '';
+    document.getElementById('fieldBio').value = member.bio || '';
+    document.getElementById('fieldStatus').value = member.status || 'Active';
+    document.getElementById('modalTitle').textContent = 'Edit Team Member';
+    document.getElementById('modalSubmit').textContent = 'Update Member';
+    document.getElementById('formModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('formModal').classList.add('hidden');
+}
+</script>
 </body>
 </html>
