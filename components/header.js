@@ -81,7 +81,7 @@
                 { name: 'Civil Engineering', path: 'services/engineering.html', desc: 'Structural design & foundations', icon: 'architecture' },
                 { name: 'OEM Procurement', path: 'services/procurement.html', desc: 'Global sourcing & logistics', icon: 'inventory_2' },
                 { name: 'Technical Support', path: 'services/technical-support.html', desc: 'Maintenance & diagnostics', icon: 'engineering' },
-                { name: 'Specialized Solutions', path: 'services.html#specialized', desc: 'Custom hydraulic refurbishment', icon: 'water_drop' }
+                { name: 'Specialized Solutions', path: 'services/hydraulic-pump.html', desc: 'Custom hydraulic refurbishment', icon: 'water_drop' }
             ]
         },
         { 
