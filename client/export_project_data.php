@@ -44,15 +44,6 @@ try {
         $m_stmt->execute();
         $m_res = $m_stmt->get_result();
         while ($m = $m_res->fetch_assoc()) {
-            $ms_id = $m['id'];
-            $subs = [];
-            $s_stmt = $conn->prepare("SELECT * FROM project_sub_milestones WHERE milestone_id = ? ORDER BY created_at ASC");
-            $s_stmt->bind_param("i", $ms_id);
-            $s_stmt->execute();
-            $s_res = $s_stmt->get_result();
-            while ($s = $s_res->fetch_assoc()) $subs[] = $s;
-            $s_stmt->close();
-            $m['sub_milestones'] = $subs;
             $milestones[] = $m;
         }
         $m_stmt->close();

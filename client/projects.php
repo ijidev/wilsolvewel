@@ -28,17 +28,8 @@ if (isset($_GET['ajax_action'])) {
         $milestones = [];
         $res = safe_query($conn, "SELECT * FROM project_milestones WHERE project_id = ? ORDER BY order_index ASC, created_at ASC", "i", [$id]);
         while ($row = $res->fetch_assoc()) {
-            $ms_id = $row['id'];
-            $subs = [];
-            $sub_res = safe_query($conn, "SELECT sm.*, a.name as assignee_name, d.name as dept_name FROM project_sub_milestones sm LEFT JOIN admins a ON sm.assigned_to_admin = a.id LEFT JOIN departments d ON sm.assigned_to_department = d.id WHERE sm.milestone_id = ? ORDER BY sm.created_at ASC", "i", [$ms_id]);
-            while ($s = $sub_res->fetch_assoc()) $subs[] = $s;
-            $row['sub_milestones'] = $subs;
             $milestones[] = $row;
         }
-
-        $completed_count = 0;
-        foreach ($milestones as $m) if ($m['status'] == 'Completed') $completed_count++;
-        $progress = count($milestones) > 0 ? round(($completed_count / count($milestones)) * 100) : 0;
         
         // Assets
         $assigned_assets = [];
@@ -57,7 +48,7 @@ if (isset($_GET['ajax_action'])) {
                 </div>
                 <h2 class="text-2xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($proj['name']); ?></h2>
                 <?php if (!empty($proj['status'])): ?>
-                    <span class="inline-block px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $proj['status']=='Completed'?'bg-emerald-50 text-emerald-600':($proj['status']=='Planning'?'bg-amber-50 text-amber-600':($proj['status']=='On Hold'?'bg-red-50 text-red-500':'bg-blue-50 text-blue-600')); ?>"><?php echo htmlspecialchars($proj['status']); ?></span>
+                    <span class="inline-block px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $proj['status']=='Completed'?'bg-emerald-50 text-emerald-600':($proj['status']=='Planning'?'bg-amber-50 text-amber-600':($proj['status']=='On Hold'?'bg-red-50 text-red-500':(($proj['status']=='In Progress'||$proj['status']=='Active')?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'))); ?>"><?php echo htmlspecialchars($proj['status']); ?></span>
                 <?php endif; ?>
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4">
                     <div class="flex items-center gap-1.5 text-xs text-slate-500">
@@ -109,17 +100,9 @@ if (isset($_GET['ajax_action'])) {
             <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between mb-8 relative z-10">
                     <div>
-                        <h3 class="font-headline text-lg font-bold text-slate-900">Project Roadmap</h3>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Execution timeline</p>
+                        <h3 class="font-headline text-lg font-bold text-slate-900">Project Reports</h3>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Milestones & updates</p>
                     </div>
-                    <div class="text-right">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Progress</span>
-                        <span class="text-xl font-bold text-primary"><?php echo $progress; ?>%</span>
-                    </div>
-                </div>
-
-                <div class="h-1.5 bg-slate-50 rounded-full overflow-hidden mb-10 relative z-10">
-                    <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: <?php echo $progress; ?>%"></div>
                 </div>
 
                 <div class="space-y-6 relative z-10">
@@ -132,21 +115,14 @@ if (isset($_GET['ajax_action'])) {
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No Milestones Yet</p>
                         </div>
                     <?php else: ?>
-                        <?php foreach ($milestones as $index => $m): 
-                            $isDone = $m['status'] == 'Completed';
-                            $isActive = $m['status'] == 'In Progress';
-                        ?>
+                        <?php foreach ($milestones as $index => $m): ?>
                         <div class="relative pl-14 group">
                             <!-- Timeline Dot -->
-                            <div class="absolute left-1.5 top-2 w-9 h-9 rounded-full border-4 <?php echo $isDone ? 'bg-primary border-primary' : ($isActive ? 'bg-white border-primary shadow-sm' : 'bg-slate-50 border-white'); ?> flex items-center justify-center z-10 transition-colors">
-                                <?php if ($isDone): ?>
-                                    <span class="material-symbols-outlined text-on-primary text-[14px] font-bold">check</span>
-                                <?php else: ?>
-                                    <span class="text-[9px] font-bold <?php echo $isActive ? 'text-primary' : 'text-slate-400'; ?>"><?php echo str_pad($index + 1, 2, '0', STR_PAD_LEFT); ?></span>
-                                <?php endif; ?>
+                            <div class="absolute left-1.5 top-2 w-9 h-9 rounded-full border-4 bg-slate-50 border-white flex items-center justify-center z-10 transition-colors">
+                                <span class="text-[9px] font-bold text-slate-400"><?php echo str_pad($index + 1, 2, '0', STR_PAD_LEFT); ?></span>
                             </div>
 
-                            <div class="bg-white rounded-2xl p-4 border <?php echo $isActive ? 'border-primary/20 shadow-sm' : 'border-slate-100'; ?> transition-all">
+                            <div class="bg-white rounded-2xl p-4 border border-slate-100 transition-all">
                                 <div class="flex items-center justify-between mb-3">
                                     <div>
                                         <h4 class="font-bold text-sm text-slate-900 leading-none"><?php echo htmlspecialchars($m['title']); ?></h4>
@@ -164,40 +140,6 @@ if (isset($_GET['ajax_action'])) {
 
                                 <?php if ($m['description']): ?>
                                     <p class="text-xs text-slate-500 mb-4 leading-relaxed"><?php echo nl2br(htmlspecialchars($m['description'])); ?></p>
-                                <?php endif; ?>
-
-                                <!-- Tasks -->
-                                <?php if (count($m['sub_milestones']) > 0): ?>
-                                <div class="bg-slate-50 rounded-xl p-3 space-y-2 mt-4 border border-slate-100/50">
-                                    <?php foreach ($m['sub_milestones'] as $sub): 
-                                        $subDone = $sub['is_completed'];
-                                    ?>
-                                    <div class="flex items-start gap-2 group/task">
-                                        <div class="mt-0.5 shrink-0 w-4 h-4 rounded-full border <?php echo $subDone ? 'bg-primary border-primary flex items-center justify-center' : 'bg-white border-slate-200'; ?>">
-                                            <?php if ($subDone): ?><span class="material-symbols-outlined text-on-primary" style="font-size:10px; font-weight:bold;">check</span><?php endif; ?>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <span class="text-[11px] font-medium <?php echo $subDone ? 'text-slate-400 line-through' : 'text-slate-700'; ?> leading-tight block">
-                                                <?php echo htmlspecialchars($sub['title']); ?>
-                                            </span>
-                                            <?php if ($sub['assignee_name'] || $sub['dept_name']): ?>
-                                                <div class="flex items-center gap-1 mt-1">
-                                                    <?php if ($sub['dept_name']): ?>
-                                                        <span class="px-1.5 py-0.5 bg-slate-200/50 text-slate-500 rounded text-[8px] font-bold uppercase tracking-widest">
-                                                            <?php echo htmlspecialchars($sub['dept_name']); ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                    <?php if ($sub['assignee_name']): ?>
-                                                        <span class="px-1.5 py-0.5 bg-primary/10 text-primary-700 rounded text-[8px] font-bold uppercase tracking-widest">
-                                                            <?php echo htmlspecialchars($sub['assignee_name']); ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                    <?php endforeach; ?>
-                                </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -337,19 +279,19 @@ ob_start();
             <div class="space-y-5">
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Proposal Submitted</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters <strong>Planning</strong> phase where milestones are defined.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Proposal Submitted</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters <strong>Planning</strong> phase.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">2</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Team Plans</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Our project team creates milestones and tasks. You can review the roadmap and use milestone discussion chats to ask questions or request changes.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Project Tracking</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Your project status is set by the team — <strong>Planning</strong>, <strong>In Progress</strong>, <strong>On Hold</strong>, or <strong>Completed</strong>. Milestones list the key phases and reports for your project.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">3</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Project Activated</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Once planning is complete, the admin activates the project. The roadmap locks and work begins. Monitor milestone progress in real time — Pending, In Progress, or Completed.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Milestone Reports</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Each milestone is a report entry. Use milestone discussion chats to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">4</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Communicate</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use milestone discussion chats to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When the work is finished, the team sets the project to <strong>Completed</strong> status. The project is now closed.</p></div>
                 </div>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
@@ -404,7 +346,7 @@ ob_start();
                         </div>
                         <div onclick="loadProject(<?php echo $p['id']; ?>)">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':'bg-blue-50 text-blue-600')); ?>"><?php echo $p['status']; ?></span>
+                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':(($p['status']=='In Progress'||$p['status']=='Active')?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'))); ?>"><?php echo $p['status']; ?></span>
                         </div>
                         <h3 class="font-bold text-sm text-slate-900 group-hover:text-primary transition-colors leading-tight mb-1 pr-4"><?php echo htmlspecialchars($p['name']); ?></h3>
                         <div class="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -617,16 +559,9 @@ $page_scripts = '
             if (p.milestones && p.milestones.length > 0) {
                 html += `<div class="section"><h2>Milestones (${p.milestones.length})</h2>`;
                 p.milestones.forEach(function(m) {
-                    var msClass = m.status === "Completed" ? "badge-completed" : (m.status === "In Progress" ? "badge-active" : "badge-planning");
-                    html += `<div class="milestone"><div class="milestone-title">${escHtml(m.title)} <span class="badge ${msClass}" style="margin-left:6px">${m.status}</span></div>`;
+                    html += `<div class="milestone"><div class="milestone-title">${escHtml(m.title)}</div>`;
                     if (m.due_date) html += `<div class="milestone-meta">Due: ${m.due_date}</div>`;
                     if (m.description) html += `<div style="font-size:10px;color:#555;margin:2px 0">${escHtml(m.description)}</div>`;
-                    if (m.sub_milestones && m.sub_milestones.length > 0) {
-                        m.sub_milestones.forEach(function(s) {
-                            var icon = s.is_completed ? "\\u2713" : "\\u25CB";
-                            html += `<div class="sub-task">${icon} ${escHtml(s.title)}</div>`;
-                        });
-                    }
                     html += `</div>`;
                 });
                 html += `</div>`;

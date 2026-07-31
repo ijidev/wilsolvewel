@@ -21,20 +21,6 @@ function check_project_permission($conn, $project_id, $admin_id) {
     return $proj['leader_id'] == $admin_id;
 }
 
-function check_task_permission($conn, $task_id, $admin_id) {
-    if ($admin_id == 1) return true;
-    $stmt = $conn->prepare("SELECT sm.assigned_to_admin, sm.assigned_to_department, p.id as project_id, d.leader_id FROM project_sub_milestones sm JOIN project_milestones m ON sm.milestone_id = m.id JOIN projects p ON m.project_id = p.id LEFT JOIN departments d ON sm.assigned_to_department = d.id WHERE sm.id = ?");
-    $stmt->bind_param("i", $task_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $task = $res->fetch_assoc();
-    $stmt->close();
-    if (!$task) return false;
-    if (check_project_permission($conn, $task['project_id'], $admin_id)) return true;
-    if ($task['assigned_to_admin'] == $admin_id) return true;
-    return false;
-}
-
 if (isset($_GET['ajax_action'])) {
     header('Content-Type: application/json');
 
@@ -194,33 +180,6 @@ if (isset($_GET['ajax_action'])) {
         exit;
     }
 
-    if ($_GET['ajax_action'] == 'assign_task') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $task_id = (int)$_POST['task_id'];
-        
-        $stmt = $conn->prepare("SELECT p.id as project_id FROM project_sub_milestones sm JOIN project_milestones m ON sm.milestone_id = m.id JOIN projects p ON m.project_id = p.id WHERE sm.id = ?");
-        $stmt->bind_param("i", $task_id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $proj_id = $res->fetch_assoc()['project_id'] ?? 0;
-        $stmt->close();
-        if (!check_project_permission($conn, $proj_id, $admin_id)) {
-            echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
-        }
-
-        $admin_id_assign = !empty($_POST['admin_id']) ? (int)$_POST['admin_id'] : null;
-        $dept_id = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
-        $stmt = $conn->prepare("UPDATE project_sub_milestones SET assigned_to_admin = ?, assigned_to_department = ? WHERE id = ?");
-        $stmt->bind_param("iii", $admin_id_assign, $dept_id, $task_id);
-        $stmt->execute();
-        $stmt->close();
-        echo json_encode(['status' => 'success']);
-        exit;
-    }
-
     if ($_GET['ajax_action'] == 'assign_project_dept') {
         if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
@@ -233,53 +192,6 @@ if (isset($_GET['ajax_action'])) {
         $stmt->execute();
         $stmt->close();
         echo json_encode(['status' => 'success']);
-        exit;
-    }
-
-    if ($_GET['ajax_action'] == 'confirm_project_active') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $id = (int)$_POST['id'];
-        $stmt = $conn->prepare("UPDATE projects SET status = 'Active' WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $stmt->close();
-        log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Project #$id transitioned to Active");
-        // Notify client
-        $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$id]);
-        if ($pinfo && $p = $pinfo->fetch_assoc()) {
-            send_email($p['email'], 'Project Active: ' . htmlspecialchars($p['name']), email_template('Your project is now Active', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>Your project <strong>' . htmlspecialchars($p['name']) . '</strong> has been approved and is now <strong>Active</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
-        }
-        echo json_encode(['status' => 'success']);
-        exit;
-    }
-
-    if ($_GET['ajax_action'] == 'toggle_project_hold') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $id = (int)$_POST['id'];
-        $current = $_POST['current_status'];
-        
-        if ($current == 'On Hold') {
-            $new = 'Active';
-        } else {
-            $new = 'On Hold';
-        }
-        
-        $stmt = $conn->prepare("UPDATE projects SET status = ? WHERE id = ?");
-        $stmt->bind_param("si", $new, $id);
-        $stmt->execute();
-        $stmt->close();
-        // Notify client
-        $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$id]);
-        if ($pinfo && $p = $pinfo->fetch_assoc()) {
-            send_email($p['email'], 'Project ' . $new . ': ' . htmlspecialchars($p['name']), email_template('Your project status has changed', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>Your project <strong>' . htmlspecialchars($p['name']) . '</strong> has been updated to: <strong>' . $new . '</strong>.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $id . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
-        }
-        echo json_encode(['status' => 'success', 'new_status' => $new]);
         exit;
     }
 
@@ -297,19 +209,6 @@ if (isset($_GET['ajax_action'])) {
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $due_date = !empty($_POST['due_date']) ? $_POST['due_date'] : null;
-
-        if ($project_id > 0) {
-            $stmt = $conn->prepare("SELECT status FROM projects WHERE id = ?");
-            $stmt->bind_param("i", $project_id);
-            $stmt->execute();
-            $p_res = $stmt->get_result();
-            $p = $p_res->fetch_assoc();
-            $stmt->close();
-            if ($p['status'] !== 'Planning') {
-                echo json_encode(['status' => 'error', 'message' => 'Cannot modify milestones once project is ' . $p['status']]);
-                exit;
-            }
-        }
 
         if ($id > 0) {
             $stmt = $conn->prepare("UPDATE project_milestones SET title=?, description=?, due_date=? WHERE id=?");
@@ -354,146 +253,6 @@ if (isset($_GET['ajax_action'])) {
         $res = $stmt->get_result();
         echo json_encode($res->fetch_assoc());
         $stmt->close();
-        exit;
-    }
-
-    if ($_GET['ajax_action'] == 'update_milestone_status') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $id = (int)$_POST['id'];
-        
-        $stmt = $conn->prepare("SELECT project_id FROM project_milestones WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $pid = $res->fetch_assoc()['project_id'] ?? 0;
-        $stmt->close();
-        if (!check_project_permission($conn, $pid, $admin_id)) {
-            echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
-        }
-
-        $status = $_POST['status'];
-        
-        $stmt = $conn->prepare("UPDATE project_milestones SET status=? WHERE id=?");
-        $stmt->bind_param("si", $status, $id);
-        $stmt->execute();
-        $stmt->close();
-        
-        $stmt = $conn->prepare("SELECT project_id FROM project_milestones WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $ms = $res->fetch_assoc();
-        $stmt->close();
-        $pid = $ms['project_id'];
-        
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM project_milestones WHERE project_id = ?");
-        $stmt->bind_param("i", $pid);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $total = $res->fetch_assoc()['total'];
-        $stmt->close();
-        
-        $stmt = $conn->prepare("SELECT COUNT(*) as done FROM project_milestones WHERE project_id = ? AND status = 'Completed'");
-        $stmt->bind_param("i", $pid);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $done = $res->fetch_assoc()['done'];
-        $stmt->close();
-        
-        if ($total > 0 && $total == $done) {
-            $stmt = $conn->prepare("UPDATE projects SET status = 'Completed' WHERE id = ?");
-            $stmt->bind_param("i", $pid);
-            $stmt->execute();
-            $stmt->close();
-            log_audit($conn, 'Update', 'Project', 'Admin', $admin_id, "Project #$pid automatically marked Completed");
-            $pinfo = safe_query($conn, "SELECT p.name, c.email, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?", "i", [$pid]);
-            if ($pinfo && $p = $pinfo->fetch_assoc()) {
-                send_email($p['email'], 'Project Completed: ' . htmlspecialchars($p['name']), email_template('Your project has been completed', '<p>Hello ' . htmlspecialchars($p['client_name']) . ',</p><p>Your project <strong>' . htmlspecialchars($p['name']) . '</strong> has been marked as <strong>Completed</strong>.</p><p>Thank you for working with Wilsolvewel Engineering.</p><p style="margin-top:20px"><a href="' . ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . '/client/projects.php?id=' . $pid . '" style="display:inline-block;background:#EAB308;color:#0F172A;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px">View Project</a></p>'));
-            }
-        } else if ($total > 0 && $done < $total) {
-            $stmt = $conn->prepare("SELECT status FROM projects WHERE id = ?");
-            $stmt->bind_param("i", $pid);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            if ($res->fetch_assoc()['status'] == 'Completed') {
-                $stmt->close();
-                $stmt = $conn->prepare("UPDATE projects SET status = 'Active' WHERE id = ?");
-                $stmt->bind_param("i", $pid);
-                $stmt->execute();
-                $stmt->close();
-            } else {
-                $stmt->close();
-            }
-        }
-        
-        echo json_encode(['status' => 'success']);
-        exit;
-    }
-
-    if ($_GET['ajax_action'] == 'save_sub_milestone') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $milestone_id = (int)$_POST['milestone_id'];
-        
-        $stmt = $conn->prepare("SELECT project_id FROM project_milestones WHERE id = ?");
-        $stmt->bind_param("i", $milestone_id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $pid = $res->fetch_assoc()['project_id'] ?? 0;
-        $stmt->close();
-        if (!check_project_permission($conn, $pid, $admin_id)) {
-            echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
-        }
-
-        $title = trim($_POST['title']);
-        $stmt = $conn->prepare("INSERT INTO project_sub_milestones (milestone_id, title) VALUES (?, ?)");
-        $stmt->bind_param("is", $milestone_id, $title);
-        $stmt->execute();
-        $stmt->close();
-        echo json_encode(['status' => 'success']);
-        exit;
-    }
-
-    if ($_GET['ajax_action'] == 'toggle_sub_milestone') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $id = (int)$_POST['id'];
-        
-        if (!check_task_permission($conn, $id, $admin_id)) {
-            echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
-        }
-
-        $stmt = $conn->prepare("UPDATE project_sub_milestones SET is_completed = NOT is_completed WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $stmt->close();
-        echo json_encode(['status' => 'success']);
-        exit;
-    }
-
-    if ($_GET['ajax_action'] == 'delete_sub_milestone') {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid security token']); exit;
-        }
-
-        $id = (int)$_POST['id'];
-        
-        if (!check_task_permission($conn, $id, $admin_id)) {
-            echo json_encode(['status' => 'error', 'message' => 'Permission denied']); exit;
-        }
-
-        $stmt = $conn->prepare("DELETE FROM project_sub_milestones WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $stmt->close();
-        echo json_encode(['status' => 'success']);
         exit;
     }
 
@@ -542,15 +301,6 @@ if (isset($_GET['ajax_action'])) {
         $stmt->execute();
         $ms_result = $stmt->get_result();
         while ($row = $ms_result->fetch_assoc()) {
-            $ms_id = $row['id'];
-            $subs = [];
-            $sub_stmt = $conn->prepare("SELECT sm.*, a.name as assignee_name, dep.name as dept_name FROM project_sub_milestones sm LEFT JOIN admins a ON sm.assigned_to_admin = a.id LEFT JOIN departments dep ON sm.assigned_to_department = dep.id WHERE sm.milestone_id = ? ORDER BY sm.created_at ASC");
-            $sub_stmt->bind_param("i", $ms_id);
-            $sub_stmt->execute();
-            $sub_result = $sub_stmt->get_result();
-            while ($s = $sub_result->fetch_assoc()) $subs[] = $s;
-            $sub_stmt->close();
-            $row['sub_milestones'] = $subs;
             $milestones[] = $row;
         }
         $stmt->close();
@@ -567,19 +317,6 @@ if (isset($_GET['ajax_action'])) {
         $res = $conn->query("SELECT id, name, type FROM assets ORDER BY name ASC");
         while ($row = $res->fetch_assoc()) $all_assets[] = $row;
 
-        $departments = [];
-        $res = $conn->query("SELECT id, name FROM departments ORDER BY name ASC");
-        while ($row = $res->fetch_assoc()) $departments[] = $row;
-        $admins_list = [];
-        $res = $conn->query("SELECT id, name FROM admins ORDER BY name ASC");
-        while ($row = $res->fetch_assoc()) $admins_list[] = $row;
-        
-        $completed_count = 0;
-        foreach ($milestones as $m) if ($m['status'] == 'Completed') $completed_count++;
-        $progress = count($milestones) > 0 ? round(($completed_count / count($milestones)) * 100) : 0;
-
-        // $progress = $proj['total_ms'] > 0 ? round(($proj['completed_ms'] / $proj['total_ms']) * 100) : 0;
-        
         ob_start();
         ?>
         <!-- Canvas Header with embedded settings & assets -->
@@ -587,16 +324,10 @@ if (isset($_GET['ajax_action'])) {
             <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo $proj['status']=='Active'?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
+                    <span class="px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo ($proj['status']=='In Progress'||$proj['status']=='Active')?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
                         <?php echo $proj['status']; ?>
                     </span>
                     <div class="flex items-center gap-2">
-                        <?php if ($proj['status'] == 'Active' || $proj['status'] == 'On Hold'): ?>
-                            <button onclick="toggleProjectHold(<?php echo $id; ?>, '<?php echo $proj['status']; ?>')" class="h-8 px-3 bg-white border border-slate-200 text-slate-500 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
-                                <span class="material-symbols-outlined text-[14px]"><?php echo $proj['status'] == 'On Hold' ? 'play_arrow' : 'pause'; ?></span>
-                                <?php echo $proj['status'] == 'On Hold' ? 'Resume' : 'Hold'; ?>
-                            </button>
-                        <?php endif; ?>
                         <button onclick="editProject(<?php echo $id; ?>)" class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg active:scale-95">
                             <span class="material-symbols-outlined text-sm">settings</span>
                         </button>
@@ -665,42 +396,15 @@ if (isset($_GET['ajax_action'])) {
         ob_start();
         ?>
         <div class="space-y-6">
-            <!-- Progress -->
-            <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Completion</p>
-                    <span class="text-xs font-bold text-emerald-600"><?php echo $progress; ?>%</span>
-                </div>
-                <div class="h-1.5 bg-emerald-50 rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: <?php echo $progress; ?>%"></div>
-                </div>
-            </div>
-
             <!-- Milestones Header -->
             <div class="flex items-center justify-between px-1">
                 <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">route</span> Milestones
                 </h3>
                 <div class="flex gap-2">
-                        <?php if ($proj['status'] == 'Planning'): ?>
-                            <?php if (!empty($milestones)): ?>
-                                <button onclick="confirmProjectActive(<?php echo $id; ?>)" class="px-3 py-1.5 bg-primary text-on-primary rounded-lg text-[8px] font-bold uppercase tracking-widest hover:shadow-lg transition-all flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-[14px]">rocket_launch</span> Activate
-                                </button>
-                            <?php else: ?>
-                                <div class="px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-[7px] font-bold uppercase tracking-widest border border-slate-100 flex items-center gap-1.5" title="Add at least one milestone first">
-                                    <span class="material-symbols-outlined text-[12px]">info</span> Add Milestones First
-                                </div>
-                            <?php endif; ?>
-
-                            <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[8px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-[14px]">add</span> Add Milestone
-                            </button>
-                        <?php else: ?>
-                            <div class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-bold uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-[14px]">lock</span> Roadmap Locked
-                            </div>
-                        <?php endif; ?>
+                    <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[8px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[14px]">add</span> Add Milestone
+                    </button>
                 </div>
             </div>
                 
@@ -714,18 +418,11 @@ if (isset($_GET['ajax_action'])) {
                     <?php 
                     $ms_counter = 1;
                     foreach ($milestones as $m): 
-                        $statusClass = $m['status'] == 'Completed' ? 'bg-emerald-500 border-emerald-500' : ($m['status'] == 'In Progress' ? 'bg-amber-500 border-amber-500' : 'bg-slate-100 border-slate-200');
-                        $taskCount = count($m['sub_milestones']);
-                        $doneCount = 0; foreach($m['sub_milestones'] as $sm) if($sm['is_completed']) $doneCount++;
                     ?>
                     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:border-primary/20 transition-all">
                         <div class="px-4 py-3 flex items-center gap-3">
-                            <div class="w-7 h-7 rounded-full flex items-center justify-center border-[3px] <?php echo $statusClass; ?> shrink-0">
-                                <?php if ($m['status'] == 'Completed'): ?>
-                                    <span class="material-symbols-outlined text-white" style="font-size:12px">check</span>
-                                <?php else: ?>
-                                    <span class="text-[9px] font-bold <?php echo $m['status'] == 'In Progress' ? 'text-white' : 'text-slate-400'; ?>"><?php echo $ms_counter++; ?></span>
-                                <?php endif; ?>
+                            <div class="w-7 h-7 rounded-full flex items-center justify-center border-[3px] bg-slate-100 border-slate-200 shrink-0">
+                                <span class="text-[9px] font-bold text-slate-400"><?php echo $ms_counter++; ?></span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2">
@@ -734,49 +431,13 @@ if (isset($_GET['ajax_action'])) {
                                 <?php if($m['due_date']): ?><p class="text-[9px] text-slate-400"><?php echo date('M d', strtotime($m['due_date'])); ?></p><?php endif; ?>
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
-                                <button onclick="toggleTasks(<?php echo $m['id']; ?>)" class="px-2 py-1 bg-slate-50 rounded-lg text-[9px] font-bold text-slate-500 hover:bg-slate-100 flex items-center gap-1 tooltip" title="Manage Tasks">
-                                    <span class="material-symbols-outlined" style="font-size:12px">checklist</span><?php echo $taskCount > 0 ? "$doneCount/$taskCount" : "+"; ?>
-                                </button>
-                                <?php if ($proj['status'] == 'Active'): ?>
-                                    <?php if ($m['status'] == 'Pending'): ?>
-                                        <button onclick="updateMilestoneStatus(<?php echo $m['id']; ?>, <?php echo $id; ?>, 'In Progress')" class="px-2 py-1 bg-amber-50 text-amber-600 rounded-lg text-[8px] font-bold uppercase hover:bg-amber-500 hover:text-white transition-all">Start</button>
-                                    <?php elseif ($m['status'] != 'Completed'): ?>
-                                        <button onclick="updateMilestoneStatus(<?php echo $m['id']; ?>, <?php echo $id; ?>, 'Completed')" class="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-bold uppercase hover:bg-emerald-500 hover:text-white transition-all">Done</button>
-                                    <?php endif; ?>
-                                <?php endif; ?>
                                 <button onclick="openMilestoneChat(<?php echo $m['id']; ?>, '<?php echo addslashes($m['title']); ?>')" class="p-1 text-slate-300 hover:text-primary" title="Logs"><span class="material-symbols-outlined" style="font-size:16px">forum</span></button>
                                 <button onclick="toggleMilestoneActions(<?php echo $m['id']; ?>)" class="p-1 text-slate-300 hover:text-slate-600"><span class="material-symbols-outlined" style="font-size:16px">more_vert</span></button>
                             </div>
                         </div>
-                        <div id="tasks_<?php echo $m['id']; ?>" class="hidden border-t border-slate-50 px-4 py-2 bg-slate-50/50">
-                            <div class="space-y-1">
-                                <?php foreach ($m['sub_milestones'] as $sm): ?>
-                                <div class="flex items-center gap-2 py-1 group">
-                                    <button onclick="toggleSubMilestone(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="w-3.5 h-3.5 rounded border <?php echo $sm['is_completed'] ? 'bg-primary border-primary text-on-primary' : 'border-slate-200 text-transparent'; ?> flex items-center justify-center shrink-0"><span class="material-symbols-outlined" style="font-size:9px">check</span></button>
-                                    <span class="text-[10px] flex-1 <?php echo $sm['is_completed'] ? 'text-slate-400 line-through' : 'text-slate-600 font-medium'; ?>"><?php echo htmlspecialchars($sm['title']); ?></span>
-                                    <?php if(!empty($sm['assignee_name'])): ?><span class="text-[8px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-bold"><?php echo htmlspecialchars($sm['assignee_name']); ?></span><?php elseif(!empty($sm['dept_name'])): ?><span class="text-[8px] bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded font-bold"><?php echo htmlspecialchars($sm['dept_name']); ?></span><?php endif; ?>
-                                    <button onclick="openTaskAssign(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="opacity-30 hover:opacity-100 text-slate-500 hover:text-primary transition-opacity" title="Assign"><span class="material-symbols-outlined" style="font-size:12px">person_add</span></button>
-                                    <button onclick="deleteSubMilestone(<?php echo $sm['id']; ?>, <?php echo $id; ?>)" class="opacity-30 hover:opacity-100 text-red-300 hover:text-red-500 transition-opacity"><span class="material-symbols-outlined" style="font-size:12px">close</span></button>
-                                </div>
-                                <?php endforeach; ?>
-                            </div>
-                            <?php if ($proj['status'] == 'Planning' || $proj['status'] == 'Active'): ?>
-                            <div class="flex items-center gap-2 pt-1 mt-1 border-t border-slate-100">
-                                <button onclick="showSubInput(<?php echo $m['id']; ?>)" class="text-[9px] font-bold text-primary flex items-center gap-0.5 hover:underline"><span class="material-symbols-outlined" style="font-size:12px">add</span> Task</button>
-                                <div id="subInput_<?php echo $m['id']; ?>" class="hidden flex-1 flex gap-1">
-                                    <input type="text" id="subText_<?php echo $m['id']; ?>" class="flex-1 bg-white border-none rounded-lg px-2 py-1 text-[10px] focus:ring-1 focus:ring-primary" placeholder="Task...">
-                                    <button onclick="saveSubMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="px-2 py-1 bg-primary text-on-primary rounded-lg text-[9px] font-bold">Save</button>
-                                </div>
-                            </div>
-                            <?php endif; ?>
-                        </div>
                         <div id="milestoneActions_<?php echo $m['id']; ?>" class="hidden bg-slate-50 border-t border-slate-100 px-4 py-2 flex gap-3">
-                            <?php if ($proj['status'] == 'Planning'): ?>
-                                <button onclick="editMilestone(<?php echo $m['id']; ?>)" class="text-[9px] font-bold text-slate-400 flex items-center gap-1 hover:text-slate-600"><span class="material-symbols-outlined" style="font-size:12px">edit</span> Edit</button>
-                                <button onclick="deleteMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="text-[9px] font-bold text-red-400 flex items-center gap-1 hover:text-red-600"><span class="material-symbols-outlined" style="font-size:12px">delete</span> Delete</button>
-                            <?php else: ?>
-                                <span class="text-[9px] font-bold text-slate-300 italic">Locked</span>
-                            <?php endif; ?>
+                            <button onclick="editMilestone(<?php echo $m['id']; ?>)" class="text-[9px] font-bold text-slate-400 flex items-center gap-1 hover:text-slate-600"><span class="material-symbols-outlined" style="font-size:12px">edit</span> Edit</button>
+                            <button onclick="deleteMilestone(<?php echo $m['id']; ?>, <?php echo $id; ?>)" class="text-[9px] font-bold text-red-400 flex items-center gap-1 hover:text-red-600"><span class="material-symbols-outlined" style="font-size:12px">delete</span> Delete</button>
                         </div>
                     </div>
                         <?php endforeach; ?>
@@ -846,12 +507,10 @@ if (!empty($where)) {
     $where_clause = 'WHERE ' . implode(' AND ', $where);
 }
 
-// Fetch Projects with Milestone Progress
+// Fetch Projects
 $projects = [];
 $sql = "
-    SELECT p.*, c.name as client_name,
-           (SELECT COUNT(*) FROM project_milestones WHERE project_id = p.id) as total_ms,
-           (SELECT COUNT(*) FROM project_milestones WHERE project_id = p.id AND status = 'Completed') as completed_ms
+    SELECT p.*, c.name as client_name
     FROM projects p 
     JOIN clients c ON p.client_id = c.id 
     $where_clause
@@ -867,7 +526,6 @@ if (!empty($params)) {
     $res = $conn->query($sql);
 }
 while ($row = $res->fetch_assoc()) {
-    $row['progress'] = $row['total_ms'] > 0 ? round(($row['completed_ms'] / $row['total_ms']) * 100) : 0;
     $projects[] = $row;
 }
 
@@ -876,13 +534,10 @@ $clients = [];
 $res = $conn->query("SELECT id, name FROM clients ORDER BY name ASC");
 while ($row = $res->fetch_assoc()) $clients[] = $row;
 
-// Fetch Departments & Admins for assignment
+// Fetch Departments for filters & assignment
 $departments_list = [];
 $res = $conn->query("SELECT id, name FROM departments ORDER BY name ASC");
 while ($row = $res->fetch_assoc()) $departments_list[] = $row;
-$admins_all = [];
-$res = $conn->query("SELECT id, name FROM admins ORDER BY name ASC");
-while ($row = $res->fetch_assoc()) $admins_all[] = $row;
 
 $permissions = get_admin_permissions($admin_id);
 $guide_dismissed = get_setting('guide_dismissed_admin_' . $admin_id, '');
@@ -947,19 +602,19 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                 <div class="space-y-5">
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Planning Phase</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Create milestones for the project. Each milestone represents a major deliverable or phase. Add tasks (sub-milestones) under each milestone and assign them to individuals or departments. Milestones can only be created and edited during this phase.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Project & Status</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Create the project and assign a client, department, and budget. Set the project status directly from the edit form: <strong>Planning</strong>, <strong>In Progress</strong>, <strong>On Hold</strong>, or <strong>Completed</strong>.</p></div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">2</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Activation</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When planning is complete, click the <strong>Activate</strong> button to move the project to <strong>Active (Development)</strong> phase. This locks the milestone roadmap — no further milestone additions or edits are allowed.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Milestones as Reports</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Add milestones to break the project into key phases or report entries. Each milestone can hold a chat log (<strong>Logs</strong>) used for client communication and updates. Milestones can be added or edited at any time.</p></div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">3</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Execution</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Work through milestones — start them (In Progress), then mark them complete when finished. Use milestone chat logs for daily reports and client communication. Use the hold/resume toggle to pause work if needed.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Reporting & Communication</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use milestone chat logs for daily reports, progress notes, and client messages. The client sees these on their dashboard. No status workflow required — reports are simply logged against milestones.</p></div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">4</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When all milestones are marked complete, the project auto-transitions to <strong>Completed</strong> status. The project is now closed.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When the work is finished, set the project status to <strong>Completed</strong> from the edit form. The project is now closed.</p></div>
                     </div>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
@@ -1022,7 +677,7 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                 <?php foreach ($projects as $p): ?>
                     <div class="group relative bg-white border border-slate-100 rounded-3xl p-5 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md" onclick="loadProject(<?php echo $p['id']; ?>, this)">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':'bg-blue-50 text-blue-600')); ?>"><?php echo $p['status']; ?></span>
+                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':(($p['status']=='In Progress'||$p['status']=='Active')?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'))); ?>"><?php echo $p['status']; ?></span>
                             <div class="flex gap-1" onclick="event.stopPropagation()">
                                 <button onclick="editProject(<?php echo $p['id']; ?>)" class="w-6 h-6 rounded bg-slate-50 text-slate-400 hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined text-sm">edit</span></button>
                                 <button onclick="deleteProject(<?php echo $p['id']; ?>)" class="w-6 h-6 rounded bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center"><span class="material-symbols-outlined text-sm">delete</span></button>
@@ -1033,16 +688,6 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                         <?php if (!empty($p['budget'])): ?>
                         <p class="text-[11px] font-bold text-emerald-600 mt-1">$<?php echo number_format($p['budget'], 2); ?></p>
                         <?php endif; ?>
-                        
-                        <div class="space-y-1.5">
-                            <div class="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                                <span>Progress</span>
-                                <span><?php echo $p['progress']; ?>%</span>
-                            </div>
-                            <div class="h-1 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-primary" style="width: <?php echo $p['progress']; ?>%"></div>
-                            </div>
-                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -1095,11 +740,13 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
 
                 <div class="grid grid-cols-2 gap-5">
                     <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Current Status</label>
-                        <div id="statusDisplayBadge" class="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
-                            <!-- Populated via JS -->
-                        </div>
-                        <input type="hidden" name="status" id="projectStatus">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Project Status</label>
+                        <select name="status" id="projectStatus" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            <option value="Planning">Planning</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Completed">Completed</option>
+                        </select>
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Budget ($)</label>
@@ -1157,7 +804,6 @@ function openProjectModal() {
     document.getElementById('projectForm').reset();
     document.getElementById('projectId').value = '';
     document.getElementById('projectStatus').value = 'Planning';
-    document.getElementById('statusDisplayBadge').innerText = 'Planning';
     document.getElementById('projectStart').value = new Date().toISOString().split('T')[0];
     document.getElementById('projectModal').classList.add('open');
 }
@@ -1172,9 +818,8 @@ async function editProject(id) {
     document.getElementById('projectClient').value = data.client_id;
     document.getElementById('projectName').value = data.name;
     
-    // Status Display
-    document.getElementById('statusDisplayBadge').innerText = data.status;
-    document.getElementById('projectStatus').value = data.status;
+    // Status: map legacy 'Active' to 'In Progress'
+    document.getElementById('projectStatus').value = data.status === 'Active' ? 'In Progress' : data.status;
     
     document.getElementById('projectBudget').value = data.budget;
     document.getElementById('projectStart').value = data.start_date;
@@ -1266,19 +911,6 @@ function dismissGuide(permanent) {
     }
 }
 
-async function toggleProjectHold(id, current) {
-    const fd = new FormData();
-    fd.append('id', id);
-    fd.append('current_status', current);
-    fd.append('csrf_token', CSRF_TOKEN);
-    const res = await fetch('?ajax_action=toggle_project_hold', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.status === 'success') {
-        showToast(`Project ${data.new_status}`);
-        loadProject(id);
-    }
-}
-
 // Consolidated Milestone Form logic
 function initMilestoneLogic() {
     const form = document.getElementById('milestoneForm');
@@ -1300,59 +932,12 @@ function initMilestoneLogic() {
 }
 
 
-async function updateMilestoneStatus(id, pid, status) {
-    const fd = new FormData();
-    fd.append('id', id);
-    fd.append('status', status);
-    fd.append('csrf_token', CSRF_TOKEN);
-    const res = await fetch('?ajax_action=update_milestone_status', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.status === 'success') {
-        showToast(`Milestone marked as ${status}`);
-        loadProject(pid);
-    }
-}
-
-async function toggleSubMilestone(id, pid) {
-    const fd = new FormData();
-    fd.append('id', id);
-    fd.append('csrf_token', CSRF_TOKEN);
-    const res = await fetch('?ajax_action=toggle_sub_milestone', { method: 'POST', body: fd });
-    loadProject(pid);
-}
-
-function showSubInput(msId) {
-    const div = document.getElementById(`subInput_${msId}`);
-    div.classList.toggle('hidden');
-    if (!div.classList.contains('hidden')) div.querySelector('input').focus();
-}
-
-async function saveSubMilestone(msId, pid) {
-    const title = document.getElementById(`subText_${msId}`).value;
-    if (!title) return;
-    const fd = new FormData();
-    fd.append('milestone_id', msId);
-    fd.append('title', title);
-    fd.append('csrf_token', CSRF_TOKEN);
-    const res = await fetch('?ajax_action=save_sub_milestone', { method: 'POST', body: fd });
-    loadProject(pid);
-}
-
-async function deleteSubMilestone(id, pid) {
-    if (!confirm('Delete this task?')) return;
-    const fd = new FormData();
-    fd.append('id', id);
-    fd.append('csrf_token', CSRF_TOKEN);
-    const res = await fetch('?ajax_action=delete_sub_milestone', { method: 'POST', body: fd });
-    loadProject(pid);
-}
-
 function toggleMilestoneActions(id) {
     document.getElementById(`milestoneActions_${id}`).classList.toggle('hidden');
 }
 
 async function deleteMilestone(id, pid) {
-    if (!confirm('Delete milestone and all its tasks?')) return;
+    if (!confirm('Delete this milestone? Its logs will be removed.')) return;
     const fd = new FormData();
     fd.append('id', id);
     fd.append('csrf_token', CSRF_TOKEN);
@@ -1442,28 +1027,6 @@ async function removeAsset(projectId, assetId) {
     loadProject(projectId);
 }
 
-    async function confirmProjectActive(id) {
-        if (!confirm('Move project to Active stage? This will lock the milestone roadmap.')) return;
-        const fd = new FormData();
-        fd.append('id', id);
-        fd.append('csrf_token', CSRF_TOKEN);
-        const res = await fetch('?ajax_action=confirm_project_active', { method: 'POST', body: fd });
-        const data = await res.json();
-        if (data.status === 'success') {
-            showToast('Project is now ACTIVE');
-            loadProject(id);
-        }
-    }
-
-    async function updateProjectField(id, field, value) {
-        const fd = new FormData();
-        fd.append('id', id);
-        fd.append(field, value);
-        fd.append('csrf_token', CSRF_TOKEN);
-        const res = await fetch('?ajax_action=save_project', { method: 'POST', body: fd });
-        showToast('Updated');
-    }
-
     // MILESTONE LOGIC
     function openMilestoneModal(projectId, msId = null) {
         document.getElementById('milestoneForm').reset();
@@ -1475,35 +1038,14 @@ async function removeAsset(projectId, assetId) {
 
     function closeMilestoneModal() { document.getElementById('milestoneModal').classList.remove('open'); }
 
-    // Milestone Form logic moved to consolidated section
-
-    // TASK & UI COMPACT LOGIC
-    function toggleTasks(id) {
-        const el = document.getElementById('tasks_' + id);
-        el.classList.toggle('hidden');
-    }
-
-    function openTaskAssign(taskId, projectId) {
-        document.getElementById('assignTaskForm').reset();
-        document.getElementById('assignTaskId').value = taskId;
-        document.getElementById('assignTaskProjectId').value = projectId;
-        document.getElementById('assignTaskModal').classList.add('open');
-    }
-
-    function closeTaskAssignModal() {
-        document.getElementById('assignTaskModal').classList.remove('open');
-    }
-
-    document.getElementById('assignTaskForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const fd = new FormData(this);
-        const res = await fetch('?ajax_action=assign_task', { method: 'POST', body: fd });
+    async function editMilestone(id) {
+        const res = await fetch(`?ajax_action=get_milestone&id=${id}`);
         const data = await res.json();
-        if (data.status === 'success') {
-            closeTaskAssignModal();
-            loadProject(document.getElementById('assignTaskProjectId').value);
-        }
-    });
+        openMilestoneModal(data.project_id, data.id);
+        document.getElementById('msTitle').value = data.title;
+        document.getElementById('msDesc').value = data.description || '';
+        document.getElementById('msDue').value = data.due_date || '';
+    }
 
     </script>
 
@@ -1564,43 +1106,5 @@ async function removeAsset(projectId, assetId) {
         </div>
     </div>
 
-    <!-- Task Assign Modal -->
-    <div id="assignTaskModal" class="modal-overlay">
-        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 class="font-bold font-headline text-slate-900">Assign Task</h3>
-                <button onclick="closeTaskAssignModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-sm">close</span></button>
-            </div>
-            <form id="assignTaskForm" class="p-6 space-y-4">
-                <input type="hidden" name="task_id" id="assignTaskId">
-                <input type="hidden" id="assignTaskProjectId">
-                <?= get_csrf_field() ?>
-                
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">To Department</label>
-                    <select name="department_id" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        <option value="">-- Select Department --</option>
-                        <?php foreach ($departments_list as $d): ?>
-                            <option value="<?php echo $d['id']; ?>"><?php echo htmlspecialchars($d['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">To Individual</label>
-                    <select name="admin_id" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                        <option value="">-- Select Person --</option>
-                        <?php foreach ($admins_all as $a): ?>
-                            <option value="<?php echo $a['id']; ?>"><?php echo htmlspecialchars($a['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="flex gap-4 pt-4">
-                    <button type="submit" class="w-full py-3 bg-primary text-on-primary rounded-2xl text-xs font-bold hover:shadow-lg transition-all uppercase tracking-widest">Assign</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </body>
 </html>

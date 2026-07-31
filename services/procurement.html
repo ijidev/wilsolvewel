@@ -1,138 +1,554 @@
 <!DOCTYPE html>
+
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Procurement & Logistics | Wilsolvewel Engineering</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Strategic Global Sourcing | Wilsolvewel Nigeria Limited</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=skip"
+        rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
 </head>
-<body class="bg-surface font-body text-on-surface selection:bg-primary selection:text-on-primary site-gradient-bg">
+
+<body
+    class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
     <script src="../components/header.js" data-root="../"></script>
-    
-    <main class="relative pt-32 pb-24 px-5 sm:px-6 lg:px-12 max-w-7xl mx-auto z-10">
+    <script src="../components/effects.js"></script>
+    <main class="relative pt-20">
         <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
 
-        <div class="relative z-10 space-y-24">
-            <!-- Hero Header -->
-            <div class="space-y-6 max-w-4xl">
-                <span class="inline-block px-3 py-1 bg-primary/10 text-primary font-label text-[10px] font-bold uppercase tracking-widest rounded-full">Pillar 02</span>
-                <h1 class="text-5xl md:text-7xl font-bold tracking-tighter leading-none font-headline">Strategic <br /><span class="text-primary italic">Procurement.</span></h1>
-                <p class="text-on-surface-variant text-xl font-light leading-relaxed">
-                    Connecting Nigeria's industries to a global network of OEM suppliers. Precise sourcing, verified authenticity, and seamless international logistics.
-                </p>
+        <!-- Sticky Download Button -->
+        <div class="fixed right-0 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
+            <a href="../spec-forms.html#sourcing-form"
+                class="bg-primary text-on-primary p-4 rounded-l-2xl shadow-xl flex items-center gap-3 hover:bg-primary/90 transition-all group">
+                <span class="material-symbols-outlined text-xl">description</span>
+                <span class="text-[9px] font-bold uppercase tracking-widest max-w-[120px] leading-tight">Download Material Specification Form</span>
+            </a>
+        </div>
+
+        <!-- Hero Banner -->
+        <section class="relative z-10 overflow-hidden">
+            <div class="absolute inset-0">
+                <img class="w-full h-full object-cover grayscale"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL2icG4PWakb4pmy3ahdG-5OsyndkSQ_XAp34Aja84XNeMxyihqgKc9J740YcrLkU3RAQVAgsEpIO_6s1imD5VcaAE8UyR0RJVzhUZ7yV51fXNAs6ddL-yf-rH-DHSdAiz1l_eIoylGhr1sh1-Pgxah-MIm0nj8Z-aQjynFCM7uNq64WdHjv-fb2wZrY65ZABrfFf_QUsNNFg0wmMyqRygLgC3EsUngMi4TgqUEk6_evRNwwIBhAmw0e76jYtl9CCFH0vk5LcpAUoG"
+                    alt="Global Sourcing" />
+                <div class="absolute inset-0 bg-gradient-to-br from-black/85 via-black/70 to-black/50"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             </div>
-
-            <!-- Detailed Content -->
-            <div class="grid lg:grid-cols-2 gap-16 items-start">
-                <div class="space-y-12">
-                    <div class="space-y-6">
-                        <h2 class="text-3xl font-bold font-headline">End-to-End Supply Chain Management</h2>
-                        <p class="text-on-surface-variant font-light leading-relaxed">
-                            Procurement in the industrial sector is not just about buying parts—it's about technical verification and timing. Wilsolvewel eliminates the risk of counterfeit components and long lead times through our established global logistics network.
+            <div class="relative z-10 py-32 px-5 sm:px-6 lg:px-12">
+                <div class="max-w-7xl mx-auto">
+                    <div class="max-w-3xl space-y-8">
+                        <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em] block">Strategic Global Sourcing Solutions</span>
+                        <h1 class="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[0.95] tracking-tighter">
+                            Connecting Your Operations to Verified <span class="text-primary italic">Global Supply Networks.</span>
+                        </h1>
+                        <p class="text-white/70 font-light text-lg leading-relaxed max-w-2xl">
+                            Finding the right equipment, spare parts, industrial materials and specialized components can be challenging—especially when local availability is limited, lead times are uncertain or supplier credibility is difficult to verify.
                         </p>
-                        <p class="text-on-surface-variant font-light leading-relaxed">
-                            We handle everything from initial technical specification review and OEM supplier verification to international freight forwarding and local customs clearance in Nigeria.
+                        <p class="text-white/60 font-light leading-relaxed max-w-2xl">
+                            Wilsolvewel Nigeria Limited provides structured global sourcing solutions that connect organizations to verified international suppliers, manufacturers and logistics partners, ensuring access to quality products, competitive pricing and reliable delivery.
                         </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="p-8 bg-surface-container rounded-3xl border border-outline-variant/10 space-y-4">
-                            <span class="material-symbols-outlined text-primary text-4xl">verified</span>
-                            <h3 class="font-bold uppercase tracking-widest text-sm">OEM Verification</h3>
-                            <p class="text-xs text-on-surface-variant font-light">100% guarantee on part authenticity for Caterpillar, Cummins, and Perkins.</p>
-                        </div>
-                        <div class="p-8 bg-surface-container rounded-3xl border border-outline-variant/10 space-y-4">
-                            <span class="material-symbols-outlined text-primary text-4xl">public</span>
-                            <h3 class="font-bold uppercase tracking-widest text-sm">Global Reach</h3>
-                            <p class="text-xs text-on-surface-variant font-light">Direct sourcing channels from Europe, North America, and Asia.</p>
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <a href="../spec-forms.html#sourcing-form" class="bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                                Submit Material Requirement
+                            </a>
+                            <a href="../contact.php" class="border-2 border-white/20 text-white px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-white/10 transition-all">
+                                Talk to Our Procurement Team
+                            </a>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="bg-secondary rounded-3xl p-10 space-y-8 text-on-secondary shadow-2xl">
-                    <h3 class="font-headline text-2xl font-bold">Priority Sourcing Sectors</h3>
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-4 border-b border-white/10 pb-4">
-                            <span class="text-primary font-black text-2xl">01</span>
+        <!-- Introduction Section -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 z-10 relative">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-8">
+                    <span class="text-secondary font-label text-[10px] font-bold uppercase tracking-[0.4em] block">Global Access. Local Accountability.</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Industrial Operations Depend on Reliable <span class="text-secondary italic">Supply Chains.</span></h2>
+                    <div class="space-y-6 text-on-surface-variant text-base font-light leading-relaxed">
+                        <p>When critical components are unavailable locally, organizations often face equipment downtime, procurement delays, counterfeit product risks, excessive costs, supplier uncertainty and project schedule disruptions.</p>
+                        <p>Wilsolvewel bridges this gap through a controlled sourcing process that identifies qualified suppliers, verifies product specifications, manages logistics coordination and supports timely delivery.</p>
+                        <p>Our goal is to simplify complex procurement requirements while reducing sourcing risks and improving supply reliability.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Equipment downtime
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Procurement delays
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Counterfeit product risks
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Excessive costs
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Supplier uncertainty
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Project schedule disruptions
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
+                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            alt="Global Logistics"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What Is Strategic Global Sourcing -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 bg-surface-container-low/30 z-10 relative">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-8">
+                    <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em] block">More Than Procurement</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">What Is Strategic Global <span class="text-primary italic">Sourcing?</span></h2>
+                    <div class="space-y-6 text-on-surface-variant text-base font-light leading-relaxed">
+                        <p>Strategic Global Sourcing is the structured process of identifying, evaluating and sourcing equipment, materials and services from the most suitable global suppliers based on quality, reliability, availability, compliance and total acquisition cost.</p>
+                        <p>Unlike conventional purchasing, strategic sourcing focuses on long-term value, supplier quality and supply-chain resilience rather than simply obtaining the lowest price.</p>
+                        <p>At Wilsolvewel, we combine technical understanding with procurement expertise to ensure sourcing decisions support operational performance and business objectives.</p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
+                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            alt="Strategic Sourcing"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sourcing Capability Categories -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 z-10 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20 max-w-4xl mx-auto">
+                    <span class="text-secondary font-label text-[10px] font-bold uppercase tracking-[0.4em] block mb-6">Our General Sourcing Capability Covers</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Comprehensive Industrial <span class="text-secondary italic">Procurement Support.</span></h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-6 group hover:border-secondary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+                            <span class="material-symbols-outlined text-3xl">settings</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Mechanical Equipment &amp; Components</h3>
+                        <p class="text-xs text-on-surface-variant font-light">Industrial engines, pumps, compressors, gearboxes, bearings, couplings, rotating equipment components and mechanical power transmission systems.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-6 group hover:border-secondary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+                            <span class="material-symbols-outlined text-3xl">bolt</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Electrical &amp; Instrumentation Materials</h3>
+                        <p class="text-xs text-on-surface-variant font-light">Electrical components, switchgear, control panels, instrumentation devices, sensors, transmitters, automation components and industrial electrical accessories.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-6 group hover:border-secondary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+                            <span class="material-symbols-outlined text-3xl">water_drop</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Hydraulic Systems &amp; Accessories</h3>
+                        <p class="text-xs text-on-surface-variant font-light">Hydraulic pumps, motors, cylinders, valves, hoses, fittings, hydraulic assemblies and specialized hydraulic components.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-6 group hover:border-secondary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+                            <span class="material-symbols-outlined text-3xl">inventory</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Industrial Consumables &amp; Maintenance</h3>
+                        <p class="text-xs text-on-surface-variant font-light">Filters, lubrication products, sealing solutions, fasteners, maintenance consumables, workshop supplies and operational materials.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-6 group hover:border-secondary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+                            <span class="material-symbols-outlined text-3xl">search</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Specialized &amp; Hard-to-Source Materials</h3>
+                        <p class="text-xs text-on-surface-variant font-light">Obsolete components, legacy equipment parts, OEM spare parts, project-specific materials, custom industrial components and low-availability items.</p>
+                    </div>
+                    <div class="p-8 bg-gradient-to-br from-secondary to-secondary/80 text-on-secondary rounded-2xl space-y-6">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-3xl">support</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Can't Find What You Need?</h3>
+                        <p class="text-xs text-on-secondary/80 font-light">Even if you only have a part number, equipment model, photograph, technical drawing or sample, our sourcing team can assist in identifying and locating suitable supply options through our global network.</p>
+                        <a href="../spec-forms.html#sourcing-form" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest bg-white/20 px-6 py-3 rounded-full hover:bg-white/30 transition-all">
+                            Submit Your Requirement <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sourcing Process -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 bg-surface-container-low/30 z-10 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20 max-w-4xl mx-auto">
+                    <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em] block mb-6">Our Sourcing Process</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Structured Procurement with <span class="text-primary italic">Full Visibility.</span></h2>
+                    <p class="text-on-surface-variant font-light leading-relaxed max-w-3xl mx-auto">To ensure quality and transparency, every sourcing request follows a structured process.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mx-auto text-on-primary text-xs font-bold">1</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Client Requirement</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Client submits sourcing requirement</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mx-auto text-on-primary text-xs font-bold">2</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Tech Review</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Technical review &amp; clarification</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mx-auto text-on-primary text-xs font-bold">3</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Supplier ID</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Supplier identification</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mx-auto text-on-primary text-xs font-bold">4</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Verification</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Supplier verification &amp; screening</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mx-auto text-on-primary text-xs font-bold">5</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Quotation</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Quotation &amp; lead-time evaluation</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mx-auto text-on-secondary text-xs font-bold">6</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Approval</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Client approval</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mx-auto text-on-secondary text-xs font-bold">7</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Execution</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Procurement execution</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mx-auto text-on-secondary text-xs font-bold">8</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Logistics</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">International logistics coordination</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mx-auto text-on-secondary text-xs font-bold">9</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Clearance</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Customs clearance &amp; delivery</p>
+                    </div>
+                    <div class="text-center space-y-4 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+                        <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mx-auto text-on-secondary text-xs font-bold">10</div>
+                        <h4 class="font-headline font-bold text-xs uppercase tracking-widest">Post-Support</h4>
+                        <p class="text-[10px] text-on-surface-variant font-light">Post-delivery support</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Challenges -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 z-10 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20 max-w-4xl mx-auto">
+                    <span class="text-secondary font-label text-[10px] font-bold uppercase tracking-[0.4em] block mb-6">Client Challenges We Help Solve</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Reducing Procurement <span class="text-secondary italic">Risk.</span></h2>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-20 items-start">
+                    <div class="space-y-8">
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">block</span>
                             <div>
-                                <h4 class="font-bold text-sm uppercase tracking-widest">Mechanical Components</h4>
-                                <p class="text-[10px] opacity-70">Pumps, Bearings, Seals, and Valve Assemblies.</p>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Counterfeit Products</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Poor-quality components that cause repeated failures and increased operating costs.</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 border-b border-white/10 pb-4">
-                            <span class="text-primary font-black text-2xl">02</span>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">question_mark</span>
                             <div>
-                                <h4 class="font-bold text-sm uppercase tracking-widest">Power & Electrical</h4>
-                                <p class="text-[10px] opacity-70">Switchgears, Control Panels, and Heavy-Duty Cables.</p>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Unverified Suppliers</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Unknown vendors with questionable product quality and unreliable delivery performance.</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <span class="text-primary font-black text-2xl">03</span>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">timer_off</span>
                             <div>
-                                <h4 class="font-bold text-sm uppercase tracking-widest">Engine Overhaul Kits</h4>
-                                <p class="text-[10px] opacity-70">Complete rebuild kits for Caterpillar and Cummins engines.</p>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Procurement Delays</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Long sourcing cycles affecting maintenance schedules and project timelines.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">location_off</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Limited Local Availability</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Difficulty obtaining specialized equipment and industrial materials.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">flight_takeoff</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Logistics Complexity</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Challenges associated with international shipping and customs clearance.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">trending_up</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Cost Escalation</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Inefficient sourcing decisions resulting in unnecessary expenditure.</p>
                             </div>
                         </div>
                     </div>
-                    <a href="../spec-forms.html#sourcing-form" class="block bg-primary text-on-primary text-center py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:scale-[1.02] transition-transform">
-                        Submit Sourcing Request
+                    <div class="bg-on-surface text-surface rounded-3xl p-12 relative overflow-hidden">
+                        <div class="absolute inset-0 opacity-10 technical-grid pointer-events-none"></div>
+                        <div class="relative z-10 space-y-8">
+                            <span class="material-symbols-outlined text-secondary text-5xl">handshake</span>
+                            <h3 class="font-headline text-2xl font-bold">Our Approach</h3>
+                            <p class="text-surface-bright/70 font-light leading-relaxed">Wilsolvewel addresses these challenges through structured sourcing procedures, technical review processes and verified supply networks.</p>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3 text-sm text-surface-bright/80">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Rigorous supplier screening
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-surface-bright/80">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Technical specification verification
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-surface-bright/80">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> End-to-end logistics management
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-surface-bright/80">
+                                    <span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Transparent procurement reporting
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- International Logistics Support -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 bg-surface-container-low/30 z-10 relative">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-8">
+                    <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em] block">Beyond Procurement</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">International <span class="text-primary italic">Logistics Support.</span></h2>
+                    <p class="text-on-surface-variant font-light leading-relaxed">Our support extends beyond sourcing. We also coordinate international logistics for both Wilsolvewel-procured items and client-owned materials.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> Global Pickup Arrangements
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> Sea Freight Coordination
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> Air Freight Coordination
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> 20-Foot Container Shipping
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> 40-Foot Container Shipping
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> Customs Documentation
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> Customs Clearance Support
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span> Delivery Coordination
+                        </div>
+                    </div>
+                    <p class="text-on-surface-variant font-light leading-relaxed">This enables clients to focus on operations while we manage the movement of materials through the supply chain.</p>
+                </div>
+                <div class="relative">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
+                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            alt="Logistics Operations"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supplier Verification & Quality Assurance -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 z-10 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20 max-w-4xl mx-auto">
+                    <span class="text-secondary font-label text-[10px] font-bold uppercase tracking-[0.4em] block mb-6">Supplier Verification &amp; Quality Assurance</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Confidence in Every Procurement <span class="text-secondary italic">Decision.</span></h2>
+                    <p class="text-on-surface-variant font-light leading-relaxed max-w-3xl mx-auto">Every sourcing engagement is supported by supplier evaluation procedures designed to reduce procurement risks.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-20 items-center">
+                    <div class="space-y-6">
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">search</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Supplier Screening</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Review of supplier credibility and sourcing channels.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">assignment</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Product Spec Verification</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Confirmation of technical requirements and compatibility.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">verified</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Manufacturer Validation</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Verification of product origin where applicable.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">description</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Documentation Review</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Supporting procurement transparency and traceability.</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-lowest rounded-2xl flex gap-4 items-start border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-secondary text-2xl mt-0.5">folder</span>
+                            <div>
+                                <h4 class="font-headline font-bold text-sm uppercase tracking-widest mb-1">Procurement Records</h4>
+                                <p class="text-xs text-on-surface-variant font-light">Structured documentation for audit and compliance purposes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
+                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                                alt="Supplier Documentation"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Wilsolvewel -->
+        <section class="py-32 px-5 sm:px-6 lg:px-12 bg-surface-container-low/30 z-10 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20 max-w-4xl mx-auto">
+                    <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.4em] block mb-6">Your Strategic Procurement Partner</span>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Why Choose <span class="text-primary italic">Wilsolvewel?</span></h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-4 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">public</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Verified Global Supplier Network</h3>
+                        <p class="text-sm text-on-surface-variant font-light">Access to trusted manufacturers, distributors and sourcing partners worldwide.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-4 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">engineering</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Technical Procurement Expertise</h3>
+                        <p class="text-sm text-on-surface-variant font-light">Engineering-based review of sourcing requirements to ensure specification accuracy.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-4 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">shield</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Risk Reduction Focus</h3>
+                        <p class="text-sm text-on-surface-variant font-light">Structured sourcing processes designed to improve procurement confidence.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-4 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">visibility</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">End-to-End Visibility</h3>
+                        <p class="text-sm text-on-surface-variant font-light">Traceability from sourcing through final delivery with full transparency.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-4 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">local_shipping</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Logistics Coordination</h3>
+                        <p class="text-sm text-on-surface-variant font-light">Integrated procurement and logistics support from pickup to delivery.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-4 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">description</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Professional Communication</h3>
+                        <p class="text-sm text-on-surface-variant font-light">Clear documentation, reporting and procurement transparency.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section class="py-24 px-5 sm:px-6 lg:px-12 z-10 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-surface-container-lowest rounded-3xl p-12 lg:p-16 border border-outline-variant/10 flex flex-col lg:flex-row items-center gap-12">
+                    <div class="space-y-6 flex-1">
+                        <span class="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-secondary text-4xl">description</span>
+                        </span>
+                        <h3 class="font-headline text-2xl font-bold">Material Specification Submission Form</h3>
+                        <p class="text-on-surface-variant font-light">To improve sourcing accuracy and reduce procurement delays, we encourage clients to submit detailed specifications using our Material Specification Submission Form.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Equipment Details
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Technical Specifications
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Required Quantities
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Delivery Requirements
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4 shrink-0">
+                        <a href="../spec-forms.html#sourcing-form" class="bg-secondary text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-secondary/20 hover:scale-105 transition-all inline-flex items-center gap-3">
+                            <span class="material-symbols-outlined">download</span>
+                            Download Form
+                        </a>
+                        <a href="../spec-forms.html#sourcing-form" class="border-2 border-secondary/30 text-secondary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-secondary/10 transition-all text-center">
+                            Submit Completed Form
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="py-24 px-5 sm:px-6 lg:px-12 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/80"></div>
+            <div class="absolute inset-0 opacity-10 technical-grid pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto text-center relative z-10 space-y-10">
+                <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-on-primary leading-[0.95] tracking-tighter max-w-4xl mx-auto">
+                    Let Us Help You <span class="italic">Source Smarter.</span>
+                </h2>
+                <p class="text-on-primary/80 font-light text-lg max-w-3xl mx-auto">Whether you require specialized industrial equipment, OEM spare parts, hard-to-find materials, hydraulic components, electrical systems or complete project procurement support, Wilsolvewel is ready to assist.</p>
+                <p class="text-on-primary/70 font-light max-w-3xl mx-auto">Our structured sourcing approach helps organizations reduce procurement risk, improve supply reliability and maintain operational continuity.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="../spec-forms.html#sourcing-form" class="bg-on-primary text-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
+                        Submit Material Requirement
+                    </a>
+                    <a href="../contact.php" class="border-2 border-on-primary/30 text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-on-primary/10 transition-all">
+                        Talk to a Procurement Specialist
                     </a>
                 </div>
             </div>
-
-            <!-- Logistics Flow -->
-            <div class="bg-surface-container-high rounded-[3rem] p-12">
-                <h3 class="text-2xl font-bold font-headline mb-12 text-center">Logistics Precision Flow</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                            <span class="text-primary font-bold">1</span>
-                        </div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest">Spec Audit</h4>
-                        <p class="text-[10px] text-on-surface-variant">Reviewing drawings and serial numbers.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                            <span class="text-primary font-bold">2</span>
-                        </div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest">Tech Review</h4>
-                        <p class="text-[10px] text-on-surface-variant">OEM identification & spec clarification.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                            <span class="text-primary font-bold">3</span>
-                        </div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest">RFQ & Verify</h4>
-                        <p class="text-[10px] text-on-surface-variant">Quoting from verified global OEMs.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                            <span class="text-primary font-bold">4</span>
-                        </div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest">International Freight</h4>
-                        <p class="text-[10px] text-on-surface-variant">Managing Air or Sea freight logistics.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                            <span class="text-primary font-bold">5</span>
-                        </div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest">Customs Clearance</h4>
-                        <p class="text-[10px] text-on-surface-variant">Regulatory compliance and clearance.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto shadow-sm text-on-primary">
-                            <span class="font-bold">6</span>
-                        </div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest">Post-Delivery</h4>
-                        <p class="text-[10px] text-on-surface-variant">Support, traceability & documentation.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
-
     <script src="../components/footer.js" data-root="../"></script>
 </body>
+
 </html>

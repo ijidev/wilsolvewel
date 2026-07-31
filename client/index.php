@@ -103,13 +103,9 @@ ob_start();
                 </div>
                 <div class="grid grid-cols-1 gap-4">
                     <?php
-                    $projects_res = safe_query($conn, "SELECT p.*,
-                        (SELECT COUNT(*) FROM project_milestones WHERE project_id = p.id) as total_milestones,
-                        (SELECT COUNT(*) FROM project_milestones WHERE project_id = p.id AND status = 'Completed') as completed_milestones
-                        FROM projects p WHERE p.client_id = ? AND p.status != 'Completed' LIMIT 4", "i", [$client_id]);
+                    $projects_res = safe_query($conn, "SELECT p.* FROM projects p WHERE p.client_id = ? AND p.status != 'Completed' LIMIT 4", "i", [$client_id]);
                     if ($projects_res->num_rows > 0):
                         while($p = $projects_res->fetch_assoc()):
-                            $pct = $p['total_milestones'] > 0 ? round(($p['completed_milestones'] / $p['total_milestones']) * 100) : 0;
                     ?>
                     <div onclick="location.href='projects.php?id=<?= $p['id'] ?>'" class="bg-white p-5 rounded-[2rem] border border-slate-100 hover:border-primary/20 hover:bg-slate-50/50 transition-all cursor-pointer group flex items-center gap-6">
                         <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 group-hover:border-primary/20 transition-all shrink-0">
@@ -122,12 +118,6 @@ ob_start();
                                 <span class="w-1 h-1 rounded-full bg-slate-200"></span>
                                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">ID: #<?= $p['id'] ?></span>
                             </div>
-                        </div>
-                        <div class="w-32 hidden md:block shrink-0">
-                            <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-primary rounded-full" style="width: <?= $pct ?>%"></div>
-                            </div>
-                            <p class="text-[8px] font-black text-slate-300 uppercase tracking-widest mt-1 text-center"><?= $pct ?>% COMPLETION</p>
                         </div>
                     </div>
                     <?php endwhile; else: ?>
