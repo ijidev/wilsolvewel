@@ -82,10 +82,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_contact'])) {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
         csrf_error_response();
     }
-    $contact_fields = ['contact_address','contact_phone','contact_email','contact_procurement_email','hours_weekdays','hours_saturday','hours_sunday','map_latitude','map_longitude','google_maps_api_key'];
+    $contact_fields = ['contact_address','contact_phone','contact_mobile_phone','contact_email','contact_technical_email','contact_procurement_email','hours_weekdays','hours_saturday','hours_sunday','map_latitude','map_longitude','google_maps_api_key'];
     foreach ($contact_fields as $f) {
         if (isset($_POST[$f])) {
-            set_setting($f, trim($_POST[$f]));
+            set_global_setting($f, trim($_POST[$f]));
         }
     }
     log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated Contact Information");
@@ -181,7 +181,7 @@ $page_header_actions = '';
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
 
-<script src="../components/admin_sidenav.js" data-root="../"></script>
+<script src="../components/admin_sidenav.js?v=2" data-root="../"></script>
 
 <!-- Toast -->
 <div id="toast" class="fixed top-6 right-6 z-[400] transform <?php echo ($success_msg || $error_msg) ? 'translate-x-0' : 'translate-x-[150%]'; ?> transition-transform duration-300 pointer-events-none">
@@ -382,19 +382,27 @@ $page_header_actions = '';
                         <div class="grid grid-cols-2 gap-6">
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Address</label>
-                                <input type="text" name="contact_address" value="<?php echo htmlspecialchars(get_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                <input type="text" name="contact_address" value="<?php echo htmlspecialchars(get_global_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                             </div>
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone</label>
-                                <input type="text" name="contact_phone" value="<?php echo htmlspecialchars(get_setting('contact_phone', '+234 (0) 800 945 768')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                <input type="text" name="contact_phone" value="<?php echo htmlspecialchars(get_global_setting('contact_phone', '+234 (0) 800 945 768')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Mobile Support</label>
+                                <input type="text" name="contact_mobile_phone" value="<?php echo htmlspecialchars(get_global_setting('contact_mobile_phone', '+234 (0) 811 620 7920')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                             </div>
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">General Email</label>
-                                <input type="email" name="contact_email" value="<?php echo htmlspecialchars(get_setting('contact_email', 'info@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                <input type="email" name="contact_email" value="<?php echo htmlspecialchars(get_global_setting('contact_email', 'info@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                            </div>
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Technical Support Email</label>
+                                <input type="email" name="contact_technical_email" value="<?php echo htmlspecialchars(get_global_setting('contact_technical_email', 'support@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                             </div>
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Procurement Email</label>
-                                <input type="email" name="contact_procurement_email" value="<?php echo htmlspecialchars(get_setting('contact_procurement_email', 'procurement@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                <input type="email" name="contact_procurement_email" value="<?php echo htmlspecialchars(get_global_setting('contact_procurement_email', 'procurement@wilsolvewel.com')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                             </div>
                         </div>
                         <div class="border-t border-slate-100 pt-6">
@@ -402,15 +410,15 @@ $page_header_actions = '';
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Weekdays</label>
-                                    <input type="text" name="hours_weekdays" value="<?php echo htmlspecialchars(get_setting('hours_weekdays', '8:00 AM - 5:00 PM')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <input type="text" name="hours_weekdays" value="<?php echo htmlspecialchars(get_global_setting('hours_weekdays', '8:00 AM - 5:00 PM')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Saturday</label>
-                                    <input type="text" name="hours_saturday" value="<?php echo htmlspecialchars(get_setting('hours_saturday', 'By Appointment')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <input type="text" name="hours_saturday" value="<?php echo htmlspecialchars(get_global_setting('hours_saturday', 'By Appointment')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Sunday</label>
-                                    <input type="text" name="hours_sunday" value="<?php echo htmlspecialchars(get_setting('hours_sunday', 'Closed')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                    <input type="text" name="hours_sunday" value="<?php echo htmlspecialchars(get_global_setting('hours_sunday', 'Closed')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                                 </div>
                             </div>
                         </div>
@@ -419,15 +427,15 @@ $page_header_actions = '';
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Address</label>
-                                    <input type="text" id="map-address" name="contact_address" value="<?php echo htmlspecialchars(get_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Search address or click map">
+                                    <input type="text" id="map-address" name="contact_address" value="<?php echo htmlspecialchars(get_global_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Search address or click map">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Latitude</label>
-                                    <input type="text" id="map-lat" name="map_latitude" value="<?php echo htmlspecialchars(get_setting('map_latitude', '6.5244')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono">
+                                    <input type="text" id="map-lat" name="map_latitude" value="<?php echo htmlspecialchars(get_global_setting('map_latitude', '6.5244')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Longitude</label>
-                                    <input type="text" id="map-lng" name="map_longitude" value="<?php echo htmlspecialchars(get_setting('map_longitude', '3.3792')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono">
+                                    <input type="text" id="map-lng" name="map_longitude" value="<?php echo htmlspecialchars(get_global_setting('map_longitude', '3.3792')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono">
                                 </div>
                             </div>
                             <div class="mt-4">

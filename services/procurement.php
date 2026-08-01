@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Strategic Global Sourcing | Wilsolvewel Nigeria Limited</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=skip"
@@ -25,7 +25,7 @@
 
         <!-- Sticky Download Button -->
         <div class="fixed right-0 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
-            <a href="../spec-forms.html#sourcing-form"
+            <a href="../spec-forms.php#sourcing-form"
                 class="bg-primary text-on-primary p-4 rounded-l-2xl shadow-xl flex items-center gap-3 hover:bg-primary/90 transition-all group">
                 <span class="material-symbols-outlined text-xl">description</span>
                 <span class="text-[9px] font-bold uppercase tracking-widest max-w-[120px] leading-tight">Download Material Specification Form</span>
@@ -55,7 +55,7 @@
                             Wilsolvewel Nigeria Limited provides structured global sourcing solutions that connect organizations to verified international suppliers, manufacturers and logistics partners, ensuring access to quality products, competitive pricing and reliable delivery.
                         </p>
                         <div class="flex flex-wrap gap-4 pt-4">
-                            <a href="../spec-forms.html#sourcing-form" class="bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                            <a href="../spec-forms.php#sourcing-form" class="bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                                 Submit Material Requirement
                             </a>
                             <a href="../contact.php" class="border-2 border-white/20 text-white px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-white/10 transition-all">
@@ -182,7 +182,7 @@
                         </div>
                         <h3 class="font-headline font-bold text-lg">Can't Find What You Need?</h3>
                         <p class="text-xs text-on-secondary/80 font-light">Even if you only have a part number, equipment model, photograph, technical drawing or sample, our sourcing team can assist in identifying and locating suitable supply options through our global network.</p>
-                        <a href="../spec-forms.html#sourcing-form" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest bg-white/20 px-6 py-3 rounded-full hover:bg-white/30 transition-all">
+                        <a href="../spec-forms.php#sourcing-form" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest bg-white/20 px-6 py-3 rounded-full hover:bg-white/30 transition-all">
                             Submit Your Requirement <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
@@ -515,11 +515,11 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-4 shrink-0">
-                        <a href="../spec-forms.html#sourcing-form" class="bg-secondary text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-secondary/20 hover:scale-105 transition-all inline-flex items-center gap-3">
+                        <a href="../spec-forms.php#sourcing-form" class="bg-secondary text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-secondary/20 hover:scale-105 transition-all inline-flex items-center gap-3">
                             <span class="material-symbols-outlined">download</span>
                             Download Form
                         </a>
-                        <a href="../spec-forms.html#sourcing-form" class="border-2 border-secondary/30 text-secondary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-secondary/10 transition-all text-center">
+                        <a href="../spec-forms.php#sourcing-form" class="border-2 border-secondary/30 text-secondary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-secondary/10 transition-all text-center">
                             Submit Completed Form
                         </a>
                     </div>
@@ -538,7 +538,7 @@
                 <p class="text-on-primary/80 font-light text-lg max-w-3xl mx-auto">Whether you require specialized industrial equipment, OEM spare parts, hard-to-find materials, hydraulic components, electrical systems or complete project procurement support, Wilsolvewel is ready to assist.</p>
                 <p class="text-on-primary/70 font-light max-w-3xl mx-auto">Our structured sourcing approach helps organizations reduce procurement risk, improve supply reliability and maintain operational continuity.</p>
                 <div class="flex flex-wrap justify-center gap-4">
-                    <a href="../spec-forms.html#sourcing-form" class="bg-on-primary text-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
+                    <a href="../spec-forms.php#sourcing-form" class="bg-on-primary text-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
                         Submit Material Requirement
                     </a>
                     <a href="../contact.php" class="border-2 border-on-primary/30 text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-on-primary/10 transition-all">

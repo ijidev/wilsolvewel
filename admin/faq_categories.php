@@ -78,7 +78,7 @@ $page_header_actions = '';
     <style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20}</style>
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
-<script src="../components/admin_sidenav.js" data-root="../"></script>
+<script src="../components/admin_sidenav.js?v=2" data-root="../"></script>
 
 <div id="toast" class="fixed top-6 right-6 z-[400] transform <?php echo ($success_msg || $error_msg) ? 'translate-x-0' : 'translate-x-[150%]'; ?> transition-transform duration-300 pointer-events-none">
     <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[280px]">

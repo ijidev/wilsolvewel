@@ -11,6 +11,18 @@
     link.href = `${rootPath}components/global.css`;
     document.head.appendChild(link);
 
+    // Load Primary Body Font (Inter)
+    const fontLink = document.createElement('link');
+    fontLink.rel = 'stylesheet';
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
+    document.head.appendChild(fontLink);
+
+    // Load Client-Configurable Site Image Overrides
+    const siteImagesScript = document.createElement('script');
+    siteImagesScript.src = `${rootPath}components/site-images.js`;
+    siteImagesScript.setAttribute('data-root', rootPath);
+    document.body.appendChild(siteImagesScript);
+
     // Centralized Tailwind Configuration
     if (window.tailwind) {
         window.tailwind.config = {
@@ -51,21 +63,21 @@
                     },
                     fontFamily: {
                         "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
+                        "body": ["Inter", "Arial", "sans-serif"],
                         "label": ["Space Grotesk"]
                     },
                     fontSize: {
-                        "xs": ["0.65rem", { "lineHeight": "1rem" }],
-                        "sm": ["0.75rem", { "lineHeight": "1.125rem" }],
-                        "base": ["0.875rem", { "lineHeight": "1.25rem" }],
-                        "lg": ["1rem", { "lineHeight": "1.5rem" }],
-                        "xl": ["1.125rem", { "lineHeight": "1.75rem" }],
-                        "2xl": ["1.25rem", { "lineHeight": "1.75rem" }],
-                        "3xl": ["1.5rem", { "lineHeight": "2rem" }],
-                        "4xl": ["1.875rem", { "lineHeight": "2.25rem" }],
-                        "5xl": ["2.25rem", { "lineHeight": "2.5rem" }],
-                        "6xl": ["3rem", { "lineHeight": "1" }],
-                        "7xl": ["3.75rem", { "lineHeight": "1" }]
+                        "xs": ["0.75rem", { "lineHeight": "1.25rem" }],
+                        "sm": ["0.875rem", { "lineHeight": "1.5rem" }],
+                        "base": ["1.125rem", { "lineHeight": "2rem" }],
+                        "lg": ["1.25rem", { "lineHeight": "2.25rem" }],
+                        "xl": ["1.375rem", { "lineHeight": "2.25rem" }],
+                        "2xl": ["1.5rem", { "lineHeight": "2rem" }],
+                        "3xl": ["2rem", { "lineHeight": "2.5rem" }],
+                        "4xl": ["2.375rem", { "lineHeight": "2.5rem" }],
+                        "5xl": ["3rem", { "lineHeight": "1.15" }],
+                        "6xl": ["4rem", { "lineHeight": "1.05" }],
+                        "7xl": ["4.5rem", { "lineHeight": "1" }]
                     }
                 }
             }
@@ -75,28 +87,28 @@
     const pages = [
         { 
             name: 'Services', 
-            path: 'services.html',
+            path: 'services.php',
             hasMega: true,
             items: [
-                { name: 'Civil Engineering', path: 'services/engineering.html', desc: 'Structural design & foundations', icon: 'architecture' },
-                { name: 'OEM Procurement', path: 'services/procurement.html', desc: 'Global sourcing & logistics', icon: 'inventory_2' },
-                { name: 'Technical Support', path: 'services/technical-support.html', desc: 'Maintenance & diagnostics', icon: 'engineering' },
-                { name: 'Specialized Solutions', path: 'services/hydraulic-pump.html', desc: 'Custom hydraulic refurbishment', icon: 'water_drop' }
+                { name: 'Civil Engineering', path: 'services/engineering.php', desc: 'Structural design & foundations', icon: 'architecture' },
+                { name: 'OEM Procurement', path: 'services/procurement.php', desc: 'Global sourcing & logistics', icon: 'inventory_2' },
+                { name: 'Technical Support', path: 'services/technical-support.php', desc: 'Maintenance & diagnostics', icon: 'engineering' },
+                { name: 'Specialized Solutions', path: 'services/hydraulic-pump.php', desc: 'Custom hydraulic refurbishment', icon: 'water_drop' }
             ]
         },
         { 
             name: 'Industries', 
-            path: 'industries.html',
+            path: 'industries.php',
             hasMega: true,
             items: [
-                { name: 'Oil & Gas', path: 'industries.html#oil-gas', desc: 'E&P flow improvement', icon: 'oil_barrel' },
-                { name: 'Power Gen', path: 'industries.html#power', desc: 'Turbine & grid support', icon: 'bolt' },
-                { name: 'Manufacturing', path: 'industries.html#manufacturing', desc: 'Plant flow optimization', icon: 'factory' },
-                { name: 'Construction', path: 'industries.html#construction', desc: 'Heavy machinery foundations', icon: 'foundation' }
+                { name: 'Oil & Gas', path: 'industries.php#oil-gas', desc: 'E&P flow improvement', icon: 'oil_barrel' },
+                { name: 'Power Gen', path: 'industries.php#power', desc: 'Turbine & grid support', icon: 'bolt' },
+                { name: 'Manufacturing', path: 'industries.php#manufacturing', desc: 'Plant flow optimization', icon: 'factory' },
+                { name: 'Construction', path: 'industries.php#construction', desc: 'Heavy machinery foundations', icon: 'foundation' }
             ]
         },
         { name: 'About', path: 'about.php' },
-        { name: 'HSSE', path: 'hsse.html' },
+        { name: 'HSSE', path: 'hsse.php' },
         { name: 'Projects', path: 'projects.php' },
         { name: 'Technical Specs', path: 'spec-forms.php' },
         { name: 'Contact', path: 'contact.php' }
@@ -253,7 +265,7 @@
         }
 
         // Active link highlighter
-        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        const currentPath = window.location.pathname.split('/').pop() || 'index.php';
         const desktopLinks = document.querySelectorAll('#nav-links .nav-link');
         const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 

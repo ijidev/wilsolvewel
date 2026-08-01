@@ -27,3 +27,6 @@ log.md
 
 # Dev/scratch scripts
 scratch/
+
+# User-uploaded content (runtime data, not source)
+uploads/

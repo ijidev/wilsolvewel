@@ -116,7 +116,7 @@ $page_header_actions = '<button onclick="openAssetModal()" class="bg-primary tex
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
 
-<script src="../components/admin_sidenav.js" data-root="../"></script>
+<script src="../components/admin_sidenav.js?v=2" data-root="../"></script>
 
 <!-- Toast -->
 <div id="toast" class="fixed top-6 right-6 z-[400] transform translate-x-[150%] transition-transform duration-300 pointer-events-none">

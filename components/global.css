@@ -18,3 +18,39 @@
 #main-header.nav-hidden {
     transform: translateY(-100%);
 }
+
+/* Global Typography Baseline */
+body {
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Space Grotesk", Arial, sans-serif;
+}
+
+h1 {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+h2 {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+h3 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h3.font-headline.text-2xl {
+    font-size: 2rem;
+    font-weight: 600;
+}

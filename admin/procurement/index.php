@@ -96,7 +96,7 @@ ob_start(); ?>
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex h-screen overflow-hidden">
 
-<script src="../../components/admin_sidenav.js" data-root="../../"></script>
+<script src="../../components/admin_sidenav.js?v=2" data-root="../../"></script>
 
 <div id="toast" class="fixed top-6 right-6 z-[400] transform translate-x-[150%] transition-transform duration-300 pointer-events-none">
     <div id="toastContent" class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[280px]">

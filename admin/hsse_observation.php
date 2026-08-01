@@ -96,7 +96,7 @@ $page_header_actions = '';
 <body
     class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed site-gradient-bg">
     <!-- SideNavBar -->
-    <script src="../../components/admin_sidenav.js" data-root="../../"></script>
+    <script src="../../components/admin_sidenav.js?v=2" data-root="../../"></script>
     <script src="../../components/effects.js"></script>
     <div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
     <!-- Main Content Canvas -->

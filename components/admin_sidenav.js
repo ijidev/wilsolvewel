@@ -35,6 +35,7 @@
         '      <div class="space-y-1">',
         '        <a href="' + root + 'admin/team_members.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all"><span class="material-symbols-outlined text-[20px]">groups</span> Team Members</a>',
         '        <a href="' + root + 'admin/job_openings.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all"><span class="material-symbols-outlined text-[20px]">work_history</span> Job Openings</a>',
+        '        <a href="' + root + 'admin/site_images.php" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-all"><span class="material-symbols-outlined text-[20px]">image</span> Site Images</a>',
         '      </div>',
         '    </div>',
 

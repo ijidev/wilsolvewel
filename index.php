@@ -13,7 +13,7 @@ if ($res) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -222,7 +222,7 @@ if ($res) {
                                     <span class="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></span> Heavy Equipment &amp; Earthmoving Machinery Support
                                 </li>
                             </ul>
-                            <a href="services/technical-support.html" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                            <a href="services/technical-support.php" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                                 Learn More <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                         </div>
@@ -263,7 +263,7 @@ if ($res) {
                                     <span class="w-1.5 h-1.5 bg-secondary rounded-full flex-shrink-0"></span> Delivery Management
                                 </li>
                             </ul>
-                            <a href="services/procurement.html" class="text-secondary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                            <a href="services/procurement.php" class="text-secondary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                                 Learn More <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                         </div>
@@ -304,7 +304,7 @@ if ($res) {
                                     <span class="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></span> Engineering Design &amp; Documentation
                                 </li>
                             </ul>
-                            <a href="services/engineering.html" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                            <a href="services/engineering.php" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                                 Learn More <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                         </div>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -413,7 +413,7 @@
                             <div class="bg-surface-container-lowest p-8 rounded-3xl border border-outline-variant/10 space-y-6">
                                 <h4 class="font-headline font-bold text-lg">Submit Pump Specifications</h4>
                                 <p class="text-xs text-on-surface-variant leading-relaxed">Submit your pump manufacturer, model and serial number for a structured sourcing evaluation.</p>
-                                <a href="spec-forms.html#pump-form" class="block bg-secondary text-on-secondary text-center py-4 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform">
+                                <a href="spec-forms.php#pump-form" class="block bg-secondary text-on-secondary text-center py-4 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform">
                                     Submit Specs Online
                                 </a>
                                 <p class="text-[10px] text-center text-on-surface-variant/60 italic">Send completed form to: procurement@wilsolvewel.com</p>
@@ -452,7 +452,7 @@
                             </div>
                             <h3 class="font-headline text-3xl md:text-4xl font-bold tracking-tight">Strategic <span class="text-primary">Global Sourcing</span> Solutions.</h3>
                             <p class="text-on-surface-variant font-light leading-relaxed">We provide precision procurement for specialized and hard-to-source materials based strictly on client specifications. We do not engage in speculative sourcing—we source precisely what you specify using our verified international supplier network.</p>
-                            <a href="spec-forms.html#sourcing-form" class="inline-flex items-center gap-4 text-secondary font-headline font-bold text-sm uppercase tracking-widest border-b border-secondary pb-1 hover:gap-6 transition-all">
+                            <a href="spec-forms.php#sourcing-form" class="inline-flex items-center gap-4 text-secondary font-headline font-bold text-sm uppercase tracking-widest border-b border-secondary pb-1 hover:gap-6 transition-all">
                                 Material Specification Form <span class="material-symbols-outlined">east</span>
                             </a>
                         </div>
@@ -657,7 +657,7 @@
                     <a href="contact.php" class="bg-on-primary text-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
                         Get In Touch
                     </a>
-                    <a href="spec-forms.html" class="border-2 border-on-primary/30 text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-on-primary/10 transition-all">
+                    <a href="spec-forms.php" class="border-2 border-on-primary/30 text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-on-primary/10 transition-all">
                         View Specification Forms
                     </a>
                 </div>

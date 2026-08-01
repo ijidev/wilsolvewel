@@ -129,7 +129,7 @@ ob_start(); ?>
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface overflow-hidden h-screen lg:pl-64 flex">
     
-    <script src="../components/admin_sidenav.js" data-root="../"></script>
+    <script src="../components/admin_sidenav.js?v=2" data-root="../"></script>
 
     <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <?php require_once __DIR__ . '/../components/admin_header.php'; ?>

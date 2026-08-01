@@ -1,13 +1,17 @@
 <?php require_once 'config.php'; secure_session_start(); generate_csrf_token();
-$contact_address  = get_setting('contact_address', 'Victoria Island, Lagos, Nigeria.');
-$contact_email    = get_setting('contact_email', 'info@wilsolvewel.com');
-$contact_phone    = get_setting('contact_phone', '+234 (0) 800 945 768');
-$hours_weekdays   = get_setting('hours_weekdays', '8:00 AM - 5:00 PM');
-$hours_saturday   = get_setting('hours_saturday', 'By Appointment');
-$hours_sunday     = get_setting('hours_sunday', 'Closed');
-$map_lat          = get_setting('map_latitude', '6.5244');
-$map_lng          = get_setting('map_longitude', '3.3792');
-$map_api_key      = get_setting('google_maps_api_key', '');
+$contact_address  = get_global_setting('contact_address', 'Victoria Island, Lagos, Nigeria.');
+$contact_email    = get_global_setting('contact_email', 'info@wilsolvewel.com');
+$contact_procurement_email = get_global_setting('contact_procurement_email', 'procurement@wilsolvewel.com');
+$contact_phone    = get_global_setting('contact_phone', '+234 (0) 800 945 768');
+$contact_mobile_phone = get_global_setting('contact_mobile_phone', '+234 (0) 811 620 7920');
+$contact_technical_email = get_global_setting('contact_technical_email', 'support@wilsolvewel.com');
+$contact_tel      = preg_replace('/[^0-9+]/', '', $contact_phone);
+$hours_weekdays   = get_global_setting('hours_weekdays', '8:00 AM - 5:00 PM');
+$hours_saturday   = get_global_setting('hours_saturday', 'By Appointment');
+$hours_sunday     = get_global_setting('hours_sunday', 'Closed');
+$map_lat          = get_global_setting('map_latitude', '6.5244');
+$map_lng          = get_global_setting('map_longitude', '3.3792');
+$map_api_key      = get_global_setting('google_maps_api_key', '');
 $map_src = $map_api_key
     ? "https://www.google.com/maps/embed/v1/place?key=" . urlencode($map_api_key) . "&q=" . urlencode($map_lat) . "," . urlencode($map_lng) . "&zoom=15"
     : "https://maps.google.com/maps?q=" . urlencode($map_lat) . "," . urlencode($map_lng) . "&z=15&output=embed";
@@ -22,7 +26,7 @@ $map_src = $map_api_key
     <title>Contact | Wilsolvewel Nigeria Limited</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -57,7 +61,7 @@ $map_src = $map_api_key
                             <a href="#contact-form" class="anodized-gradient text-on-primary px-8 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-transform">
                                 Request Technical Support
                             </a>
-                            <a href="tel:+2349135004488" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest hover:bg-white/20 transition-all">
+                            <a href="tel:<?= htmlspecialchars($contact_tel) ?>" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest hover:bg-white/20 transition-all">
                                 Contact Our Team
                             </a>
                         </div>
@@ -76,7 +80,7 @@ $map_src = $map_api_key
                         </div>
                         <div>
                             <p class="font-label text-[10px] uppercase tracking-widest text-outline font-bold">Location</p>
-                            <p class="text-on-surface font-semibold text-sm">Port Harcourt, Nigeria</p>
+                            <p class="text-on-surface font-semibold text-sm"><?= htmlspecialchars($contact_address) ?></p>
                         </div>
                     </div>
                     <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10 flex items-center gap-4 hover:shadow-lg transition-all">
@@ -85,7 +89,7 @@ $map_src = $map_api_key
                         </div>
                         <div>
                             <p class="font-label text-[10px] uppercase tracking-widest text-outline font-bold">Phone</p>
-                            <p class="text-on-surface font-semibold text-sm">+234 (0) 913 500 4488</p>
+                            <p class="text-on-surface font-semibold text-sm"><?= htmlspecialchars($contact_phone) ?></p>
                         </div>
                     </div>
                     <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10 flex items-center gap-4 hover:shadow-lg transition-all">
@@ -94,7 +98,7 @@ $map_src = $map_api_key
                         </div>
                         <div>
                             <p class="font-label text-[10px] uppercase tracking-widest text-outline font-bold">Email</p>
-                            <p class="text-on-surface font-semibold text-sm">info@wilsolvewel.com</p>
+                            <p class="text-on-surface font-semibold text-sm"><?= htmlspecialchars($contact_email) ?></p>
                         </div>
                     </div>
                     <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10 flex items-center gap-4 hover:shadow-lg transition-all">
@@ -103,7 +107,7 @@ $map_src = $map_api_key
                         </div>
                         <div>
                             <p class="font-label text-[10px] uppercase tracking-widest text-outline font-bold">Working Hours</p>
-                            <p class="text-on-surface font-semibold text-sm">Mon-Fri, 8:00 AM - 5:00 PM</p>
+                            <p class="text-on-surface font-semibold text-sm"><?= htmlspecialchars($hours_weekdays) ?></p>
                         </div>
                     </div>
                 </div>
@@ -139,7 +143,7 @@ $map_src = $map_api_key
                             </div>
                             <p class="font-headline font-bold text-sm uppercase tracking-widest">Corporate Office</p>
                         </div>
-                        <p class="text-on-surface-variant font-light leading-relaxed">Wilsolvewel Nigeria Limited<br />129 Victoria's Square by Eneka link Road,<br />Port Harcourt, Rivers State, Nigeria</p>
+                        <p class="text-on-surface-variant font-light leading-relaxed">Wilsolvewel Nigeria Limited<br /><?= htmlspecialchars($contact_address) ?></p>
                     </div>
                     <!-- Phone Numbers -->
                     <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 space-y-4">
@@ -150,8 +154,8 @@ $map_src = $map_api_key
                             <p class="font-headline font-bold text-sm uppercase tracking-widest">Phone Numbers</p>
                         </div>
                         <div class="space-y-2">
-                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Main Office:</span> +234 (0) 913 500 4488</p>
-                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Mobile Support:</span> +234 (0) 811 620 7920</p>
+                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Main Office:</span> <?= htmlspecialchars($contact_phone) ?></p>
+                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Mobile Support:</span> <?= htmlspecialchars($contact_mobile_phone) ?></p>
                         </div>
                     </div>
                     <!-- Email Addresses -->
@@ -163,8 +167,8 @@ $map_src = $map_api_key
                             <p class="font-headline font-bold text-sm uppercase tracking-widest">Email Addresses</p>
                         </div>
                         <div class="space-y-2">
-                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">General Enquiries:</span> info@wilsolvewel.com</p>
-                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Technical Support:</span> support@wilsolvewel.com</p>
+                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">General Enquiries:</span> <?= htmlspecialchars($contact_email) ?></p>
+                            <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Technical Support:</span> <?= htmlspecialchars($contact_technical_email) ?></p>
                         </div>
                     </div>
                     <!-- Working Hours -->
@@ -175,7 +179,9 @@ $map_src = $map_api_key
                             </div>
                             <p class="font-headline font-bold text-sm uppercase tracking-widest">Working Hours</p>
                         </div>
-                        <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Monday – Friday:</span> 8:00 AM – 5:00 PM</p>
+                        <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Monday – Friday:</span> <?= htmlspecialchars($hours_weekdays) ?></p>
+                        <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Saturday:</span> <?= htmlspecialchars($hours_saturday) ?></p>
+                        <p class="text-on-surface-variant font-light"><span class="font-medium text-on-surface">Sunday:</span> <?= htmlspecialchars($hours_sunday) ?></p>
                         <p class="text-on-surface-variant text-sm font-light italic">Emergency support arrangements may be available for critical operational requirements</p>
                     </div>
                 </div>
@@ -197,7 +203,7 @@ $map_src = $map_api_key
                         </div>
                         <h3 class="font-headline text-lg font-bold text-on-surface mb-3 tracking-tight">Technical Support &amp; Maintenance</h3>
                         <p class="text-on-surface-variant text-sm leading-relaxed flex-grow mb-6">Diagnosis, troubleshooting, emergency maintenance, engine overhaul, power plant support, and heavy equipment services.</p>
-                        <a href="mailto:support@wilsolvewel.com" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                        <a href="mailto:<?= htmlspecialchars($contact_technical_email) ?>" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                             Contact Technical Team <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
@@ -208,7 +214,7 @@ $map_src = $map_api_key
                         </div>
                         <h3 class="font-headline text-lg font-bold text-on-surface mb-3 tracking-tight">Procurement &amp; International Logistics</h3>
                         <p class="text-on-surface-variant text-sm leading-relaxed flex-grow mb-6">OEM parts sourcing, global procurement, logistics coordination, customs clearance, and material supply.</p>
-                        <a href="mailto:info@wilsolvewel.com" class="text-secondary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                        <a href="mailto:<?= htmlspecialchars($contact_procurement_email) ?>" class="text-secondary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                             Contact Procurement Team <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
@@ -219,7 +225,7 @@ $map_src = $map_api_key
                         </div>
                         <h3 class="font-headline text-lg font-bold text-on-surface mb-3 tracking-tight">Hydraulic Pump Solutions</h3>
                         <p class="text-on-surface-variant text-sm leading-relaxed flex-grow mb-6">Hydraulic pump supply, internal components, rebuild kits, and refurbishment support.</p>
-                        <a href="mailto:support@wilsolvewel.com" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                        <a href="mailto:<?= htmlspecialchars($contact_technical_email) ?>" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                             Request Pump Support <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
@@ -230,7 +236,7 @@ $map_src = $map_api_key
                         </div>
                         <h3 class="font-headline text-lg font-bold text-on-surface mb-3 tracking-tight">Strategic Global Sourcing Solutions</h3>
                         <p class="text-on-surface-variant text-sm leading-relaxed flex-grow mb-6">Industrial equipment sourcing, specialized materials procurement, and supplier verification support.</p>
-                        <a href="mailto:info@wilsolvewel.com" class="text-secondary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                        <a href="mailto:<?= htmlspecialchars($contact_procurement_email) ?>" class="text-secondary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                             Submit Requirement <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
@@ -346,7 +352,7 @@ $map_src = $map_api_key
                             </li>
                         </ul>
                         <p class="text-on-surface-variant text-sm font-light mb-6">Our team will review your request and respond accordingly.</p>
-                        <a href="mailto:info@wilsolvewel.com?subject=Quotation%20Request" class="block w-full text-center anodized-gradient text-on-primary py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-transform">
+                        <a href="mailto:<?= htmlspecialchars($contact_email) ?>?subject=Quotation%20Request" class="block w-full text-center anodized-gradient text-on-primary py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-transform">
                             Request a Quotation
                         </a>
                     </div>
@@ -372,8 +378,8 @@ $map_src = $map_api_key
                 <div class="w-full relative">
                     <div class="absolute top-6 left-6 z-10 bg-surface-container-lowest/90 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-xs border border-outline-variant/20">
                         <h4 class="font-headline font-bold text-lg mb-2">Corporate Office</h4>
-                        <p class="text-sm text-on-surface-variant mb-4">129 Victoria's Square by Eneka link Road, Port Harcourt, Rivers State, Nigeria</p>
-                        <a href="https://maps.google.com/maps?q=6.4413,3.4180&z=15" target="_blank" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:underline">
+                        <p class="text-sm text-on-surface-variant mb-4"><?= htmlspecialchars($contact_address) ?></p>
+                        <a href="https://maps.google.com/maps?q=<?= htmlspecialchars($map_lat) ?>,<?= htmlspecialchars($map_lng) ?>&z=15" target="_blank" class="text-primary font-headline font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:underline">
                             Get Directions <span class="material-symbols-outlined text-sm">open_in_new</span>
                         </a>
                     </div>
@@ -448,10 +454,10 @@ $map_src = $map_api_key
                         <h2 class="font-headline text-3xl md:text-4xl font-bold tracking-tight">Interested in Working <span class="text-primary">With Us?</span></h2>
                         <p class="text-surface-bright/60 font-light leading-relaxed">We welcome opportunities to collaborate with clients, suppliers, technical professionals and strategic partners.</p>
                         <div class="flex flex-wrap gap-4">
-                            <a href="mailto:info@wilsolvewel.com?subject=Supplier%20Enquiry" class="bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                            <a href="mailto:<?= htmlspecialchars($contact_email) ?>?subject=Supplier%20Enquiry" class="bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                                 Become a Supplier
                             </a>
-                            <a href="mailto:info@wilsolvewel.com?subject=Partnership%20Enquiry" class="bg-surface/10 text-surface-bright px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest border border-surface/20 hover:bg-surface/20 transition-all">
+                            <a href="mailto:<?= htmlspecialchars($contact_email) ?>?subject=Partnership%20Enquiry" class="bg-surface/10 text-surface-bright px-8 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest border border-surface/20 hover:bg-surface/20 transition-all">
                                 Explore Partnership Opportunities
                             </a>
                         </div>
@@ -477,10 +483,10 @@ $map_src = $map_api_key
                     <h2 class="font-headline text-4xl lg:text-5xl font-bold tracking-tighter leading-none">Let's Start the <span class="text-primary-fixed">Conversation.</span></h2>
                     <p class="text-lg text-primary-fixed/80 max-w-3xl mx-auto font-light leading-relaxed">Whether you need urgent technical support, procurement assistance, equipment maintenance, logistics coordination or industrial construction expertise, our team is ready to help.</p>
                     <div class="flex flex-wrap justify-center gap-6 pt-4">
-                        <a href="tel:+2349135004488" class="bg-white text-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all">
+                        <a href="tel:<?= htmlspecialchars($contact_tel) ?>" class="bg-white text-primary px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all">
                             Contact Us Today
                         </a>
-                        <a href="mailto:support@wilsolvewel.com" class="bg-transparent border-2 border-white/40 text-white px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] hover:bg-white/10 transition-all">
+                        <a href="mailto:<?= htmlspecialchars($contact_technical_email) ?>" class="bg-transparent border-2 border-white/40 text-white px-12 py-5 rounded-full font-headline font-bold text-sm uppercase tracking-[0.2em] hover:bg-white/10 transition-all">
                             Request Support
                         </a>
                     </div>

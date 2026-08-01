@@ -22,7 +22,7 @@ if (!$project) {
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title><?= htmlspecialchars($project['title']) ?> | Wilsolvewel</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
   <style>
     .prose h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #0F172A; }
@@ -103,7 +103,7 @@ if (!$project) {
         <p class="text-surface-bright/60 text-base font-light max-w-xl mx-auto leading-relaxed">Let's discuss how we can apply our expertise to your next project.</p>
         <div class="flex flex-wrap justify-center gap-4">
           <a href="contact.php" class="bg-primary text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">Start a Conversation</a>
-          <a href="services.html" class="bg-surface/10 text-surface-bright px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest border border-surface/20 hover:bg-surface/20 transition-all">View Services</a>
+          <a href="services.php" class="bg-surface/10 text-surface-bright px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest border border-surface/20 hover:bg-surface/20 transition-all">View Services</a>
         </div>
       </div>
     </section>

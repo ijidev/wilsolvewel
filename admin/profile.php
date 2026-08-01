@@ -130,7 +130,7 @@ $page_header_actions = '<button onclick="window.print()" class="bg-slate-900 tex
 </head>
 <body class="bg-[#F8FAFC] font-body text-on-surface lg:pl-64 flex min-h-screen">
     
-    <script src="../components/admin_sidenav.js" data-root="../"></script>
+    <script src="../components/admin_sidenav.js?v=2" data-root="../"></script>
 
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <?php require_once __DIR__ . '/../components/admin_header.php'; ?>

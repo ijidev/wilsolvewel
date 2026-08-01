@@ -428,6 +428,16 @@ function get_db_connection() {
     )");
     ensure_column_exists($conn, 'showcase_projects', 'content', "LONGTEXT NULL");
 
+    $conn->query("CREATE TABLE IF NOT EXISTS site_images (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        image_key VARCHAR(500) UNIQUE NOT NULL,
+        page_file VARCHAR(191) NOT NULL,
+        section_label VARCHAR(255) NULL,
+        original_src TEXT NULL,
+        override_url TEXT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )");
+
     $conn->query("CREATE TABLE IF NOT EXISTS team_members (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -642,6 +652,32 @@ function get_setting($key, $default = '') {
 function set_setting($key, $value) {
     $conn = get_db_connection();
     $stmt = $conn->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+    if ($stmt) {
+        $stmt->bind_param("sss", $key, $value, $value);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+function get_global_setting($key, $default = '') {
+    $conn = get_db_connection();
+    $stmt = $conn->prepare("SELECT setting_value FROM global_settings WHERE setting_key = ?");
+    if (!$stmt) return $default;
+    $stmt->bind_param("s", $key);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return $row['setting_value'];
+    }
+    $stmt->close();
+    return $default;
+}
+
+function set_global_setting($key, $value) {
+    $conn = get_db_connection();
+    $stmt = $conn->prepare("INSERT INTO global_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
     if ($stmt) {
         $stmt->bind_param("sss", $key, $value, $value);
         $stmt->execute();
