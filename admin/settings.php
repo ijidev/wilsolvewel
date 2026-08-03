@@ -7,9 +7,16 @@ $permissions = get_admin_permissions($admin_id);
 $success_msg = '';
 $error_msg = '';
 
+function can_manage_settings($permissions) {
+    // Root/unassigned admin (no department/template) has full access
+    if ($permissions === null) return true;
+    if (($permissions['role'] ?? '') === 'Director') return true;
+    return !empty($permissions['Settings']['write']);
+}
+
 // Handle Global Settings Update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_global'])) {
-    if ($permissions['role'] !== 'Director') {
+    if (!can_manage_settings($permissions)) {
         $error_msg = "Permission denied.";
     } elseif (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
         csrf_error_response();
@@ -31,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_global'])) {
 
 // Handle SMTP Update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
-    if ($permissions['role'] !== 'Director') {
+    if (!can_manage_settings($permissions)) {
         $error_msg = "Permission denied.";
     } elseif (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
         csrf_error_response();
@@ -54,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_smtp'])) {
 // Handle Test SMTP
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['test_smtp'])) {
     header('Content-Type: application/json');
-    if ($permissions['role'] !== 'Director') {
+    if (!can_manage_settings($permissions)) {
         echo json_encode(['status' => 'error', 'message' => 'Permission denied.']);
         exit;
     }

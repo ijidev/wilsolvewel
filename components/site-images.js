@@ -27,7 +27,7 @@
             if (keys.length === 0) return;
             var file = pagePath();
             var baseUrl = null;
-            try { baseUrl = new URL(rootPath === './' ? '' : rootPath, window.location.origin); } catch (e) {}
+            try { baseUrl = new URL(rootPath, window.location.href); } catch (e) {}
             document.querySelectorAll('img').forEach(function (img) {
                 var src = img.getAttribute('src');
                 if (!src) return;

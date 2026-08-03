@@ -19,7 +19,7 @@
 
     // Load Client-Configurable Site Image Overrides
     const siteImagesScript = document.createElement('script');
-    siteImagesScript.src = `${rootPath}components/site-images.js`;
+    siteImagesScript.src = `${rootPath}components/site-images.js?v=2`;
     siteImagesScript.setAttribute('data-root', rootPath);
     document.body.appendChild(siteImagesScript);
 
