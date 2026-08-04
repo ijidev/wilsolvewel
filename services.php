@@ -28,7 +28,7 @@
         <section class="relative py-24 px-5 sm:px-6 lg:px-12 z-10 overflow-hidden">
             <div class="max-w-7xl mx-auto">
                 <div class="aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl relative border border-outline-variant/20">
-                    <img class="w-full h-full object-cover grayscale transition-all duration-1000 hover:scale-105 hover:grayscale-0"
+                    <imgclass="w-full h-full object-cover transition-all duration-1000 hover:scale-105"
                         alt="Our Services"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="relative">
                     <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                             alt="Industrial Operations"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Technical Maintenance"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -120,7 +120,7 @@
                 <div class="grid lg:grid-cols-2 gap-20 items-center mb-20">
                     <div class="relative order-2 lg:order-1">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Engine Overhaul"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -259,7 +259,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Procurement Logistics"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -271,7 +271,7 @@
                 <div class="grid lg:grid-cols-2 gap-20 items-center mb-20">
                     <div class="relative order-2 lg:order-1">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Global Sourcing"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL2icG4PWakb4pmy3ahdG-5OsyndkSQ_XAp34Aja84XNeMxyihqgKc9J740YcrLkU3RAQVAgsEpIO_6s1imD5VcaAE8UyR0RJVzhUZ7yV51fXNAs6ddL-yf-rH-DHSdAiz1l_eIoylGhr1sh1-Pgxah-MIm0nj8Z-aQjynFCM7uNq64WdHjv-fb2wZrY65ZABrfFf_QUsNNFg0wmMyqRygLgC3EsUngMi4TgqUEk6_evRNwwIBhAmw0e76jYtl9CCFH0vk5LcpAUoG" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -529,7 +529,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Industrial Construction"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgAXGKG4O_fRgqzt1Ov-O4zdKcd1miG_RYprvywVztEDtFxKm6sK36ssUHA0zyOGBE--ETWfnDKawgK9Ep6hf9PEoHK0M07G0GURrfsCDVPbglFwzrBjcJwnAFs3KIK4lcAnjjOt5cQtlFj0qS3lC2kscx1VyGFs9FLPCc7AWjmTqU5xWEwefnm6C2Z3Fe-IPIfZIQuL1R3mDM2Gq0clSfrsiZY0MztT1ydZ5pQwdgpS7uR3msPiDQoxxKQmY6uXp0rxffPZSkrXGz" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -541,7 +541,7 @@
                 <div class="grid lg:grid-cols-2 gap-20 items-center mb-20">
                     <div class="relative order-2 lg:order-1">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Structural Engineering"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>

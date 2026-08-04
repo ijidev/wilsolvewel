@@ -67,7 +67,7 @@
 
                 <div class="relative">
                     <div class="rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/10">
-                        <img class="w-full aspect-[4/5] object-cover grayscale"
+                        <imgclass="w-full aspect-[4/5] object-cover"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp"
                             alt="Engineering Detail" />
                     </div>

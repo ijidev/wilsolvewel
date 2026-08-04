@@ -58,7 +58,7 @@ $icons = ['settings', 'inventory_2', 'support_agent', 'engineering', 'handyman',
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="aspect-[4/5] rounded-[4rem] overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 shadow-2xl border border-outline-variant/10">
+                    <div class="aspect-[4/5] rounded-[4rem] overflow-hidden transition-all duration-1000 shadow-2xl border border-outline-variant/10">
                         <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCskSpUXDG8TBndO5FBg2r8tQZX_zvEqYyw-7RmWeQJNhsmfrTtt1MYXVqOls9Yz33Z0_GnU4z0S-XODI1H6OEddlW9rRN0J7urSAVgvGbhwkJ03Oo5NqOLG9Mb88APXWwFStGuQ6ggHtywPZV8Ue_upteOvfshCQjqMHduoNHkGKqWnnkJj26frE5qmmW1GKk1xGsKisOtHoOHzqXYxJYedetTyCKV9pgusUMRyAqSwHaeKUj6seCheJFle-kCXsvVL1YkPulae1Dw" class="w-full h-full object-cover" alt="Join the team" />
                     </div>
                     <!-- Stats Overlay -->

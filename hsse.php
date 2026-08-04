@@ -28,7 +28,7 @@
         <!-- Hero Banner -->
         <section class="relative z-10 overflow-hidden">
             <div class="absolute inset-0">
-                <img class="w-full h-full object-cover grayscale"
+                <imgclass="w-full h-full object-cover"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsxuaorc4rCobtIzT4qT3wVNA8KkcL2nHICdDAX5-I6yVdcQFlUkVmc0D_JKP4a5qtjEXiV2inPucocpvMpqi4xKTnIw0gRA-jNECq68x49o8cw9aQBMmedMp7rS7DZluxXV512Egbyx6c-UQvdyHYnta3OOj6KHcVUPuLRN0DCyrnk4QzdTqyvy0skHSiejPTjXFPAuplI96TvsVUaySOJuLREdMpejWebDwkXtPYNtIwgaVHX3extzFHVfwVaBrNaDJ5s_bpN54Z"
                     alt="Industrial Safety" />
                 <div class="absolute inset-0 bg-gradient-to-br from-black/85 via-black/70 to-black/50"></div>
@@ -118,7 +118,7 @@
                 </div>
                 <div class="relative">
                     <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                             alt="Toolbox Meeting"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsxuaorc4rCobtIzT4qT3wVNA8KkcL2nHICdDAX5-I6yVdcQFlUkVmc0D_JKP4a5qtjEXiV2inPucocpvMpqi4xKTnIw0gRA-jNECq68x49o8cw9aQBMmedMp7rS7DZluxXV512Egbyx6c-UQvdyHYnta3OOj6KHcVUPuLRN0DCyrnk4QzdTqyvy0skHSiejPTjXFPAuplI96TvsVUaySOJuLREdMpejWebDwkXtPYNtIwgaVHX3extzFHVfwVaBrNaDJ5s_bpN54Z" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -290,7 +290,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Risk Assessment Meeting"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -305,7 +305,7 @@
             <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
                 <div class="relative order-2 lg:order-1">
                     <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                             alt="Safety Culture"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFr582YiArBIQjEPMH_T-xgEh4j0HJAhiW6tqr1Fr8NiEH-CZ9sDVC0AFApM9RADHB9Fz7CgSJyWw0AOLc8HxBziJA79bKlJT11hYANSLCsTZ6qzQFYfq5Z7lSYPNQEyMrsWyBwIovdqtEX6kQJJ-Jc9NjDCqzZw0iWdmSwfnwNcxAeRx3PSwbuRyhHu7F32F8liwvrgRAknDLyMTU0EyPHxkD9N4C3fQnFmSRCHE6aDXEEwdFZK34QaFSHStCMPW31bYqzJl0gLo" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -387,7 +387,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Environmental Protection"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -425,7 +425,7 @@
                 </div>
                 <div class="relative">
                     <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                             alt="Secure Facility"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgAXGKG4O_fRgqzt1Ov-O4zdKcd1miG_RYprvywVztEDtFxKm6sK36ssUHA0zyOGBE--ETWfnDKawgK9Ep6hf9PEoHK0M07G0GURrfsCDVPbglFwzrBjcJwnAFs3KIK4lcAnjjOt5cQtlFj0qS3lC2kscx1VyGFs9FLPCc7AWjmTqU5xWEwefnm6C2Z3Fe-IPIfZIQuL1R3mDM2Gq0clSfrsiZY0MztT1ydZ5pQwdgpS7uR3msPiDQoxxKQmY6uXp0rxffPZSkrXGz" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -439,7 +439,7 @@
             <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
                 <div class="relative order-2 lg:order-1">
                     <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                             alt="Safety Training"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>

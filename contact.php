@@ -47,7 +47,7 @@ $map_src = $map_api_key
         <section class="relative py-16 px-5 sm:px-6 lg:px-12 z-10 overflow-hidden">
             <div class="max-w-7xl mx-auto">
                 <div class="aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl relative border border-outline-variant/20">
-                    <img class="w-full h-full object-cover grayscale transition-all duration-1000 hover:scale-105 hover:grayscale-0"
+                    <imgclass="w-full h-full object-cover transition-all duration-1000 hover:scale-105"
                         alt="Engineering Team"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -126,7 +126,7 @@ $map_src = $map_api_key
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Technical Consultation"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -388,7 +388,7 @@ $map_src = $map_api_key
                             src="<?= htmlspecialchars($map_src) ?>"
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
-                            style="border:0;filter:grayscale(1) contrast(1.1);"
+                            style="border:0;"
                             allowfullscreen>
                         </iframe>
                     </div>
@@ -464,7 +464,7 @@ $map_src = $map_api_key
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative group border border-surface/10">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Business Partnership"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoiC3Rxm03OmGzT8s4cxzzD6CqTr49EN7zUgr4MdewbZ32bTu6oje81NkZmBg7Bn7g2eG3JoX0DO-Sjt1jOe0wskEIBSVSKc2v-7oe8km3bCT1X7M1WI70k2zDsYIz9ote_CD2PdoH4NcJCBXNppqqeEM431VDKvb7QNYPkgy7UjOaaQ-bE3bjZow8e06SQ_e49JeuLyHQALD33DzNCGohdL87_kSsXg6g0ZQaF0jnWw0oeeQ_xhPYyU83RJ0NLKAj2EQkIwqCqjuF" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>

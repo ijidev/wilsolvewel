@@ -54,7 +54,7 @@ if ($res) {
         <?php foreach ($showcase_projects as $project): ?>
         <a href="project-detail.php?id=<?= $project['id'] ?>" class="group block bg-surface-container-lowest rounded-2xl border border-outline-variant/10 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-500">
           <div class="aspect-[16/10] overflow-hidden bg-surface-container-high">
-            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
               src="<?= htmlspecialchars($project['image_url'] ?: 'https://placehold.co/600x375/1e293b/64748b?text=Project') ?>"
               alt="<?= htmlspecialchars($project['title']) ?>" />
           </div>

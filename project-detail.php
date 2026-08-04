@@ -47,7 +47,7 @@ if (!$project) {
     <!-- Hero -->
     <section class="relative z-10">
       <div class="h-[50vh] min-h-[320px] relative overflow-hidden">
-        <img class="w-full h-full object-cover grayscale"
+        <imgclass="w-full h-full object-cover"
           src="<?= htmlspecialchars($project['image_url'] ?: 'https://placehold.co/1200x600/1e293b/64748b?text=Project') ?>"
           alt="<?= htmlspecialchars($project['title']) ?>" />
         <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>

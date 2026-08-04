@@ -29,35 +29,35 @@
             <!-- Mosaic Grid Background -->
             <div class="absolute inset-0 grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-1 opacity-40">
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Oil & Gas Facility"
+                    <img class="w-full h-full object-cover scale-110" alt="Oil & Gas Facility"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Power Plant"
+                    <img class="w-full h-full object-cover scale-110" alt="Power Plant"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Manufacturing Facility"
+                    <img class="w-full h-full object-cover scale-110" alt="Manufacturing Facility"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFr582YiArBIQjEPMH_T-xgEh4j0HJAhiW6tqr1Fr8NiEH-CZ9sDVC0AFApM9RADHB9Fz7CgSJyWw0AOLc8HxBziJA79bKlJT11hYANSLCsTZ6qzQFYfq5Z7lSYPNQEyMrsWyBwIovdqtEX6kQJJ-Jc9NjDCqzZw0iWdmSwfnwNcxAeRx3PSwbuRyhHu7F32F8liwvrgRAknDLyMTU0EyPHxkD9N4C3fQnFmSRCHE6aDXEEwdFZK34QaFSHStCMPW31bYqzJl0gLo" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Construction Site"
+                    <img class="w-full h-full object-cover scale-110" alt="Construction Site"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgAXGKG4O_fRgqzt1Ov-O4zdKcd1miG_RYprvywVztEDtFxKm6sK36ssUHA0zyOGBE--ETWfnDKawgK9Ep6hf9PEoHK0M07G0GURrfsCDVPbglFwzrBjcJwnAFs3KIK4lcAnjjOt5cQtlFj0qS3lC2kscx1VyGFs9FLPCc7AWjmTqU5xWEwefnm6C2Z3Fe-IPIfZIQuL1R3mDM2Gq0clSfrsiZY0MztT1ydZ5pQwdgpS7uR3msPiDQoxxKQmY6uXp0rxffPZSkrXGz" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Gas Turbine"
+                    <img class="w-full h-full object-cover scale-110" alt="Gas Turbine"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Industrial Equipment"
+                    <img class="w-full h-full object-cover scale-110" alt="Industrial Equipment"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD17Sy51HJsUf63BByvgnnpMfg5yeqdoC3ixi4nP7Z6LyxVCxK5YlP8CszalT0CLIcJHV_IuwrmDpO0gG6eRKZzZozHXdoHu5dri-S8XpxPoib378h975L8XxlKTqd-NjMEb_E1m3_JEyo7tdAOst35_RHhz1ysEbLYmq1etwvvpFe4yhurPx71Twg-BY6ju0DE9XztQpcjDU5xFeQ89DOYoFxW7fvm-vaoR-0uUNLsZLZhmIHbSuUjuEq_Wu48P0S-yuznS-Flu6s" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Engine Overhaul"
+                    <img class="w-full h-full object-cover scale-110" alt="Engine Overhaul"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVgwZ6-ASDZ4F6zjwKc3HQtRiQuYcbJ7n-Y_wylgzjfQJAhwLhb4J_OEhuZ5XvY2x2zJKDQIF6ehkN73MpnB8l9YHNlHGW1bfSZTjm4uRjQqYeTdGTnAEf1CVF6W0uphCOSj9v2Ef5_Z--C1z6DPobwDVHhVwgR9gUj43_8SelTxvQcU1QXkOg49IxcbOiTYm9xvkiLbPbzm4ZXq0JbxeVnPtsyo5ByFqr7Irw4t9hMhRwleprFvTcaE_OOFScUFF-mrr39D5wagVp" />
                 </div>
                 <div class="relative overflow-hidden">
-                    <img class="w-full h-full object-cover grayscale scale-110" alt="Corporate Facility"
+                    <img class="w-full h-full object-cover scale-110" alt="Corporate Facility"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCskSpUXDG8TBndO5FBg2r8tQZX_zvEqYyw-7RmWeQJNhsmfrTtt1MYXVqOls9Yz33Z0_GnU4z0S-XODI1H6OEddlW9rRN0J7urSAVgvGbhwkJ03Oo5NqOLG9Mb88APXWwFStGuQ6ggHtywPZV8Ue_upteOvfshCQjqMHduoNHkGKqWnnkJj26frE5qmmW1GKk1xGsKisOtHoOHzqXYxJYedetTyCKV9pgusUMRyAqSwHaeKUj6seCheJFle-kCXsvVL1YkPulae1Dw" />
                 </div>
             </div>
@@ -92,7 +92,7 @@
                 </div>
                 <div class="relative">
                     <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                             alt="Industrial Operations"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -108,7 +108,7 @@
                 <!-- Card 1: Oil & Gas (Large) -->
                 <div id="card-oil-gas" class="md:col-span-8 group relative overflow-hidden bg-surface-container-low rounded-3xl min-h-[500px] border border-outline-variant/10 flex flex-col justify-end p-12">
                     <div class="absolute inset-0 z-0">
-                        <img class="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 opacity-60"
+                        <img class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 opacity-60"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76" alt="Oil & Gas" />
                         <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent"></div>
                     </div>
@@ -141,7 +141,7 @@
 
                 <!-- Card 3: Manufacturing -->
                 <div id="card-manufacturing" class="md:col-span-4 group bg-surface-container-lowest rounded-3xl p-10 border border-outline-variant/10 space-y-8">
-                    <div class="aspect-video rounded-2xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <div class="aspect-video rounded-2xl overflow-hidden transition-all duration-700">
                         <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFr582YiArBIQjEPMH_T-xgEh4j0HJAhiW6tqr1Fr8NiEH-CZ9sDVC0AFApM9RADHB9Fz7CgSJyWw0AOLc8HxBziJA79bKlJT11hYANSLCsTZ6qzQFYfq5Z7lSYPNQEyMrsWyBwIovdqtEX6kQJJ-Jc9NjDCqzZw0iWdmSwfnwNcxAeRx3PSwbuRyhHu7F32F8liwvrgRAknDLyMTU0EyPHxkD9N4C3fQnFmSRCHE6aDXEEwdFZK34QaFSHStCMPW31bYqzJl0gLo" class="w-full h-full object-cover" alt="Manufacturing" />
                     </div>
                     <div class="space-y-4">
@@ -186,7 +186,7 @@
                 <!-- Card 6: Engineering Excellence (Side Image) -->
                 <div class="md:col-span-6 group relative overflow-hidden rounded-3xl min-h-[300px] border border-outline-variant/10">
                     <div class="absolute inset-0 z-0">
-                        <img class="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 opacity-70"
+                        <img class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 opacity-70"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoiC3Rxm03OmGzT8s4cxzzD6CqTr49EN7zUgr4MdewbZ32bTu6oje81NkZmBg7Bn7g2eG3JoX0DO-Sjt1jOe0wskEIBSVSKc2v-7oe8km3bCT1X7M1WI70k2zDsYIz9ote_CD2PdoH4NcJCBXNppqqeEM431VDKvb7QNYPkgy7UjOaaQ-bE3bjZow8e06SQ_e49JeuLyHQALD33DzNCGohdL87_kSsXg6g0ZQaF0jnWw0oeeQ_xhPYyU83RJ0NLKAj2EQkIwqCqjuF" alt="Engineering Excellence" />
                         <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
                     </div>
@@ -255,7 +255,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Oil & Gas Facility"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKRUKt2u4eQPwM5w4z9gGURbnJPrFuz8nMjrxbys4FUonFuUEbjXW83ceyKEvI1GPigw0NEwCom-2-ZaErJY-Pt8xNGFUHkwWx5_yzW3eXMDBYxTeJEYeKLyDvtvtvbjZFsdA3TZJhHwJ_8e1JLliQ4V0ztxpvAwc9ou-JY3a9eAOYPF2-yHpv2CGyxkPivdzbeHONGgkh_I4ff9OweyMi8s84412nyqppvRRiI2Q-50ZkJZGpI3zfcH38yAdfGWDps4Abi_Cmk-76" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -299,7 +299,7 @@
                 <div class="grid lg:grid-cols-2 gap-20 items-center mb-20">
                     <div class="relative order-2 lg:order-1">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Power Generation"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -413,7 +413,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Manufacturing Facility"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFr582YiArBIQjEPMH_T-xgEh4j0HJAhiW6tqr1Fr8NiEH-CZ9sDVC0AFApM9RADHB9Fz7CgSJyWw0AOLc8HxBziJA79bKlJT11hYANSLCsTZ6qzQFYfq5Z7lSYPNQEyMrsWyBwIovdqtEX6kQJJ-Jc9NjDCqzZw0iWdmSwfnwNcxAeRx3PSwbuRyhHu7F32F8liwvrgRAknDLyMTU0EyPHxkD9N4C3fQnFmSRCHE6aDXEEwdFZK34QaFSHStCMPW31bYqzJl0gLo" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -457,7 +457,7 @@
                 <div class="grid lg:grid-cols-2 gap-20 items-center mb-20">
                     <div class="relative order-2 lg:order-1">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Construction Site"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgAXGKG4O_fRgqzt1Ov-O4zdKcd1miG_RYprvywVztEDtFxKm6sK36ssUHA0zyOGBE--ETWfnDKawgK9Ep6hf9PEoHK0M07G0GURrfsCDVPbglFwzrBjcJwnAFs3KIK4lcAnjjOt5cQtlFj0qS3lC2kscx1VyGFs9FLPCc7AWjmTqU5xWEwefnm6C2Z3Fe-IPIfZIQuL1R3mDM2Gq0clSfrsiZY0MztT1ydZ5pQwdgpS7uR3msPiDQoxxKQmY6uXp0rxffPZSkrXGz" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -568,7 +568,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Government Facility"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCskSpUXDG8TBndO5FBg2r8tQZX_zvEqYyw-7RmWeQJNhsmfrTtt1MYXVqOls9Yz33Z0_GnU4z0S-XODI1H6OEddlW9rRN0J7urSAVgvGbhwkJ03Oo5NqOLG9Mb88APXWwFStGuQ6ggHtywPZV8Ue_upteOvfshCQjqMHduoNHkGKqWnnkJj26frE5qmmW1GKk1xGsKisOtHoOHzqXYxJYedetTyCKV9pgusUMRyAqSwHaeKUj6seCheJFle-kCXsvVL1YkPulae1Dw" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>

@@ -33,7 +33,7 @@ if ($res) {
 
         <!-- Hero Section -->
         <section class="relative min-h-[80vh] flex items-center px-5 sm:px-6 lg:px-12 z-10 overflow-hidden">
-            <img class="hero-bg absolute inset-0 w-full h-full object-cover object-center" loading="eager"
+            <img class="hero-bg absolute inset-x-0 top-10 bottom-10 w-full object-cover object-center" loading="eager"
                 alt="Industrial Engineering Services"
                 src="https://www.se.com/ww/en/assets/1024951026/header-1024951026.jpg" />
             <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/85 to-surface/15"></div>
@@ -108,7 +108,7 @@ if ($res) {
                     </div>
                     <div class="relative">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                            <img class="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                                 alt="Trusted Engineering Support"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -186,7 +186,7 @@ if ($res) {
                     <!-- Service 1: Technical Support & Maintenance -->
                     <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden">
                         <div class="h-48 bg-surface-container-high relative overflow-hidden">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                            <img class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                                 alt="Technical Support & Maintenance"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
                             <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/20 to-transparent"></div>
@@ -227,7 +227,7 @@ if ($res) {
                     <!-- Service 2: Procurement & International Logistics -->
                     <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden">
                         <div class="h-48 bg-surface-container-high relative overflow-hidden">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                            <img class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                                 alt="Procurement & International Logistics"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL2icG4PWakb4pmy3ahdG-5OsyndkSQ_XAp34Aja84XNeMxyihqgKc9J740YcrLkU3RAQVAgsEpIO_6s1imD5VcaAE8UyR0RJVzhUZ7yV51fXNAs6ddL-yf-rH-DHSdAiz1l_eIoylGhr1sh1-Pgxah-MIm0nj8Z-aQjynFCM7uNq64WdHjv-fb2wZrY65ZABrfFf_QUsNNFg0wmMyqRygLgC3EsUngMi4TgqUEk6_evRNwwIBhAmw0e76jYtl9CCFH0vk5LcpAUoG" />
                             <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/20 to-transparent"></div>
@@ -268,7 +268,7 @@ if ($res) {
                     <!-- Service 3: Industrial Civil, Structural & Construction -->
                     <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden">
                         <div class="h-48 bg-surface-container-high relative overflow-hidden">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                            <img class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                                 alt="Industrial Construction Services"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
                             <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/20 to-transparent"></div>
@@ -381,7 +381,7 @@ if ($res) {
                     <!-- Project 1 -->
                     <div class="group space-y-6">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+                            <imgclass="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 alt="Gas Turbine Commissioning"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ogqFv4fevzwquJt3OipOqsrBIinjhoo_7J7VWYZiZS49OIk8P00Rw8ykn1uaCLhL9WioL3xHgLsLbUUaloBJYRTH4a5t87FOhUzGYgVE_mJCT5CIQ8n_EDp2-1Ui1bRvltpVtt_gnbyzUT0ycYak7GEeIH-rN2WiOhaS-03bGtYdbxJ6eXX6YDIz1G-H2HiIwnCLiZzBXrVZPc5vaN0cbmM0CWx8qi2mz-igSLHN3t1QsCf5brfOi-fopQBLouk0RZcp_wq-LZig" />
                         </div>
@@ -395,7 +395,7 @@ if ($res) {
                     <!-- Project 2 -->
                     <div class="group space-y-6">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+                            <imgclass="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 alt="Crude Oil Pump Installation"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL2icG4PWakb4pmy3ahdG-5OsyndkSQ_XAp34Aja84XNeMxyihqgKc9J740YcrLkU3RAQVAgsEpIO_6s1imD5VcaAE8UyR0RJVzhUZ7yV51fXNAs6ddL-yf-rH-DHSdAiz1l_eIoylGhr1sh1-Pgxah-MIm0nj8Z-aQjynFCM7uNq64WdHjv-fb2wZrY65ZABrfFf_QUsNNFg0wmMyqRygLgC3EsUngMi4TgqUEk6_evRNwwIBhAmw0e76jYtl9CCFH0vk5LcpAUoG" />
                         </div>
@@ -409,7 +409,7 @@ if ($res) {
                     <!-- Project 3 -->
                     <div class="group space-y-6">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+                            <imgclass="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 alt="Tower Crane Rehabilitation"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
                         </div>
@@ -423,7 +423,7 @@ if ($res) {
                     <!-- Project 4 -->
                     <div class="group flex bg-surface-container-lowest rounded-2xl border border-outline-variant/10 overflow-hidden shadow-sm hover:shadow-lg transition-all">
                         <div class="w-1/3 min-h-[160px] bg-surface-container-high relative overflow-hidden">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                            <img class="w-full h-full object-cover transition-all duration-700"
                                 alt="Equipment Maintenance"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
                         </div>
@@ -437,7 +437,7 @@ if ($res) {
                     <!-- Project 5 -->
                     <div class="group flex bg-surface-container-lowest rounded-2xl border border-outline-variant/10 overflow-hidden shadow-sm hover:shadow-lg transition-all">
                         <div class="w-1/3 min-h-[160px] bg-surface-container-high relative overflow-hidden">
-                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                            <img class="w-full h-full object-cover transition-all duration-700"
                                 alt="Solar Borehole Project"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjl9eVb8XrEFxh0iW_kBJ_0dcnn3laux3ZDkXr7fGycCo30F5khhyyNnrodhk0WaVuXCqQOuiUmvx8599xERC4FYQOAwViCSHlC-SxjdLZ_g0isD4hDnop8ClLgDFLTdWrBo8h19SFeURf_NAQovQrUy40JwF_foBE9myeGhjMeDuS5CpDyfWKz0SXRAgtjAHo7RO0GDfOKM6LQ-QjaeOsSSBWIyeZNldqQeWvCV295VFECBSV0yyjE0uAbXg-yKljf5SzDo6MkCnI" />
                         </div>
@@ -451,7 +451,7 @@ if ($res) {
                     <?php foreach ($showcase_projects as $project): ?>
                     <div class="group space-y-6">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high relative border border-outline-variant/10">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+                            <imgclass="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 alt="<?= htmlspecialchars($project['title']) ?>"
                                 src="<?= htmlspecialchars($project['image_url'] ?: 'https://placehold.co/600x450/1e293b/64748b?text=Project') ?>" />
                         </div>

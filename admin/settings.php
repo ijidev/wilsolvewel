@@ -638,7 +638,7 @@ async function testSmtp() {
         var formData = new FormData();
         formData.append("test_smtp", "1");
         formData.append("test_email", email);
-        formData.append("csrf_token", document.querySelector(\'input[name="csrf_token"]\').value);
+        formData.append("csrf_token", document.querySelector('input[name="csrf_token"]').value);
         var res = await fetch("", { method: "POST", body: formData });
         var data = await res.json();
         result.textContent = data.message;
