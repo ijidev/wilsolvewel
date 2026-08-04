@@ -48,7 +48,7 @@ if (isset($_GET['ajax_action'])) {
                 </div>
                 <h2 class="text-2xl font-bold font-headline text-slate-900 mb-1"><?php echo htmlspecialchars($proj['name']); ?></h2>
                 <?php if (!empty($proj['status'])): ?>
-                    <span class="inline-block px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $proj['status']=='Completed'?'bg-emerald-50 text-emerald-600':($proj['status']=='Planning'?'bg-amber-50 text-amber-600':($proj['status']=='On Hold'?'bg-red-50 text-red-500':(($proj['status']=='In Progress'||$proj['status']=='Active')?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'))); ?>"><?php echo htmlspecialchars($proj['status']); ?></span>
+                    <span class="inline-block px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $proj['status']=='Completed'?'bg-emerald-50 text-emerald-600':($proj['status']=='On Hold'?'bg-red-50 text-red-500':(($proj['status']=='Active'||$proj['status']=='In Progress')?'bg-blue-50 text-blue-600':'bg-amber-50 text-amber-600')); ?>"><?php echo htmlspecialchars($proj['status']); ?></span>
                 <?php endif; ?>
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4">
                     <div class="flex items-center gap-1.5 text-xs text-slate-500">
@@ -97,11 +97,45 @@ if (isset($_GET['ajax_action'])) {
         ?>
         <!-- Canvas Body (Roadmap) -->
         <div class="p-6 bg-slate-50 min-h-full">
+            <?php
+            $can_confirm = ($proj['status'] === 'Completed') && empty($proj['client_confirmed_at']);
+            $can_download = !empty($proj['client_confirmed_at']);
+            ?>
+            <!-- Completion Panel -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-headline text-lg font-bold text-slate-900">Project Completion</h3>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Final sign-off &amp; report summary</p>
+                    </div>
+                    <?php if (!empty($proj['client_confirmed_at'])): ?>
+                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1 shrink-0">
+                            <span class="material-symbols-outlined" style="font-size:12px">verified</span> Confirmed <?php echo date('M d, Y', strtotime($proj['client_confirmed_at'])); ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="confirmCompletion(<?php echo $id; ?>)" <?php echo $can_confirm ? '' : 'disabled'; ?>
+                        class="flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 <?php echo $can_confirm ? 'bg-emerald-600 text-white hover:bg-emerald-500 cursor-pointer active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'; ?>">
+                        <span class="material-symbols-outlined text-sm">check_circle</span> Confirm Project Completed
+                    </button>
+                    <button onclick="downloadReportSummary(event, <?php echo $id; ?>)" <?php echo $can_download ? '' : 'disabled'; ?>
+                        class="flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 <?php echo $can_download ? 'bg-slate-900 text-white hover:bg-slate-700 cursor-pointer active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'; ?>">
+                        <span class="material-symbols-outlined text-sm">download</span> Download Report Summary
+                    </button>
+                </div>
+                <?php if ($proj['status'] === 'Completed' && empty($proj['client_confirmed_at'])): ?>
+                    <p class="text-[10px] text-slate-400 mt-3">This project has been marked completed. Confirm completion to unlock the report summary download.</p>
+                <?php elseif ($proj['status'] !== 'Completed'): ?>
+                    <p class="text-[10px] text-slate-400 mt-3">Completion actions unlock when the project is marked <strong>Completed</strong> by the team.</p>
+                <?php endif; ?>
+            </div>
+
             <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between mb-8 relative z-10">
                     <div>
                         <h3 class="font-headline text-lg font-bold text-slate-900">Project Reports</h3>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Milestones & updates</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Report logs & updates</p>
                     </div>
                 </div>
 
@@ -112,7 +146,7 @@ if (isset($_GET['ajax_action'])) {
                     <?php if (empty($milestones)): ?>
                         <div class="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                             <span class="material-symbols-outlined text-slate-300 text-3xl mb-2">linear_scale</span>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No Milestones Yet</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No Report Logs Yet</p>
                         </div>
                     <?php else: ?>
                         <?php foreach ($milestones as $index => $m): ?>
@@ -213,7 +247,7 @@ if (isset($_GET['ajax_action'])) {
             exit;
         }
         $dept_id = get_auto_assigned_department($conn, 'project_proposal', $title . ' ' . $description);
-        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Planning', 0, NOW())");
+        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Active', 0, NOW())");
         $dept_id_val = $dept_id ?: null;
         $stmt->bind_param("iiss", $client_id, $dept_id_val, $title, $description);
         if ($stmt->execute()) {
@@ -227,6 +261,32 @@ if (isset($_GET['ajax_action'])) {
             echo json_encode(['status' => 'error', 'message' => 'DB error: ' . $stmt->error]);
             $stmt->close();
         }
+        exit;
+    }
+
+    if ($_GET['ajax_action'] == 'confirm_completion') {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token.']);
+            exit;
+        }
+        $project_id = (int)($_POST['project_id'] ?? 0);
+        $check = safe_query($conn, "SELECT id, status, client_confirmed_at FROM projects WHERE id = ? AND client_id = ?", "ii", [$project_id, $client_id]);
+        $proj = $check->fetch_assoc();
+        if (!$proj) {
+            echo json_encode(['status' => 'error', 'message' => 'Project not found or access denied.']); exit;
+        }
+        if ($proj['status'] !== 'Completed') {
+            echo json_encode(['status' => 'error', 'message' => 'This project has not been marked as completed yet.']); exit;
+        }
+        if (!empty($proj['client_confirmed_at'])) {
+            echo json_encode(['status' => 'error', 'message' => 'You have already confirmed this project.']); exit;
+        }
+        $stmt = $conn->prepare("UPDATE projects SET client_confirmed_at = NOW() WHERE id = ?");
+        $stmt->bind_param("i", $project_id);
+        $stmt->execute();
+        $stmt->close();
+        log_audit($conn, 'Update', 'Projects', 'Client', $client_id, "Confirmed project completion (ID: $project_id)");
+        echo json_encode(['status' => 'success', 'message' => 'Project confirmed as completed.']);
         exit;
     }
 
@@ -279,19 +339,19 @@ ob_start();
             <div class="space-y-5">
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Proposal Submitted</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters <strong>Planning</strong> phase.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Proposal Submitted</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">You submit a project proposal or Wilsolvewel creates one on your behalf. The project enters the <strong>Active</strong> phase.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">2</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Project Tracking</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Your project status is set by the team — <strong>Planning</strong>, <strong>In Progress</strong>, <strong>On Hold</strong>, or <strong>Completed</strong>. Milestones list the key phases and reports for your project.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Project Tracking</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Your project status is set by the team — <strong>Active</strong>, <strong>On Hold</strong>, or <strong>Completed</strong>. Report logs list the key phases and updates for your project.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">3</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Milestone Reports</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Each milestone is a report entry. Use milestone discussion chats to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Report Logs</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Each report log is a report entry. Use the report log discussions to communicate with the project team, ask for updates, or provide feedback throughout the project lifecycle.</p></div>
                 </div>
                 <div class="flex gap-4">
                     <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">4</div>
-                    <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When the work is finished, the team sets the project to <strong>Completed</strong> status. The project is now closed.</p></div>
+                    <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When the work is finished, the team sets the project to <strong>Completed</strong>. You then confirm the project is complete, which unlocks the <strong>Download Report Summary</strong> option.</p></div>
                 </div>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
@@ -346,7 +406,7 @@ ob_start();
                         </div>
                         <div onclick="loadProject(<?php echo $p['id']; ?>)">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':(($p['status']=='In Progress'||$p['status']=='Active')?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'))); ?>"><?php echo $p['status']; ?></span>
+                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':(($p['status']=='Active'||$p['status']=='In Progress')?'bg-blue-50 text-blue-600':'bg-amber-50 text-amber-600')); ?>"><?php echo $p['status']; ?></span>
                         </div>
                         <h3 class="font-bold text-sm text-slate-900 group-hover:text-primary transition-colors leading-tight mb-1 pr-4"><?php echo htmlspecialchars($p['name']); ?></h3>
                         <div class="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -425,7 +485,7 @@ $page_after_main = '
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
                 <div class="min-w-0">
-                    <h3 class="font-headline font-bold text-slate-900 truncate" id="msChatTitle">Milestone Discussion</h3>
+                    <h3 class="font-headline font-bold text-slate-900 truncate" id="msChatTitle">Report Log Discussion</h3>
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Communicate with your team</p>
                 </div>
                 <button onclick="closeMsChat()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center transition-colors shrink-0 ml-2"><span class="material-symbols-outlined text-sm">close</span></button>
@@ -471,6 +531,44 @@ $page_scripts = '
     function closeProjectDetail() {
         document.getElementById("detailCanvas").classList.add("translate-x-full");
         document.getElementById("detailBackdrop").classList.add("opacity-0", "pointer-events-none");
+    }
+
+    // ── Completion Actions ────────────────────────────────────────────────────
+    async function confirmCompletion(id) {
+        if (!confirm("Confirm that this project is fully completed?")) return;
+        const fd = new FormData();
+        fd.append("project_id", id);
+        fd.append("csrf_token", document.querySelector("#proposeForm input[name=\'csrf_token\']")?.value || "<?= generate_csrf_token() ?>");
+        const res = await fetch("?ajax_action=confirm_completion", { method: "POST", body: fd });
+        const data = await res.json();
+        if (data.status === "success") {
+            loadProject(id);
+            setTimeout(function () { alert(data.message); }, 300);
+        } else {
+            alert(data.message || "Failed to confirm completion.");
+        }
+    }
+
+    async function downloadReportSummary(e, id) {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = \'<span class="material-symbols-outlined text-sm animate-spin">refresh</span>\';
+        try {
+            const res = await fetch("export_report_summary.php?id=" + id);
+            const data = await res.json();
+            if (data.status !== "success" || !data.project) {
+                alert(data.message || "Failed to fetch report summary.");
+                return;
+            }
+            generateProjectPDF([data.project]);
+        } catch (err) {
+            console.error("Export failed:", err);
+            alert("Failed to export. Check console.");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+        }
     }
 
     // ── Export Selected Projects ───────────────────────────────────────────────
@@ -547,7 +645,6 @@ $page_scripts = '
         projects.forEach(function(p, idx) {
             var statusClass = "active";
             if (p.status === "Completed") statusClass = "completed";
-            else if (p.status === "Planning") statusClass = "planning";
             else if (p.status === "On Hold") statusClass = "hold";
             html += `<div class="page"><div class="header"><h1>Project Manifest</h1><div class="meta">Project #PRJ-${String(p.id).padStart(4, "0")} | Listing ${idx + 1} of ${projects.length} | Generated ${new Date().toLocaleString()}</div></div>`;
             html += `<div class="section"><h2>Project Details</h2><div class="grid"><div class="field"><div class="label">Project Name</div><div class="value">${escHtml(p.name)}</div></div><div class="field"><div class="label">Status</div><div class="value"><span class="badge badge-${statusClass}">${p.status}</span></div></div><div class="field"><div class="label">Budget</div><div class="value">${p.budget ? "$" + parseFloat(p.budget).toLocaleString() : "N/A"}</div></div><div class="field"><div class="label">Start Date</div><div class="value">${p.start_date || "TBD"}</div></div><div class="field"><div class="label">End Date</div><div class="value">${p.end_date || "TBD"}</div></div><div class="field"><div class="label">Department</div><div class="value">${p.department_id || "Unassigned"}</div></div></div></div>`;
@@ -557,7 +654,7 @@ $page_scripts = '
             }
 
             if (p.milestones && p.milestones.length > 0) {
-                html += `<div class="section"><h2>Milestones (${p.milestones.length})</h2>`;
+                html += `<div class="section"><h2>Report Logs (${p.milestones.length})</h2>`;
                 p.milestones.forEach(function(m) {
                     html += `<div class="milestone"><div class="milestone-title">${escHtml(m.title)}</div>`;
                     if (m.due_date) html += `<div class="milestone-meta">Due: ${m.due_date}</div>`;
@@ -566,7 +663,7 @@ $page_scripts = '
                 });
                 html += `</div>`;
             } else {
-                html += `<div class="section"><h2>Milestones</h2><p style="font-size:10px;color:#888;font-style:italic">No milestones defined yet.</p></div>`;
+                html += `<div class="section"><h2>Report Logs</h2><p style="font-size:10px;color:#888;font-style:italic">No report logs defined yet.</p></div>`;
             }
 
             if (p.assets && p.assets.length > 0) {
@@ -630,7 +727,7 @@ $page_scripts = '
         let html = "";
         reports.forEach(r => {
             const isMe = r.sender_type === "Client";
-            html += \'<div class="flex flex-col \' + (isMe ? "items-end" : "items-start") + \' mb-4">\' + (!isMe ? \'<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 ml-1">\' + r.sender_name + \'</span>\' : "") + \'<div class="\' + (isMe ? "bg-primary text-on-primary rounded-tr-none" : "bg-white border border-slate-100 rounded-tl-none") + \' rounded-2xl px-4 py-2.5 max-w-[85%] shadow-sm"><p class="text-xs font-medium leading-relaxed whitespace-pre-wrap">\' + r.content + \'</p><p class="text-[9px] font-bold opacity-60 mt-1 uppercase tracking-widest">\' + new Date(r.created_at).toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"}) + \'</p></div></div>\';
+            html += \'<div class="flex flex-col \' + (isMe ? "items-end" : "items-start") + \' mb-4">\' + (!isMe ? \'<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 ml-1">\' + r.sender_name + \'</span>\' : "") + \'<div class="\' + (isMe ? "bg-primary text-on-primary rounded-tr-none" : "bg-white border border-slate-100 rounded-tl-none") + \' rounded-2xl px-4 py-2.5 max-w-[85%] shadow-sm"><p class="text-xs font-medium leading-relaxed whitespace-pre-wrap">\' + (r.content || "") + \'</p>\' + (r.attachment ? \'<a href="../\' + r.attachment + \'" target="_blank" class="block mt-2"><img src="../\' + r.attachment + \'" class="rounded-xl border border-slate-100 max-h-48 object-cover" alt="attachment"></a>\' : "") + \'<p class="text-[9px] font-bold opacity-60 mt-1 uppercase tracking-widest">\' + new Date(r.created_at).toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"}) + \'</p></div></div>\';
         });
         const container = document.getElementById("msChatContent");
         container.innerHTML = html || \'<div class="text-center py-8 text-slate-400 text-xs">No discussion yet.</div>\';

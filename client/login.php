@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div>
                                 <span class="block text-xs uppercase tracking-widest font-bold font-label text-white/80">Project Dashboard</span>
-                                <span class="block text-[10px] text-white/40">Track milestones, timelines, and deliverables.</span>
+                                <span class="block text-[10px] text-white/40">Track report logs, timelines, and deliverables.</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-4 text-white/60">

@@ -322,13 +322,14 @@ function get_db_connection() {
         department_id INT(11) NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT NULL,
-        status VARCHAR(50) DEFAULT 'Planning',
+        status VARCHAR(50) DEFAULT 'Active',
         budget DECIMAL(15,2) DEFAULT 0.00,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     ensure_column_exists($conn, 'projects', 'department_id', "INT(11) NULL");
     ensure_column_exists($conn, 'projects', 'start_date', 'DATE NULL');
     ensure_column_exists($conn, 'projects', 'end_date', 'DATE NULL');
+    ensure_column_exists($conn, 'projects', 'client_confirmed_at', "TIMESTAMP NULL DEFAULT NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS assets (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -529,6 +530,7 @@ function get_db_connection() {
     ensure_column_exists($conn, 'project_reports', 'sender_type', "ENUM('Admin','Client') DEFAULT 'Admin'");
     ensure_column_exists($conn, 'project_reports', 'sender_id', "INT(11) NULL");
     ensure_column_exists($conn, 'project_reports', 'milestone_id', "INT(11) NULL");
+    ensure_column_exists($conn, 'project_reports', 'attachment', "VARCHAR(500) NULL");
 
     $conn->query("CREATE TABLE IF NOT EXISTS project_milestones (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,

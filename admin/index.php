@@ -22,7 +22,7 @@ $ticket_stats = $conn->query("SELECT
 // Projects
 $proj_stats = $conn->query("SELECT 
     COUNT(*) as total, 
-    SUM(IF(status = 'Active' OR status = 'Planning', 1, 0)) as ongoing,
+    SUM(IF(status NOT IN ('Completed', 'On Hold'), 1, 0)) as ongoing,
     SUM(budget) as total_budget
     FROM projects")->fetch_assoc();
 

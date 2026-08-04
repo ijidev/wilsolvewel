@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Auto-Routing Logic
         $dept_id = get_auto_assigned_department($conn, 'project_proposal', $title . ' ' . $description);
 
-        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Planning', 0, NOW())");
+        $stmt = $conn->prepare("INSERT INTO projects (client_id, department_id, name, description, status, budget, created_at) VALUES (?, ?, ?, ?, 'Active', 0, NOW())");
         $dept_id_val = $dept_id ?: null;
         $stmt->bind_param("iiss", $client_id, $dept_id_val, $title, $description);
         if ($stmt->execute()) {

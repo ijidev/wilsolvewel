@@ -38,7 +38,7 @@ if (isset($_GET['ajax_action'])) {
         $client_id = (int)($_POST['client_id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
-        $status = $_POST['status'] ?? 'Planning';
+        $status = $_POST['status'] ?? 'Active';
         $start_date = $_POST['start_date'] ?? date('Y-m-d');
         $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
         $budget = (float)($_POST['budget'] ?? 0);
@@ -277,11 +277,31 @@ if (isset($_GET['ajax_action'])) {
         $milestone_id = (int)$_POST['milestone_id'];
         $project_id = (int)$_POST['project_id'];
         $content = trim($_POST['content']);
-        $stmt = $conn->prepare("INSERT INTO project_reports (project_id, milestone_id, sender_type, sender_id, content) VALUES (?, ?, 'Admin', ?, ?)");
-        $stmt->bind_param("iiis", $project_id, $milestone_id, $admin_id, $content);
+
+        $attachment = null;
+        if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = __DIR__ . '/../uploads/project-reports/';
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            $ext = strtolower(pathinfo($_FILES['attachment']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+            if (in_array($ext, $allowed)) {
+                $new_filename = 'report_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+                if (move_uploaded_file($_FILES['attachment']['tmp_name'], $upload_dir . $new_filename)) {
+                    $attachment = 'uploads/project-reports/' . $new_filename;
+                }
+            }
+        }
+
+        if ($attachment !== null) {
+            $stmt = $conn->prepare("INSERT INTO project_reports (project_id, milestone_id, sender_type, sender_id, content, attachment) VALUES (?, ?, 'Admin', ?, ?, ?)");
+            $stmt->bind_param("iiiss", $project_id, $milestone_id, $admin_id, $content, $attachment);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO project_reports (project_id, milestone_id, sender_type, sender_id, content) VALUES (?, ?, 'Admin', ?, ?)");
+            $stmt->bind_param("iiis", $project_id, $milestone_id, $admin_id, $content);
+        }
         $stmt->execute();
         $stmt->close();
-        echo json_encode(['status' => 'success']);
+        echo json_encode(['status' => 'success', 'attachment' => $attachment]);
         exit;
     }
 
@@ -324,7 +344,7 @@ if (isset($_GET['ajax_action'])) {
             <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo ($proj['status']=='In Progress'||$proj['status']=='Active')?'bg-emerald-600 text-white':($proj['status']=='Planning'?'bg-amber-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':'bg-slate-500 text-white')); ?>">
+                    <span class="px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] <?php echo ($proj['status']=='Completed')?'bg-emerald-600 text-white':($proj['status']=='On Hold'?'bg-red-600 text-white':(($proj['status']=='Active'||$proj['status']=='In Progress')?'bg-blue-600 text-white':'bg-amber-600 text-white')); ?>">
                         <?php echo $proj['status']; ?>
                     </span>
                     <div class="flex items-center gap-2">
@@ -396,14 +416,14 @@ if (isset($_GET['ajax_action'])) {
         ob_start();
         ?>
         <div class="space-y-6">
-            <!-- Milestones Header -->
+            <!-- Report Log Header -->
             <div class="flex items-center justify-between px-1">
                 <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">route</span> Milestones
+                    <span class="material-symbols-outlined text-sm">route</span> Report Log
                 </h3>
                 <div class="flex gap-2">
                     <button onclick="openMilestoneModal(<?php echo $id; ?>)" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[8px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[14px]">add</span> Add Milestone
+                        <span class="material-symbols-outlined text-[14px]">add</span> Add Report Log
                     </button>
                 </div>
             </div>
@@ -412,7 +432,7 @@ if (isset($_GET['ajax_action'])) {
                 <?php if (empty($milestones)): ?>
                     <div class="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
                         <span class="material-symbols-outlined text-3xl text-slate-200">flag</span>
-                        <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No milestones yet</p>
+                        <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">No report logs yet</p>
                     </div>
                 <?php else: ?>
                     <?php 
@@ -602,19 +622,19 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                 <div class="space-y-5">
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-sm font-bold">1</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Project & Status</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Create the project and assign a client, department, and budget. Set the project status directly from the edit form: <strong>Planning</strong>, <strong>In Progress</strong>, <strong>On Hold</strong>, or <strong>Completed</strong>.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Project & Status</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Create the project and assign a client, department, and budget. Set the project status directly from the edit form: <strong>Active</strong>, <strong>On Hold</strong>, or <strong>Completed</strong>.</p></div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-sm font-bold">2</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Milestones as Reports</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Add milestones to break the project into key phases or report entries. Each milestone can hold a chat log (<strong>Logs</strong>) used for client communication and updates. Milestones can be added or edited at any time.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Report Logs</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Add report log entries to break the project into key phases. Each entry can hold a discussion thread (<strong>Logs</strong>) used for client communication, updates, and image attachments. Entries can be added or edited at any time.</p></div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-sm font-bold">3</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Reporting & Communication</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use milestone chat logs for daily reports, progress notes, and client messages. The client sees these on their dashboard. No status workflow required — reports are simply logged against milestones.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Reporting & Communication</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Use report log threads for daily reports, progress notes, image attachments, and client messages. The client sees these on their dashboard. No status workflow required — reports are simply logged against the project.</p></div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shrink-0 text-sm font-bold">4</div>
-                        <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When the work is finished, set the project status to <strong>Completed</strong> from the edit form. The project is now closed.</p></div>
+                        <div><h4 class="text-sm font-bold text-slate-900">Completion</h4><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">When the work is finished, set the project status to <strong>Completed</strong>. This unlocks the client's <strong>Confirm Project Completed</strong> action; once the client confirms, they can download the report summary.</p></div>
                     </div>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
@@ -677,7 +697,7 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                 <?php foreach ($projects as $p): ?>
                     <div class="group relative bg-white border border-slate-100 rounded-3xl p-5 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md" onclick="loadProject(<?php echo $p['id']; ?>, this)">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='Planning'?'bg-amber-50 text-amber-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':(($p['status']=='In Progress'||$p['status']=='Active')?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'))); ?>"><?php echo $p['status']; ?></span>
+                            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest <?php echo $p['status']=='Completed'?'bg-emerald-50 text-emerald-600':($p['status']=='On Hold'?'bg-red-50 text-red-500':(($p['status']=='Active'||$p['status']=='In Progress')?'bg-blue-50 text-blue-600':'bg-amber-50 text-amber-600')); ?>"><?php echo $p['status']; ?></span>
                             <div class="flex gap-1" onclick="event.stopPropagation()">
                                 <button onclick="editProject(<?php echo $p['id']; ?>)" class="w-6 h-6 rounded bg-slate-50 text-slate-400 hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined text-sm">edit</span></button>
                                 <button onclick="deleteProject(<?php echo $p['id']; ?>)" class="w-6 h-6 rounded bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center"><span class="material-symbols-outlined text-sm">delete</span></button>
@@ -742,8 +762,7 @@ $page_header_actions = '<button onclick="openProjectModal()" class="bg-primary t
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Project Status</label>
                         <select name="status" id="projectStatus" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
-                            <option value="Planning">Planning</option>
-                            <option value="In Progress">In Progress</option>
+                            <option value="Active">Active</option>
                             <option value="On Hold">On Hold</option>
                             <option value="Completed">Completed</option>
                         </select>
@@ -803,7 +822,7 @@ function openProjectModal() {
     document.getElementById('modalTitle').innerText = 'Register Project';
     document.getElementById('projectForm').reset();
     document.getElementById('projectId').value = '';
-    document.getElementById('projectStatus').value = 'Planning';
+    document.getElementById('projectStatus').value = 'Active';
     document.getElementById('projectStart').value = new Date().toISOString().split('T')[0];
     document.getElementById('projectModal').classList.add('open');
 }
@@ -818,8 +837,9 @@ async function editProject(id) {
     document.getElementById('projectClient').value = data.client_id;
     document.getElementById('projectName').value = data.name;
     
-    // Status: map legacy 'Active' to 'In Progress'
-    document.getElementById('projectStatus').value = data.status === 'Active' ? 'In Progress' : data.status;
+    // Status: map legacy values to the new Active / On Hold / Completed set
+    var validStatuses = ['Active', 'On Hold', 'Completed'];
+    document.getElementById('projectStatus').value = validStatuses.indexOf(data.status) !== -1 ? data.status : 'Active';
     
     document.getElementById('projectBudget').value = data.budget;
     document.getElementById('projectStart').value = data.start_date;
@@ -922,7 +942,7 @@ function initMilestoneLogic() {
         const res = await fetch('?ajax_action=save_milestone', { method: 'POST', body: fd });
         const data = await res.json();
         if (data.status === 'success') {
-            showToast('Milestone saved');
+            showToast('Report log saved');
             closeMilestoneModal();
             loadProject(pid);
         } else {
@@ -937,7 +957,7 @@ function toggleMilestoneActions(id) {
 }
 
 async function deleteMilestone(id, pid) {
-    if (!confirm('Delete this milestone? Its logs will be removed.')) return;
+    if (!confirm('Delete this report log? Its entries will be removed.')) return;
     const fd = new FormData();
     fd.append('id', id);
     fd.append('csrf_token', CSRF_TOKEN);
@@ -959,7 +979,7 @@ async function openMilestoneChat(msId, title) {
 function renderMsChat(reports) {
     const cont = document.getElementById('msChatContent');
     if (reports.length === 0) {
-        cont.innerHTML = '<div class="text-center py-20 text-slate-300 italic text-xs">No entries for this milestone.</div>';
+        cont.innerHTML = '<div class="text-center py-20 text-slate-300 italic text-xs">No entries for this report log.</div>';
         return;
     }
     cont.innerHTML = reports.map(r => `
@@ -969,11 +989,19 @@ function renderMsChat(reports) {
                 <span class="text-[8px] text-slate-300 font-medium">${new Date(r.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
             </div>
             <div class="${r.sender_type === 'Admin' ? 'bg-primary text-on-primary rounded-tr-none' : 'bg-white text-slate-600 rounded-tl-none border border-slate-100'} px-4 py-2.5 rounded-2xl shadow-sm text-xs leading-relaxed font-medium">
-                ${r.content.replace(/\n/g, '<br>')}
+                ${(r.content || '').replace(/\n/g, '<br>')}
+                ${r.attachment ? '<a href="../' + r.attachment + '" target="_blank" class="mt-2 block"><img src="../' + r.attachment + '" class="rounded-xl border border-slate-200 max-h-48 object-cover w-full" alt="attachment"></a>' : ''}
             </div>
         </div>
     `).join('');
     cont.scrollTop = cont.scrollHeight;
+}
+
+function clearMsAttachment() {
+    const fi = document.getElementById('msChatAttachment');
+    if (fi) fi.value = '';
+    const pv = document.getElementById('msChatAttachPreview');
+    if (pv) pv.classList.add('hidden');
 }
 
 function closeMsChat() { document.getElementById('msChatModal').classList.remove('open'); }
@@ -987,11 +1015,26 @@ document.getElementById('msChatForm').onsubmit = async (e) => {
     fd.append('project_id', currentProjectId);
     fd.append('content', input.value);
     fd.append('csrf_token', CSRF_TOKEN);
-    
+    const fileInput = document.getElementById('msChatAttachment');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        fd.append('attachment', fileInput.files[0]);
+    }
     const res = await fetch('?ajax_action=add_milestone_report', { method: 'POST', body: fd });
     input.value = '';
+    clearMsAttachment();
     openMilestoneChat(msId, document.getElementById('msChatTitle').innerText);
 };
+
+document.getElementById('msChatAttachment').addEventListener('change', function () {
+    const pv = document.getElementById('msChatAttachPreview');
+    const nm = document.getElementById('msChatAttachName');
+    if (this.files && this.files[0]) {
+        nm.textContent = this.files[0].name;
+        pv.classList.remove('hidden');
+    } else {
+        pv.classList.add('hidden');
+    }
+});
 
 // Project Form consolidated logic is already handled by addEventListener at line 756
 
@@ -1032,7 +1075,7 @@ async function removeAsset(projectId, assetId) {
         document.getElementById('milestoneForm').reset();
         document.getElementById('msProjectId').value = projectId;
         document.getElementById('msId').value = msId || '';
-        document.getElementById('msModalTitle').innerText = msId ? 'Edit Milestone' : 'Add Project Milestone';
+        document.getElementById('msModalTitle').innerText = msId ? 'Edit Report Log' : 'Add Report Log';
         document.getElementById('milestoneModal').classList.add('open');
     }
 
@@ -1053,7 +1096,7 @@ async function removeAsset(projectId, assetId) {
     <div id="milestoneModal" class="modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 class="font-bold font-headline text-slate-900" id="msModalTitle">Add Project Milestone</h3>
+                <h3 class="font-bold font-headline text-slate-900" id="msModalTitle">Add Report Log</h3>
                 <button onclick="closeMilestoneModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-sm">close</span></button>
             </div>
             <form id="milestoneForm" class="p-6 space-y-4">
@@ -1061,7 +1104,7 @@ async function removeAsset(projectId, assetId) {
                 <input type="hidden" name="project_id" id="msProjectId">
                 <?= get_csrf_field() ?>
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Milestone Title</label>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Report Title</label>
                     <input type="text" name="title" id="msTitle" required class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
                 </div>
                 <div class="space-y-1.5">
@@ -1074,7 +1117,7 @@ async function removeAsset(projectId, assetId) {
                 </div>
                 <div class="flex gap-4 pt-4">
                     <button type="button" onclick="closeMilestoneModal()" class="flex-1 px-4 py-3 border border-slate-100 text-slate-400 rounded-2xl text-xs font-bold hover:bg-slate-50 transition-colors uppercase tracking-widest">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-3 bg-primary text-on-primary rounded-2xl text-xs font-bold hover:shadow-lg transition-all uppercase tracking-widest">Save Milestone</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-primary text-on-primary rounded-2xl text-xs font-bold hover:shadow-lg transition-all uppercase tracking-widest">Save Report Log</button>
                 </div>
             </form>
         </div>
@@ -1085,7 +1128,7 @@ async function removeAsset(projectId, assetId) {
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
                 <div>
-                    <h3 class="font-bold font-headline text-slate-900" id="msChatTitle">Milestone Logs</h3>
+                    <h3 class="font-bold font-headline text-slate-900" id="msChatTitle">Report Log</h3>
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Contextual Communication Log</p>
                 </div>
                 <button onclick="closeMsChat()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-sm">close</span></button>
@@ -1097,11 +1140,20 @@ async function removeAsset(projectId, assetId) {
                 <form id="msChatForm" class="relative group">
                     <input type="hidden" id="msChatId">
                     <?= get_csrf_field() ?>
-                    <textarea id="msChatInput" required placeholder="Add a log entry or internal note..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-xs focus:ring-2 focus:ring-primary/20 min-h-[60px] max-h-[120px] custom-scrollbar resize-none pr-12 transition-all"></textarea>
+                    <label class="w-10 h-10 absolute left-3 bottom-3 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors" title="Attach image">
+                        <span class="material-symbols-outlined text-slate-500" style="font-size:18px">image</span>
+                        <input type="file" id="msChatAttachment" accept="image/*" class="hidden">
+                    </label>
+                    <textarea id="msChatInput" placeholder="Add a log entry, internal note, or report summary..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-14 py-3.5 text-xs focus:ring-2 focus:ring-primary/20 min-h-[60px] max-h-[120px] custom-scrollbar resize-none pr-12 transition-all"></textarea>
                     <button type="submit" class="absolute right-3 bottom-3 w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition-colors shadow-lg active:scale-95">
                         <span class="material-symbols-outlined">send</span>
                     </button>
                 </form>
+                <div id="msChatAttachPreview" class="hidden mt-2 pl-1 flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span class="material-symbols-outlined text-xs">image</span>
+                    <span id="msChatAttachName" class="truncate"></span>
+                    <button type="button" onclick="clearMsAttachment()" class="text-red-400 hover:text-red-600 shrink-0">Remove</button>
+                </div>
             </div>
         </div>
     </div>

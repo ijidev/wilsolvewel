@@ -33,9 +33,13 @@ if ($res) {
 
         <!-- Hero Section -->
         <section class="relative min-h-[80vh] flex items-center px-5 sm:px-6 lg:px-12 z-10 overflow-hidden">
+            <img class="hero-bg absolute inset-0 w-full h-full object-cover object-center" loading="eager"
+                alt="Industrial Engineering Services"
+                src="https://www.se.com/ww/en/assets/1024951026/header-1024951026.jpg" />
+            <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/85 to-surface/15"></div>
             <div class="absolute inset-0 opacity-20 technical-grid pointer-events-none"></div>
-            <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
-                <div class="lg:col-span-12 xl:col-span-7 space-y-8">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+                <div class="lg:col-span-12 xl:col-span-8 space-y-8">
                     <div class="inline-flex items-center gap-3 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
                         <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                         <span class="text-primary font-label text-[10px] font-bold uppercase tracking-[0.2em]">Supporting Industrial Operations Across Nigeria</span>
@@ -61,14 +65,6 @@ if ($res) {
                         <a href="contact.php" class="bg-surface-container-high text-on-surface px-10 py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-widest hover:bg-surface-container-highest transition-all">
                             Talk to an Engineer
                         </a>
-                    </div>
-                </div>
-                <div class="lg:col-span-5 relative">
-                    <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl relative group border border-outline-variant/20">
-                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
-                            alt="Industrial Engineering Services"
-                            src="https://www.se.com/ww/en/assets/1024951026/header-1024951026.jpg" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                     </div>
                 </div>
             </div>
