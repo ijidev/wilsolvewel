@@ -117,7 +117,7 @@
         if (page.hasMega) {
             return `
             <div class="group/dropdown relative h-full flex items-center">
-                <a class="nav-link text-on-surface-variant font-headline font-bold text-[11px] uppercase tracking-wider hover:text-primary transition-all pb-1 flex items-center gap-1 cursor-pointer" 
+                <a class="nav-link text-on-surface-variant font-headline font-bold text-[10px] uppercase tracking-wide hover:text-primary transition-all pb-1 flex items-center gap-1 cursor-pointer whitespace-nowrap" 
                    href="${rootPath}${page.path}">
                    ${page.name}
                    <span class="material-symbols-outlined text-xs transition-transform group-hover/dropdown:rotate-180">expand_more</span>
@@ -141,7 +141,7 @@
             `;
         }
         return `
-            <a class="nav-link text-on-surface-variant font-headline font-bold text-[11px] uppercase tracking-wider hover:text-primary transition-all pb-1" 
+            <a class="nav-link text-on-surface-variant font-headline font-bold text-[10px] uppercase tracking-wide hover:text-primary transition-all pb-1 whitespace-nowrap" 
                href="${rootPath}${page.path}">${page.name}</a>
         `;
     }).join('');
@@ -180,7 +180,7 @@
             </a>
             
             <!-- Desktop Nav -->
-            <div class="hidden lg:flex items-center gap-5 h-full" id="nav-links">
+            <div class="hidden lg:flex items-center gap-3 h-full" id="nav-links">
                 ${navLinksHTML}
             </div>
 
