@@ -117,28 +117,26 @@
     const navLinksHTML = pages.map(page => {
         if (page.hasMega) {
             return `
-            <div class="group/mega relative h-full flex items-center">
+            <div class="group/dropdown relative h-full flex items-center">
                 <a class="nav-link text-on-surface-variant font-headline font-bold text-[11px] uppercase tracking-widest hover:text-primary transition-all pb-1 flex items-center gap-1 cursor-pointer" 
                    href="${rootPath}${page.path}">
                    ${page.name}
-                   <span class="material-symbols-outlined text-xs transition-transform group-hover/mega:rotate-180">expand_more</span>
+                   <span class="material-symbols-outlined text-xs transition-transform group-hover/dropdown:rotate-180">expand_more</span>
                 </a>
                 
-                <!-- Mega Menu Dropdown -->
-                <div class="absolute top-[calc(100%-8px)] left-1/2 -translate-x-1/2 w-[480px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-outline-variant/10 p-6 opacity-0 translate-y-4 pointer-events-none group-hover/mega:opacity-100 group-hover/mega:translate-y-0 group-hover/mega:pointer-events-auto transition-all duration-300 ease-out z-[110]">
-                    <div class="grid grid-cols-2 gap-4">
-                        ${page.items.map(item => `
-                            <a href="${rootPath}${item.path}" class="flex items-start gap-4 p-4 rounded-xl hover:bg-primary/5 group/item transition-colors">
-                                <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0 group-hover/item:bg-primary/10">
-                                    <span class="material-symbols-outlined text-on-surface-variant group-hover/item:text-primary transition-colors text-xl">${item.icon}</span>
-                                </div>
-                                <div class="space-y-1">
-                                    <span class="block text-[11px] font-bold uppercase tracking-widest text-on-surface group-hover/item:text-primary transition-colors">${item.name}</span>
-                                    <span class="block text-[10px] text-on-surface-variant font-light leading-tight opacity-70">${item.desc}</span>
-                                </div>
-                            </a>
-                        `).join('')}
-                    </div>
+                <!-- Dropdown Menu -->
+                <div class="absolute top-[calc(100%-4px)] left-0 w-72 bg-white/95 backdrop-blur-2xl rounded-xl shadow-2xl border border-outline-variant/10 py-2 opacity-0 translate-y-2 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:translate-y-0 group-hover/dropdown:pointer-events-auto transition-all duration-200 ease-out z-[110]">
+                    ${page.items.map(item => `
+                        <a href="${rootPath}${item.path}" class="flex items-center gap-3 px-4 py-3 hover:bg-primary/5 group/item transition-colors">
+                            <div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0 group-hover/item:bg-primary/10">
+                                <span class="material-symbols-outlined text-on-surface-variant group-hover/item:text-primary transition-colors text-lg">${item.icon}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[11px] font-bold uppercase tracking-widest text-on-surface group-hover/item:text-primary transition-colors leading-tight">${item.name}</span>
+                                <span class="text-[10px] text-on-surface-variant font-light leading-tight opacity-60">${item.desc}</span>
+                            </div>
+                        </a>
+                    `).join('')}
                 </div>
             </div>
             `;
