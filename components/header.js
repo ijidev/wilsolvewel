@@ -91,9 +91,7 @@
             hasMega: true,
             items: [
                 { name: 'Civil Engineering', path: 'services/engineering.php', desc: 'Structural design & foundations', icon: 'architecture' },
-                { name: 'OEM Procurement', path: 'services/procurement.php', desc: 'Global sourcing & logistics', icon: 'inventory_2' },
-                { name: 'Technical Support', path: 'services/technical-support.php', desc: 'Maintenance & diagnostics', icon: 'engineering' },
-                { name: 'Specialized Solutions', path: 'services/hydraulic-pump.php', desc: 'Custom hydraulic refurbishment', icon: 'water_drop' }
+                { name: 'Technical Support', path: 'services/technical-support.php', desc: 'Maintenance & diagnostics', icon: 'engineering' }
             ]
         },
         { 
@@ -107,11 +105,12 @@
                 { name: 'Construction', path: 'industries.php#construction', desc: 'Heavy machinery foundations', icon: 'foundation' }
             ]
         },
-        { name: 'About', path: 'about.php' },
+        { name: 'About Us', path: 'about.php' },
+        { name: 'Hydraulic Pump Solution', path: 'services/hydraulic-pump.php' },
+        { name: 'Strategic Global Sourcing Solution', path: 'services/procurement.php' },
         { name: 'HSSE', path: 'hsse.php' },
-        { name: 'Projects', path: 'projects.php' },
-        { name: 'Technical Specs', path: 'spec-forms.php' },
-        { name: 'Contact', path: 'contact.php' }
+        { name: 'Project Experience', path: 'projects.php' },
+        { name: 'Contact Us', path: 'contact.php' }
     ];
 
     const navLinksHTML = pages.map(page => {
