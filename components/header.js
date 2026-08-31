@@ -106,8 +106,8 @@
             ]
         },
         { name: 'About Us', path: 'about.php' },
-        { name: 'Hydraulic Pump Solution', path: 'services/hydraulic-pump.php' },
-        { name: 'Strategic Global Sourcing Solution', path: 'services/procurement.php' },
+        { name: 'Hydraulic Pump', path: 'services/hydraulic-pump.php' },
+        { name: 'Procurement', path: 'services/procurement.php' },
         { name: 'HSSE', path: 'hsse.php' },
         { name: 'Project Experience', path: 'projects.php' },
         { name: 'Contact Us', path: 'contact.php' }
