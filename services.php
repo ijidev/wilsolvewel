@@ -224,14 +224,14 @@
                         <span class="material-symbols-outlined text-4xl">inventory_2</span>
                         <span class="font-label text-xs font-bold uppercase tracking-[0.2em]">Service 02</span>
                     </div>
-                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Procurement &amp; <span class="text-secondary italic">International Logistics.</span></h2>
-                    <p class="text-on-surface-variant font-light leading-relaxed max-w-3xl mx-auto">Eliminating Supply Delays and Procurement Complexity. Inconsistent supply chains, unreliable vendors and delayed deliveries can halt operations and inflate project costs.</p>
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">Reliable OEM &amp; <span class="text-secondary italic">OEM-Equivalent Parts.</span></h2>
+                    <p class="text-on-surface-variant font-light leading-relaxed max-w-3xl mx-auto">Without Supply Delays. Wilsolvewel delivers structured procurement and international logistics solutions that ensure the efficient supply of genuine OEM and approved OEM-equivalent products while minimizing procurement risks, import delays and operational disruptions.</p>
                 </div>
 
                 <!-- Alternating Layout: Text Left, Image Right -->
                 <div class="grid lg:grid-cols-2 gap-20 items-center mb-20">
                     <div class="space-y-8">
-                        <p class="text-on-surface-variant text-base font-light leading-relaxed">Wilsolvewel manages the complete procurement lifecycle—from technical specification review and OEM verification to global sourcing, international freight, customs clearance and final delivery to site.</p>
+                        <p class="text-on-surface-variant text-base font-light leading-relaxed">From technical sourcing and supplier verification to international shipping, customs clearance and final delivery, we manage the complete procurement lifecycle with transparency, traceability and accountability.</p>
                         <p class="text-on-surface-variant text-base font-light leading-relaxed">We work with verified international suppliers and authorized distributors to ensure every component meets manufacturer standards and client specifications.</p>
                         <div class="space-y-4">
                             <h4 class="font-headline font-bold text-sm uppercase tracking-widest">Challenges We Help Solve</h4>
@@ -650,15 +650,16 @@
             <div class="max-w-7xl mx-auto text-center relative z-10 space-y-10">
                 <span class="text-on-primary/60 font-label text-[10px] font-bold uppercase tracking-[0.4em] block">One Partner. Multiple Solutions. Reliable Results.</span>
                 <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-on-primary leading-[0.95] tracking-tighter max-w-4xl mx-auto">
-                    Ready to Discuss Your Next Project?
+                    Reliable Results Across Every <span class="italic">Operation.</span>
                 </h2>
-                <p class="text-on-primary/80 font-light text-lg max-w-2xl mx-auto">Whether you need technical support, procurement assistance or construction expertise—our team is ready to deliver.</p>
+                <p class="text-on-primary/80 font-light text-lg max-w-2xl mx-auto">Whether you require urgent technical support, strategic procurement assistance, international logistics coordination or industrial construction expertise, Wilsolvewel Nigeria Limited is ready to support your objectives.</p>
+                <p class="text-on-primary/70 font-light max-w-2xl mx-auto">We combine engineering expertise, procurement capability and practical project execution to help organizations operate safely, efficiently and successfully.</p>
                 <div class="flex flex-wrap justify-center gap-4">
                     <a href="contact.php" class="bg-on-primary text-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
-                        Get In Touch
+                        Contact Our Team
                     </a>
                     <a href="spec-forms.php" class="border-2 border-on-primary/30 text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest hover:bg-on-primary/10 transition-all">
-                        View Specification Forms
+                        Request a Consultation
                     </a>
                 </div>
             </div>
