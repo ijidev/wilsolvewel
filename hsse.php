@@ -556,22 +556,6 @@
             </div>
         </section>
 
-        <!-- Download Section -->
-        <section class="py-24 px-5 sm:px-6 lg:px-12 bg-surface-container-low/30 z-10 relative">
-            <div class="max-w-7xl mx-auto">
-                <div class="bg-surface-container-lowest rounded-3xl p-12 lg:p-16 border border-outline-variant/10 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div class="space-y-4">
-                        <span class="material-symbols-outlined text-primary text-4xl">description</span>
-                        <h3 class="font-headline text-2xl font-bold">Download Our HSSE Policy Statement</h3>
-                        <p class="text-on-surface-variant font-light max-w-xl">Access our complete HSSE policy document for a comprehensive overview of our commitment to safety, security and environmental protection.</p>
-                    </div>
-                    <a href="#" class="bg-primary text-on-primary px-10 py-4 rounded-full font-headline font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all inline-flex items-center gap-3 shrink-0">
-                        <span class="material-symbols-outlined">download</span>
-                        Download PDF
-                    </a>
-                </div>
-            </div>
-        </section>
     </main>
     <!-- Footer -->
     <!-- Footer Shell -->
