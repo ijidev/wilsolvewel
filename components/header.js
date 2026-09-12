@@ -150,11 +150,14 @@
         if (page.hasMega) {
             return `
             <div class="w-full">
-                <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')" class="flex justify-between items-center w-full text-on-surface text-lg font-headline font-bold py-4 border-b border-outline-variant/30">
-                    ${page.name}
-                    <span class="material-symbols-outlined arrow transition-transform">expand_more</span>
-                </button>
-                <div class="hidden bg-surface-container-low/50 px-4 py-2 border-b border-outline-variant/10">
+                <div class="flex justify-between items-center border-b border-outline-variant/30">
+                    <a class="mobile-nav-link text-on-surface text-lg font-headline font-bold py-4 flex-1" 
+                       href="${rootPath}${page.path}">${page.name}</a>
+                    <button onclick="var p=this.parentElement.parentElement; p.querySelector('.submenu').classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')" class="p-4 transition-colors" aria-label="Toggle ${page.name} submenu">
+                        <span class="material-symbols-outlined arrow transition-transform">expand_more</span>
+                    </button>
+                </div>
+                <div class="submenu hidden bg-surface-container-low/50 px-4 py-2 border-b border-outline-variant/10">
                     ${page.items.map(item => `
                         <a class="mobile-nav-link block py-3 text-sm font-headline font-bold text-on-surface-variant hover:text-primary" 
                            href="${rootPath}${item.path}">${item.name}</a>
