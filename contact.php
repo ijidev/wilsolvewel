@@ -12,9 +12,12 @@ $hours_sunday     = get_global_setting('hours_sunday', 'Closed');
 $map_lat          = get_global_setting('map_latitude', '6.5244');
 $map_lng          = get_global_setting('map_longitude', '3.3792');
 $map_api_key      = get_global_setting('google_maps_api_key', '');
+$map_lat_f        = (float)$map_lat;
+$map_lng_f        = (float)$map_lng;
+$osm_bbox = number_format($map_lng_f - 0.01, 6) . ',' . number_format($map_lat_f - 0.01, 6) . ',' . number_format($map_lng_f + 0.01, 6) . ',' . number_format($map_lat_f + 0.01, 6);
 $map_src = $map_api_key
     ? "https://www.google.com/maps/embed/v1/place?key=" . urlencode($map_api_key) . "&q=" . urlencode($map_lat) . "," . urlencode($map_lng) . "&zoom=15"
-    : "https://maps.google.com/maps?q=" . urlencode($map_lat) . "," . urlencode($map_lng) . "&z=15&output=embed";
+    : "https://www.openstreetmap.org/export/embed.html?bbox=" . urlencode($osm_bbox) . "&layer=mapnik&marker=" . urlencode($map_lat) . "," . urlencode($map_lng);
 ?>
 <!DOCTYPE html>
 
@@ -47,7 +50,7 @@ $map_src = $map_api_key
         <section class="relative py-16 px-5 sm:px-6 lg:px-12 z-10 overflow-hidden">
             <div class="max-w-7xl mx-auto">
                 <div class="aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl relative border border-outline-variant/20">
-                    <imgclass="w-full h-full object-cover transition-all duration-1000 hover:scale-105"
+                    <img class="w-full h-full object-cover transition-all duration-1000 hover:scale-105"
                         alt="Engineering Team"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OxK7bvEeBHiB4IiD08woFatMHovl7-Mrrn2nVScQbp2TSyCXI-o0CTKd_wCTcm4Z5eTu7p4EIzDhsJZ76ptcJu1U4nRYG4STYB1gA1sG9Sc7w3jDbhMgICS838aIhHwIh_eVvoDmx4Bns1MkrwcqCKiq7yeS1Mt9sAngeckaWjVMqc2OGhh4cwx56PQK-8mtYSC_CfaMB7m1O9b5lKk2mKF6zFungAuDwRy0UdMo_o-fMNcPiWpHVRWQDzZQRohfco4zwbYxyD1s" />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>

@@ -661,8 +661,32 @@ function set_setting($key, $value) {
     }
 }
 
+function ensure_table_if_broken($conn, $table_name, $create_sql) {
+    static $verified = [];
+    if (isset($verified[$table_name])) return;
+    $verified[$table_name] = true;
+
+    $conn->query("SELECT 1 FROM `$table_name` LIMIT 1");
+    if ($conn->errno === 0) return;
+
+    $conn->query("DROP TABLE IF EXISTS `$table_name`");
+    if (!$conn->query($create_sql)) {
+        error_log("Auto-repair failed for table `$table_name`: " . $conn->error);
+    }
+}
+
+function ensure_global_settings_table($conn) {
+    ensure_table_if_broken($conn, 'global_settings',
+        "CREATE TABLE IF NOT EXISTS global_settings (
+            setting_key VARCHAR(50) PRIMARY KEY,
+            setting_value TEXT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )");
+}
+
 function get_global_setting($key, $default = '') {
     $conn = get_db_connection();
+    ensure_global_settings_table($conn);
     $stmt = $conn->prepare("SELECT setting_value FROM global_settings WHERE setting_key = ?");
     if (!$stmt) return $default;
     $stmt->bind_param("s", $key);
@@ -679,6 +703,7 @@ function get_global_setting($key, $default = '') {
 
 function set_global_setting($key, $value) {
     $conn = get_db_connection();
+    ensure_global_settings_table($conn);
     $stmt = $conn->prepare("INSERT INTO global_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
     if ($stmt) {
         $stmt->bind_param("sss", $key, $value, $value);

@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/admin_auth.php';
 $conn = get_db_connection();
+ensure_global_settings_table($conn);
 $admin_id = $_SESSION['admin_id'];
 $permissions = get_admin_permissions($admin_id);
 
@@ -86,17 +87,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['test_smtp'])) {
 
 // Handle Contact Info Update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_contact'])) {
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+    if (!can_manage_settings($permissions)) {
+        $error_msg = "Permission denied.";
+    } elseif (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
         csrf_error_response();
-    }
-    $contact_fields = ['contact_address','contact_phone','contact_mobile_phone','contact_email','contact_technical_email','contact_procurement_email','hours_weekdays','hours_saturday','hours_sunday','map_latitude','map_longitude','google_maps_api_key'];
-    foreach ($contact_fields as $f) {
-        if (isset($_POST[$f])) {
-            set_global_setting($f, trim($_POST[$f]));
+    } else {
+        $contact_fields = ['contact_address','contact_phone','contact_mobile_phone','contact_email','contact_technical_email','contact_procurement_email','hours_weekdays','hours_saturday','hours_sunday','map_latitude','map_longitude','google_maps_api_key'];
+        foreach ($contact_fields as $f) {
+            if (isset($_POST[$f])) {
+                set_global_setting($f, trim($_POST[$f]));
+            }
         }
+        log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated Contact Information");
+        $success_msg = "Contact information updated.";
     }
-    log_audit($conn, 'Update', 'Settings', 'Admin', $admin_id, "Updated Contact Information");
-    $success_msg = "Contact information updated.";
 }
 
 // Handle Routing Rules CRUD
@@ -389,7 +393,7 @@ $page_header_actions = '';
                         <div class="grid grid-cols-2 gap-6">
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Address</label>
-                                <input type="text" name="contact_address" value="<?php echo htmlspecialchars(get_global_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary">
+                                <input type="text" name="contact_address" value="<?php echo htmlspecialchars(get_global_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" oninput="var m=document.getElementById('map-address'); if(m) m.value=this.value;">
                             </div>
                             <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone</label>
@@ -434,7 +438,7 @@ $page_header_actions = '';
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Address</label>
-                                    <input type="text" id="map-address" name="contact_address" value="<?php echo htmlspecialchars(get_global_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Search address or click map">
+                                    <input type="text" id="map-address" name="map_address_display" value="<?php echo htmlspecialchars(get_global_setting('contact_address', 'Lagos, Nigeria')); ?>" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary" placeholder="Search address or click map">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Latitude</label>
@@ -449,7 +453,11 @@ $page_header_actions = '';
                                 <div id="leaflet-map" class="w-full h-64 sm:h-80 rounded-2xl border border-slate-200 overflow-hidden" style="z-index:1;"></div>
                                 <p class="text-[9px] text-slate-400 mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-xs">touch_app</span> Click or drag the pin to set location — coordinates update automatically</p>
                             </div>
-                            <input type="hidden" name="google_maps_api_key" value="">
+                            <div class="mt-4">
+                                <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Google Maps API Key (Optional)</label>
+                                <input type="text" name="google_maps_api_key" value="<?php echo htmlspecialchars(get_global_setting('google_maps_api_key', '')); ?>" placeholder="e.g. AIza..." class="w-full bg-slate-50 border-slate-100 rounded-2xl px-4 py-3 text-xs font-bold focus:ring-1 focus:ring-primary font-mono" autocomplete="off">
+                                <p class="text-[9px] text-slate-400 mt-1.5">Leave blank to use the OpenStreetMap fallback map. Save the form to apply changes.</p>
+                            </div>
                         </div>
                         <div class="pt-4 border-t border-slate-100 flex justify-end">
                             <button type="submit" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg">Save Configuration</button>
