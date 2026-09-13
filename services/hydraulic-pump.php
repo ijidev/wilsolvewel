@@ -77,9 +77,7 @@
                     <span class="text-secondary font-label text-[10px] font-bold uppercase tracking-[0.4em] block">Supporting Reliable Hydraulic System Performance</span>
                     <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Precision Components. Reliable <span class="text-secondary italic">Performance.</span></h2>
                     <div class="space-y-6 text-on-surface-variant text-base font-light leading-relaxed">
-                        <p>Hydraulic systems depend on precision-engineered components operating within tight tolerances. As pumps accumulate operating hours, wear can occur on internal components, leading to reduced hydraulic efficiency, pressure instability, excessive heat generation, internal leakage, increased operating costs and unexpected equipment downtime.</p>
-                        <p>Rather than replacing an entire hydraulic pump, many systems can be successfully restored through structured refurbishment supported by authentic replacement components.</p>
-                        <p>Wilsolvewel helps organizations identify, source and supply the components required to restore hydraulic pump performance and extend service life.</p>
+                        <p>Hydraulic systems depend on precision-engineered components operating within tight tolerances. As pumps accumulate operating hours, wear can occur on internal components, leading to:</p>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="flex items-center gap-3 text-sm text-on-surface-variant">
@@ -100,6 +98,10 @@
                         <div class="flex items-center gap-3 text-sm text-on-surface-variant">
                             <span class="material-symbols-outlined text-secondary text-lg">check_circle</span> Unexpected equipment downtime
                         </div>
+                    </div>
+                    <div class="space-y-6 text-on-surface-variant text-base font-light leading-relaxed">
+                        <p>Rather than replacing an entire hydraulic pump, many systems can be successfully restored through structured refurbishment supported by authentic replacement components.</p>
+                        <p>Wilsolvewel helps organizations identify, source and supply the components required to restore hydraulic pump performance and extend service life.</p>
                     </div>
                 </div>
                 <div class="relative">
@@ -173,8 +175,8 @@
                         </div>
                         <h3 class="font-headline font-bold text-lg">Variable &amp; Fixed Displacement</h3>
                         <ul class="space-y-2">
-                            <li class="text-xs text-on-surface-variant font-light flex items-center gap-2"><span class="w-1 h-1 bg-primary rounded-full"></span> Variable Displacement Pumps</li>
-                            <li class="text-xs text-on-surface-variant font-light flex items-center gap-2"><span class="w-1 h-1 bg-primary rounded-full"></span> Fixed Displacement Pumps</li>
+                            <li class="text-xs text-on-surface-variant font-light flex items-center gap-2"><span class="w-1 h-1 bg-primary rounded-full"></span> Variable Displacement Pumps <span class="text-on-surface-variant/70">— for advanced industries and mobile hydraulic systems</span></li>
+                            <li class="text-xs text-on-surface-variant font-light flex items-center gap-2"><span class="w-1 h-1 bg-primary rounded-full"></span> Fixed Displacement Pumps <span class="text-on-surface-variant/70">— for standard hydraulic applications</span></li>
                         </ul>
                     </div>
                 </div>
@@ -190,7 +192,7 @@
                                 <span class="block text-[10px] font-bold uppercase tracking-widest">Construction</span>
                             </div>
                             <div class="p-4 bg-white/5 rounded-xl text-center space-y-2">
-                                <span class="material-symbols-outlined text-primary text-3xl">backhoe</span>
+                                <span class="material-symbols-outlined text-primary text-3xl">front_loader</span>
                                 <span class="block text-[10px] font-bold uppercase tracking-widest">Earthmoving</span>
                             </div>
                             <div class="p-4 bg-white/5 rounded-xl text-center space-y-2">
