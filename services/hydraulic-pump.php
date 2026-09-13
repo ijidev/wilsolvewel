@@ -173,11 +173,15 @@
                         <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
                             <span class="material-symbols-outlined text-3xl">speed</span>
                         </div>
-                        <h3 class="font-headline font-bold text-lg">Variable &amp; Fixed Displacement</h3>
-                        <ul class="space-y-2">
-                            <li class="text-xs text-on-surface-variant font-light flex items-center gap-2"><span class="w-1 h-1 bg-primary rounded-full"></span> Variable Displacement Pumps <span class="text-on-surface-variant/70">— for advanced industries and mobile hydraulic systems</span></li>
-                            <li class="text-xs text-on-surface-variant font-light flex items-center gap-2"><span class="w-1 h-1 bg-primary rounded-full"></span> Fixed Displacement Pumps <span class="text-on-surface-variant/70">— for standard hydraulic applications</span></li>
-                        </ul>
+                        <h3 class="font-headline font-bold text-lg">Variable Displacement Pumps</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">For advanced industries and mobile hydraulic systems.</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 space-y-6 group hover:border-primary/20 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            <span class="material-symbols-outlined text-3xl">swap_horiz</span>
+                        </div>
+                        <h3 class="font-headline font-bold text-lg">Fixed Displacement Pumps</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">For standard hydraulic applications.</p>
                     </div>
                 </div>
 
